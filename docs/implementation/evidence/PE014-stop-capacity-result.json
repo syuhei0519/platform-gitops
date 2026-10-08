@@ -1,0 +1,16 @@
+{
+  "newBad": [],
+  "faultStart": "2026-10-02T19:59:51.9579178Z",
+  "pass": true,
+  "phase": "completed",
+  "receivedAt": "2026-10-02T20:01:47.1890656Z",
+  "maxReady": 1,
+  "requests": 900,
+  "secretsRecorded": false,
+  "collectorSelfDuringStop": "unavailable; not a loss counter",
+  "elapsedSec": 900.3315297,
+  "restoreAt": "2026-10-02T20:00:52.744681Z",
+  "NR429": "separate fixture pending",
+  "crudSuccessPercent": 100,
+  "recoverySec": 54.4443846
+}

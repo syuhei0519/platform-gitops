@@ -1,0 +1,26 @@
+{
+  "fullIntermediateAT05Accepted": true,
+  "testedSource": "0b855190a3fc52978903a7b2b851d577078856c9",
+  "unitAccepted": false,
+  "originalScanJobs": [
+    16922783996,
+    16922783997
+  ],
+  "all19Complete": false,
+  "pipeline": 2911071988,
+  "sbomGenerationAndParseFixturesAccepted": true,
+  "failedAdoptionRefused": true,
+  "implementationAcceptanceReady": true,
+  "phase2BackendSwitched": false,
+  "AT04DifferentActualDatabase": true,
+  "fullMainSBOMInventory": true,
+  "unit": "PE017B",
+  "evidenceMainIntegrationRequired": true,
+  "sourceWriteDeniedHTTP": 403,
+  "retentionOperatorReview": true,
+  "source": "e927c6c837bf36d41c118225f254d277cf95bb5f",
+  "originalBuildJob": 16922783993,
+  "actualImmutableRecords": 2,
+  "actualReaderPipeline": 2911406715,
+  "utc": "2026-10-04T20:48:31.3260797Z"
+}

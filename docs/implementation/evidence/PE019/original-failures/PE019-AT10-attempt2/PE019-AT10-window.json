@@ -1,0 +1,14 @@
+{
+  "pipeline": 2918330285,
+  "ownedEmailPrefix": "pe019-load-75087cff7a844c1e8ab50dc32ae121c6",
+  "endUtc": "2026-10-06T15:00:06.9338656Z",
+  "source": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "profileSha256": "87e5467b47f65dbfb3f6a17f1eb7b0dfcaa7b3b092db914d44d7af030801f2c5",
+  "startUtc": "2026-10-06T14:45:06.9338656Z",
+  "traceId": "ff542ced7f39f85ee0913c61ea3967b0",
+  "frontendPort": 18049,
+  "prometheusPort": 18050,
+  "buildJob": 16972588396,
+  "durationSec": 900,
+  "requests": 900
+}

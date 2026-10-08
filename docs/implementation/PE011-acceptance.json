@@ -1,0 +1,48 @@
+{
+  "extraCostLimitYen": 0,
+  "acceptedUnits": [
+    "PE-011A",
+    "PE-011B"
+  ],
+  "proofs": [
+    {
+      "sha256": "2fd207faba0f42381666e2a21278ae6649784a8e5ac915a31ed191e824656756",
+      "file": "newrelic-ui-query-attributes.json"
+    },
+    {
+      "sha256": "b46f7ef329f1be3748f3b89897d43e44c81b4d5d2f4b3226d34de7274c7a75d0",
+      "file": "newrelic-fixture-receipt.json"
+    },
+    {
+      "sha256": "6004c02628be986f178d572203b2c9d791bdcfed0ed682505bf3ed9ef58465e5",
+      "file": "collector-kubernetes-identity.json"
+    },
+    {
+      "sha256": "fb5b344b64ea7ab9e344a3f146b6973ba690482591ab600852a603ee430a4bec",
+      "file": "collector-kubernetes-resource-contract.json"
+    },
+    {
+      "sha256": "996753065aeff6d1e2e3cbb3e85b3ebc2cb7098791547ef5f9954b8af6884fbc",
+      "file": "collector-rbac-negative.json"
+    },
+    {
+      "sha256": "a9c757c95d323782242ed7a7c71acbf16a7df4f0d2779956752c31f76b974cd8",
+      "file": "collector-activation-ready.json"
+    },
+    {
+      "sha256": "bacd49e5e39c77390fd65792dcb0cf9a1cba444a8ae5fa83d6663cc03240e159",
+      "file": "PE011-newrelic-merge.json"
+    },
+    {
+      "sha256": "8ab59c6677a9019fe606bd35cfeeddbc53c53fe9972c982316a25eee3e061e84",
+      "file": "PE011-collector-merge.json"
+    }
+  ],
+  "utc": "2026-10-02T14:30:51.0032002Z",
+  "payloadBytes": 1096,
+  "deferred": [
+    "AT-06 actual API: PE-012/013",
+    "AT-07 faults: PE-014"
+  ],
+  "externalSpans": 2
+}

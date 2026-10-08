@@ -1,0 +1,16 @@
+{
+  "context": "kind-platform-lab",
+  "utc": "2026-10-02T14:30:50.9900958Z",
+  "checks": [
+    {
+      "allowed": false,
+      "resource": "secrets",
+      "verb": "get"
+    },
+    {
+      "allowed": false,
+      "resource": "nodes/proxy",
+      "verb": "get"
+    }
+  ]
+}

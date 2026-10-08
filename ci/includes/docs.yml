@@ -1,0 +1,17 @@
+# .gitlab-ci.ymlが文書だけのpush/MRで読む独立job。通常CIのneeds/artifactsには接続しない。
+# 既存source-scanと同じdigest固定Trivyを使うが、変更文書のsecret検査だけなので脆弱性DBは取得しない。
+docs-check:
+  stage: test
+  image:
+    name: aquasec/trivy:0.75.0@sha256:9db099105405c648166e6b94155eb32f8da12673cf1f455207f7385cc9a77283
+    entrypoint: [""]
+  needs: []
+  dependencies: []
+  cache: []
+  # shallow cloneに比較元がなければdocs-check.shが必要なcommitだけを取得する。
+  variables:
+    GIT_DEPTH: '20'
+  timeout: 5 minutes
+  script:
+    - sh ci/test-docs-check.sh
+    - sh ci/docs-check.sh

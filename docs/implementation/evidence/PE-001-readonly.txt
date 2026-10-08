@@ -1,0 +1,55 @@
+日時: 2026-10-01T23:00:38.5922026+09:00
+環境: Windows PowerShell / kind-platform-lab
+操作: git ls-remote / status; kubectl get applications/nodes/pods; docker info; kind version
+
+Repository: platform-gitops
+origin	https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git (fetch)
+origin	https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git (push)
+ref: refs/heads/main	HEAD
+4c4c9d59fbb351285b4e1c0ea1ba03a32359b0d5	HEAD
+Repository: application-manifest
+origin	https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git (fetch)
+origin	https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git (push)
+ref: refs/heads/main	HEAD
+a07522355dc4aa259f47195e4d6e3673e9509c86	HEAD
+Repository: frontend-app
+origin	https://gitlab.com/syuhei-platform-engineering-lab/frontend-app.git (fetch)
+origin	https://gitlab.com/syuhei-platform-engineering-lab/frontend-app.git (push)
+ref: refs/heads/main	HEAD
+00318cc4646728cb47597e99fb8227433806595b	HEAD
+Repository: backend-app
+origin	https://gitlab.com/syuhei-platform-engineering-lab/backend-app.git (fetch)
+origin	https://gitlab.com/syuhei-platform-engineering-lab/backend-app.git (push)
+ref: refs/heads/main	HEAD
+86f30d2f0dcfde4341bc468cde4536bd4bbec983	HEAD
+NAME                          REPO                                                                          PATH                       REVISION                                   DEST            SYNC     HEALTH
+lab-local-backend             https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git   charts/backend             a07522355dc4aa259f47195e4d6e3673e9509c86   account         Synced   Healthy
+lab-local-frontend            https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git   charts/frontend            a07522355dc4aa259f47195e4d6e3673e9509c86   account         Synced   Healthy
+lab-local-gitlab-runner       <none>                                                                        <none>                     <none>                                     runner-system   Synced   Healthy
+lab-local-platform            https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git        charts/platform            4c4c9d59fbb351285b4e1c0ea1ba03a32359b0d5   argocd          Synced   Healthy
+lab-local-postgresql          https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git   charts/postgresql          a07522355dc4aa259f47195e4d6e3673e9509c86   account         Synced   Healthy
+lab-local-root                https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git        charts/root                4c4c9d59fbb351285b4e1c0ea1ba03a32359b0d5   argocd          Synced   Healthy
+lab-local-runner-foundation   https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git        charts/runner-foundation   4c4c9d59fbb351285b4e1c0ea1ba03a32359b0d5   runner-system   Synced   Healthy
+lab-local-workloads           https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git        charts/workloads           4c4c9d59fbb351285b4e1c0ea1ba03a32359b0d5   argocd          Synced   Healthy
+NAME                         VERSION   CPU   MEMORY
+platform-lab-control-plane   v1.36.4   20    16288320Ki
+NS                   NAME                                                 UID                                    PHASE     IMAGE
+account              backend-566d54cbbf-2q2dz                             acd79a33-312e-4c86-a4e2-818b5428dfcc   Running   registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:86f30d2f0dcfde4341bc468cde4536bd4bbec983@sha256:017807ce6b6555fe47a2bf6eec1d4be7f424ce456a7988e7092dae24fca8a944
+account              frontend-6d66d7d879-6fr5z                            227d28cb-afd7-4036-a081-93147d5d4da3   Running   registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app:00318cc4646728cb47597e99fb8227433806595b@sha256:cbd490891b1129167cc65366fd559a5a2405e54d1606ed4c2ce53b3328852cbd
+account              postgresql-0                                         18a888fb-7891-4255-9c13-d795ad92651f   Running   docker.io/library/postgres:17.10-bookworm@sha256:9b18b78397054fce88a9552e9d5a3ad5bb7fd258c5b3cc1c5028e46373d6ea8f
+argocd               argocd-application-controller-0                      58a0c264-2580-4b51-b5b1-0e3744a9c3cb   Running   quay.io/argoproj/argocd:v3.5.2
+argocd               argocd-redis-dcf9d5cd7-kf94q                         f4c84b06-8c17-4210-b88d-c47bba6fe0ba   Running   ecr-public.aws.com/docker/library/redis:8.6.4-alpine
+argocd               argocd-repo-server-6d486d7964-fbd94                  abf73567-3449-4980-b958-a28a64c40571   Running   quay.io/argoproj/argocd:v3.5.2
+argocd               argocd-server-56cd4846df-n6k2x                       4a9266bb-5b64-4f1a-a603-1fcf73d45076   Running   quay.io/argoproj/argocd:v3.5.2
+kube-system          coredns-589f44dc88-6fgwk                             a30169f7-93e7-4433-8acf-f56233ac3217   Running   registry.k8s.io/coredns/coredns:v1.14.2
+kube-system          coredns-589f44dc88-x85hq                             55513b55-6fc0-446b-9fda-0ab44e1af41a   Running   registry.k8s.io/coredns/coredns:v1.14.2
+kube-system          etcd-platform-lab-control-plane                      c16c1c8b-7a81-4f02-aab8-7c6d69205723   Running   registry.k8s.io/etcd:3.6.8-0
+kube-system          kindnet-vb4g5                                        f0e651a2-5738-4e2e-bb15-e5824ae01848   Running   docker.io/kindest/kindnetd:v20260820-69b56db7
+kube-system          kube-apiserver-platform-lab-control-plane            be4f817d-c99a-4527-b3ae-bf9cc9fb8267   Running   registry.k8s.io/kube-apiserver:v1.36.4
+kube-system          kube-controller-manager-platform-lab-control-plane   600a07a3-4c32-4cf3-b6dc-1dc7c31cf963   Running   registry.k8s.io/kube-controller-manager:v1.36.4
+kube-system          kube-proxy-25hg7                                     23dd1f84-f147-4c8b-991d-ceae4f60212b   Running   registry.k8s.io/kube-proxy:v1.36.4
+kube-system          kube-scheduler-platform-lab-control-plane            7ed55bf2-d099-45f9-af39-8d2dfcd38050   Running   registry.k8s.io/kube-scheduler:v1.36.4
+local-path-storage   local-path-provisioner-56c4685b7c-dzt26              c0132552-c1eb-44cc-8349-db34b2947175   Running   docker.io/kindest/local-path-provisioner:v20260820-69b56db7
+runner-system        gitlab-runner-6c697bb4d9-pr5mb                       15f72c53-dc9a-4691-bcf8-12b3fc824a0c   Running   registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v19.3.1
+16679239680 20
+kind v0.33.0 go1.26.7 windows/amd64

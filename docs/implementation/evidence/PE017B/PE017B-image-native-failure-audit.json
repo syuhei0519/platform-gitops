@@ -1,0 +1,103 @@
+{
+  "rawTraceRead": false,
+  "case": "positive",
+  "privateBinaryRead": false,
+  "jobs": [
+    {
+      "id": 16921857391,
+      "name": "oci-image-policy-validation",
+      "status": "failed"
+    },
+    {
+      "id": 16921857390,
+      "name": "oci-isolated-runtime",
+      "status": "success"
+    },
+    {
+      "id": 16921857389,
+      "name": "oci-format-compatibility",
+      "status": "success"
+    },
+    {
+      "id": 16921857388,
+      "name": "container-build-oci",
+      "status": "success"
+    },
+    {
+      "id": 16921857387,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16921857386,
+      "name": "backend-build",
+      "status": "success"
+    },
+    {
+      "id": 16921857385,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16921857384,
+      "name": "format-and-vet",
+      "status": "success"
+    },
+    {
+      "id": 16921857383,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16921857382,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "registryPush": false,
+  "accepted": false,
+  "failedRecord": {
+    "schemaVersion": 2,
+    "service": "backend",
+    "sourceProjectId": 86247033,
+    "sourceCommit": "ce305519bc17914579ccf25cd27b1f08383724ec",
+    "buildPipelineId": 2910904722,
+    "buildJobId": 16921857388,
+    "imageRepository": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app",
+    "imageTag": "ce305519bc17914579ccf25cd27b1f08383724ec",
+    "imageDigest": "sha256:3150f0d5a0338da01c1c1db0e02aaa92dc4a37997904d7595196299e519b2f14",
+    "scanPipelineId": 2910904722,
+    "scanJobId": 16921857391,
+    "scanJobStatus": "failed",
+    "inputKind": "build-oci",
+    "inputArchiveSha256": "0aa448e3e786666234ae69a705b9d669a1b6c4effce9402f0ee270853da54a4d",
+    "trivyVersion": "0.75.0",
+    "database": {
+      "version": 2,
+      "updatedAt": "2026-10-04T08:52:32.606987838Z",
+      "metadataSha256": "3ac39f83926e9b168885df6b0d681923771497985ff6301ba0751b890e51cb1f"
+    },
+    "scannedAt": "2026-10-04T14:06:56.65223643Z",
+    "policyRevision": "ce305519bc17914579ccf25cd27b1f08383724ec",
+    "policySha256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337",
+    "exceptions": [],
+    "decision": "failed",
+    "failureReason": "sbom-invalid",
+    "sbom": null,
+    "sbomFailureReason": "sbom-invalid",
+    "scanReport": {
+      "imageDigest": "sha256:3150f0d5a0338da01c1c1db0e02aaa92dc4a37997904d7595196299e519b2f14",
+      "scanPipelineId": 2910904722,
+      "scanJobId": 16921857391,
+      "url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-3150f0d5a0338da01c1c1db0e02aaa92dc4a37997904d7595196299e519b2f14/scan-report-2910904722-16921857391.json",
+      "sha256": "5b868cb37e39a04373cc99858123686227baac2e85bfee452486c1bca6d50135",
+      "format": "safe-json",
+      "schemaVersion": "1"
+    }
+  },
+  "status": "failed",
+  "pipeline": 2910904722,
+  "utc": "2026-10-04T14:07:10.4771339Z",
+  "fullPE017BAcceptance": false,
+  "source": "ce305519bc17914579ccf25cd27b1f08383724ec"
+}

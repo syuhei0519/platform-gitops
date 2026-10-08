@@ -1,0 +1,11 @@
+{
+  "unitA": true,
+  "state": "opened",
+  "parentClosed": false,
+  "unitC": false,
+  "unitB": false,
+  "unitProgress": "22/32",
+  "issue": 15,
+  "parentProgress": "14/19",
+  "evidenceMain": "170a438c56b5cb8eea070202c4f8e7064e6b5661"
+}

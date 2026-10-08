@@ -1,0 +1,10 @@
+{
+  "created": "2026-10-03T14:35:38Z",
+  "metadataObservedDbUpdatedAt": "2026-10-03T14:28:08.7882885+00:00",
+  "manualPlayed": false,
+  "layerBytes": 126717513,
+  "differentDatabase": true,
+  "manifestDigest": "sha256:fd1fa8d3f00e22fea5a362015fb3278182565892498b0db2587b3896cc46dd8c",
+  "publicRegistry": "mirror.gcr.io/aquasec/trivy-db:2",
+  "utc": "2026-10-03T15:07:01.8747791Z"
+}

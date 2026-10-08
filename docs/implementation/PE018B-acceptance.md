@@ -1,0 +1,15 @@
+# PE018B backend全面切替の実受入
+
+保護main bcc4126097ab6224e46257560010fc4623a51414で検査済みOCI配信を既定にした。5flagの既定true、旧delivery3job・旧build・不要publication includeの撤去を確認。共通digest検証は維持する。
+
+通常main2915581900の全14jobで新OCIを公開し、Source CIのmanifest !84を固定検証・own CI・fresh source/target・CAS409・実tree一致で統合した。同SHA readonly再取得2915669295の全13jobは新build/pushなしで同digest34b06b9dを最新DBで再検査し、新record/SBOM/runをmanifest !85へ結合した。両実配備の全注釈・UID10001・frontend互換・DB/PVC/schema1保持・専用経路CRUD7操作と削除後404・forward終了を確認。公開後row251、再検査後row252は削除済み。
+
+登録済み実候補f1d3/62c4を最終policy bcc4126の2915736522で再検査。元build・登録run・indefinite writerを保持し、新scan/store/full SBOM/Package raw checksum/形式・DB不在503・正常200・拒否/outer disk-time予算を確認した。公開・同SHA再検査・歴史候補の実readerは各9jobの一本に統合し、全SBOM結合と実GET/checksum/PUT403を受入。成功ケース・資格設定は再実行していない。
+
+明示理由付きoperator rollback !86は最新検査runで実Podを配備し、全注釈・DB/PVC/schema1・frontend保持、CRUDrow253削除後404を満たした。復帰 !87は検査済みbcc4126/digest34b0の2915669295を採用し、同じ実受入とforward終了を確認した。復帰Pod UID0ed70bc0-8e65-4a2b-8609-3fb1a519fe19、CRUDrow254削除後404、forward50879終了、manifest main240f9465fe3e3d8b2fb2ba5af8120fd685bdb8d0を実確認。両方の完了が受入監査の条件である。旧111/b20中間往復は提出せず、この最終AT14一回で置き換えた。
+
+現在mainの明示検証失敗2915792417で公開・提案の全下流停止を実確認した。証跡writerはwhen:alwaysで起動し、scan入力なしを拒否。stored/record artifactと今回runのrecord/SBOM Packageは実404。writerまでskipするという当初の監査ヘルパーの期待を、実設計に合わせて訂正した。CI再実行はしていない。AT04/12の異なる実DB二run・第二failed不変保存・差替え拒否はPE017Bの受入を維持し、今回の完全run結合へ接続した。AT13の未保護jobによるregistry/package書込は既存実probeで201であり、技術的禁止とは主張しない。private project・保護main・force-push制限・保護環境資格・信頼済み同project MR・分離cache・cache output無効・実main/job認可・不変証跡と完全tuple検査を運用制約とする。
+
+PE018B-acceptance.jsonのSHA256索引は公開JSONのみを固定する。秘密値、private trace/OCI binaryは保存しない。先行native2911521539の失敗は失敗のまま保持し、retryしていない。frontendのaccepted main ce6ec1d9と実PodUID6daは不変であり、成功済みF試験を再作成しない。
+
+この文書と全actual proofのmain統合・Issue18 F/Bチェック・Closed実読戻しまで親完了ではない。PE019のfresh kind、最終同版AT01〜14/15分AT10と凍結設計8基準・全19監査は未完了である。

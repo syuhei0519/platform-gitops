@@ -1,0 +1,580 @@
+- banner [active]:
+  - link "Skip to main content":
+    - /url: "#content-body"
+    - generic: Skip to main content
+  - link "Homepage":
+    - /url: /
+    - generic: Homepage
+  - button "Search or go to… /":
+    - generic: Search or go to…
+    - generic: /
+  - button "Create new…":
+    - generic: Create new…
+  - link "0 Assigned work items":
+    - /url: /dashboard/issues?assignee_username=syuhei0519
+    - generic: "0"
+  - link "0 Merge requests":
+    - /url: /dashboard/merge_requests
+    - generic: "0"
+  - link "2 To-do items":
+    - /url: /dashboard/todos
+    - generic: "2"
+  - link "修平 藤岡 user’s menu":
+    - /url: /syuhei0519
+    - generic: 修平 藤岡 user’s menu
+- navigation "Primary navigation":
+  - heading "Primary navigation" [level=2]
+  - list:
+    - link "backend-app":
+      - /url: /syuhei-platform-engineering-lab/backend-app
+      - generic: B
+  - button "Pinned" [expanded]:
+  - button "Feature catalog":
+  - separator
+  - list:
+    - button "Manage":
+    - button "Plan":
+    - button "AI":
+    - button "Code":
+    - button "Build" [expanded]:
+    - button "Secure":
+    - button "Deploy":
+    - button "Operate":
+    - button "Monitor":
+    - button "Analyze":
+    - button "Observe":
+    - button "Settings":
+  - link "Upgrade subscription":
+    - /url: /groups/syuhei-platform-engineering-lab/-/billings
+  - button "Help":
+  - button "Expand sidebar":
+- navigation "Breadcrumb":
+  - list:
+    - link "Platform Engineering Lab":
+      - /url: /syuhei-platform-engineering-lab
+    - text: /
+    - link "backend-app":
+      - /url: /syuhei-platform-engineering-lab/backend-app
+    - text: /
+    - link "Pipelines":
+      - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines
+- main:
+  - tablist:
+    - tab "All 12" [selected]:
+      - generic: All
+      - generic: "12"
+    - tab "Finished":
+      - generic: Finished
+    - tab "Branches":
+      - generic: Branches
+    - tab "Tags":
+      - generic: Tags
+  - tabpanel "All 12"
+  - link "View analytics":
+    - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/charts
+    - generic: View analytics
+  - button "Clear runner caches":
+    - generic: Clear runner caches
+  - link "New pipeline":
+    - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/new
+    - generic: New pipeline
+  - textbox "Search":
+    - /placeholder: Filter pipelines
+  - button "Search":
+  - combobox "Show Pipeline ID":
+    - generic: Show Pipeline ID
+  - table:
+    - rowgroup:
+      - row "Status Pipeline Created by Stages Actions":
+        - columnheader "Status":
+          - generic: Status
+        - columnheader "Pipeline":
+          - generic: Pipeline
+        - columnheader "Created by":
+          - generic: Created by
+        - columnheader "Stages":
+          - generic: Stages
+        - columnheader "Actions":
+          - generic: Actions
+    - rowgroup:
+      - 'row "Passed 00:03:55 3 weeks ago #2833434816 ci: retry manifest proposal after values normalization main 86f30d2f 修平 藤岡 latest branch avatar View Stage: validate View Stage: publish View Stage: verify View Stage: propose"':
+        - cell "Passed 00:03:55 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2833434816
+            - generic: Passed
+          - paragraph:
+            - text: 00:03:55
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833434816 ci: retry manifest proposal after values normalization main 86f30d2f 修平 藤岡 latest branch"':
+          - link "#2833434816":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2833434816
+          - 'link "ci: retry manifest proposal after values normalization"':
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/86f30d2f0dcfde4341bc468cde4536bd4bbec983
+          - link "main":
+            - /url: commits/main
+          - link "86f30d2f":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/86f30d2f0dcfde4341bc468cde4536bd4bbec983
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "latest":
+            - generic: latest
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: validate View Stage: publish View Stage: verify View Stage: propose"':
+          - 'button "View Stage: validate"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: publish"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: verify"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: propose"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Failed 00:03:49 3 weeks ago #2833394796 fix: include registry repository in manifest proposal main 10a30f00 修平 藤岡 branch avatar View Stage: validate View Stage: publish View Stage: verify View Stage: propose"':
+        - cell "Failed 00:03:49 3 weeks ago":
+          - link "Failed":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2833394796
+            - generic: Failed
+          - paragraph:
+            - text: 00:03:49
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833394796 fix: include registry repository in manifest proposal main 10a30f00 修平 藤岡 branch"':
+          - link "#2833394796":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2833394796
+          - 'link "fix: include registry repository in manifest proposal"':
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/10a30f0069984dfa7faab7250ee04373bd45c226
+          - link "main":
+            - /url: commits/main
+          - link "10a30f00":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/10a30f0069984dfa7faab7250ee04373bd45c226
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: validate View Stage: publish View Stage: verify View Stage: propose"':
+          - 'button "View Stage: validate"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: publish"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: verify"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: propose"':
+            - generic: "Status: Failed"
+        - cell:
+          - button "Retry all failed or cancelled jobs":
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Failed 00:03:51 3 weeks ago #2833370890 fix: use writable cache for manifest proposal main 1af34a2d 修平 藤岡 branch avatar View Stage: validate View Stage: publish View Stage: verify View Stage: propose"':
+        - cell "Failed 00:03:51 3 weeks ago":
+          - link "Failed":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2833370890
+            - generic: Failed
+          - paragraph:
+            - text: 00:03:51
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833370890 fix: use writable cache for manifest proposal main 1af34a2d 修平 藤岡 branch"':
+          - link "#2833370890":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2833370890
+          - 'link "fix: use writable cache for manifest proposal"':
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/1af34a2dfbaf0a53e87940c4425edac3eeb4e312
+          - link "main":
+            - /url: commits/main
+          - link "1af34a2d":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/1af34a2dfbaf0a53e87940c4425edac3eeb4e312
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: validate View Stage: publish View Stage: verify View Stage: propose"':
+          - 'button "View Stage: validate"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: publish"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: verify"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: propose"':
+            - generic: "Status: Failed"
+        - cell:
+          - button "Retry all failed or cancelled jobs":
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Failed 00:04:09 3 weeks ago #2833332761 ci: retry build with expanded workspace main 70175752 修平 藤岡 branch avatar View Stage: validate View Stage: publish View Stage: verify View Stage: propose"':
+        - cell "Failed 00:04:09 3 weeks ago":
+          - link "Failed":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2833332761
+            - generic: Failed
+          - paragraph:
+            - text: 00:04:09
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833332761 ci: retry build with expanded workspace main 70175752 修平 藤岡 branch"':
+          - link "#2833332761":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2833332761
+          - 'link "ci: retry build with expanded workspace"':
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/7017575207392a4b0f41fd0866abfaf1c15c9ba8
+          - link "main":
+            - /url: commits/main
+          - link "70175752":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/7017575207392a4b0f41fd0866abfaf1c15c9ba8
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: validate View Stage: publish View Stage: verify View Stage: propose"':
+          - 'button "View Stage: validate"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: publish"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: verify"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: propose"':
+            - generic: "Status: Failed"
+        - cell:
+          - button "Retry all failed or cancelled jobs":
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Failed 00:02:26 3 weeks ago #2833295009 ci: verify published images with crane main f3b14c22 修平 藤岡 branch avatar View Stage: validate View Stage: publish View Stage: verify View Stage: propose"':
+        - cell "Failed 00:02:26 3 weeks ago":
+          - link "Failed":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2833295009
+            - generic: Failed
+          - paragraph:
+            - text: 00:02:26
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833295009 ci: verify published images with crane main f3b14c22 修平 藤岡 branch"':
+          - link "#2833295009":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2833295009
+          - 'link "ci: verify published images with crane"':
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/f3b14c22713901c4cbc3bfd2f829b5132f1d4774
+          - link "main":
+            - /url: commits/main
+          - link "f3b14c22":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/f3b14c22713901c4cbc3bfd2f829b5132f1d4774
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: validate View Stage: publish View Stage: verify View Stage: propose"':
+          - 'button "View Stage: validate"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: publish"':
+            - generic: "Status: Failed"
+          - 'button "View Stage: verify"':
+            - generic: "Status: Skipped"
+          - 'button "View Stage: propose"':
+            - generic: "Status: Skipped"
+        - cell:
+          - button "Retry all failed or cancelled jobs":
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Failed 00:02:00 3 weeks ago #2831762648 fix: follow registry blob redirects safely main 0b7aff79 修平 藤岡 branch avatar View Stage: validate View Stage: publish View Stage: propose"':
+        - cell "Failed 00:02:00 3 weeks ago":
+          - link "Failed":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2831762648
+            - generic: Failed
+          - paragraph:
+            - text: 00:02:00
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2831762648 fix: follow registry blob redirects safely main 0b7aff79 修平 藤岡 branch"':
+          - link "#2831762648":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2831762648
+          - 'link "fix: follow registry blob redirects safely"':
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/0b7aff79fab984f47a57288c94e359274d1ac72a
+          - link "main":
+            - /url: commits/main
+          - link "0b7aff79":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/0b7aff79fab984f47a57288c94e359274d1ac72a
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: validate View Stage: publish View Stage: propose"':
+          - 'button "View Stage: validate"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: publish"':
+            - generic: "Status: Failed"
+          - 'button "View Stage: propose"':
+            - generic: "Status: Skipped"
+        - cell:
+          - button "Retry all failed or cancelled jobs":
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Failed 00:01:36 3 weeks ago #2831738045 fix: parse multiline registry manifests main 5c272c62 修平 藤岡 branch avatar View Stage: validate View Stage: publish View Stage: propose"':
+        - cell "Failed 00:01:36 3 weeks ago":
+          - link "Failed":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2831738045
+            - generic: Failed
+          - paragraph:
+            - text: 00:01:36
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2831738045 fix: parse multiline registry manifests main 5c272c62 修平 藤岡 branch"':
+          - link "#2831738045":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2831738045
+          - 'link "fix: parse multiline registry manifests"':
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/5c272c626355cc774f8ea523fd37fb455ce53439
+          - link "main":
+            - /url: commits/main
+          - link "5c272c62":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/5c272c626355cc774f8ea523fd37fb455ce53439
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: validate View Stage: publish View Stage: propose"':
+          - 'button "View Stage: validate"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: publish"':
+            - generic: "Status: Failed"
+          - 'button "View Stage: propose"':
+            - generic: "Status: Skipped"
+        - cell:
+          - button "Retry all failed or cancelled jobs":
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Failed 00:02:27 3 weeks ago #2831729743 fix: verify formatted image metadata main 177f8353 修平 藤岡 branch avatar View Stage: validate View Stage: publish View Stage: propose"':
+        - cell "Failed 00:02:27 3 weeks ago":
+          - link "Failed":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2831729743
+            - generic: Failed
+          - paragraph:
+            - text: 00:02:27
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2831729743 fix: verify formatted image metadata main 177f8353 修平 藤岡 branch"':
+          - link "#2831729743":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2831729743
+          - 'link "fix: verify formatted image metadata"':
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/177f8353fb158c35e22e22f27a1219194f50d544
+          - link "main":
+            - /url: commits/main
+          - link "177f8353":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/177f8353fb158c35e22e22f27a1219194f50d544
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: validate View Stage: publish View Stage: propose"':
+          - 'button "View Stage: validate"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: publish"':
+            - generic: "Status: Failed"
+          - 'button "View Stage: propose"':
+            - generic: "Status: Skipped"
+        - cell:
+          - button "Retry all failed or cancelled jobs":
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Failed 00:03:13 3 weeks ago #2831721902 fix: bootstrap registry cache on first publish main f6864c00 修平 藤岡 branch avatar View Stage: validate View Stage: publish View Stage: propose"':
+        - cell "Failed 00:03:13 3 weeks ago":
+          - link "Failed":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2831721902
+            - generic: Failed
+          - paragraph:
+            - text: 00:03:13
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2831721902 fix: bootstrap registry cache on first publish main f6864c00 修平 藤岡 branch"':
+          - link "#2831721902":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2831721902
+          - 'link "fix: bootstrap registry cache on first publish"':
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/f6864c00f7cf1b4cfb98b09ea231f3bd2f49f83b
+          - link "main":
+            - /url: commits/main
+          - link "f6864c00":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/f6864c00f7cf1b4cfb98b09ea231f3bd2f49f83b
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: validate View Stage: publish View Stage: propose"':
+          - 'button "View Stage: validate"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: publish"':
+            - generic: "Status: Failed"
+          - 'button "View Stage: propose"':
+            - generic: "Status: Skipped"
+        - cell:
+          - button "Retry all failed or cancelled jobs":
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Failed 00:01:34 3 weeks ago #2831713719 ci: use writable Go caches main 5c14fd69 修平 藤岡 branch avatar View Stage: validate View Stage: publish View Stage: propose"':
+        - cell "Failed 00:01:34 3 weeks ago":
+          - link "Failed":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2831713719
+            - generic: Failed
+          - paragraph:
+            - text: 00:01:34
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2831713719 ci: use writable Go caches main 5c14fd69 修平 藤岡 branch"':
+          - link "#2831713719":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2831713719
+          - 'link "ci: use writable Go caches"':
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/5c14fd69083d4b77e337aa4d5a7a1987f71a121a
+          - link "main":
+            - /url: commits/main
+          - link "5c14fd69":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/5c14fd69083d4b77e337aa4d5a7a1987f71a121a
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: validate View Stage: publish View Stage: propose"':
+          - 'button "View Stage: validate"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: publish"':
+            - generic: "Status: Failed"
+          - 'button "View Stage: propose"':
+            - generic: "Status: Skipped"
+        - cell:
+          - button "Retry all failed or cancelled jobs":
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Failed 00:00:07 3 weeks ago #2831711544 fix: pass CI validation and registry checks main f4967980 修平 藤岡 branch avatar View Stage: validate View Stage: publish View Stage: propose"':
+        - cell "Failed 00:00:07 3 weeks ago":
+          - link "Failed":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2831711544
+            - generic: Failed
+          - paragraph:
+            - text: 00:00:07
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2831711544 fix: pass CI validation and registry checks main f4967980 修平 藤岡 branch"':
+          - link "#2831711544":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2831711544
+          - 'link "fix: pass CI validation and registry checks"':
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/f4967980577bf4397204190e5cd5ba4f2c906a5e
+          - link "main":
+            - /url: commits/main
+          - link "f4967980":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/f4967980577bf4397204190e5cd5ba4f2c906a5e
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: validate View Stage: publish View Stage: propose"':
+          - 'button "View Stage: validate"':
+            - generic: "Status: Failed"
+          - 'button "View Stage: publish"':
+            - generic: "Status: Skipped"
+          - 'button "View Stage: propose"':
+            - generic: "Status: Skipped"
+        - cell:
+          - button "Retry all failed or cancelled jobs":
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Failed 00:00:08 3 weeks ago #2831674828 fix: target shared GitLab group main 584542a2 修平 藤岡 branch avatar View Stage: validate View Stage: publish View Stage: propose"':
+        - cell "Failed 00:00:08 3 weeks ago":
+          - link "Failed":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2831674828
+            - generic: Failed
+          - paragraph:
+            - text: 00:00:08
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2831674828 fix: target shared GitLab group main 584542a2 修平 藤岡 branch"':
+          - link "#2831674828":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/pipelines/2831674828
+          - 'link "fix: target shared GitLab group"':
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/584542a2fd734c4cad438e6fe9af97f0a5aeb618
+          - link "main":
+            - /url: commits/main
+          - link "584542a2":
+            - /url: /syuhei-platform-engineering-lab/backend-app/-/commit/584542a2fd734c4cad438e6fe9af97f0a5aeb618
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: validate View Stage: publish View Stage: propose"':
+          - 'button "View Stage: validate"':
+            - generic: "Status: Failed"
+          - 'button "View Stage: publish"':
+            - generic: "Status: Skipped"
+          - 'button "View Stage: propose"':
+            - generic: "Status: Skipped"
+        - cell:
+          - button "Retry all failed or cancelled jobs":
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+- navigation "Duo controls":
+  - button "GitLab Duo Agent Platform":

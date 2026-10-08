@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "scope": "PE016F isolated runtime only",
+  "sourceProjectId": 86247025,
+  "sourceCommit": "dc5b8d1028a49d0d6fe32cbff2ce1f28dea8942f",
+  "buildPipelineId": 2908594164,
+  "buildJobId": 16909631207,
+  "runtimePipelineId": 2908594164,
+  "runtimeJobId": 16909631209,
+  "archiveSha256": "4844eeb9a6afa7a7eb2bfb30c71ca15e91f0cbd51d58388b12e051967117c0a6",
+  "digest": "sha256:e47e9dad144cb1aa3b1558492dd27506de4f0be86e39920da1ac00f7ffc7f842",
+  "runtimeUid": 10001,
+  "frontendReadyHttp": 200,
+  "frontendLiveHttp": 200,
+  "staticIndexHttp": 200,
+  "network": "none-loopback-only",
+  "registryPush": false,
+  "sourceDatabaseConnected": false,
+  "phase2Adoptable": false
+}

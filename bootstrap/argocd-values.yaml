@@ -1,0 +1,81 @@
+# bootstrap所有者が固定Argo Chartへ渡すvalues。子ApplicationのhealthをLuaで親へ伝える。
+# 親Healthyだけで正しいleaf revisionとmigration完了を証明できないため、tools/bootstrap/main.goが別に確認する。
+# Lua部分を含む設定文字列のbytesを変えないよう、説明はYAML外側のコメントに置く。
+nameOverride: argocd
+global:
+  image:
+    tag: v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68
+  networkPolicy:
+    create: false
+  affinity:
+    podAntiAffinity: none
+configs:
+  cm:
+    application.resourceTrackingMethod: annotation
+    resource.customizations.health.argoproj.io_Application: |
+      local hs = { status = "Progressing", message = "Waiting for child Application status" }
+      if obj.status == nil then return hs end
+      local health = obj.status.health
+      if health ~= nil and health.status == "Degraded" then
+        hs.status = "Degraded"
+        hs.message = health.message or "Child Application degraded"
+        return hs
+      end
+      local op = obj.status.operationState
+      if op ~= nil and (op.phase == "Failed" or op.phase == "Error") then
+        hs.status = "Degraded"
+        hs.message = "Child Application sync failed"
+        return hs
+      end
+      if obj.operation ~= nil or (op ~= nil and (op.phase == "Running" or op.phase == "Terminating")) then
+        hs.message = "Child Application sync in progress"
+        return hs
+      end
+      local sync = obj.status.sync
+      if sync == nil or sync.status ~= "Synced" then
+        hs.message = "Waiting for child Application Synced"
+        return hs
+      end
+      if health == nil or health.status ~= "Healthy" then
+        hs.message = "Waiting for child Application Healthy"
+        return hs
+      end
+      hs.status = "Healthy"
+      hs.message = health.message or "Child Application Synced and Healthy; verify leaf revision separately"
+      return hs
+dex:
+  enabled: false
+notifications:
+  enabled: false
+applicationSet:
+  replicas: 0
+  resources:
+    requests: {cpu: 50m, memory: 64Mi, ephemeral-storage: 16Mi}
+    limits: {cpu: 200m, memory: 128Mi, ephemeral-storage: 128Mi}
+redis-ha:
+  enabled: false
+controller:
+  replicas: 1
+  resources:
+    requests: {cpu: 200m, memory: 256Mi, ephemeral-storage: 64Mi}
+    limits: {cpu: "1", memory: 1Gi, ephemeral-storage: 512Mi}
+server:
+  replicas: 1
+  resources:
+    requests: {cpu: 100m, memory: 128Mi, ephemeral-storage: 64Mi}
+    limits: {cpu: 500m, memory: 256Mi, ephemeral-storage: 512Mi}
+repoServer:
+  replicas: 1
+  resources:
+    requests: {cpu: 100m, memory: 256Mi, ephemeral-storage: 64Mi}
+    limits: {cpu: 500m, memory: 512Mi, ephemeral-storage: 512Mi}
+redis:
+  image:
+    tag: 8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1
+  resources:
+    requests: {cpu: 50m, memory: 64Mi, ephemeral-storage: 16Mi}
+    limits: {cpu: 250m, memory: 128Mi, ephemeral-storage: 128Mi}
+redisSecretInit:
+  resources:
+    requests: {cpu: 50m, memory: 64Mi, ephemeral-storage: 16Mi}
+    limits: {cpu: 200m, memory: 128Mi, ephemeral-storage: 128Mi}

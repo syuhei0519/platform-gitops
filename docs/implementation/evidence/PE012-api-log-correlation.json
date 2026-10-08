@@ -1,0 +1,80 @@
+[
+  {
+    "timestamp": "2026-10-02T15:14:42.626966351Z",
+    "service": "account-backend",
+    "request_id": "42157f2ba4cdbbe49728facf44762cbd",
+    "method": "POST",
+    "route": "/api/accounts",
+    "status": 201,
+    "duration_ms": 12,
+    "trace_id": "61e27bda22f6a68df17b5f84e53ea45d",
+    "span_id": "e73b1f375a9be73b",
+    "service.version": "ff5af7e7305e36299b9b0b5629a0d9a016271619",
+    "service.instance.id": "2a438271-684c-4fde-8a6e-82a117012959"
+  },
+  {
+    "timestamp": "2026-10-02T15:14:42.690517964Z",
+    "service": "account-backend",
+    "request_id": "0e02d28092a9aa7c8e91a0e868222980",
+    "method": "GET",
+    "route": "/api/accounts/{id}",
+    "status": 200,
+    "duration_ms": 1,
+    "trace_id": "61e27bda22f6a68df17b5f84e53ea45d",
+    "span_id": "df0a4e9f97d1786b",
+    "service.version": "ff5af7e7305e36299b9b0b5629a0d9a016271619",
+    "service.instance.id": "2a438271-684c-4fde-8a6e-82a117012959"
+  },
+  {
+    "timestamp": "2026-10-02T15:14:42.701316767Z",
+    "service": "account-backend",
+    "request_id": "d1047890e026f8730dbe18910a47b973",
+    "method": "PUT",
+    "route": "/api/accounts/{id}",
+    "status": 200,
+    "duration_ms": 4,
+    "trace_id": "61e27bda22f6a68df17b5f84e53ea45d",
+    "span_id": "a15ad64052389982",
+    "service.version": "ff5af7e7305e36299b9b0b5629a0d9a016271619",
+    "service.instance.id": "2a438271-684c-4fde-8a6e-82a117012959"
+  },
+  {
+    "timestamp": "2026-10-02T15:14:42.712002563Z",
+    "service": "account-backend",
+    "request_id": "38713c4d1d11f328a1475dcf8094bd4d",
+    "method": "POST",
+    "route": "/api/accounts",
+    "status": 409,
+    "duration_ms": 5,
+    "trace_id": "61e27bda22f6a68df17b5f84e53ea45d",
+    "span_id": "8fab4148c9716fe9",
+    "service.version": "ff5af7e7305e36299b9b0b5629a0d9a016271619",
+    "service.instance.id": "2a438271-684c-4fde-8a6e-82a117012959"
+  },
+  {
+    "timestamp": "2026-10-02T15:14:42.720072721Z",
+    "service": "account-backend",
+    "request_id": "8f16f53c40fb117ded986dc76956194d",
+    "method": "GET",
+    "route": "/api/accounts/{id}",
+    "status": 400,
+    "duration_ms": 0,
+    "trace_id": "61e27bda22f6a68df17b5f84e53ea45d",
+    "span_id": "56bb77b5590312c0",
+    "service.version": "ff5af7e7305e36299b9b0b5629a0d9a016271619",
+    "service.instance.id": "2a438271-684c-4fde-8a6e-82a117012959"
+  },
+  {
+    "timestamp": "2026-10-02T15:14:42.725511879Z",
+    "service": "account-backend",
+    "request_id": "a011d001efee0c2211824bcedd392380",
+    "method": "GET",
+    "route": "unmatched",
+    "status": 404,
+    "duration_ms": 0,
+    "trace_id": "61e27bda22f6a68df17b5f84e53ea45d",
+    "span_id": "560255954e64fcac",
+    "service.version": "ff5af7e7305e36299b9b0b5629a0d9a016271619",
+    "service.instance.id": "2a438271-684c-4fde-8a6e-82a117012959"
+  }
+]

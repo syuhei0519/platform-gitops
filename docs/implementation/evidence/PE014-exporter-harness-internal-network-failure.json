@@ -1,0 +1,20 @@
+{
+  "realProviderTraffic": 0,
+  "utc": "2026-10-02T20:17:06.6255767Z",
+  "phase": "failed",
+  "interpretation": "Harness did not satisfy fixed acceptance; do not claim success or relax thresholds",
+  "states": [
+    {
+      "status": "running",
+      "name": "core-platform-pe014-collector",
+      "OOMKilled": false,
+      "exitCode": 0
+    },
+    {
+      "status": "running",
+      "name": "core-platform-pe014-nr-mock",
+      "OOMKilled": false,
+      "exitCode": 0
+    }
+  ]
+}

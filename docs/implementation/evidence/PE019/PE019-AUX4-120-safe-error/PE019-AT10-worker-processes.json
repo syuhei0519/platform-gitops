@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-06T17:56:37.5215459Z",
+  "hostExecutable": "C:\\Users\\espoi\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+  "workerPIDs": [
+    8824,
+    12424
+  ],
+  "noProfile": true,
+  "driverPID": 12560,
+  "workingDirectory": "C:\\work\\CorePlatform",
+  "forwardPIDs": [
+    29344,
+    26276
+  ]
+}

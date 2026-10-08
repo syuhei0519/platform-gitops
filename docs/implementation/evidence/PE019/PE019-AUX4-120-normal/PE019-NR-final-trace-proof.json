@@ -1,0 +1,22 @@
+{
+  "keyPersisted": false,
+  "rows": 240,
+  "traceId": "54a9f5be45567dd64a9a2a3e1170f090",
+  "instances": [
+    "d0e65e5f-d266-4d32-b4a7-8179dbe16cf1"
+  ],
+  "localLogCorrelationStillRequired": true,
+  "directHTTPDBParentPairs": 120,
+  "region": "US",
+  "source": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "PostgresSpans": 120,
+  "actualNRStoredTraceAccepted": true,
+  "utc": "2026-10-06T17:58:00.3272742Z",
+  "account": 8572010,
+  "query": "SELECT trace.id, guid, id, parent.id, parentId, name, service.name, service.version, service.instance.id, k8s.pod.uid, http.request.method, http.route, http.response.status_code, db.system.name, db.operation.name FROM Span WHERE trace.id = '54a9f5be45567dd64a9a2a3e1170f090' AND service.name = 'account-backend' SINCE '2026-10-06 17:54:23' UNTIL '2026-10-06 17:56:53' LIMIT 500",
+  "versions": [
+    "90de6cecbe4e140b4a5814a4c5018373b38b2359"
+  ],
+  "HTTPSpans": 120,
+  "wholeSpanLossClaim": false
+}

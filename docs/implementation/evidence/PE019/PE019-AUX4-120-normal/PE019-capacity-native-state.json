@@ -1,0 +1,100 @@
+{
+  "jobs": [
+    {
+      "id": 16977905631,
+      "name": "release-record-store",
+      "status": "created",
+      "started_at": null,
+      "finished_at": null,
+      "duration": null
+    },
+    {
+      "id": 16977905630,
+      "name": "oci-image-policy-validation",
+      "status": "created",
+      "started_at": null,
+      "finished_at": null,
+      "duration": null
+    },
+    {
+      "id": 16977905629,
+      "name": "oci-isolated-runtime",
+      "status": "created",
+      "started_at": null,
+      "finished_at": null,
+      "duration": null
+    },
+    {
+      "id": 16977905628,
+      "name": "oci-format-compatibility",
+      "status": "created",
+      "started_at": null,
+      "finished_at": null,
+      "duration": null
+    },
+    {
+      "id": 16977905627,
+      "name": "container-build-oci",
+      "status": "running",
+      "started_at": "2026-10-06T17:54:05.106Z",
+      "finished_at": null,
+      "duration": 14.390537559
+    },
+    {
+      "id": 16977905626,
+      "name": "source-scan",
+      "status": "success",
+      "started_at": "2026-10-06T17:53:10.857Z",
+      "finished_at": "2026-10-06T17:54:03.143Z",
+      "duration": 52.285564
+    },
+    {
+      "id": 16977905625,
+      "name": "backend-build",
+      "status": "success",
+      "started_at": "2026-10-06T17:52:14.741Z",
+      "finished_at": "2026-10-06T17:53:09.04Z",
+      "duration": 54.298758
+    },
+    {
+      "id": 16977905624,
+      "name": "unit-test",
+      "status": "success",
+      "started_at": "2026-10-06T17:51:17.779Z",
+      "finished_at": "2026-10-06T17:52:11.941Z",
+      "duration": 54.162527
+    },
+    {
+      "id": 16977905623,
+      "name": "format-and-vet",
+      "status": "success",
+      "started_at": "2026-10-06T17:50:26.491Z",
+      "finished_at": "2026-10-06T17:51:15.637Z",
+      "duration": 49.146668
+    },
+    {
+      "id": 16977905622,
+      "name": "manifest-helper-test",
+      "status": "success",
+      "started_at": "2026-10-06T17:49:59.007Z",
+      "finished_at": "2026-10-06T17:50:24.721Z",
+      "duration": 25.713993
+    },
+    {
+      "id": 16977905621,
+      "name": "security-policy-test",
+      "status": "success",
+      "started_at": "2026-10-06T17:48:36.116Z",
+      "finished_at": "2026-10-06T17:49:57.273Z",
+      "duration": 81.156233
+    }
+  ],
+  "registryPublishJobs": 0,
+  "actualLoadOverlapAccepted": false,
+  "utc": "2026-10-06T17:54:18.6829566Z",
+  "status": "running",
+  "terminal": false,
+  "source": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "manifestProposalJobs": 0,
+  "pipeline": 2919006116
+}

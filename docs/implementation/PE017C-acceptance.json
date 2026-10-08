@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "unit": "PE017C",
+  "status": "actual-common-contract-accepted-evidence-integration-pending",
+  "parent17Closed": false,
+  "phase2RuntimeActivated": false,
+  "unitsBeforeIssueUpdate": 24,
+  "parentsClosed": 15,
+  "bootstrapMains": {
+    "frontend": "40051c972fe88e8d6dbdb369caf7e978d99701e3",
+    "backend": "5a255b329cab3b00e0c9e964700667e6cb083d89",
+    "manifest": "46223f28d735d0f6bf39e0998d7c5285701091f1"
+  },
+  "sourceCapabilityPipelines": [
+    2908243077,
+    2908256232
+  ],
+  "readerCapabilityPipeline": 2908297735,
+  "evidence": [
+    {
+      "file": "evidence/PE017C/PE017C-generic-duplicate-prohibition.json",
+      "sha256": "cb582682d111e88315062d7d2b04ad813fc03f3da3f40b6ac4db8325ce782b8e"
+    },
+    {
+      "file": "evidence/PE017C/PE017C-manifest-package-read-allowlist.json",
+      "sha256": "b65e7dfd3e934f7abe49f94fe1b74eba187537e823f323cd20f55d00f87a9dba"
+    },
+    {
+      "file": "evidence/PE017C/PE017C-schema-validation.json",
+      "sha256": "f9c0241f13014287a4cfff5f959d9f78efab3640069a90c1f9eb283237379ea8"
+    },
+    {
+      "file": "evidence/PE017C/PE017C-model-retention-tests.json",
+      "sha256": "ad86881eaa85bc508fdfd56ad77524d431be0dfed0665c08c8703830a30fce5a"
+    },
+    {
+      "file": "evidence/PE017C/PE017C-frontend-contract-merge.json",
+      "sha256": "eb82dd67ece0a177b1b0700df489d667cf813a7de4e9caab39986f3c01370c85"
+    },
+    {
+      "file": "evidence/PE017C/PE017C-backend-contract-merge.json",
+      "sha256": "6def6e1b578417ab1b8c673f2abea88f2dbce2a95e77f594425b845e9e7be30a"
+    },
+    {
+      "file": "evidence/PE017C/PE017C-frontend-storage-audit.json",
+      "sha256": "87481ea265ac706bed6d08b2732f6b8e17b2da3399a9217637b93441d67d9e51"
+    },
+    {
+      "file": "evidence/PE017C/PE017C-backend-storage-audit.json",
+      "sha256": "d2e17e37ced5e19d51e30934eb7051e817c6e961a4c0a552883ac23d89edfb58"
+    },
+    {
+      "file": "evidence/PE017C/PE017C-frontend-storage-proof.json",
+      "sha256": "a939d771b0459726f7ae28e32a548be73218102c5ea25d9dbe0a5951f1bb8e28"
+    },
+    {
+      "file": "evidence/PE017C/PE017C-backend-storage-proof.json",
+      "sha256": "b165dacbcf9a5506da10a8dd4ee97a542c14f1b2951ebf22ada4f249ce85f825"
+    },
+    {
+      "file": "evidence/PE017C/PE017C-manifest-reader-audit.json",
+      "sha256": "86526e6b19d996a3eeb5d96cf031523c6c0422b966cdb12c525722b5827e8328"
+    },
+    {
+      "file": "evidence/PE017C/PE017C-manifest-reader-proof.json",
+      "sha256": "305f2120a3a3a19a70643af91a2331cf92124de23073d1ae7fb6b21c0c887801"
+    },
+    {
+      "file": "evidence/PE017C/PE017C-normal-main-delivery-audit.json",
+      "sha256": "fc824bd5a18e6f14fdec5c9a38d16260329c628b33acedbfa94b7e05fe682df8"
+    },
+    {
+      "file": "evidence/PE017C/PE015-parent-closed.json",
+      "sha256": "affa814f688a9e3e032073465cc214e9dffa15ca7eb174eb2b6ab6a67275b18c"
+    },
+    {
+      "file": "evidence/PE017C/MR47-merge-proof.json",
+      "sha256": "878c526ec3dbdc2015dd3619d189c40dbf7ff8d2fda5cefb0153e89e546e56f1"
+    }
+  ],
+  "remaining": [
+    "PE016F OCI input",
+    "PE017F/B actual OCI scans/SBOM/build provenance",
+    "PE018F/B protected deployment adoption",
+    "PE019 full acceptance/audit",
+    "production inventory reviewed cleanup integration; no automatic deletion enabled"
+  ]
+}

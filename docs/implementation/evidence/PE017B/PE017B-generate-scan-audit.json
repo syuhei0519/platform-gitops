@@ -1,0 +1,137 @@
+{
+  "source": "0b855190a3fc52978903a7b2b851d577078856c9",
+  "rawTraceRead": false,
+  "fullPE017BAcceptance": false,
+  "privateBinaryRead": false,
+  "accepted": true,
+  "jobs": [
+    {
+      "id": 16922452587,
+      "name": "oci-image-policy-validation",
+      "status": "failed"
+    },
+    {
+      "id": 16922452586,
+      "name": "oci-isolated-runtime",
+      "status": "success"
+    },
+    {
+      "id": 16922452585,
+      "name": "oci-format-compatibility",
+      "status": "success"
+    },
+    {
+      "id": 16922452584,
+      "name": "container-build-oci",
+      "status": "success"
+    },
+    {
+      "id": 16922452583,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16922452582,
+      "name": "backend-build",
+      "status": "success"
+    },
+    {
+      "id": 16922452581,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16922452580,
+      "name": "format-and-vet",
+      "status": "success"
+    },
+    {
+      "id": 16922452579,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16922452578,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "status": "failed",
+  "pipeline": 2911011402,
+  "registryPush": false,
+  "safeScan": {
+    "schemaVersion": 1,
+    "pass": true,
+    "trivyVersion": "0.75.0",
+    "dbUpdatedAt": "2026-10-04T14:28:15.152965452Z",
+    "scannedAt": "2026-10-04T15:37:56.689375501Z",
+    "findings": [
+      {
+        "kind": "vulnerability",
+        "rule": "DLA-4792-1",
+        "path": "image/os",
+        "package": "tzdata",
+        "installedVersion": "2026b-0+deb12u1",
+        "fixedVersion": "2026c-0+deb12u1",
+        "severity": "UNKNOWN",
+        "decision": "warning"
+      }
+    ],
+    "policySHA256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337"
+  },
+  "actualSourcePolicySha256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337",
+  "record": {
+    "schemaVersion": 2,
+    "service": "backend",
+    "sourceProjectId": 86247033,
+    "sourceCommit": "0b855190a3fc52978903a7b2b851d577078856c9",
+    "buildPipelineId": 2911011402,
+    "buildJobId": 16922452584,
+    "imageRepository": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app",
+    "imageTag": "0b855190a3fc52978903a7b2b851d577078856c9",
+    "imageDigest": "sha256:80f5aa0d095eec2e3be91cf1aaea03b6e6e80e5d908278f339e7a04b6b66f70b",
+    "scanPipelineId": 2911011402,
+    "scanJobId": 16922452587,
+    "scanJobStatus": "failed",
+    "inputKind": "build-oci",
+    "inputArchiveSha256": "5237e7e909ce167b7414bcd30182d8b28f3463293161ae497b23cc8a1f8fb97e",
+    "trivyVersion": "0.75.0",
+    "database": {
+      "version": 2,
+      "updatedAt": "2026-10-04T14:28:15.152965452Z",
+      "metadataSha256": "0362f5681f8d3e2046dc1767befe0e2feba6df0f8a3b3615c98cbe0b5596eedc"
+    },
+    "scannedAt": "2026-10-04T15:37:56.689375501Z",
+    "policyRevision": "0b855190a3fc52978903a7b2b851d577078856c9",
+    "policySha256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337",
+    "exceptions": [],
+    "decision": "failed",
+    "failureReason": "sbom-unavailable",
+    "sbom": null,
+    "sbomFailureReason": "sbom-unavailable",
+    "scanReport": {
+      "imageDigest": "sha256:80f5aa0d095eec2e3be91cf1aaea03b6e6e80e5d908278f339e7a04b6b66f70b",
+      "scanPipelineId": 2911011402,
+      "scanJobId": 16922452587,
+      "url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-80f5aa0d095eec2e3be91cf1aaea03b6e6e80e5d908278f339e7a04b6b66f70b/scan-report-2911011402-16922452587.json",
+      "sha256": "9b79b27cd41be4ec8c613d43aeb1f8939d4945592722623182175d9ce51bbaed",
+      "format": "safe-json",
+      "schemaVersion": "1"
+    }
+  },
+  "case": "generate",
+  "layout": {
+    "schemaVersion": 1,
+    "sourceCommit": "0b855190a3fc52978903a7b2b851d577078856c9",
+    "sourceProjectId": 86247033,
+    "archiveSha256": "5237e7e909ce167b7414bcd30182d8b28f3463293161ae497b23cc8a1f8fb97e",
+    "archiveBytes": 15376896,
+    "expandedBytes": 15361380,
+    "digest": "sha256:80f5aa0d095eec2e3be91cf1aaea03b6e6e80e5d908278f339e7a04b6b66f70b",
+    "layerCount": 14,
+    "platform": "linux/amd64",
+    "registryPush": false
+  },
+  "utc": "2026-10-04T15:55:37.0642328Z",
+  "positiveAdoptionArtifactsAbsent": true
+}

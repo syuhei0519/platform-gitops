@@ -1,0 +1,233 @@
+{
+  "phase2Switched": false,
+  "stored": {
+    "schemaVersion": 1,
+    "run": {
+      "Service": "backend",
+      "Digest": "sha256:62c4ed9b9a4be90ab3ba910577f1b706e2bee74f0275bc10162b8f5de38e6791",
+      "PipelineID": 2915736522,
+      "JobID": 16954454278
+    },
+    "recordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-62c4ed9b9a4be90ab3ba910577f1b706e2bee74f0275bc10162b8f5de38e6791/release-record-2915736522-16954454278.json",
+    "recordSha256": "748077c2062f21fa8f5defd1f2efa2174ee25807051362930d9195d93d0d7d95",
+    "decision": "passed",
+    "completedJobAuthority": true,
+    "protectedMainWriter": true,
+    "recordWrittenLast": true,
+    "serverDuplicateDenied": true
+  },
+  "status": "success",
+  "historicalSourceOnly": true,
+  "inspections": [
+    {
+      "durationSeconds": 65.784628,
+      "kind": "format",
+      "disk": {
+        "schemaVersion": 1,
+        "scope": "PE016B sampled temporary disk",
+        "kind": "format",
+        "samples": 15,
+        "intervalSeconds": 2,
+        "transientMissingRetryCount": 0,
+        "duAttemptsPerMeasurementMax": 3,
+        "maxWorkspaceKiB": 1633760,
+        "workspaceLimitKiB": 2097152,
+        "maxBuildkitStoreKiB": 4,
+        "buildkitStoreLimitKiB": 10485760,
+        "buildkitStoreObserved": true,
+        "buildkitStoreAggregation": "sumConfiguredRoots",
+        "rootlessNamespaceUsed": false,
+        "minFilesystemFreePercent": 93.188461,
+        "measurementAvailable": true,
+        "withinBudget": true,
+        "continuousPeakClaim": false
+      },
+      "proof": {
+        "archiveBytes": 15375872,
+        "archiveSha256": "ee275e8c991bd205b0e7154a857cada34341277cc6f5f6e29d8f5256ec8dfdef",
+        "buildJobId": 16941447837,
+        "buildPipelineId": 2913916635,
+        "craneReader": "v0.21.7",
+        "dbUpdatedAt": "2026-10-05T19:07:00.467981014Z",
+        "digest": "sha256:62c4ed9b9a4be90ab3ba910577f1b706e2bee74f0275bc10162b8f5de38e6791",
+        "expandedBytes": 15361517,
+        "fullCraneLayerValidation": true,
+        "misconfigurationCount": 0,
+        "phase2Adoptable": false,
+        "registryPush": false,
+        "reportSchemaVersion": 2,
+        "sameDirectoryRead": true,
+        "schemaVersion": 1,
+        "scope": "PE016B format compatibility only",
+        "secretCount": 0,
+        "securityGateApplied": false,
+        "sourceCommit": "f1d3a9bd0d95e9be4e92fa6fe78b0388641d4100",
+        "sourceProjectId": 86247033,
+        "trivyVersion": "0.75.0",
+        "utc": "2026-10-06T00:22:08.395763418Z",
+        "validationJobId": 16954454280,
+        "validationPipelineId": 2915736522,
+        "vulnerabilityCount": 1
+      },
+      "job": 16954454280
+    },
+    {
+      "durationSeconds": 88.552671,
+      "kind": "runtime",
+      "disk": {
+        "schemaVersion": 1,
+        "scope": "PE016B sampled temporary disk",
+        "kind": "runtime",
+        "samples": 26,
+        "intervalSeconds": 2,
+        "transientMissingRetryCount": 0,
+        "duAttemptsPerMeasurementMax": 3,
+        "maxWorkspaceKiB": 188008,
+        "workspaceLimitKiB": 2097152,
+        "maxBuildkitStoreKiB": 7399196,
+        "buildkitStoreLimitKiB": 10485760,
+        "buildkitStoreObserved": true,
+        "buildkitStoreAggregation": "sumConfiguredRoots",
+        "rootlessNamespaceUsed": true,
+        "minFilesystemFreePercent": 92.624567,
+        "measurementAvailable": true,
+        "withinBudget": true,
+        "continuousPeakClaim": false
+      },
+      "proof": {
+        "schemaVersion": 1,
+        "scope": "PE016B isolated runtime only",
+        "sourceProjectId": 86247033,
+        "sourceCommit": "f1d3a9bd0d95e9be4e92fa6fe78b0388641d4100",
+        "buildPipelineId": 2913916635,
+        "buildJobId": 16941447837,
+        "runtimePipelineId": 2915736522,
+        "runtimeJobId": 16954454281,
+        "archiveSha256": "ee275e8c991bd205b0e7154a857cada34341277cc6f5f6e29d8f5256ec8dfdef",
+        "digest": "sha256:62c4ed9b9a4be90ab3ba910577f1b706e2bee74f0275bc10162b8f5de38e6791",
+        "runtimeUid": 10001,
+        "backendReadyHttp": 503,
+        "backendLiveHttp": 200,
+        "databaseReadinessRefused": true,
+        "network": "none-loopback-only",
+        "registryPush": false,
+        "sourceDatabaseConnected": false,
+        "phase2Adoptable": false
+      },
+      "job": 16954454281
+    }
+  ],
+  "packageFilesReadable": 3,
+  "unitAccepted": false,
+  "pipeline": 2915736522,
+  "packageStored": true,
+  "source": "bcc4126097ab6224e46257560010fc4623a51414",
+  "record": {
+    "schemaVersion": 2,
+    "service": "backend",
+    "sourceProjectId": 86247033,
+    "sourceCommit": "f1d3a9bd0d95e9be4e92fa6fe78b0388641d4100",
+    "buildPipelineId": 2913916635,
+    "buildJobId": 16941447837,
+    "imageRepository": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app",
+    "imageTag": "f1d3a9bd0d95e9be4e92fa6fe78b0388641d4100",
+    "imageDigest": "sha256:62c4ed9b9a4be90ab3ba910577f1b706e2bee74f0275bc10162b8f5de38e6791",
+    "scanPipelineId": 2915736522,
+    "scanJobId": 16954454278,
+    "scanJobStatus": "success",
+    "inputKind": "registry-retrieval",
+    "inputArchiveSha256": "ee275e8c991bd205b0e7154a857cada34341277cc6f5f6e29d8f5256ec8dfdef",
+    "trivyVersion": "0.75.0",
+    "database": {
+      "version": 2,
+      "updatedAt": "2026-10-05T19:07:00.467981014Z",
+      "metadataSha256": "3ae26e37832fb084c100c20dcb3e7b1ef39946870436b5ed0c8fb2f202d554a3"
+    },
+    "scannedAt": "2026-10-06T00:20:27.502068525Z",
+    "policyRevision": "bcc4126097ab6224e46257560010fc4623a51414",
+    "policySha256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337",
+    "exceptions": [],
+    "decision": "passed",
+    "failureReason": "",
+    "sbom": {
+      "imageDigest": "sha256:62c4ed9b9a4be90ab3ba910577f1b706e2bee74f0275bc10162b8f5de38e6791",
+      "scanPipelineId": 2915736522,
+      "scanJobId": 16954454278,
+      "url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-62c4ed9b9a4be90ab3ba910577f1b706e2bee74f0275bc10162b8f5de38e6791/sbom-2915736522-16954454278.cdx.json",
+      "sha256": "b4723a6a47c06fc06778aefac726ce0b32d76207bc201dc8332b5c9b45fb392a",
+      "format": "CycloneDX",
+      "schemaVersion": "1.7"
+    },
+    "sbomFailureReason": "",
+    "scanReport": {
+      "imageDigest": "sha256:62c4ed9b9a4be90ab3ba910577f1b706e2bee74f0275bc10162b8f5de38e6791",
+      "scanPipelineId": 2915736522,
+      "scanJobId": 16954454278,
+      "url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-62c4ed9b9a4be90ab3ba910577f1b706e2bee74f0275bc10162b8f5de38e6791/scan-report-2915736522-16954454278.json",
+      "sha256": "acbee5495a9d20ad90ff01d095257e373cd7f962a09e2532f8a678d78685e4bc",
+      "format": "safe-json",
+      "schemaVersion": "1"
+    }
+  },
+  "jobs": [
+    {
+      "id": 16954454281,
+      "name": "registry-runtime-inspection",
+      "status": "success"
+    },
+    {
+      "id": 16954454280,
+      "name": "registry-format-inspection",
+      "status": "success"
+    },
+    {
+      "id": 16954454279,
+      "name": "release-record-store",
+      "status": "success"
+    },
+    {
+      "id": 16954454278,
+      "name": "image-scan",
+      "status": "success"
+    },
+    {
+      "id": 16954454277,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16954454276,
+      "name": "backend-build",
+      "status": "success"
+    },
+    {
+      "id": 16954454275,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16954454274,
+      "name": "format-and-vet",
+      "status": "success"
+    },
+    {
+      "id": 16954454273,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16954454272,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "rollbackAdoptionAuthorized": false,
+  "packageByteChecksumsMatched": true,
+  "scan": "success",
+  "writerExportIdentityMatched": true,
+  "adoptionAuthorized": false,
+  "nativeInspectionAccepted": true,
+  "dedicatedReaderAccepted": false,
+  "nativeRetrievalScanAccepted": true,
+  "utc": "2026-10-06T00:24:16.8707935Z"
+}

@@ -1,0 +1,17 @@
+{
+  "actualConfigurationBlobsMatched": true,
+  "priorPlanSHA256": "75fe513add1e60e99b27a75f02b37aa99133555a2ff2e5dd90cda485db9141ba",
+  "ciBlobs": {
+    "ci/includes/security.yml": "f0b0ace7b5417435d4e9a0c26b05246d3d8ab9b0",
+    "ci/includes/oci-validation.yml": "3fe35c7a424a250722966ec849ce635ec5ac8169",
+    ".gitlab-ci.yml": "2748b10e9382710adf16f705b9a17adda46e97da",
+    "ci/includes/oci-delivery.yml": "0e806296b4a219ef595f45f23ba221a0a8ddf9c6",
+    "ci/includes/registry-retrieval.yml": "7f38d5d42aed8000b1005997c333c7b8cb9da486"
+  },
+  "settingsUnchanged": true,
+  "utc": "2026-10-06T18:00:04.4532848Z",
+  "source": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "protectedMainConfirmed": true,
+  "newLintOrPipelineCreated": false,
+  "dryRunReused": true
+}

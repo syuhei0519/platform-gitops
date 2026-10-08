@@ -1,0 +1,12 @@
+{
+  "cases": [
+    "job-trace",
+    "private-oci-archive",
+    "unrelated-api"
+  ],
+  "scope": "New public-JSON return mode rejects unrelated paths before credential or transport",
+  "utc": "2026-10-03T12:52:21.8739198Z",
+  "networkRequestsSent": 0,
+  "refusedCases": 3,
+  "unitAccepted": false
+}

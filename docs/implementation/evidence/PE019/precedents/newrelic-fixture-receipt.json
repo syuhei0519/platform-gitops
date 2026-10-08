@@ -1,0 +1,21 @@
+{
+  "context": "kind-platform-lab",
+  "containsSql": false,
+  "keyRecorded": false,
+  "utc": "2026-10-02T14:19:36.7696732Z",
+  "receiverStatus": 200,
+  "childSpanId": "6b8e19878f5a418e",
+  "parentSpanId": "0c7afb379f5b4f72",
+  "newRelicArrival": "confirmed: NRQL count 2 Spans in Account8572010",
+  "region": "US",
+  "payloadBytes": 1096,
+  "traceId": "5ef1d9001bae43fcbb9150f1af785280",
+  "syntheticSpans": 2,
+  "sourceVersion": "5a21bf5ebf4ea1ee0f54c53cce1bdd87814adbfd",
+  "sourceInstance": "pe011-c4158a1e42e248f3bb9ecf7a9c8e1df5",
+  "account": 8572010,
+  "containsPersonalData": false,
+  "nrqlCount": 2,
+  "queryComputeCapacityUnits": 0,
+  "arrivalVerifiedUtc": "2026-10-02T14:23:09.7346715Z"
+}

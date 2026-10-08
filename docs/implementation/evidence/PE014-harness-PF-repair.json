@@ -1,0 +1,7 @@
+{
+  "sourceFaultRestored": true,
+  "utc": "2026-10-02T20:01:57.4360609Z",
+  "thresholdUnchanged": true,
+  "secretsRecorded": false,
+  "repair": "Port-forward launch initially selected Pending Pod; recreated after source Collector Ready"
+}

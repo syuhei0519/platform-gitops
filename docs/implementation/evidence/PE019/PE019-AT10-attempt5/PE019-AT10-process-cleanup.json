@@ -1,0 +1,24 @@
+{
+  "utc": "2026-10-06T18:22:28.0131043Z",
+  "driverExitCodeExpected": 0,
+  "forwardPIDs": [
+    16456,
+    6032
+  ],
+  "driverResultSaved": true,
+  "allOwnedProcessesExited": true,
+  "workers": [
+    {
+      "exitCode": 0,
+      "processId": 23428,
+      "forcedTermination": false,
+      "hasExited": true
+    },
+    {
+      "exitCode": 0,
+      "processId": 19604,
+      "forcedTermination": false,
+      "hasExited": true
+    }
+  ]
+}

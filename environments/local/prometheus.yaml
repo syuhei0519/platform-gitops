@@ -1,0 +1,109 @@
+# 固定Prometheus Chartへのlocal values。charts/platform/templates/observability-applications.yamlが読む。
+# Collector/KSM/cAdvisorを明示scrapeし、Grafanaへ時系列を供給する。SA/RBACはcharts/observability-foundation/templates/rbac.yaml。
+# Fixed chart 29.35.0. Foundation is the only SA/RBAC owner.
+rbac: {create: false}
+serviceAccounts:
+  server: {create: false, name: prometheus, automountServiceAccountToken: true}
+configmapReload:
+  prometheus:
+    enabled: true
+    image:
+      repository: quay.io/prometheus-operator/prometheus-config-reloader
+      tag: v0.94.1
+      digest: sha256:ac2f46e50daebc6163d2ba17adbbbc7fe8f51a0000e7961e821dcb9331b3702f
+    resources:
+      requests: {cpu: 10m, memory: 16Mi, ephemeral-storage: 16Mi}
+      limits: {cpu: 100m, memory: 64Mi, ephemeral-storage: 64Mi}
+    containerSecurityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+server:
+  image:
+    repository: quay.io/prometheus/prometheus
+    tag: v3.15.0
+    digest: sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
+  replicaCount: 1
+  enableServiceLinks: false
+  automountServiceAccountToken: true
+  strategy: {type: Recreate}
+  resources:
+    requests: {cpu: 200m, memory: 512Mi, ephemeral-storage: 64Mi}
+    limits: {cpu: "1", memory: 1Gi, ephemeral-storage: 512Mi}
+  securityContext: {runAsUser: 65534, runAsGroup: 65534, fsGroup: 65534, runAsNonRoot: true, seccompProfile: {type: RuntimeDefault}}
+  containerSecurityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+  persistentVolume:
+    enabled: true
+    storageClass: standard
+    size: 5Gi
+    annotations:
+      argocd.argoproj.io/sync-options: Prune=confirm,Delete=confirm
+      helm.sh/resource-policy: keep
+  # 3日と2GBは先に達した制限が適用される。PVC5GiにWAL等も入るため、3日履歴を常に保証する容量計算ではない。
+  retention: 3d
+  retentionSize: 2GB
+  # scrape30秒/timeout10秒。SDK送信10秒・Collector batch5秒とは別周期なので、同時刻の瞬間値にはならない。
+  global: {scrape_interval: 30s, scrape_timeout: 10s, evaluation_interval: 30s}
+alertmanager: {enabled: false}
+prometheus-node-exporter: {enabled: false}
+prometheus-pushgateway: {enabled: false}
+kube-state-metrics:
+  enabled: true
+  fullnameOverride: kube-state-metrics
+  image:
+    registry: registry.k8s.io
+    repository: kube-state-metrics/kube-state-metrics
+    tag: v2.20.0
+    sha: sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016
+  rbac: {create: false}
+  serviceAccount: {create: false, name: kube-state-metrics, automountServiceAccountToken: true}
+  collectors: [pods, deployments, replicasets, statefulsets]
+  namespaces: account
+  prometheusScrape: false
+  resources:
+    requests: {cpu: 50m, memory: 64Mi, ephemeral-storage: 32Mi}
+    limits: {cpu: 200m, memory: 128Mi, ephemeral-storage: 128Mi}
+  securityContext: {runAsUser: 65534, runAsGroup: 65534, runAsNonRoot: true, seccompProfile: {type: RuntimeDefault}}
+  containerSecurityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+# 既定の自動discoveryをすべて無効化し、下記5つの明示jobだけを実行する。
+scrapeConfigs:
+  prometheus: {enabled: false}
+  kubernetes-api-servers: {enabled: false}
+  kubernetes-nodes: {enabled: false}
+  kubernetes-nodes-cadvisor: {enabled: false}
+  kubernetes-service-endpoints: {enabled: false}
+  kubernetes-service-endpoints-slow: {enabled: false}
+  prometheus-pushgateway: {enabled: false}
+  kubernetes-services: {enabled: false}
+  kubernetes-pods: {enabled: false}
+  kubernetes-pods-slow: {enabled: false}
+# block文字列ではなくvaluesのmapとして渡す設定。honor_labels=trueでAPI由来instanceをCollector targetで上書きしない。
+# 各instanceのrate/increase後に合算し、再起動によるcounter resetを分離する。
+serverFiles:
+  prometheus.yml:
+    scrape_configs:
+      - job_name: otel-application
+        honor_labels: true
+        static_configs: [{targets: [otel-collector.observability.svc:8889]}]
+      - job_name: otel-collector-self
+        static_configs: [{targets: [otel-collector.observability.svc:8888]}]
+      - job_name: prometheus
+        static_configs: [{targets: [localhost:9090]}]
+      - job_name: kube-state-metrics
+        static_configs: [{targets: [kube-state-metrics.observability.svc:8080]}]
+      - job_name: kubernetes-cadvisor
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: false
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        kubernetes_sd_configs: [{role: node}]
+        relabel_configs:
+          - target_label: __address__
+            replacement: kubernetes.default.svc:443
+          - source_labels: [__meta_kubernetes_node_name]
+            target_label: __metrics_path__
+            replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
+          - source_labels: [__meta_kubernetes_node_name]
+            target_label: node
+        metric_relabel_configs:
+          - source_labels: [namespace]
+            regex: account
+            action: keep

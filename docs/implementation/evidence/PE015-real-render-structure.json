@@ -1,0 +1,5 @@
+{
+  "check": "render-structural-boundary",
+  "pass": true,
+  "findings": []
+}

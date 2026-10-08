@@ -1,0 +1,17 @@
+{
+  "maxRecoverySec": 120,
+  "batches": 80,
+  "requestTimeoutSec": 5,
+  "traceId": "582d8ad0985134c53f47d305ca012181",
+  "combinedFaultSec": 120,
+  "faultSecEach": 60,
+  "realProviderTraffic": 0,
+  "retryMaxSec": 30,
+  "spansPerBatch": 512,
+  "endpointOverride": "internal HTTP mock only; not a production TLS acceptance",
+  "queueCapacity": 32,
+  "credential": "public fake fixture text only",
+  "productionTlsModified": false,
+  "utc": "2026-10-02T20:18:43.1197201Z",
+  "scenario": "isolated NRHTTP429 then transport disconnect and recovery"
+}

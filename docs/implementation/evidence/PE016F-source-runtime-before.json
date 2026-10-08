@@ -1,0 +1,42 @@
+{
+  "pods": [
+    {
+      "restarts": 0,
+      "pod": "frontend-77464bdcc7-m58r7",
+      "uid": "02a6374e-861e-439b-8a08-cc3c5c953b7a",
+      "imageId": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app@sha256:8eeba992b24009f78fd1e64daa0cf5f5eaadfb74a2fd88818a4fe1244aa8fb21",
+      "ready": true,
+      "image": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app:6c2b429340f91caa8cac84a4b0476468b7316693@sha256:8eeba992b24009f78fd1e64daa0cf5f5eaadfb74a2fd88818a4fe1244aa8fb21",
+      "service": "frontend"
+    },
+    {
+      "restarts": 0,
+      "pod": "backend-5ff5944f96-trdjg",
+      "uid": "55cfd1cb-2ac4-451f-8a9c-adcb55662cbf",
+      "imageId": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app@sha256:29c90d8c8024ef9e10821cb773eac6c2dfdda12d10d7a0dea508703bfb685793",
+      "ready": true,
+      "image": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:a300338cefdca94b4a041d71b37faae8d71a8701@sha256:29c90d8c8024ef9e10821cb773eac6c2dfdda12d10d7a0dea508703bfb685793",
+      "service": "backend"
+    }
+  ],
+  "pvcs": [
+    {
+      "phase": "Bound",
+      "name": "postgresql-data",
+      "storage": "2Gi",
+      "uid": "f7774170-a00e-4d90-9caa-e692f1e1555a"
+    }
+  ],
+  "application": {
+    "targetRevision": "main",
+    "repo": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+    "automaticSync": true,
+    "sync": "Synced",
+    "health": "Healthy",
+    "name": "lab-local-frontend",
+    "revision": "46223f28d735d0f6bf39e0998d7c5285701091f1"
+  },
+  "mutation": false,
+  "context": "kind-platform-lab",
+  "utc": "2026-10-03T03:54:22.0044857Z"
+}

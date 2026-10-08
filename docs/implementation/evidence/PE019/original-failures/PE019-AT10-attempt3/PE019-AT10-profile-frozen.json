@@ -1,0 +1,57 @@
+{
+  "NRContractGB": 100,
+  "sourceFrontend": "ce6ec1d94cf1042a824b745f4a5f6367b1c0f845",
+  "requestsPerSecond": 1,
+  "resourceMeasurementScope": "Windows host, WSL/Docker, both kind clusters, runner/helper/sidecar, OCI expansion/Trivy DB/SBOM temporary disk",
+  "manifest": "66796bdca2824b1dee18cc8164ae553e8cb94248",
+  "sourceBackend": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "newKind": "core-platform-final-019",
+  "httpTimeoutSec": 5,
+  "runnerConcurrent": 1,
+  "all19Complete": false,
+  "durationSec": 900,
+  "utc": "2026-10-06T16:33:40.2887935Z",
+  "unit": "PE019",
+  "freeDiskMinPercent": 20,
+  "faultDurationSec": 60,
+  "platform": "9c654586c7db8dff458d2934629abd6f96689649",
+  "NRAccount": 8572010,
+  "memoryIncreaseMandatory": false,
+  "unexpectedOOMOrEvictionAllowed": 0,
+  "sameVersionPreviousEvidenceReusableOnlyAfterInputEquality": true,
+  "recoveryMaxSec": 120,
+  "podPendingMaxSec": 60,
+  "testStarted": false,
+  "NRRegion": "US",
+  "originalMemoryAssumptionGiB": 8,
+  "freeMemoryMinPercent": 20,
+  "crudSuccessMinPercent": 99,
+  "sdkFlushMaxSec": 5,
+  "ciMemoryBudgetGiB": 2,
+  "additionalCostCapJPY": 0,
+  "attempt": 3,
+  "correction": "Explicit pinned native CIM initialization and safe worker failure-stage logging; original suppressed failure cause remains unproven; unchanged numerical criteria",
+  "workerSourceHashes": [
+    {
+      "sha256": "b85f57bafae5fd55de3c77ea2fdd4c9b243734d29cb2a6845f28050fbb215ccc",
+      "file": "initialize-pe019-cim.ps1"
+    },
+    {
+      "sha256": "4ad6df6b9db4257d1df64c4ea1cb5047b3bb82b2d553e0a8d04d1d512ab7ba19",
+      "file": "pe019-capacity-resource-worker.ps1"
+    },
+    {
+      "sha256": "631c3b36bb6a5a6756c380e25d4a870e3cc5f89de4c27e425e267a1f34db2341",
+      "file": "pe019-capacity-fault-worker.ps1"
+    },
+    {
+      "sha256": "848678c86d8017018c637353292cc75ef4f349047ade16cf31169730483bb50b",
+      "file": "read-pe019-resource-snapshot.ps1"
+    },
+    {
+      "sha256": "dab6ebb565adef0ef53782e10dcdf323a03edef50c1ddd1e7b727abc71c8f022",
+      "file": "pe019-final-capacity.ps1"
+    }
+  ],
+  "nativeCIMDependencySHA256": "519739d5e7c97fe36619e2f371c2e0c56b7bbcf611ed9bb59bf0e46cc07e6969"
+}

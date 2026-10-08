@@ -1,0 +1,9 @@
+platformRepository: https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git
+targetRevision: main
+runnerChartRepository: https://charts.gitlab.io
+runnerChartVersion: 0.92.1
+observabilityEnabled: false
+prometheusEnabled: false
+prometheusChartVersion: 29.35.0
+collectorEnabled: false
+grafanaEnabled: false

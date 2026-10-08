@@ -1,0 +1,10 @@
+{
+  "accepted": true,
+  "artifactDeletion": false,
+  "documentation": "https://support.gitlab.com/hc/en-us/articles/21974671775388-Automate-clearing-of-GitLab-Runner-caches",
+  "errors": [],
+  "hostCacheDeletion": false,
+  "project": 86247025,
+  "operation": "runnerCacheClear",
+  "utc": "2026-10-03T15:07:20.7533246Z"
+}

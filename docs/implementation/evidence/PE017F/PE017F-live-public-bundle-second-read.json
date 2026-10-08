@@ -1,0 +1,25 @@
+{
+  "files": [
+    {
+      "kind": "record",
+      "fixedUrl": "https://gitlab.com/api/v4/projects/86247025/packages/generic/core-platform-frontend/sha256-aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c/release-record-2908988271-16911641952.json",
+      "bytes": 1726,
+      "sha256": "4c5791eb3e76bbcd82e2d69a44654161a43be2e812818fcb512d1f8b2432bfaa"
+    },
+    {
+      "kind": "scan",
+      "fixedUrl": "https://gitlab.com/api/v4/projects/86247025/packages/generic/core-platform-frontend/sha256-aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c/scan-report-2908988271-16911641952.json",
+      "bytes": 47341,
+      "sha256": "dc66f801a308d57d7b337621a647413a71f6ae2566417223ce09e74682c157e1"
+    }
+  ],
+  "unitAccepted": false,
+  "buildJob": 16911641948,
+  "scope": "Existing safe public release JSON only; no private scanner input, traces, OCI binary or Secret",
+  "actualPackageBytesMatched": true,
+  "utc": "2026-10-03T15:11:37.5509966Z",
+  "pipeline": 2908988271,
+  "scanJob": 16911641952,
+  "source": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+  "imageDigest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c"
+}

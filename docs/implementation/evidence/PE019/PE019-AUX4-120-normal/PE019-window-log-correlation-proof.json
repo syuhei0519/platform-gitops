@@ -1,0 +1,10 @@
+{
+  "matchingHTTPSpanIDs": 120,
+  "fullAT10Accepted": false,
+  "actualLogNRCorrelationAccepted": true,
+  "source": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "podUID": "f3fb9a1f-ddaa-41e0-9723-73eb46e3cf08",
+  "utc": "2026-10-06T17:58:00.4500888Z",
+  "traceId": "54a9f5be45567dd64a9a2a3e1170f090",
+  "matchingLogs": 120
+}

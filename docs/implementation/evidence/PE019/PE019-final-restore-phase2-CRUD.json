@@ -1,0 +1,62 @@
+{
+  "email": "pe019-9891eff6af9d494aa0c23ae36aac3b47@example.invalid",
+  "ownedSyntheticOnly": true,
+  "accepted": true,
+  "ownedId": 81,
+  "createdRowDeleted": true,
+  "utc": "2026-10-06T16:02:05.4088207Z",
+  "context": "kind-core-platform-final-019",
+  "kind": "final-restore",
+  "checks": [
+    {
+      "utc": "2026-10-06T16:02:05.3546553Z",
+      "expected": 200,
+      "path": "/",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-06T16:02:05.3628755Z",
+      "expected": 200,
+      "path": "/api/accounts",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-06T16:02:05.3731278Z",
+      "expected": 201,
+      "path": "/api/accounts",
+      "method": "POST",
+      "status": 201
+    },
+    {
+      "utc": "2026-10-06T16:02:05.3824767Z",
+      "expected": 200,
+      "path": "/api/accounts/81",
+      "method": "GET",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-06T16:02:05.3920372Z",
+      "expected": 200,
+      "path": "/api/accounts/81",
+      "method": "PUT",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-06T16:02:05.4013298Z",
+      "expected": 204,
+      "path": "/api/accounts/81",
+      "method": "DELETE",
+      "status": 204
+    },
+    {
+      "utc": "2026-10-06T16:02:05.4087064Z",
+      "expected": 404,
+      "path": "/api/accounts/81",
+      "method": "GET",
+      "status": 404
+    }
+  ],
+  "podUid": "f3fb9a1f-ddaa-41e0-9723-73eb46e3cf08"
+}

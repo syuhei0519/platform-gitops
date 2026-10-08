@@ -1,0 +1,115 @@
+{
+  "pending": [
+    {
+      "metric": {
+        "__name__": "kube_pod_status_phase",
+        "instance": "kube-state-metrics.observability.svc:8080",
+        "job": "kube-state-metrics",
+        "namespace": "account",
+        "phase": "Pending",
+        "pod": "pe010-pending-fixture",
+        "uid": "b45d7b64-5e89-461c-9d5e-f3355352e746"
+      },
+      "value": [
+        1790903885.14,
+        "1"
+      ]
+    }
+  ],
+  "pendingPod": {
+    "phase": "Pending",
+    "uid": "b45d7b64-5e89-461c-9d5e-f3355352e746",
+    "conditions": [
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-10-02T01:16:39Z",
+        "message": "0/1 nodes are available: 1 node(s) didn't match Pod's node affinity/selector. no new claims to deallocate, preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling.",
+        "observedGeneration": 1,
+        "reason": "Unschedulable",
+        "status": "False",
+        "type": "PodScheduled"
+      }
+    ]
+  },
+  "pass": true,
+  "targets": [
+    {
+      "discoveredLabels": {
+        "__address__": "kubernetes.default.svc:443",
+        "__always_scrape_classic_histograms__": "false",
+        "__convert_classic_histograms_to_nhcb__": "false",
+        "__metrics_path__": "/api/v1/nodes/core-platform-at0102-control-plane/proxy/metrics/cadvisor",
+        "__scheme__": "https",
+        "__scrape_interval__": "5s",
+        "__scrape_native_histograms__": "false",
+        "__scrape_timeout__": "3s",
+        "job": "bad-server-name"
+      },
+      "labels": {
+        "instance": "kubernetes.default.svc:443",
+        "job": "bad-server-name"
+      },
+      "scrapePool": "bad-server-name",
+      "scrapeUrl": "https://kubernetes.default.svc:443/api/v1/nodes/core-platform-at0102-control-plane/proxy/metrics/cadvisor",
+      "globalUrl": "https://kubernetes.default.svc:443/api/v1/nodes/core-platform-at0102-control-plane/proxy/metrics/cadvisor",
+      "lastError": "Get \"https://kubernetes.default.svc:443/api/v1/nodes/core-platform-at0102-control-plane/proxy/metrics/cadvisor\": tls: failed to verify certificate: x509: certificate is valid for core-platform-at0102-control-plane, kubernetes, kubernetes.default, kubernetes.default.svc, kubernetes.default.svc.cluster.local, localhost, not pe010-invalid.example",
+      "lastScrape": "2026-10-02T01:18:03.948780098Z",
+      "lastScrapeDuration": 0.002784698,
+      "health": "down",
+      "scrapeInterval": "5s",
+      "scrapeTimeout": "3s"
+    },
+    {
+      "discoveredLabels": {
+        "__address__": "kubernetes.default.svc:443",
+        "__always_scrape_classic_histograms__": "false",
+        "__convert_classic_histograms_to_nhcb__": "false",
+        "__metrics_path__": "/api/v1/nodes/core-platform-at0102-control-plane/proxy/metrics/cadvisor",
+        "__scheme__": "https",
+        "__scrape_interval__": "5s",
+        "__scrape_native_histograms__": "false",
+        "__scrape_timeout__": "3s",
+        "job": "missing-authentication"
+      },
+      "labels": {
+        "instance": "kubernetes.default.svc:443",
+        "job": "missing-authentication"
+      },
+      "scrapePool": "missing-authentication",
+      "scrapeUrl": "https://kubernetes.default.svc:443/api/v1/nodes/core-platform-at0102-control-plane/proxy/metrics/cadvisor",
+      "globalUrl": "https://kubernetes.default.svc:443/api/v1/nodes/core-platform-at0102-control-plane/proxy/metrics/cadvisor",
+      "lastError": "server returned HTTP status 403 Forbidden",
+      "lastScrape": "2026-10-02T01:18:00.439166719Z",
+      "lastScrapeDuration": 0.00331181,
+      "health": "down",
+      "scrapeInterval": "5s",
+      "scrapeTimeout": "3s"
+    }
+  ],
+  "up": [
+    {
+      "metric": {
+        "__name__": "up",
+        "instance": "kubernetes.default.svc:443",
+        "job": "bad-server-name"
+      },
+      "value": [
+        1790903885.088,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "up",
+        "instance": "kubernetes.default.svc:443",
+        "job": "missing-authentication"
+      },
+      "value": [
+        1790903885.088,
+        "0"
+      ]
+    }
+  ],
+  "scope": "temporary fixtures, production scrape unchanged",
+  "walDiskKiB": "508\t/data/wal"
+}

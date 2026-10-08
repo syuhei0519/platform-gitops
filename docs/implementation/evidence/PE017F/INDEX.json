@@ -1,0 +1,155 @@
+{
+  "files": [
+    {
+      "file": "live-bundle-mutations.go",
+      "sha256": "fc9e4ad5774cccfcc95458eb0179568787b223539373ff9e0f8e5ff14d6c1aa9"
+    },
+    {
+      "file": "live-rescan-pair.go",
+      "sha256": "d2d69f41a14e11d4e15a1cefdc4ae996e99a2f933091922bc060fcf4395f9c4d"
+    },
+    {
+      "file": "MR52-merge-proof.json",
+      "sha256": "bf5b4d47dfcb822249419d731c492110b57980d86703709b75ab6a5776d2bf20"
+    },
+    {
+      "file": "PE017-production-inventory.json",
+      "sha256": "528cd7cb8161575f8bec81815940e48270047043f6077444735611c45092282c"
+    },
+    {
+      "file": "PE017-production-retention-review.json",
+      "sha256": "1a0723523fcfaf3a8799339d021ff8c7bba9ab441faf2d092d85c29127f13f37"
+    },
+    {
+      "file": "PE017F-acceptance-audit.json",
+      "sha256": "ec4cfc678032503fdc8bd016d0702abaa11c83764d152d9f786ef2b26801c433"
+    },
+    {
+      "file": "PE017F-actual-reader-bad-hash-audit.json",
+      "sha256": "ded390d71e2cc0c447e9795e52f9dd9147b3a333d588a9fcefaeeead7828dd29"
+    },
+    {
+      "file": "PE017F-actual-reader-both-audit.json",
+      "sha256": "4b3b199b24dad7eace82e20c53963b3a577f7ddb3e00a397c2b041a4f911f15b"
+    },
+    {
+      "file": "PE017F-actual-reader-both-proof.json",
+      "sha256": "07c10025a3d5b35d64581822cc2373b02a831533b9b4f2e16f0f990917056566"
+    },
+    {
+      "file": "PE017F-actual-reader-first-audit.json",
+      "sha256": "724ac329ffb3a3918ee7aa7cc141d3dc7cb2dbe047912d33c3b2771ff88d330e"
+    },
+    {
+      "file": "PE017F-actual-reader-first-proof.json",
+      "sha256": "82f66129a864f6c4f261b22163230fc83d9d2753550dc91f8989a6f3b13bc37b"
+    },
+    {
+      "file": "PE017F-actual-reader-wrong-job-audit.json",
+      "sha256": "4d5608eb8e7e26902175eeec57b7f9c529e2745a8e2a0375078a0dbe51f476a8"
+    },
+    {
+      "file": "PE017F-fresh-public-db-probe-plan.json",
+      "sha256": "c9d86818bbe1d27463f71fc1c8c86afa9f4fdcb52444ab52f789dbfe94ce434a"
+    },
+    {
+      "file": "PE017F-fresh-public-db-probe-state.json",
+      "sha256": "853acfc196e433abd1d0558092d64e02a5344d69740ace278523e39e8776b7df"
+    },
+    {
+      "file": "PE017F-intermediate-merge.json",
+      "sha256": "02a6e9b85094c24e428338aef8d90be3501cf6b835665a83f89b67c31fe5a6e4"
+    },
+    {
+      "file": "PE017F-live-bundle-mutation-proof.json",
+      "sha256": "a84cbe1c9ead8227f7cb0ae50914a78c6ae9184c35cd9832f71d0321ab497bb9"
+    },
+    {
+      "file": "PE017F-live-public-bundle-read.json",
+      "sha256": "cd999746c864972929a5b65adad0936e4bbd9a1d565f8fbe1c8684b8f4e3eacf"
+    },
+    {
+      "file": "PE017F-live-public-bundle-second-read.json",
+      "sha256": "61443d5f369553a5ddb9fb1766f94ddbf9a34243a5219279a2519131930813bd"
+    },
+    {
+      "file": "PE017F-live-rescan-pair-proof.json",
+      "sha256": "242a63a15f34474ccb698b62d8e9c28f6494712211c14737db403ec11e34c336"
+    },
+    {
+      "file": "PE017F-main-CI-audit.json",
+      "sha256": "007fb0e14a87c03a51f81cfcc08f87f1324acbfc91e81f0ad22f39dd8acc2539"
+    },
+    {
+      "file": "PE017F-main-runtime-proof.json",
+      "sha256": "2c0cfdc2d897bb47f4880bcd0bfc2ce74460df8138d6259cdd2c81a5980801f9"
+    },
+    {
+      "file": "PE017F-main-sbom-schema-proof.json",
+      "sha256": "6aeebd7571b5add6dd3ca88edbe39fd9bad38ca493015e46a652476a69299312"
+    },
+    {
+      "file": "PE017F-original-build-artifact-metadata.json",
+      "sha256": "8c6e2833ee8d8df2d869a12d3f66f5ff81ed42f3be27588801d4931db1d29481"
+    },
+    {
+      "file": "PE017F-protected-store-state.json",
+      "sha256": "912e7fbda65150b37edc3241d737b0b08ffbe9ccd66f5260f9a4cd3ceea25810"
+    },
+    {
+      "file": "PE017F-public-db-manifest-state.json",
+      "sha256": "e745f4c7e7fff1f488a2ed3fa554d17fdc3027f6bd1080a3bf389d802fb29b69"
+    },
+    {
+      "file": "PE017F-public-db-probe-budget-failed.json",
+      "sha256": "fc7d00474bfc22c067d7cd8d98d3306130e015d95be99e972bd11c8af6da2914"
+    },
+    {
+      "file": "PE017F-public-json-transport-guard.json",
+      "sha256": "239dc5919b4db5c296423fe6ed1426ccc4b57af4650a8aa14322943d59a29150"
+    },
+    {
+      "file": "PE017F-release-reader-local-tests.json",
+      "sha256": "0fc77258996491218935d7a52c02de3aeeb1494892ead69a1610f48e8db673c8"
+    },
+    {
+      "file": "PE017F-release-reader-main-base.json",
+      "sha256": "f301ab8c86bbff32d17632e529ee27648dbaaf23d8c951298b45e6f9d0886ef9"
+    },
+    {
+      "file": "PE017F-rescan-image-policy-proof.json",
+      "sha256": "280a9fa5853c82749de7c5acffef9923e9ae0d53e42a6d84fffe806f5b34a229"
+    },
+    {
+      "file": "PE017F-rescan-play-receipt.json",
+      "sha256": "03ffaf6d002f75742c8f4a44747c158e27c775ad6d689da92fcc4d7ae7460ae5"
+    },
+    {
+      "file": "PE017F-rescan-stored-state.json",
+      "sha256": "81843f6141b6d9a5a65dfe41f867c618afe7f620244ae87f5ff7805c6e8f5670"
+    },
+    {
+      "file": "PE017F-rescan-wait-plan.json",
+      "sha256": "2d2ceddff58d5fb043f62265bbb5d30be028f9e923e32ac60deaedf7da242c9b"
+    },
+    {
+      "file": "PE017F-runner-cache-clear-receipt.json",
+      "sha256": "37163bad135245740970039b238ae23884e58b92b16694887383ca296030c1d2"
+    },
+    {
+      "file": "PE017F-sbom-generate-failed-record-proof.json",
+      "sha256": "4f17e752693335a24e7f520e1b3564b6a406706dea46d95d996fc3189ea40f5e"
+    },
+    {
+      "file": "PE017F-sbom-invalid-failed-record-proof.json",
+      "sha256": "6805510bf16a38b17feef4b65e81061116fef0fbb8a11ea61422db1c3a63567f"
+    },
+    {
+      "file": "PE017F-unchanged-db-play-guard.json",
+      "sha256": "768cf103af0a97e93ffa354cd2f463881dfac1284bad7917f30e9147653d53e5"
+    }
+  ],
+  "scope": "PE017F frontend validation-path actual acceptance; evidence main integration required",
+  "acceptanceReady": true,
+  "unitAcceptanceRequiresEvidenceMain": true
+}

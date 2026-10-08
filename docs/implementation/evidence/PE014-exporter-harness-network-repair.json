@@ -1,0 +1,8 @@
+{
+  "sourceSecretsUsed": false,
+  "utc": "2026-10-02T20:18:39.6872495Z",
+  "failureCause": "Collector and mock were both Running; internal client observed HTTP200, host published port unreachable on internal network",
+  "thresholdsUnchanged": true,
+  "fix": "Keep network internal and observe via dedicated bounded client inside it; remove host published ports",
+  "realProviderTraffic": 0
+}

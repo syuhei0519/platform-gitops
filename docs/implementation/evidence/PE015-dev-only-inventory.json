@@ -1,0 +1,19 @@
+{
+  "tool": "0.75.0",
+  "artifactType": "filesystem",
+  "proofScope": "Actual fixed Trivy report dev-only package inventory; runtime SBOM different scope",
+  "lockfileSha256": "304d0da79bc8e78d9268790055bd3ed4012ba84d1eaf0d469fc7ad2a2f5e4dfb",
+  "flags": [
+    "--include-dev-deps",
+    "--scanners vuln,secret,misconfig",
+    "--severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
+  ],
+  "fixtureLockDev": true,
+  "reportedPackages": [
+    {
+      "version": "4.17.20",
+      "dev": true,
+      "name": "lodash"
+    }
+  ]
+}

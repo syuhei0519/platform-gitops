@@ -1,0 +1,17 @@
+{
+  "originalBuild": 16911641948,
+  "plan": "Observe actual new UpdatedAt; metadata NextUpdate is a 24h client update interval, not the upstream six-hour build schedule. Confirm fresh real DB before one native manual play. Ensure the protected Trivy cache does not reuse old DB. Preserve original build artifacts and do not advance Source main.",
+  "artifactExpiresNoLaterThan": "2026-10-04T18:29:54.094+09:00",
+  "dbCurrentlyDifferent": false,
+  "firstDbUpdatedAt": "2026-10-03T07:01:46.027466673Z",
+  "observedNextUpdateBeforeArtifactUpperDeadline": true,
+  "publicProbeBudgetFailed": true,
+  "observedPublicMetadataNextUpdate": "2026-10-04T07:01:46.027466402Z",
+  "localPublicCacheCleanupDenied": true,
+  "firstPipeline": 2908988271,
+  "nextUpdateIsNotProofOfDifferentDb": true,
+  "utc": "2026-10-03T09:59:14.2946435Z",
+  "manualJob": 16911641952,
+  "publisherScheduleNotAssertedFromNextUpdate": true,
+  "documentation": "https://github.com/aquasecurity/trivy-db#update-interval"
+}

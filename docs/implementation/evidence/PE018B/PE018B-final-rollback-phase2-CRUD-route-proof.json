@@ -1,0 +1,9 @@
+{
+  "backendPodUid": "a16d3e01-86fa-4180-9c32-ca78ae6b9242",
+  "kind": "final-rollback",
+  "routeAccepted": true,
+  "utc": "2026-10-06T00:40:38.7929111Z",
+  "readyEndpointCount": 1,
+  "service": "backend",
+  "frontendPodUid": "6da97e91-4aca-4271-b313-4be4245090dc"
+}

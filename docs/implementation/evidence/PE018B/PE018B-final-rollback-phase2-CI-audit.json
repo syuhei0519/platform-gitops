@@ -1,0 +1,13 @@
+{
+  "ownPipeline": 2915768528,
+  "verifierSource": "c2ffa1575b7831633cd13decf7388a642ba26df0",
+  "source": "13610d3f5194ce4bf45b571784a510d081fe20ba",
+  "fixedStatus": "success",
+  "fixedPipeline": 2915770356,
+  "ownStatus": "success",
+  "ownSource": "13610d3f5194ce4bf45b571784a510d081fe20ba",
+  "utc": "2026-10-06T00:38:31.9665339Z",
+  "mr": 86,
+  "fixedSource": "c2ffa1575b7831633cd13decf7388a642ba26df0",
+  "kind": "final-rollback"
+}

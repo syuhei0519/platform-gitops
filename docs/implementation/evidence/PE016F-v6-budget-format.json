@@ -1,0 +1,24 @@
+{
+  "timeoutSeconds": 900,
+  "job": 16909631208,
+  "disk": {
+    "schemaVersion": 1,
+    "scope": "PE016F sampled temporary disk",
+    "kind": "format",
+    "samples": 10,
+    "intervalSeconds": 2,
+    "maxWorkspaceKiB": 1539628,
+    "workspaceLimitKiB": 2097152,
+    "maxBuildkitStoreKiB": 4,
+    "buildkitStoreLimitKiB": 10485760,
+    "buildkitStoreObserved": true,
+    "buildkitStoreAggregation": "sumConfiguredRoots",
+    "rootlessNamespaceUsed": false,
+    "minFilesystemFreePercent": 92.995957,
+    "measurementAvailable": true,
+    "withinBudget": true,
+    "continuousPeakClaim": false
+  },
+  "kind": "format",
+  "durationSeconds": 52.749536
+}

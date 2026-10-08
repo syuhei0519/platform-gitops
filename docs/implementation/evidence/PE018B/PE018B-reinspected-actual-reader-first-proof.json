@@ -1,0 +1,23 @@
+{
+  "manifestCommit": "59de92e1b0d7357a7b8fb8a59c57d85d20a9d144",
+  "pipelineId": 2915695314,
+  "jobId": 16954192518,
+  "runs": [
+    {
+      "input": {
+        "service": "backend",
+        "digest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+        "pipelineId": 2915669295,
+        "jobId": 16954022922,
+        "recordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/release-record-2915669295-16954022922.json",
+        "recordSha256": "b8aaf11f006be6fde340719cff3bcb48abf86da25f541ee2c89b247813cfb8f3"
+      },
+      "decision": "passed",
+      "filesRead": 3,
+      "checksumsMatched": true,
+      "adoptionAuthorized": false
+    }
+  ],
+  "forbiddenWriteHttp": 403,
+  "adoptionAuthorized": false
+}

@@ -1,0 +1,62 @@
+{
+  "podUid": "035411c7-d33d-45cc-a135-f74b9fa34ca9",
+  "checks": [
+    {
+      "status": 200,
+      "expected": 200,
+      "method": "GET",
+      "utc": "2026-10-06T00:13:28.5281673Z",
+      "path": "/"
+    },
+    {
+      "status": 200,
+      "expected": 200,
+      "method": "GET",
+      "utc": "2026-10-06T00:13:28.5379150Z",
+      "path": "/api/accounts"
+    },
+    {
+      "status": 201,
+      "expected": 201,
+      "method": "POST",
+      "utc": "2026-10-06T00:13:28.5493204Z",
+      "path": "/api/accounts"
+    },
+    {
+      "status": 200,
+      "expected": 200,
+      "method": "GET",
+      "utc": "2026-10-06T00:13:28.5653877Z",
+      "path": "/api/accounts/252"
+    },
+    {
+      "status": 200,
+      "expected": 200,
+      "method": "PUT",
+      "utc": "2026-10-06T00:13:28.5750166Z",
+      "path": "/api/accounts/252"
+    },
+    {
+      "status": 204,
+      "expected": 204,
+      "method": "DELETE",
+      "utc": "2026-10-06T00:13:28.5838964Z",
+      "path": "/api/accounts/252"
+    },
+    {
+      "status": 404,
+      "expected": 404,
+      "method": "GET",
+      "utc": "2026-10-06T00:13:28.5909529Z",
+      "path": "/api/accounts/252"
+    }
+  ],
+  "context": "kind-platform-lab",
+  "email": "pe018b-51695e82e71241bb91c24d4bb904f6b7@example.invalid",
+  "ownedSyntheticOnly": true,
+  "utc": "2026-10-06T00:13:28.5928009Z",
+  "accepted": true,
+  "ownedId": 252,
+  "createdRowDeleted": true,
+  "kind": "reinspected"
+}

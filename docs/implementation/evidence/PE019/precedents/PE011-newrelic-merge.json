@@ -1,0 +1,12 @@
+{
+  "project": 86247036,
+  "beforeMain": "84d4d181aa3a9b45196dfbda7296194c734eab83",
+  "mr": 14,
+  "candidateTree": "ff069c40b078a383b5e96da0db82dfe225f279d6",
+  "utc": "2026-10-02T14:17:22.6874804Z",
+  "mergeSha": "ff16230bc96e51db1f71f06935a4636465361937",
+  "ownCi": 2906992786,
+  "treeMatched": true,
+  "actualTree": "ff069c40b078a383b5e96da0db82dfe225f279d6",
+  "source": "9b4d104534fd9941caa40af88efcc8b21aafccbe"
+}

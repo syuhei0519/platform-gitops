@@ -1,0 +1,12 @@
+{
+  "serviceInstanceId": "d0e65e5f-d266-4d32-b4a7-8179dbe16cf1",
+  "histogramCount": 325.0,
+  "httpRequests": 325.0,
+  "point": "before",
+  "utc": "2026-10-06T17:56:32.2999824Z",
+  "shortWindowOnly": false,
+  "source": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "podUID": "f3fb9a1f-ddaa-41e0-9723-73eb46e3cf08",
+  "fullAT10Accepted": false,
+  "selectedMetricSha256": "3200b312c216f651d833ddaabfc5780538f7dfd43d119bfc8f23eb1c9bfb53a3"
+}

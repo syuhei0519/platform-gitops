@@ -1,0 +1,62 @@
+{
+  "ownedId": 251,
+  "checks": [
+    {
+      "utc": "2026-10-05T23:45:15.5379466Z",
+      "expected": 200,
+      "method": "GET",
+      "path": "/",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-05T23:45:15.5548914Z",
+      "expected": 200,
+      "method": "GET",
+      "path": "/api/accounts",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-05T23:45:15.5708740Z",
+      "expected": 201,
+      "method": "POST",
+      "path": "/api/accounts",
+      "status": 201
+    },
+    {
+      "utc": "2026-10-05T23:45:15.5878302Z",
+      "expected": 200,
+      "method": "GET",
+      "path": "/api/accounts/251",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-05T23:45:15.5981552Z",
+      "expected": 200,
+      "method": "PUT",
+      "path": "/api/accounts/251",
+      "status": 200
+    },
+    {
+      "utc": "2026-10-05T23:45:15.6085240Z",
+      "expected": 204,
+      "method": "DELETE",
+      "path": "/api/accounts/251",
+      "status": 204
+    },
+    {
+      "utc": "2026-10-05T23:45:15.6166113Z",
+      "expected": 404,
+      "method": "GET",
+      "path": "/api/accounts/251",
+      "status": 404
+    }
+  ],
+  "accepted": true,
+  "utc": "2026-10-05T23:45:15.6186927Z",
+  "podUid": "d6c63522-fdc3-4de7-8d20-4a6ca76affea",
+  "email": "pe018b-182f3dc05a54406286c25566d3cf7ae4@example.invalid",
+  "ownedSyntheticOnly": true,
+  "context": "kind-platform-lab",
+  "kind": "published",
+  "createdRowDeleted": true
+}

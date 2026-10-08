@@ -1,0 +1,72 @@
+{
+  "NRContractGB": 100,
+  "sourceFrontend": "ce6ec1d94cf1042a824b745f4a5f6367b1c0f845",
+  "requestsPerSecond": 1,
+  "resourceMeasurementScope": "Windows host, WSL/Docker, both kind clusters, runner/helper/sidecar, OCI expansion/Trivy DB/SBOM temporary disk",
+  "manifest": "66796bdca2824b1dee18cc8164ae553e8cb94248",
+  "sourceBackend": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "newKind": "core-platform-final-019",
+  "httpTimeoutSec": 5,
+  "runnerConcurrent": 1,
+  "all19Complete": false,
+  "durationSec": 120,
+  "utc": "2026-10-06T17:23:44.0456521Z",
+  "unit": "PE019",
+  "freeDiskMinPercent": 20,
+  "faultDurationSec": 60,
+  "platform": "9c654586c7db8dff458d2934629abd6f96689649",
+  "NRAccount": 8572010,
+  "memoryIncreaseMandatory": false,
+  "unexpectedOOMOrEvictionAllowed": 0,
+  "sameVersionPreviousEvidenceReusableOnlyAfterInputEquality": true,
+  "recoveryMaxSec": 120,
+  "podPendingMaxSec": 60,
+  "testStarted": false,
+  "NRRegion": "US",
+  "originalMemoryAssumptionGiB": 8,
+  "freeMemoryMinPercent": 20,
+  "crudSuccessMinPercent": 99,
+  "sdkFlushMaxSec": 5,
+  "ciMemoryBudgetGiB": 2,
+  "additionalCostCapJPY": 0,
+  "attempt": 4,
+  "correction": "User-requested short acceptance using the same actual driver, workers, host, context, startup method and interval; only load duration120; controlled error case separately identified; not AT10",
+  "workerSourceHashes": [
+    {
+      "sha256": "b85f57bafae5fd55de3c77ea2fdd4c9b243734d29cb2a6845f28050fbb215ccc",
+      "file": "initialize-pe019-cim.ps1"
+    },
+    {
+      "sha256": "f78ad600f2028aaf17d636b66701afcace52fddbd8055691b6b781e095c26a1e",
+      "file": "read-pe019-statistics-json.ps1"
+    },
+    {
+      "sha256": "7848318a10183c8863195dff32bf4f5d4b8a0ad7d637886f5677a7f84a2d79e6",
+      "file": "pe019-capacity-resource-worker.ps1"
+    },
+    {
+      "sha256": "111a4f7f3157dd1f566a87eec89ac9f803a6f36b6cbbf6a777ce289cd6e08c1e",
+      "file": "pe019-capacity-fault-worker.ps1"
+    },
+    {
+      "sha256": "45dd50421d98e88c818625c9f89f4b01647aa2a3eb49cc380e639bededcf7ec9",
+      "file": "read-pe019-resource-snapshot.ps1"
+    },
+    {
+      "sha256": "98f2add6870d0a23d4b280961e7f51ebd0e65310cfda43708b951608f20b8ebe",
+      "file": "pe019-final-capacity.ps1"
+    },
+    {
+      "sha256": "90aa2f01c2295c848dc9a980d7ee96bad88d2e96f2d0f09ee8a1df333cffe52a",
+      "file": "read-pe019-resource-preflight.ps1"
+    },
+    {
+      "sha256": "560e6af22b2758acaa9acb4b527a5353b37070cf88e692b08073a21f3e4a4322",
+      "file": "private-pe019-kubectl.ps1"
+    }
+  ],
+  "nativeCIMDependencySHA256": "519739d5e7c97fe36619e2f371c2e0c56b7bbcf611ed9bb59bf0e46cc07e6969",
+  "purpose": "auxiliary-measurement-preflight",
+  "safeSimulatedError": false,
+  "activeCIRequired": true
+}

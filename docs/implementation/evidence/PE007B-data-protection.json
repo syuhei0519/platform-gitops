@@ -1,0 +1,279 @@
+{
+  "backup": {
+    "backup": "C:\\Users\\espoi\\OneDrive\\ドキュメント\\New project\\tmp\\acceptance-private\\pe007b-account.sql",
+    "sha256": "9051e65a5e769ad656df65d96b347f9be5ebb6a0e2b3d7c0318db8fd77f27c36",
+    "knownId": "2",
+    "targetContext": "kind-core-platform-restore",
+    "utc": "2026-10-02T02:36:36.8140733Z",
+    "sourceState": "1|204c8dc9b462505a9d21e52d6cb343f3\n1|2026-10-01 16:11:05.894736+00",
+    "restorePending": false,
+    "credentialsIncluded": false,
+    "knownEmail": "pe007b-425de7761f35437588959b983a879839@example.invalid",
+    "sourceContext": "kind-core-platform-at0102",
+    "restoredState": "1|204c8dc9b462505a9d21e52d6cb343f3\n1|2026-10-01 16:11:05.894736+00",
+    "knownRecordMatched": true
+  },
+  "dataAfterRecreation": {
+    "newStatefulSetUid": "b0817a92-fd10-4a16-8fef-a3768c7a0b16",
+    "utc": "2026-10-02T02:51:04.4691292Z",
+    "health": {
+      "lastTransitionTime": "2026-10-02T02:46:51Z",
+      "status": "Healthy"
+    },
+    "operation": {
+      "finishedAt": "2026-10-02T02:46:45Z",
+      "message": "successfully synced (all tasks run)",
+      "operation": {
+        "initiatedBy": {},
+        "retry": {},
+        "sync": {
+          "revision": "3a566884655d4a96d3c5fd7139d57e30ff9d8aad",
+          "source": {
+            "helm": {
+              "releaseName": "postgresql",
+              "valueFiles": [
+                "../../environments/local/postgresql.yaml"
+              ]
+            },
+            "path": "charts/postgresql",
+            "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+            "targetRevision": "3a566884655d4a96d3c5fd7139d57e30ff9d8aad"
+          }
+        }
+      },
+      "phase": "Succeeded",
+      "startedAt": "2026-10-02T02:46:45Z",
+      "syncResult": {
+        "resources": [
+          {
+            "group": "",
+            "hookPhase": "Running",
+            "kind": "ServiceAccount",
+            "message": "serviceaccount/postgresql created",
+            "name": "postgresql",
+            "namespace": "account-pe007b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "",
+            "hookPhase": "Running",
+            "kind": "ConfigMap",
+            "message": "configmap/postgresql-init created",
+            "name": "postgresql-init",
+            "namespace": "account-pe007b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "",
+            "hookPhase": "Running",
+            "kind": "PersistentVolumeClaim",
+            "message": "persistentvolumeclaim/postgresql-data unchanged",
+            "name": "postgresql-data",
+            "namespace": "account-pe007b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "",
+            "hookPhase": "Running",
+            "kind": "Service",
+            "message": "service/postgresql-headless created",
+            "name": "postgresql-headless",
+            "namespace": "account-pe007b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "",
+            "hookPhase": "Running",
+            "kind": "Service",
+            "message": "service/postgresql created",
+            "name": "postgresql",
+            "namespace": "account-pe007b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "apps",
+            "hookPhase": "Running",
+            "images": [
+              "docker.io/library/postgres:17.10-bookworm@sha256:9b18b78397054fce88a9552e9d5a3ad5bb7fd258c5b3cc1c5028e46373d6ea8f"
+            ],
+            "kind": "StatefulSet",
+            "message": "statefulset.apps/postgresql created",
+            "name": "postgresql",
+            "namespace": "account-pe007b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          }
+        ],
+        "revision": "3a566884655d4a96d3c5fd7139d57e30ff9d8aad",
+        "source": {
+          "helm": {
+            "releaseName": "postgresql",
+            "valueFiles": [
+              "../../environments/local/postgresql.yaml"
+            ]
+          },
+          "path": "charts/postgresql",
+          "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+          "targetRevision": "3a566884655d4a96d3c5fd7139d57e30ff9d8aad"
+        }
+      }
+    },
+    "pvcUid": "bbaa5c80-d618-4c93-a459-63f159f67a68",
+    "knownMarkerMatched": true
+  },
+  "pruneHeld": {
+    "dbUid": "355eab7c-50b5-42bf-9e93-44aabb2faa5b",
+    "utc": "2026-10-02T02:45:34.5921514Z",
+    "guard": "Argo only; direct kubectl deletion is not an admission restriction",
+    "dbDeletionTimestamp": null,
+    "operation": {
+      "message": "waiting for pruning confirmation of apps/StatefulSet/postgresql",
+      "operation": {
+        "initiatedBy": {},
+        "retry": {},
+        "sync": {
+          "prune": true,
+          "revision": "61f6c2259373704e402488e40e47d552f75eaae7"
+        }
+      },
+      "phase": "Running",
+      "startedAt": "2026-10-02T02:43:35Z",
+      "syncResult": {
+        "revision": "61f6c2259373704e402488e40e47d552f75eaae7",
+        "source": {
+          "path": "acceptance/pe007b-empty",
+          "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+          "targetRevision": "61f6c2259373704e402488e40e47d552f75eaae7"
+        }
+      }
+    },
+    "pvcDeletionTimestamp": null,
+    "application": "pe007b-protection",
+    "pvcUid": "bbaa5c80-d618-4c93-a459-63f159f67a68"
+  },
+  "boundary": "Argo deletion protection; direct Kubernetes operator authority remains",
+  "pvcRetained": {
+    "statefulSetRemovedAfterExplicitConfirmation": true,
+    "pvcUid": "bbaa5c80-d618-4c93-a459-63f159f67a68",
+    "operation": {
+      "finishedAt": "2026-10-02T02:45:34Z",
+      "message": "successfully synced (all tasks run)",
+      "operation": {
+        "initiatedBy": {},
+        "retry": {},
+        "sync": {
+          "prune": true,
+          "revision": "61f6c2259373704e402488e40e47d552f75eaae7"
+        }
+      },
+      "phase": "Succeeded",
+      "startedAt": "2026-10-02T02:43:35Z",
+      "syncResult": {
+        "resources": [
+          {
+            "group": "",
+            "hookPhase": "Succeeded",
+            "kind": "PersistentVolumeClaim",
+            "message": "ignored (no prune)",
+            "name": "postgresql-data",
+            "namespace": "account-pe007b",
+            "status": "PruneSkipped",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "",
+            "hookPhase": "Succeeded",
+            "kind": "ConfigMap",
+            "message": "pruned",
+            "name": "postgresql-init",
+            "namespace": "account-pe007b",
+            "status": "Pruned",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "",
+            "hookPhase": "Succeeded",
+            "kind": "ServiceAccount",
+            "message": "pruned",
+            "name": "postgresql",
+            "namespace": "account-pe007b",
+            "status": "Pruned",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "",
+            "hookPhase": "Succeeded",
+            "kind": "Service",
+            "message": "pruned",
+            "name": "postgresql-headless",
+            "namespace": "account-pe007b",
+            "status": "Pruned",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "apps",
+            "hookPhase": "Succeeded",
+            "images": [
+              "docker.io/library/postgres:17.10-bookworm@sha256:9b18b78397054fce88a9552e9d5a3ad5bb7fd258c5b3cc1c5028e46373d6ea8f"
+            ],
+            "kind": "StatefulSet",
+            "message": "pruned",
+            "name": "postgresql",
+            "namespace": "account-pe007b",
+            "status": "Pruned",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "",
+            "hookPhase": "Succeeded",
+            "kind": "Service",
+            "message": "pruned",
+            "name": "postgresql",
+            "namespace": "account-pe007b",
+            "status": "Pruned",
+            "syncPhase": "Sync",
+            "version": "v1"
+          }
+        ],
+        "revision": "61f6c2259373704e402488e40e47d552f75eaae7",
+        "source": {
+          "path": "acceptance/pe007b-empty",
+          "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+          "targetRevision": "61f6c2259373704e402488e40e47d552f75eaae7"
+        }
+      }
+    },
+    "pvcVolume": "pvc-bbaa5c80-d618-4c93-a459-63f159f67a68",
+    "pvcRetained": true,
+    "utc": "2026-10-02T02:46:45.3758543Z"
+  },
+  "deleteHeld": {
+    "utc": "2026-10-02T02:55:27.701864Z",
+    "applicationDeletionTimestamp": "2026-10-02T02:51:04Z",
+    "knownMarkerMatched": true,
+    "pvcDeleteAnnotation": "Prune=false,Delete=false",
+    "dbDeleteAnnotation": "Prune=confirm,Delete=confirm",
+    "statefulSetUid": "b0817a92-fd10-4a16-8fef-a3768c7a0b16",
+    "finalizers": [
+      "resources-finalizer.argocd.argoproj.io"
+    ],
+    "pvcUid": "bbaa5c80-d618-4c93-a459-63f159f67a68",
+    "boundary": "Argo controller deletion protection; direct kubectl remains operator authority"
+  }
+}

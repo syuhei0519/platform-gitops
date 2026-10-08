@@ -1,0 +1,22 @@
+{{/*
+rootが基盤親Applicationを作る。charts/platformとenvironments/local/platform.yamlへ接続する。
+子Applicationのhealthを待つ前提はbootstrap/argocd-values.yaml。
+*/}}apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-local-platform
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+    argocd.argoproj.io/sync-options: Prune=confirm
+spec:
+  project: lab-control
+  source:
+    repoURL: {{ .Values.platformRepository }}
+    targetRevision: {{ .Values.targetRevision }}
+    path: charts/platform
+    helm: {releaseName: platform, valueFiles: [../../environments/local/platform.yaml]}
+  destination: {server: https://kubernetes.default.svc, namespace: argocd}
+  syncPolicy:
+    automated: {prune: true, selfHeal: true, allowEmpty: false}
+    syncOptions: [PruneLast=true, FailOnSharedResource=true]

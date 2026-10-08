@@ -1,0 +1,10 @@
+{
+  "processId": 8824,
+  "powershellVersion": "7.6.5",
+  "originalFailureCauseProven": false,
+  "initialCimCommandImported": true,
+  "explicitImportUsed": false,
+  "moduleSha256": "519739d5e7c97fe36619e2f371c2e0c56b7bbcf611ed9bb59bf0e46cc07e6969",
+  "utc": "2026-10-06T17:56:39.8091851Z",
+  "dependencyInitialized": true
+}

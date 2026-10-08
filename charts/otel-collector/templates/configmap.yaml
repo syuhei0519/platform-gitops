@@ -1,0 +1,97 @@
+{{/*
+backend SDKのOTLP/HTTPを受信してmetricsとtracesを別出力へ送るCollector設定。
+backend-app/internal/telemetry/telemetry.go→4318→metrics8889/trace exporter、自己metricsは8888。
+ConfigMap bytesがDeployment checksumへ入るため、説明は出力されないHelmコメントのみ。
+*/}}apiVersion: v1
+kind: ConfigMap
+metadata: {name: otel-collector-config, namespace: observability}
+data:
+  config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          http:
+            endpoint: 0.0.0.0:4318
+            max_request_body_size: 1048576
+{{/*
+processorは下のpipelinesに書いた順で実行する。memory_limiterは1秒ごとに見積もり、上限付近で受信を拒否し得る。
+192MiB/増分48MiBはPod limit256MiBと別の設定。OOMを必ず防ぐ保証や、拒否データの永続保存ではない。
+*/}}    processors:
+      memory_limiter:
+        check_interval: 1s
+        limit_mib: 192
+        spike_limit_mib: 48
+{{/*
+環境/namespaceが明示されていて契約と異なるデータを落とす。欠落属性は次のresource/defaultsで補う。
+この属性検査は送信者認証ではない。error_mode:propagateでは式評価エラーを上流へ返す。
+*/}}      filter/resource_contract:
+        error_mode: propagate
+        metrics:
+          metric:
+            - 'resource.attributes["deployment.environment.name"] != nil and resource.attributes["deployment.environment.name"] != "local"'
+            - 'resource.attributes["k8s.namespace.name"] != nil and resource.attributes["k8s.namespace.name"] != "account"'
+        traces:
+          span:
+            - 'resource.attributes["deployment.environment.name"] != nil and resource.attributes["deployment.environment.name"] != "local"'
+            - 'resource.attributes["k8s.namespace.name"] != nil and resource.attributes["k8s.namespace.name"] != "account"'
+      resource/defaults:
+        attributes:
+          - {key: deployment.environment.name, value: local, action: insert}
+          - {key: k8s.namespace.name, value: account, action: insert}
+{{/*
+batchは送信回数をまとめる。5秒は待機時間、512は送出契機、1024は分割上限で、SDKのqueue256とは別の単位。
+SDK送信10秒、Prometheus取得30秒とも別周期。各数値の性能上の最適性はこの設定だけからは証明できない。
+*/}}      batch:
+        timeout: 5s
+        send_batch_size: 512
+        send_batch_max_size: 1024
+    exporters:
+      prometheus:
+        endpoint: 0.0.0.0:8889
+{{/*
+Resource全属性を各metricのラベルへ自動展開しない。時系列数の増加を抑え、identityはtarget_info等で確認する。
+*/}}        resource_to_telemetry_conversion: {enabled: false}
+        enable_open_metrics: true
+      {{- if .Values.newRelicEnabled }}
+      otlphttp/newrelic:
+        endpoint: {{ .Values.newRelicEndpoint }}
+        headers: {api-key: "${env:NR_LICENSE_KEY}"}
+        tls: {insecure: false, insecure_skip_verify: false, min_version: "1.2"}
+        compression: gzip
+        timeout: 5s
+{{/*
+外部trace転送はworker1・メモリqueue32。永続storageを設定していないので再起動で未送信分を失い得る。
+1送信5秒、再試行の待機1〜5秒・経過30秒まで。満杯/期限超過で欠損し得るため無損失とは扱わない。
+*/}}        sending_queue: {enabled: true, num_consumers: 1, queue_size: 32}
+        retry_on_failure: {enabled: true, initial_interval: 1s, max_interval: 5s, max_elapsed_time: 30s}
+      {{- else }}
+{{/*
+無効時はtraceをnopへ渡す。外部に保存しないが、下のmetrics pipelineはPrometheusへ引き続き出す。
+*/}}      nop: {}
+      {{- end }}
+    extensions:
+      health_check: {endpoint: 0.0.0.0:13133}
+    service:
+      extensions: [health_check]
+{{/*
+8888はCollector自身のqueue/送信失敗等のmetrics、8889はアプリのmetrics。Prometheusの別jobで取得する。
+health_checkの成功だけでは外部転送成功を証明しない。障害時は自己metrics・warnログ・backendのexport失敗ログを照合する。
+*/}}      telemetry:
+        logs: {level: warn, encoding: json}
+        metrics:
+          level: detailed
+          readers:
+            - pull:
+                exporter:
+                  prometheus:
+                    host: 0.0.0.0
+                    port: 8888
+      pipelines:
+        metrics:
+          receivers: [otlp]
+          processors: [memory_limiter, filter/resource_contract, resource/defaults, batch]
+          exporters: [prometheus]
+        traces:
+          receivers: [otlp]
+          processors: [memory_limiter, filter/resource_contract, resource/defaults, batch]
+          exporters: [{{ if .Values.newRelicEnabled }}otlphttp/newrelic{{ else }}nop{{ end }}]

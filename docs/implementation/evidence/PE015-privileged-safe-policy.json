@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "pass": false,
+  "trivyVersion": "0.75.0",
+  "dbUpdatedAt": "2026-10-02T12:48:00.080865328Z",
+  "scannedAt": "2026-10-02T20:27:04.6941794Z",
+  "findings": [
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0001",
+      "path": "forbidden-privileged.yaml",
+      "severity": "MEDIUM",
+      "decision": "warning"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0003",
+      "path": "forbidden-privileged.yaml",
+      "severity": "LOW",
+      "decision": "warning"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0004",
+      "path": "forbidden-privileged.yaml",
+      "severity": "LOW",
+      "decision": "warning"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0011",
+      "path": "forbidden-privileged.yaml",
+      "severity": "LOW",
+      "decision": "warning"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0012",
+      "path": "forbidden-privileged.yaml",
+      "severity": "MEDIUM",
+      "decision": "warning"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0014",
+      "path": "forbidden-privileged.yaml",
+      "severity": "HIGH",
+      "decision": "warning"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0015",
+      "path": "forbidden-privileged.yaml",
+      "severity": "LOW",
+      "decision": "warning"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0016",
+      "path": "forbidden-privileged.yaml",
+      "severity": "LOW",
+      "decision": "warning"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0017",
+      "path": "forbidden-privileged.yaml",
+      "severity": "HIGH",
+      "decision": "fail"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0018",
+      "path": "forbidden-privileged.yaml",
+      "severity": "LOW",
+      "decision": "warning"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0020",
+      "path": "forbidden-privileged.yaml",
+      "severity": "LOW",
+      "decision": "warning"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0021",
+      "path": "forbidden-privileged.yaml",
+      "severity": "LOW",
+      "decision": "warning"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0030",
+      "path": "forbidden-privileged.yaml",
+      "severity": "LOW",
+      "decision": "warning"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0104",
+      "path": "forbidden-privileged.yaml",
+      "severity": "MEDIUM",
+      "decision": "warning"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0106",
+      "path": "forbidden-privileged.yaml",
+      "severity": "LOW",
+      "decision": "warning"
+    },
+    {
+      "kind": "misconfiguration",
+      "rule": "KSV-0118",
+      "path": "forbidden-privileged.yaml",
+      "severity": "HIGH",
+      "decision": "warning"
+    }
+  ],
+  "policySHA256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337"
+}

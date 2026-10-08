@@ -1,0 +1,13 @@
+{
+  "recoverySec": 13.237525,
+  "restoreAt": "2026-10-06T18:10:26.6635519Z",
+  "exportedAt": "2026-10-06T18:10:39.9010924Z",
+  "pass": true,
+  "faultStart": "2026-10-06T18:09:26.3220498Z",
+  "NRUIStoredTraceNotYetProven": true,
+  "receivedAt": "2026-10-06T18:10:39.9010769Z",
+  "faultSec": 60.3415021,
+  "wholeSpanLossClaim": false,
+  "utc": "2026-10-06T18:10:39.9030393Z",
+  "exportRecoverySec": 13.2375405
+}

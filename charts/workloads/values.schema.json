@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft-07/schema#","type":"object","additionalProperties":false,"required":["applicationRepository","targetRevision"],"properties":{"applicationRepository":{"const":"https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git"},"targetRevision":{"const":"main"}}}

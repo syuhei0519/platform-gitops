@@ -1,0 +1,13 @@
+{{/*
+Git内dashboard JSONをprovisioning用ConfigMapへ変換する。files/application-overview.json等が正本入力。
+Grafana UI上の一時編集をGit正本の更新とは扱わない。
+*/}}apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: observability
+data:
+{{- range $path, $_ := .Files.Glob "files/*.json" }}
+  {{ base $path }}: |
+{{ $.Files.Get $path | indent 4 }}
+{{- end }}

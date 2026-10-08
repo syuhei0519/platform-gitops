@@ -1,0 +1,117 @@
+{
+  "selectedMainManifest": "4fb1b4f9fafa960a3b6919d3a1e2a0b243a5f55f",
+  "rawTraceOrLocalBinaryArtifactRead": false,
+  "technicalAcceptanceComplete": true,
+  "parent16Complete": false,
+  "frontendMR": 10,
+  "manifestMR": 50,
+  "experimentalDigest": "sha256:e47e9dad144cb1aa3b1558492dd27506de4f0be86e39920da1ac00f7ffc7f842",
+  "issueUnitUpdatePending": true,
+  "proofs": [
+    {
+      "path": "evidence/PE016F-artifact-limit-proof.json",
+      "sha256": "029e814444d0a768e3d156543bf0094405aaedf35b719b35ca91cf41de928932"
+    },
+    {
+      "path": "evidence/PE016F-real-build-layout-proof.json",
+      "sha256": "41b379b1c69e5f8b191a057a640ed9753fcf9399308438d05e050cbaa200a755"
+    },
+    {
+      "path": "evidence/PE016F-real-build-audit.json",
+      "sha256": "1fecaa15f6c5f743eb020a38bcf8e7c024276a8fda12e8025ad4c0288ef5cdae"
+    },
+    {
+      "path": "evidence/PE016F-real-compatibility-proof.json",
+      "sha256": "25f30b2e6bf19683dbeab6fbaa6d24231a9f1c2b6103a4a84807c3ec1251a06a"
+    },
+    {
+      "path": "evidence/PE016F-real-runtime-proof.json",
+      "sha256": "7233d5f162ddba6631055727225605ed4674ceb28243e5f5389fc8c598514b0e"
+    },
+    {
+      "path": "evidence/PE016F-native-OCI-audit.json",
+      "sha256": "8d33f9a6fe1207ec62ad72b8784aa83356d77e0f7f57f5d5a7f26795b3f2c1a4"
+    },
+    {
+      "path": "evidence/PE016F-v6-budget-audit.json",
+      "sha256": "f626b56dc9ce9a3698a68ae5582d9ad6a0ee0958c59e6677eac6b2691c40a865"
+    },
+    {
+      "path": "evidence/PE016F-v6-budget-build.json",
+      "sha256": "da16afb623b85004074037b9c8a6e91fa0f7d26d236441cea2d62f5961710c2f"
+    },
+    {
+      "path": "evidence/PE016F-v6-budget-format.json",
+      "sha256": "a06725fc93800ee4cc3bc17956ea67b8dc740fc7a49ac9273696d1f0d20e334e"
+    },
+    {
+      "path": "evidence/PE016F-v6-budget-runtime.json",
+      "sha256": "6c212fb480c4556784703093f7a5640d32369a7538d51816a3527dd9151c4a18"
+    },
+    {
+      "path": "evidence/PE016F-missing-input-v6-audit.json",
+      "sha256": "bd7096263b130363aabb8f0a6ca71b093f4129063887c3b80eac2952c9de6d0a"
+    },
+    {
+      "path": "evidence/PE016F-missing-input-v6-proof.json",
+      "sha256": "fb4ec6e5b342725ae7771f14da1338372c25fffc2ee5de56e98ad54fb107dd66"
+    },
+    {
+      "path": "evidence/PE016F-rootless-disk-fixture.json",
+      "sha256": "328359c30257cea55fe4bf915381fa565b11d62d4d9e444703d04a39809ef4a7"
+    },
+    {
+      "path": "evidence/PE016F-v5-disk-failure.json",
+      "sha256": "fa10dd6cc10cdc73e32f2795f5f44335e3960702c44d0b7b2e6c542b2bd02993"
+    },
+    {
+      "path": "evidence/PE016F-current-integration-state.json",
+      "sha256": "76fefc357f2fa2e377ff92350ffd4f28a060c72f48eaaa50bda2110a47a73c98"
+    },
+    {
+      "path": "evidence/PE016F-oci-merge.json",
+      "sha256": "1397f15fea1cebdcdee9e5996179e938814323d9eb0c3197707ae8675f9483df"
+    },
+    {
+      "path": "evidence/PE016F-main-CI-audit.json",
+      "sha256": "b13b571d48d7b121b0ec91990aa093c18e74192d270145b0805e38221c72593c"
+    },
+    {
+      "path": "evidence/PE016F-main-runtime-proof.json",
+      "sha256": "ba07e05b0a1a97ac4773b1d9eefa08378827446a4bf86fbe6a34092745c17eec"
+    },
+    {
+      "path": "evidence/PE016F-source-runtime-before.json",
+      "sha256": "2586795a46fa3a0e58e8e653724eccfdf7e362f5ba0dbf40ffbe4a8f9061939f"
+    },
+    {
+      "path": "evidence/PE016F-C-regression-frontend-storage-audit.json",
+      "sha256": "229a56bed3317d2e90c41ff42a19c71f7dbd3e437a9edeb84461c6c6490f2f16"
+    },
+    {
+      "path": "evidence/PE016F-C-regression-frontend-storage-proof.json",
+      "sha256": "4089628a7b8239cdee9debaa53f3775468028f66df61ea77d592e20af9c40237"
+    },
+    {
+      "path": "evidence/PE016F-manifest-MR50-merge-proof.json",
+      "sha256": "5a537da5a49fc9d19a74198512378f42a0a7e1b2761fb627a2690528fdcccd32"
+    },
+    {
+      "path": "evidence/PE016F-manifest-MR50-verification.json",
+      "sha256": "33266a79654bfe6ae8373c4737af0731c0b14abf1a382f7d7d411bd2b1788d56"
+    }
+  ],
+  "fullIntermediateAT05Accepted": true,
+  "experimentalOCISource": "dc5b8d1028a49d0d6fe32cbff2ce1f28dea8942f",
+  "artifactExpiryFixture": "missing downloaded input; no actual one-day wait",
+  "frontendApplicationMain": "19da2ae5bd99b908fb6e3a0a3ca0924c1d4ab8d8",
+  "selectedMainDigest": "sha256:6a88974a3da301ed15542cdbd16f11fffdbae3119b30e5879253d2812ad01fbe",
+  "adminArtifactSettingDirectRead": false,
+  "selectedMainPipeline": 2908613562,
+  "evidenceIntegrationPending": true,
+  "phase2Switched": false,
+  "scope": "PE016F only",
+  "backendOCIStarted": false,
+  "experimentalPipeline": 2908594164,
+  "experimentalRegistryPush": false
+}

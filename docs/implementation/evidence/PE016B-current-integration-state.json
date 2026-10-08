@@ -1,0 +1,12 @@
+{
+  "source": "5eaf29673faca533431bee961512fd57295cf62b",
+  "ociImplementationUnchanged": true,
+  "ownStatus": "success",
+  "ociTestSource": "cbfd32e960943131a10ada62f8ff36ceb2f61cc1",
+  "mainAT05Pending": true,
+  "ownPipeline": 2910645588,
+  "utc": "2026-10-04T10:10:15.5569799Z",
+  "changedPaths": [
+    "ci/OCI-VALIDATION.md"
+  ]
+}

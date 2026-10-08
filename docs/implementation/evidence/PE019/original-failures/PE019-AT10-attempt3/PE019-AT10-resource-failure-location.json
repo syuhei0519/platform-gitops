@@ -1,0 +1,6 @@
+{
+  "type": "System.ArgumentException",
+  "id": "System.ArgumentException,Microsoft.PowerShell.Commands.ConvertFromJsonCommand",
+  "scriptStack": "at <ScriptBlock>, C:\\work\\CorePlatform\\output\\core-platform-v1-phase1-phase2-20261002\\acceptance\\read-pe019-resource-snapshot.ps1: line 15\r\nat <ScriptBlock>, C:\\work\\CorePlatform\\output\\core-platform-v1-phase1-phase2-20261002\\acceptance\\pe019-capacity-resource-worker.ps1: line 20",
+  "stage": "snapshot"
+}

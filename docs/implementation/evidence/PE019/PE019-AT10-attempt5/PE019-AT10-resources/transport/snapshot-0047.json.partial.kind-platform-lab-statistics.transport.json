@@ -1,0 +1,15 @@
+{
+  "stdoutReaderCodePage": 65001,
+  "hostConsoleCodePage": 932,
+  "hasExited": true,
+  "stage": "kind-platform-lab-statistics",
+  "endsWithJSONObject": true,
+  "stderrCategory": "none",
+  "stdoutUTF8Bytes": 100830,
+  "stdoutComplete": true,
+  "processId": 11852,
+  "processExitCode": 0,
+  "rawValuesRecorded": false,
+  "emptyOutput": false,
+  "startsWithJSONObject": true
+}

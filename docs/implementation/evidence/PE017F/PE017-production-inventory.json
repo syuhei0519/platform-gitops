@@ -1,0 +1,179 @@
+{
+  "explicitRollbackRegister": [
+    {
+      "reason": "rollback",
+      "service": "frontend",
+      "basis": "Explicitly retain the pre-PE017F accepted runtime baseline",
+      "digest": "sha256:6a88974a3da301ed15542cdbd16f11fffdbae3119b30e5879253d2812ad01fbe"
+    },
+    {
+      "reason": "rollback",
+      "service": "backend",
+      "basis": "Explicitly retain the pre-PE017F accepted runtime baseline",
+      "digest": "sha256:29c90d8c8024ef9e10821cb773eac6c2dfdda12d10d7a0dea508703bfb685793"
+    }
+  ],
+  "paginationComplete": true,
+  "cleanupAuthorizedByThisSnapshot": false,
+  "operatorReviewAndRetentionPlanPending": true,
+  "deleteRequested": false,
+  "automaticDeletionEnabled": false,
+  "running": [
+    {
+      "service": "backend",
+      "reason": "running",
+      "namespace": "account",
+      "pod": "backend-5ff5944f96-trdjg",
+      "podUid": "55cfd1cb-2ac4-451f-8a9c-adcb55662cbf",
+      "image": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:a300338cefdca94b4a041d71b37faae8d71a8701@sha256:29c90d8c8024ef9e10821cb773eac6c2dfdda12d10d7a0dea508703bfb685793",
+      "container": "backend",
+      "digest": "sha256:29c90d8c8024ef9e10821cb773eac6c2dfdda12d10d7a0dea508703bfb685793"
+    },
+    {
+      "service": "frontend",
+      "reason": "running",
+      "namespace": "account",
+      "pod": "frontend-cf4f96f99-8wjhg",
+      "podUid": "7f8e7019-6209-49d2-9d1f-d46eb2777b14",
+      "image": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app:d5226af3c1ca1a6eee6e6bcacf5d6629b200933f@sha256:edd45c48b3988edde836b9abdf44ea23fe1c687a0626fd90f61612561c23f154",
+      "container": "frontend",
+      "digest": "sha256:edd45c48b3988edde836b9abdf44ea23fe1c687a0626fd90f61612561c23f154"
+    },
+    {
+      "service": "backend",
+      "reason": "running",
+      "namespace": "account",
+      "pod": "pe012-canary-865858dc5d-8twd6",
+      "podUid": "a1b578c0-f848-427a-b06a-67adedabcc4a",
+      "image": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:ff5af7e7305e36299b9b0b5629a0d9a016271619@sha256:ec1ab2e08e26381b554d39c4c133b5ecf2b4056ddcec9d81d740d13a67318db7",
+      "container": "backend",
+      "digest": "sha256:ec1ab2e08e26381b554d39c4c133b5ecf2b4056ddcec9d81d740d13a67318db7"
+    }
+  ],
+  "scope": "Generic Package metadata plus actual Source Pod/initContainer inventory",
+  "utc": "2026-10-03T15:14:08.0464218Z",
+  "allSixStatusesListed": true,
+  "documentation": "https://docs.gitlab.com/api/packages/",
+  "packages": [
+    {
+      "id": 71310231,
+      "version": "sha256-bc04a1166438c5534e41d8036e59aae08d28b792abb58af219a3745b25c4a1c2",
+      "reservedNonreleaseFixture": true,
+      "project": 86247025,
+      "createdAt": "2026-10-02T23:13:27.782Z",
+      "name": "core-platform-frontend",
+      "files": [],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": false
+    },
+    {
+      "id": 71324296,
+      "version": "sha256-aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-03T09:32:32.198Z",
+      "name": "core-platform-frontend",
+      "files": [
+        {
+          "id": 362286010,
+          "file_name": "scan-report-2908988271-16911641951.json",
+          "size": 47341,
+          "file_sha256": "b44c7bfea0300e269559223aa75b220c6e1d22fe89f5edaa6b1c6b3e7f5ac7ba",
+          "created_at": "2026-10-03T09:32:32.267Z"
+        },
+        {
+          "id": 362286018,
+          "file_name": "sbom-2908988271-16911641951.cdx.json",
+          "size": 619591,
+          "file_sha256": "9b7a174933ec2c73d9422e204fc0b6d928bc5d69f52b618b49873aed9103cdc4",
+          "created_at": "2026-10-03T09:32:36.082Z"
+        },
+        {
+          "id": 362286022,
+          "file_name": "release-record-2908988271-16911641951.json",
+          "size": 2197,
+          "file_sha256": "0296119f28d7aa6c6cc83fe292200aefe0ace68995e8c116b0c722301ce82d4d",
+          "created_at": "2026-10-03T09:32:37.592Z"
+        },
+        {
+          "id": 362363411,
+          "file_name": "scan-report-2908988271-16911641952.json",
+          "size": 47341,
+          "file_sha256": "dc66f801a308d57d7b337621a647413a71f6ae2566417223ce09e74682c157e1",
+          "created_at": "2026-10-03T15:08:16.502Z"
+        },
+        {
+          "id": 362363423,
+          "file_name": "release-record-2908988271-16911641952.json",
+          "size": 1726,
+          "file_sha256": "4c5791eb3e76bbcd82e2d69a44654161a43be2e812818fcb512d1f8b2432bfaa",
+          "created_at": "2026-10-03T15:08:19.361Z"
+        }
+      ],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": true
+    },
+    {
+      "id": 71206300,
+      "version": "16885530135",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-02T02:38:31.055Z",
+      "name": "at13-permission-fixture",
+      "files": [],
+      "status": "pending_destruction",
+      "outsideFixedEvidenceNameRetained": true,
+      "filesListed": false
+    },
+    {
+      "id": 71206477,
+      "version": "16885612226",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-02T02:47:21.879Z",
+      "name": "at13-permission-fixture",
+      "files": [],
+      "status": "pending_destruction",
+      "outsideFixedEvidenceNameRetained": true,
+      "filesListed": false
+    },
+    {
+      "id": 71311177,
+      "version": "sha256-790a9fcdab12f15a6c425cc9c7a46eaecfc33bde8bf9c55a95a893a212e2c33f",
+      "reservedNonreleaseFixture": true,
+      "project": 86247033,
+      "createdAt": "2026-10-02T23:32:05.873Z",
+      "name": "core-platform-backend",
+      "files": [],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": false
+    },
+    {
+      "id": 71206310,
+      "version": "16885530419",
+      "reservedNonreleaseFixture": false,
+      "project": 86247033,
+      "createdAt": "2026-10-02T02:38:48.092Z",
+      "name": "at13-permission-fixture",
+      "files": [],
+      "status": "pending_destruction",
+      "outsideFixedEvidenceNameRetained": true,
+      "filesListed": false
+    },
+    {
+      "id": 71206480,
+      "version": "16885612284",
+      "reservedNonreleaseFixture": false,
+      "project": 86247033,
+      "createdAt": "2026-10-02T02:47:39.585Z",
+      "name": "at13-permission-fixture",
+      "files": [],
+      "status": "pending_destruction",
+      "outsideFixedEvidenceNameRetained": true,
+      "filesListed": false
+    }
+  ]
+}

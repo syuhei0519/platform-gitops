@@ -1,0 +1,9 @@
+{
+  "pipeline": 2907886612,
+  "jobs": "Go bootstrap, Helm render/policy, strict schema",
+  "utc": "2026-10-02T19:58:02.5382227Z",
+  "purpose": "PE014 actual phase1 CI concurrent capacity",
+  "project": 86247036,
+  "sha": "7ce833dcbddc4097dd36c046c5629124a27bbc1b",
+  "status": "created"
+}

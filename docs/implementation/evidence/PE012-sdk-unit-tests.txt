@@ -1,0 +1,57 @@
+=== RUN   TestUpdateChangesOnlyDeclaredKeys
+--- PASS: TestUpdateChangesOnlyDeclaredKeys (0.00s)
+=== RUN   TestUpdateRejectsMissingContractKey
+--- PASS: TestUpdateRejectsMissingContractKey (0.00s)
+PASS
+ok  	gitlab.com/platform-engineering-lab/backend-app/ci	(cached)
+=== RUN   TestRuntimeLogLevelAndTimestamp
+--- PASS: TestRuntimeLogLevelAndTimestamp (0.03s)
+PASS
+ok  	gitlab.com/platform-engineering-lab/backend-app/cmd/server	0.161s
+=== RUN   TestValidation
+--- PASS: TestValidation (0.00s)
+PASS
+ok  	gitlab.com/platform-engineering-lab/backend-app/internal/account	(cached)
+=== RUN   TestLogLevelConfig
+=== RUN   TestLogLevelConfig/#00
+=== RUN   TestLogLevelConfig/DEBUG
+=== RUN   TestLogLevelConfig/info
+=== RUN   TestLogLevelConfig/warn
+=== RUN   TestLogLevelConfig/error
+--- PASS: TestLogLevelConfig (0.00s)
+    --- PASS: TestLogLevelConfig/#00 (0.00s)
+    --- PASS: TestLogLevelConfig/DEBUG (0.00s)
+    --- PASS: TestLogLevelConfig/info (0.00s)
+    --- PASS: TestLogLevelConfig/warn (0.00s)
+    --- PASS: TestLogLevelConfig/error (0.00s)
+PASS
+ok  	gitlab.com/platform-engineering-lab/backend-app/internal/config	(cached)
+=== RUN   TestExactRequestsHistogramPrivacyAndTraceParent
+    observation_test.go:177: 6 business requests / 2 health: counter=6 histogram=6; server=6 DB=3; explicit seconds bounds=[0.005 0.01 0.025 0.05 0.1 0.25 0.5 1 2.5 5 10]; privacy and parent continuity passed
+--- PASS: TestExactRequestsHistogramPrivacyAndTraceParent (0.08s)
+PASS
+ok  	gitlab.com/platform-engineering-lab/backend-app/internal/httpapi	0.205s
+=== RUN   TestMigrationDisposableDatabase
+    migrate_integration_test.go:16: isolated database not supplied
+--- SKIP: TestMigrationDisposableDatabase (0.00s)
+=== RUN   TestWaitExhaustsTenBoundedAttempts
+--- PASS: TestWaitExhaustsTenBoundedAttempts (0.00s)
+=== RUN   TestWaitRecoversBeforeAttemptLimit
+--- PASS: TestWaitRecoversBeforeAttemptLimit (0.00s)
+=== RUN   TestWaitCancellationStopsBeforeAnotherConnection
+--- PASS: TestWaitCancellationStopsBeforeAnotherConnection (0.00s)
+=== RUN   TestWaitHonorsShortParentDeadline
+--- PASS: TestWaitHonorsShortParentDeadline (0.01s)
+PASS
+ok  	gitlab.com/platform-engineering-lab/backend-app/internal/store/postgres	0.149s
+=== RUN   TestResourceInstanceAndRestrictedDestination
+--- PASS: TestResourceInstanceAndRestrictedDestination (0.00s)
+=== RUN   TestQueueDoesNotBlockRequestsAndShutdownIsBounded
+    telemetry_test.go:79: 10000 spans+measurements completed without blocking; unavailable export failure observed; shutdown <=5s
+--- PASS: TestQueueDoesNotBlockRequestsAndShutdownIsBounded (0.05s)
+=== RUN   TestSDKCollectorMetricNames
+    telemetry_test.go:85: explicit disposable Collector fixture required
+--- SKIP: TestSDKCollectorMetricNames (0.00s)
+PASS
+ok  	gitlab.com/platform-engineering-lab/backend-app/internal/telemetry	0.185s
+?   	gitlab.com/platform-engineering-lab/backend-app/migrations	[no test files]

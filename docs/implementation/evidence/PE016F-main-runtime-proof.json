@@ -1,0 +1,30 @@
+{
+  "databasePVCPreserved": true,
+  "utc": "2026-10-03T04:24:45.5693822Z",
+  "sourceCommit": "19da2ae5bd99b908fb6e3a0a3ca0924c1d4ab8d8",
+  "experimentalOCIDigestAdoptionClaim": false,
+  "phase2Switched": false,
+  "databaseWriteOrDeletion": false,
+  "databasePVCUid": "f7774170-a00e-4d90-9caa-e692f1e1555a",
+  "syntheticRecordId": 9,
+  "context": "kind-platform-lab",
+  "manifestMR": 50,
+  "imageId": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app@sha256:6a88974a3da301ed15542cdbd16f11fffdbae3119b30e5879253d2812ad01fbe",
+  "pipeline": 2908613562,
+  "scope": "PE016F intermediate main selected Phase0 delivery, not Phase2 OCI publication",
+  "backendPodUnchanged": true,
+  "fullIntermediateAT05Accepted": true,
+  "selectedMainDeliveryComplete": true,
+  "pod": "frontend-745c959d75-qcchd",
+  "image": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app:19da2ae5bd99b908fb6e3a0a3ca0924c1d4ab8d8@sha256:6a88974a3da301ed15542cdbd16f11fffdbae3119b30e5879253d2812ad01fbe",
+  "manifest": "4fb1b4f9fafa960a3b6919d3a1e2a0b243a5f55f",
+  "http": {
+    "runtimeUid": 10001,
+    "readyHttp": 200,
+    "liveHttp": 200,
+    "staticIndexHttp": 200
+  },
+  "digest": "sha256:6a88974a3da301ed15542cdbd16f11fffdbae3119b30e5879253d2812ad01fbe",
+  "existingSyntheticRowReadable": true,
+  "podUid": "8c6984d5-2862-4107-8f23-2ba7d35a1387"
+}

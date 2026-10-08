@@ -1,0 +1,26 @@
+{
+  "traceId": "5ef1d9001bae43fcbb9150f1af785280",
+  "rows": [
+    {
+      "serviceName": "account-backend",
+      "name": "PE011-synthetic-parent",
+      "id": "0c7afb379f5b4f72",
+      "instance": "pe011-c4158a1e42e248f3bb9ecf7a9c8e1df5",
+      "version": "5a21bf5ebf4ea1ee0f54c53cce1bdd87814adbfd",
+      "parentId": null
+    },
+    {
+      "serviceName": "account-backend",
+      "name": "PE011-synthetic-child",
+      "id": "6b8e19878f5a418e",
+      "instance": "pe011-c4158a1e42e248f3bb9ecf7a9c8e1df5",
+      "version": "5a21bf5ebf4ea1ee0f54c53cce1bdd87814adbfd",
+      "parentId": "0c7afb379f5b4f72"
+    }
+  ],
+  "region": "US",
+  "source": "New Relic visible NRQL DataTable",
+  "computeCapacityUnits": 0,
+  "verifiedUtc": "2026-10-02T14:30:50.8190264Z",
+  "account": 8572010
+}

@@ -1,0 +1,1840 @@
+{
+  "samples": [
+    {
+      "utc": "2026-10-02T15:53:12.3901149Z",
+      "clientDurationMs": 47.7092,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:13.3538075Z",
+      "clientDurationMs": 7.8604,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:14.3447639Z",
+      "clientDurationMs": 7.0917,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:15.3514940Z",
+      "clientDurationMs": 7.5381,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:16.3700836Z",
+      "clientDurationMs": 7.0497,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:17.3500579Z",
+      "clientDurationMs": 7.1592,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:18.3591443Z",
+      "clientDurationMs": 7.8394,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:19.3455746Z",
+      "clientDurationMs": 7.5568,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:20.3501057Z",
+      "clientDurationMs": 7.5426,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:21.3586685Z",
+      "clientDurationMs": 6.727,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:22.3526650Z",
+      "clientDurationMs": 6.9567,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:23.3460115Z",
+      "clientDurationMs": 6.8177,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:24.3587244Z",
+      "clientDurationMs": 7.4937,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:25.3530496Z",
+      "clientDurationMs": 6.8325,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:26.3498061Z",
+      "clientDurationMs": 9.4723,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:27.3577209Z",
+      "clientDurationMs": 9.1108,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:28.3476381Z",
+      "clientDurationMs": 7.3556,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:29.3552314Z",
+      "clientDurationMs": 8.8519,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:30.3460648Z",
+      "clientDurationMs": 8.4912,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:31.3524164Z",
+      "clientDurationMs": 6.5354,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:32.3460495Z",
+      "clientDurationMs": 6.5972,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:33.3565575Z",
+      "clientDurationMs": 6.0458,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:34.3489877Z",
+      "clientDurationMs": 6.7365,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:35.3545721Z",
+      "clientDurationMs": 6.3061,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:36.3516334Z",
+      "clientDurationMs": 7.3137,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:37.3704262Z",
+      "clientDurationMs": 7.2701,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:38.3448125Z",
+      "clientDurationMs": 8.0461,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:39.3471141Z",
+      "clientDurationMs": 6.8964,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:40.3514908Z",
+      "clientDurationMs": 8.8947,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:41.3590652Z",
+      "clientDurationMs": 7.4964,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:42.3511735Z",
+      "clientDurationMs": 8.0895,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:43.3587523Z",
+      "clientDurationMs": 6.8486,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:44.3521571Z",
+      "clientDurationMs": 6.1718,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:45.3637091Z",
+      "clientDurationMs": 5.8713,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:46.3522442Z",
+      "clientDurationMs": 6.3656,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:47.3573728Z",
+      "clientDurationMs": 5.4803,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:48.3462983Z",
+      "clientDurationMs": 6.063,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:49.3582094Z",
+      "clientDurationMs": 7.568,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:50.3473326Z",
+      "clientDurationMs": 6.3402,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:51.3591486Z",
+      "clientDurationMs": 7.928,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:52.3501758Z",
+      "clientDurationMs": 6.3564,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:53.3563568Z",
+      "clientDurationMs": 7.2329,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:54.3458043Z",
+      "clientDurationMs": 6.4653,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:55.3560245Z",
+      "clientDurationMs": 7.2877,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:56.3477862Z",
+      "clientDurationMs": 5.8888,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:57.3578564Z",
+      "clientDurationMs": 6.506,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:58.3529814Z",
+      "clientDurationMs": 5.9734,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:53:59.3528961Z",
+      "clientDurationMs": 6.1171,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:00.3481723Z",
+      "clientDurationMs": 7.4578,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:01.3541779Z",
+      "clientDurationMs": 6.8639,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:02.3522645Z",
+      "clientDurationMs": 7.7584,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:03.3600034Z",
+      "clientDurationMs": 5.9013,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:04.3556434Z",
+      "clientDurationMs": 6.521,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:05.3533111Z",
+      "clientDurationMs": 6.5266,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:06.3500054Z",
+      "clientDurationMs": 7.0381,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:07.3563524Z",
+      "clientDurationMs": 6.0935,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:08.3441325Z",
+      "clientDurationMs": 6.2439,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:09.3561369Z",
+      "clientDurationMs": 9.1086,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:10.3594407Z",
+      "clientDurationMs": 9.322,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:11.3570285Z",
+      "clientDurationMs": 7.9847,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:12.3587343Z",
+      "clientDurationMs": 6.643,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:13.3526258Z",
+      "clientDurationMs": 5.0201,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:14.3606178Z",
+      "clientDurationMs": 5.78,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:15.3551744Z",
+      "clientDurationMs": 5.9814,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:16.3513010Z",
+      "clientDurationMs": 5.6156,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:17.3609302Z",
+      "clientDurationMs": 6.8379,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:18.3527733Z",
+      "clientDurationMs": 7.2209,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:19.3602152Z",
+      "clientDurationMs": 6.4221,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:20.3500254Z",
+      "clientDurationMs": 5.5695,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:21.3628017Z",
+      "clientDurationMs": 6.5572,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:22.3511807Z",
+      "clientDurationMs": 5.6033,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:23.3713540Z",
+      "clientDurationMs": 7.0437,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:24.3579334Z",
+      "clientDurationMs": 7.5165,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:25.3500760Z",
+      "clientDurationMs": 6.7663,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:26.3667769Z",
+      "clientDurationMs": 7.796,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:27.3549120Z",
+      "clientDurationMs": 5.3443,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:28.3524107Z",
+      "clientDurationMs": 5.7327,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:29.3701412Z",
+      "clientDurationMs": 7.0768,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:30.3584342Z",
+      "clientDurationMs": 7.9491,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:31.3549388Z",
+      "clientDurationMs": 5.6945,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:32.3590699Z",
+      "clientDurationMs": 6.5223,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:33.3550650Z",
+      "clientDurationMs": 7.2767,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:34.3487963Z",
+      "clientDurationMs": 6.432,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:35.3583511Z",
+      "clientDurationMs": 7.2053,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:36.3508184Z",
+      "clientDurationMs": 7.7574,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:37.3641770Z",
+      "clientDurationMs": 8.3906,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:38.3485636Z",
+      "clientDurationMs": 5.8439,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:39.3510596Z",
+      "clientDurationMs": 6.702,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:40.3751683Z",
+      "clientDurationMs": 10.0835,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:41.3473360Z",
+      "clientDurationMs": 5.5468,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:42.3565876Z",
+      "clientDurationMs": 6.3153,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:43.3502022Z",
+      "clientDurationMs": 5.8905,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:44.3584248Z",
+      "clientDurationMs": 5.6901,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:45.3508976Z",
+      "clientDurationMs": 6.8122,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:46.3563778Z",
+      "clientDurationMs": 6.1455,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:47.3556006Z",
+      "clientDurationMs": 6.8343,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:48.3593252Z",
+      "clientDurationMs": 6.8694,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:49.3547197Z",
+      "clientDurationMs": 8.5019,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:50.3495128Z",
+      "clientDurationMs": 5.4621,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:51.3532319Z",
+      "clientDurationMs": 5.2507,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:52.3664617Z",
+      "clientDurationMs": 7.0011,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:53.3726533Z",
+      "clientDurationMs": 6.9753,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:54.3530649Z",
+      "clientDurationMs": 5.9024,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:55.3688219Z",
+      "clientDurationMs": 6.8217,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:56.3665326Z",
+      "clientDurationMs": 5.6944,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:57.3591217Z",
+      "clientDurationMs": 5.6599,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:58.3464605Z",
+      "clientDurationMs": 6.0698,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:54:59.3497342Z",
+      "clientDurationMs": 5.816,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:00.3592942Z",
+      "clientDurationMs": 6.3428,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:01.3544356Z",
+      "clientDurationMs": 7.3913,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:02.3454783Z",
+      "clientDurationMs": 5.353,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:03.3515011Z",
+      "clientDurationMs": 5.9916,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:04.3658746Z",
+      "clientDurationMs": 6.3964,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:05.3481443Z",
+      "clientDurationMs": 6.8382,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:06.3549909Z",
+      "clientDurationMs": 5.8908,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:07.3593122Z",
+      "clientDurationMs": 6.1645,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:08.3482834Z",
+      "clientDurationMs": 6.2116,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:09.3597844Z",
+      "clientDurationMs": 6.0941,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:10.3571092Z",
+      "clientDurationMs": 7.815,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:11.3579137Z",
+      "clientDurationMs": 7.5706,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:12.3482744Z",
+      "clientDurationMs": 5.9863,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:13.3583759Z",
+      "clientDurationMs": 5.6464,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:14.3532659Z",
+      "clientDurationMs": 6.4031,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:15.3614163Z",
+      "clientDurationMs": 6.7853,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:16.3498395Z",
+      "clientDurationMs": 5.6792,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:17.3600586Z",
+      "clientDurationMs": 6.7226,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:18.3513027Z",
+      "clientDurationMs": 7.6587,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:19.3712211Z",
+      "clientDurationMs": 5.4386,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:20.3559143Z",
+      "clientDurationMs": 6.3683,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:21.3508096Z",
+      "clientDurationMs": 6.7024,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:22.3521570Z",
+      "clientDurationMs": 7.013,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:23.3577306Z",
+      "clientDurationMs": 5.3835,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:24.3478689Z",
+      "clientDurationMs": 6.4869,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:25.3598479Z",
+      "clientDurationMs": 5.3488,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:26.3504766Z",
+      "clientDurationMs": 6.9861,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:27.3535889Z",
+      "clientDurationMs": 7.3763,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:28.3712118Z",
+      "clientDurationMs": 6.3833,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:29.3553134Z",
+      "clientDurationMs": 6.4695,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:30.3568557Z",
+      "clientDurationMs": 7.0711,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:31.3537690Z",
+      "clientDurationMs": 5.8124,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:32.3610727Z",
+      "clientDurationMs": 7.1277,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:33.3490262Z",
+      "clientDurationMs": 6.4729,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:34.3518568Z",
+      "clientDurationMs": 8.0208,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:35.3573046Z",
+      "clientDurationMs": 5.8917,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:36.3489341Z",
+      "clientDurationMs": 5.8655,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:37.3562111Z",
+      "clientDurationMs": 5.3735,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:38.3465900Z",
+      "clientDurationMs": 6.1071,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:39.3548058Z",
+      "clientDurationMs": 7.5841,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:40.3718772Z",
+      "clientDurationMs": 7.5062,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:41.3616520Z",
+      "clientDurationMs": 6.6785,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:42.3488121Z",
+      "clientDurationMs": 7.7694,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:43.3466785Z",
+      "clientDurationMs": 5.8666,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:44.3513181Z",
+      "clientDurationMs": 7.4,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:45.3495763Z",
+      "clientDurationMs": 5.7387,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:46.3543473Z",
+      "clientDurationMs": 7.9693,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:47.3600858Z",
+      "clientDurationMs": 6.0371,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:48.3561582Z",
+      "clientDurationMs": 5.5436,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:49.3527766Z",
+      "clientDurationMs": 6.084,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:50.3696213Z",
+      "clientDurationMs": 6.1263,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:51.3595273Z",
+      "clientDurationMs": 6.1148,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:52.3497654Z",
+      "clientDurationMs": 6.7449,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:53.3526449Z",
+      "clientDurationMs": 5.2443,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:54.3610372Z",
+      "clientDurationMs": 6.7403,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:55.3515491Z",
+      "clientDurationMs": 7.7294,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:56.3564039Z",
+      "clientDurationMs": 5.026,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:57.3504028Z",
+      "clientDurationMs": 4.9801,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:58.3592498Z",
+      "clientDurationMs": 9.66,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:55:59.3520558Z",
+      "clientDurationMs": 5.7182,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:00.3494376Z",
+      "clientDurationMs": 5.8789,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:01.3561562Z",
+      "clientDurationMs": 6.815,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:02.3475102Z",
+      "clientDurationMs": 6.2981,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:03.3492725Z",
+      "clientDurationMs": 5.998,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:04.3491158Z",
+      "clientDurationMs": 6.9312,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:05.3568033Z",
+      "clientDurationMs": 6.64,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:06.3520706Z",
+      "clientDurationMs": 6.953,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:07.3602104Z",
+      "clientDurationMs": 5.3755,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:08.3496563Z",
+      "clientDurationMs": 5.5153,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:09.3544552Z",
+      "clientDurationMs": 6.1608,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:10.3609498Z",
+      "clientDurationMs": 6.619,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:11.3567063Z",
+      "clientDurationMs": 10.738,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:12.3624018Z",
+      "clientDurationMs": 6.3509,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:13.3537677Z",
+      "clientDurationMs": 6.8441,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:14.3695732Z",
+      "clientDurationMs": 6.1041,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:15.3626913Z",
+      "clientDurationMs": 7.3426,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:16.3538649Z",
+      "clientDurationMs": 6.748,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:17.3716122Z",
+      "clientDurationMs": 5.8221,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:18.3715047Z",
+      "clientDurationMs": 5.9921,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:19.3620249Z",
+      "clientDurationMs": 7.1602,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:20.3490215Z",
+      "clientDurationMs": 6.8192,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:21.3538637Z",
+      "clientDurationMs": 8.8152,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:22.3720333Z",
+      "clientDurationMs": 7.2422,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:23.3732963Z",
+      "clientDurationMs": 6.8764,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:24.3562948Z",
+      "clientDurationMs": 8.8021,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:25.3716740Z",
+      "clientDurationMs": 6.2669,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:26.3625410Z",
+      "clientDurationMs": 6.6631,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:27.3582348Z",
+      "clientDurationMs": 6.1342,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:28.3545753Z",
+      "clientDurationMs": 5.2569,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:29.3681674Z",
+      "clientDurationMs": 6.5428,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:30.3506493Z",
+      "clientDurationMs": 9.0558,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:31.3516930Z",
+      "clientDurationMs": 5.9836,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:32.3552349Z",
+      "clientDurationMs": 6.0289,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:33.3685080Z",
+      "clientDurationMs": 5.9495,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:34.3544373Z",
+      "clientDurationMs": 5.8942,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:35.3698009Z",
+      "clientDurationMs": 6.435,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:36.3732263Z",
+      "clientDurationMs": 5.6965,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:37.3495962Z",
+      "clientDurationMs": 6.4309,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:38.3542351Z",
+      "clientDurationMs": 8.0828,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:39.3707583Z",
+      "clientDurationMs": 5.8414,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:40.3628177Z",
+      "clientDurationMs": 7.5914,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:41.3553013Z",
+      "clientDurationMs": 7.6715,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:42.3606900Z",
+      "clientDurationMs": 6.0372,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:43.3510905Z",
+      "clientDurationMs": 7.8858,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:44.3631924Z",
+      "clientDurationMs": 6.8511,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:45.3505702Z",
+      "clientDurationMs": 5.5479,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:46.3532144Z",
+      "clientDurationMs": 7.4704,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:47.3698690Z",
+      "clientDurationMs": 8.6186,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:48.3658309Z",
+      "clientDurationMs": 7.7789,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:49.3601333Z",
+      "clientDurationMs": 7.8993,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:50.3611569Z",
+      "clientDurationMs": 6.8872,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:51.3493154Z",
+      "clientDurationMs": 7.129,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:52.3498343Z",
+      "clientDurationMs": 7.56,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:53.3651085Z",
+      "clientDurationMs": 7.8633,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:54.3556605Z",
+      "clientDurationMs": 8.149,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:55.3738357Z",
+      "clientDurationMs": 9.132,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:56.3605431Z",
+      "clientDurationMs": 7.5937,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:57.3592866Z",
+      "clientDurationMs": 6.9925,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:58.3586396Z",
+      "clientDurationMs": 6.1294,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:56:59.3598099Z",
+      "clientDurationMs": 7.9582,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:00.3611876Z",
+      "clientDurationMs": 7.2921,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:01.3584829Z",
+      "clientDurationMs": 7.7139,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:02.3612920Z",
+      "clientDurationMs": 6.7367,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:03.3495074Z",
+      "clientDurationMs": 7.0027,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:04.3594434Z",
+      "clientDurationMs": 7.1003,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:05.3572305Z",
+      "clientDurationMs": 6.3364,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:06.3635279Z",
+      "clientDurationMs": 8.6093,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:07.3640420Z",
+      "clientDurationMs": 7.7886,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:08.3621215Z",
+      "clientDurationMs": 8.5075,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:09.3553642Z",
+      "clientDurationMs": 6.9444,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:10.3698295Z",
+      "clientDurationMs": 7.2634,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:11.3661562Z",
+      "clientDurationMs": 7.0723,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:12.3636029Z",
+      "clientDurationMs": 6.5305,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:13.3643045Z",
+      "clientDurationMs": 6.2572,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:14.3513167Z",
+      "clientDurationMs": 8.7609,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:15.3508891Z",
+      "clientDurationMs": 7.1848,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:16.3552187Z",
+      "clientDurationMs": 6.5273,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:17.3613330Z",
+      "clientDurationMs": 5.8585,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:18.3531154Z",
+      "clientDurationMs": 6.1489,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:19.3578198Z",
+      "clientDurationMs": 7.0151,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:20.3600474Z",
+      "clientDurationMs": 5.512,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:21.3612447Z",
+      "clientDurationMs": 5.9707,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:22.3495084Z",
+      "clientDurationMs": 5.5699,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:23.3608453Z",
+      "clientDurationMs": 5.7838,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:24.3620855Z",
+      "clientDurationMs": 5.574,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:25.3616313Z",
+      "clientDurationMs": 6.1278,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:26.3614028Z",
+      "clientDurationMs": 5.5103,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:27.3605417Z",
+      "clientDurationMs": 5.6195,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:28.3502030Z",
+      "clientDurationMs": 5.3312,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:29.3577754Z",
+      "clientDurationMs": 5.8819,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:30.3658369Z",
+      "clientDurationMs": 5.9254,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:31.3560587Z",
+      "clientDurationMs": 6.312,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:32.3743219Z",
+      "clientDurationMs": 6.0087,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:33.3592750Z",
+      "clientDurationMs": 8.5342,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:34.3542795Z",
+      "clientDurationMs": 6.3869,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:35.3598304Z",
+      "clientDurationMs": 6.3784,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:36.3629642Z",
+      "clientDurationMs": 6.8113,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:37.3631543Z",
+      "clientDurationMs": 6.7591,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:38.3640663Z",
+      "clientDurationMs": 6.3661,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:39.3556666Z",
+      "clientDurationMs": 5.6069,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:40.3682528Z",
+      "clientDurationMs": 8.5901,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:41.3670263Z",
+      "clientDurationMs": 8.5268,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:42.3632954Z",
+      "clientDurationMs": 7.5742,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:43.3631280Z",
+      "clientDurationMs": 8.8099,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:44.3526856Z",
+      "clientDurationMs": 8.9529,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:45.3609260Z",
+      "clientDurationMs": 6.709,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:46.3645144Z",
+      "clientDurationMs": 7.5349,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:47.3628732Z",
+      "clientDurationMs": 6.7348,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:48.3525500Z",
+      "clientDurationMs": 6.9967,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:49.3652050Z",
+      "clientDurationMs": 8.3497,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:50.3618776Z",
+      "clientDurationMs": 7.4385,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:51.3620440Z",
+      "clientDurationMs": 7.3652,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:52.3651030Z",
+      "clientDurationMs": 8.3099,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:53.3651341Z",
+      "clientDurationMs": 7.3618,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:54.3547094Z",
+      "clientDurationMs": 6.8665,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:55.3593837Z",
+      "clientDurationMs": 8.0452,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:56.3577680Z",
+      "clientDurationMs": 8.8511,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:57.3723242Z",
+      "clientDurationMs": 6.5316,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:58.3714971Z",
+      "clientDurationMs": 7.9302,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:57:59.3736816Z",
+      "clientDurationMs": 7.3737,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:00.3638014Z",
+      "clientDurationMs": 8.6462,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:01.3648674Z",
+      "clientDurationMs": 7.8311,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:02.3653760Z",
+      "clientDurationMs": 7.0655,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:03.3653814Z",
+      "clientDurationMs": 7.0783,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:04.3662098Z",
+      "clientDurationMs": 7.5709,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:05.3538623Z",
+      "clientDurationMs": 8.1177,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:06.3640755Z",
+      "clientDurationMs": 7.5286,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:07.3518263Z",
+      "clientDurationMs": 7.868,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:08.3557340Z",
+      "clientDurationMs": 8.7015,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:09.3713945Z",
+      "clientDurationMs": 8.1228,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:10.3741249Z",
+      "clientDurationMs": 7.3602,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:11.3693940Z",
+      "clientDurationMs": 6.395,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:12.3575990Z",
+      "clientDurationMs": 7.4347,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:13.3696506Z",
+      "clientDurationMs": 6.6212,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:14.3579531Z",
+      "clientDurationMs": 6.1361,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:15.3769822Z",
+      "clientDurationMs": 7.1349,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:16.3521223Z",
+      "clientDurationMs": 6.6739,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:17.3512298Z",
+      "clientDurationMs": 5.7503,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:18.3618059Z",
+      "clientDurationMs": 5.5489,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:19.3593815Z",
+      "clientDurationMs": 5.798,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:20.3610745Z",
+      "clientDurationMs": 6.1789,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:21.3597518Z",
+      "clientDurationMs": 5.4994,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:22.3527305Z",
+      "clientDurationMs": 6.7945,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:23.3571790Z",
+      "clientDurationMs": 5.7355,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:24.3771477Z",
+      "clientDurationMs": 6.1547,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:25.3499475Z",
+      "clientDurationMs": 5.2688,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:26.3646925Z",
+      "clientDurationMs": 6.8137,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:27.3531243Z",
+      "clientDurationMs": 7.2188,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:28.3587240Z",
+      "clientDurationMs": 5.6665,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:29.3666021Z",
+      "clientDurationMs": 5.8271,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:30.3570956Z",
+      "clientDurationMs": 7.2171,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:31.3684486Z",
+      "clientDurationMs": 6.5884,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:32.3581254Z",
+      "clientDurationMs": 7.1641,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:33.3759838Z",
+      "clientDurationMs": 5.2397,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:34.3525496Z",
+      "clientDurationMs": 5.5281,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:35.3644443Z",
+      "clientDurationMs": 5.5223,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:36.3585048Z",
+      "clientDurationMs": 6.0166,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:37.3649946Z",
+      "clientDurationMs": 5.5311,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:38.3537558Z",
+      "clientDurationMs": 5.4551,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:39.3589241Z",
+      "clientDurationMs": 7.0188,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:40.3770578Z",
+      "clientDurationMs": 5.7449,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:41.3559987Z",
+      "clientDurationMs": 6.3246,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:42.3585903Z",
+      "clientDurationMs": 7.7569,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:43.3774231Z",
+      "clientDurationMs": 6.4984,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:44.3664818Z",
+      "clientDurationMs": 6.4033,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:45.3525681Z",
+      "clientDurationMs": 5.8123,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:46.3682322Z",
+      "clientDurationMs": 7.4223,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:47.3506415Z",
+      "clientDurationMs": 5.9558,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:48.3531275Z",
+      "clientDurationMs": 5.359,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:49.3611385Z",
+      "clientDurationMs": 6.4727,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:50.3652809Z",
+      "clientDurationMs": 6.2483,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:51.3645545Z",
+      "clientDurationMs": 5.8219,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:52.3526395Z",
+      "clientDurationMs": 7.0801,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:53.3592877Z",
+      "clientDurationMs": 5.8607,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:54.3682937Z",
+      "clientDurationMs": 6.1061,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:55.3612703Z",
+      "clientDurationMs": 6.4271,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:56.3527158Z",
+      "clientDurationMs": 5.9864,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:57.3556491Z",
+      "clientDurationMs": 6.6951,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:58.3518255Z",
+      "clientDurationMs": 5.4944,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:58:59.3555836Z",
+      "clientDurationMs": 6.7186,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:59:00.3546323Z",
+      "clientDurationMs": 7.1684,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:59:01.3534713Z",
+      "clientDurationMs": 6.1181,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:59:02.3592158Z",
+      "clientDurationMs": 7.6058,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:59:03.3632991Z",
+      "clientDurationMs": 6.0354,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:59:04.3678950Z",
+      "clientDurationMs": 6.7211,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:59:05.3539700Z",
+      "clientDurationMs": 6.6682,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:59:06.3572414Z",
+      "clientDurationMs": 5.5531,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:59:07.3651439Z",
+      "clientDurationMs": 5.6782,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:59:08.3551490Z",
+      "clientDurationMs": 6.5974,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:59:09.3575595Z",
+      "clientDurationMs": 6.5523,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:59:10.3727401Z",
+      "clientDurationMs": 6.4125,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T15:59:11.3779425Z",
+      "clientDurationMs": 5.9105,
+      "status": 200
+    }
+  ],
+  "evaluationTime": 1790956751,
+  "promqlP95": "0.00475",
+  "rawBefore": 72.0,
+  "promqlCount": "300.00444451028903",
+  "totalRequests": 360,
+  "zeroTrafficP95": [
+    "NaN"
+  ],
+  "bucketDeltas": {
+    "0.5": 360.0,
+    "0.005": 360.0,
+    "5": 360.0,
+    "0.05": 360.0,
+    "2.5": 360.0,
+    "10": 360.0,
+    "0.25": 360.0,
+    "0.01": 360.0,
+    "0.025": 360.0,
+    "1": 360.0,
+    "0.1": 360.0,
+    "+Inf": 360.0
+  },
+  "instance": "2a438271-684c-4fde-8a6e-82a117012959",
+  "postScrapes": 2,
+  "preScrapes": 2,
+  "zeroTrafficDisplay": "NaN/empty mapped to N/A",
+  "expectedCount": 300,
+  "knownP95BucketUpper": "0.005",
+  "countTolerance": 30.0,
+  "queries": [
+    "sum(increase(pe_http_server_requests_total{job=\"account-backend\",instance=\"2a438271-684c-4fde-8a6e-82a117012959\",method=\"GET\",route=\"/api/accounts/{id}\",status_class=\"2xx\"}[5m]))",
+    "histogram_quantile(0.95,sum by (le)(rate(pe_http_server_request_duration_seconds_bucket{job=\"account-backend\",instance=\"2a438271-684c-4fde-8a6e-82a117012959\",method=\"GET\",route=\"/api/accounts/{id}\",status_class=\"2xx\"}[5m])))",
+    "histogram_quantile(0.95,sum by (le)(rate(pe_http_server_request_duration_seconds_bucket{job=\"account-backend\",instance=\"2a438271-684c-4fde-8a6e-82a117012959\",method=\"PUT\",route=\"/api/accounts/{id}\",status_class=\"2xx\"}[5m])))"
+  ],
+  "utc": "2026-10-02T16:00:21.4943881Z",
+  "rawAfter": 432.0
+}

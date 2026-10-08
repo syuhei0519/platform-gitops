@@ -1,0 +1,12 @@
+{
+  "candidateTree": "c0302cce9d9174de338104b701777413990016cc",
+  "source": "61f3943ae64c74bbc3a6157ca8365bf4fc8d0f59",
+  "mergeSha": "f1d3a9bd0d95e9be4e92fa6fe78b0388641d4100",
+  "actualTree": "c0302cce9d9174de338104b701777413990016cc",
+  "project": 86247033,
+  "ownCi": 2913871760,
+  "utc": "2026-10-05T14:12:31.2638744Z",
+  "mr": 18,
+  "beforeMain": "111fcd2e6b7b9911dac3aa12a5a8dc60550a6382",
+  "treeMatched": true
+}

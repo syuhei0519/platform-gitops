@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "trivyVersion": "0.75.0",
+  "dbMaxAgeHours": 24,
+  "exceptions": []
+}

@@ -1,0 +1,44 @@
+{{/*
+Collector Pod生成。ConfigMap変更をchecksumでPodTemplateへ反映しRecreateで置き換える。
+replicas=1とRecreateで更新中の複数集計先を避ける。停止期間とメモリqueue消失を許容し、無損失は保証しない。
+New Relic認証はSecretKeyRefでCollectorだけへ渡し、backendへ渡さない。
+*/}}apiVersion: apps/v1
+kind: Deployment
+metadata: {name: otel-collector, namespace: observability}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector: {matchLabels: {app.kubernetes.io/name: otel-collector}}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: otel-collector}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      serviceAccountName: otel-collector
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 40
+      securityContext: {runAsNonRoot: true, runAsUser: 10001, runAsGroup: 10001, seccompProfile: {type: RuntimeDefault}}
+      containers:
+        - name: collector
+          image: {{ .Values.image | quote }}
+          args: [--config=/conf/config.yaml]
+          {{- if .Values.newRelicEnabled }}
+          env:
+            - name: NR_LICENSE_KEY
+              valueFrom: {secretKeyRef: {name: {{ .Values.newRelicSecret }}, key: {{ .Values.newRelicSecretKey }}}}
+          {{- end }}
+          resources:
+            requests: {cpu: 100m, memory: 128Mi, ephemeral-storage: 32Mi}
+            limits: {cpu: 500m, memory: 256Mi, ephemeral-storage: 128Mi}
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+          ports:
+            - {name: otlp-http, containerPort: 4318}
+            - {name: metrics, containerPort: 8889}
+            - {name: self-metrics, containerPort: 8888}
+            - {name: health, containerPort: 13133}
+          readinessProbe: {httpGet: {path: /, port: health}, initialDelaySeconds: 2, periodSeconds: 5}
+          livenessProbe: {httpGet: {path: /, port: health}, initialDelaySeconds: 10, periodSeconds: 10}
+          volumeMounts: [{name: config, mountPath: /conf, readOnly: true}]
+      volumes: [{name: config, configMap: {name: otel-collector-config}}]

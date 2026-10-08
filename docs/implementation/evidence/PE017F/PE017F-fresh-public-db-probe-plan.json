@@ -1,0 +1,14 @@
+{
+  "oldDeniedCacheUntouched": true,
+  "timeoutSeconds": 300,
+  "sourceMutation": false,
+  "newRelicAccess": false,
+  "memoryLimitBytes": 3221225472,
+  "utc": "2026-10-03T12:24:51.7281329Z",
+  "additionalCostYen": 0,
+  "purpose": "Observe actual public DB UpdatedAt before existing AT04 manual job",
+  "previous512MiBFailurePreserved": true,
+  "publicImage": "aquasec/trivy:0.75.0@sha256:9db099105405c648166e6b94155eb32f8da12673cf1f455207f7385cc9a77283",
+  "budgetBytes": 2147483648,
+  "cache": "fresh container tmpfs /probe only; no host mount"
+}

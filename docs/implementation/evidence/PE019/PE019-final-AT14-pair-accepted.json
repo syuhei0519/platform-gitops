@@ -1,0 +1,60 @@
+{
+  "rollbackPodUid": "4ea85584-f0ef-4c83-92fd-fc8af34611e8",
+  "rollbackManifest": "0c232336a6e914519ed2f735b29edba2f832cdd7",
+  "telemetryPreserved": true,
+  "files": [
+    {
+      "sha256": "c8cd035f25ea040527f9f861cd33eaeeefaf350f4174aee54fb301dc1d306041",
+      "file": "PE019-final-rollback-phase2-runtime-proof.json"
+    },
+    {
+      "sha256": "f75d3f9cddee12136db61e3bedf883bac5afa79220fe84970335483f13c491da",
+      "file": "PE019-final-restore-phase2-runtime-proof.json"
+    },
+    {
+      "sha256": "817439a2239e03b018ae48de9aea745df68738edf3cc796ce485a2da7eb93d67",
+      "file": "PE019-final-rollback-phase2-CRUD.json"
+    },
+    {
+      "sha256": "c6945f19b456f0c261f814a702c055352cffc528e33ca0e4f43ec595bb422606",
+      "file": "PE019-final-restore-phase2-CRUD.json"
+    },
+    {
+      "sha256": "2f1a01d970b80f6cd6018a46e62d7f60aa5ec998a12a4f0ab64ab87f59e93413",
+      "file": "PE019-final-rollback-phase2-forward-closed.json"
+    },
+    {
+      "sha256": "84d8cdf1ed991f14f1d53b6e5379a93b8844835e459ba2e0c1ac764c5b5a6c9b",
+      "file": "PE019-final-restore-phase2-forward-closed.json"
+    },
+    {
+      "sha256": "71dc289cf52829c708e382be6099e37254ea81de85eac5774a1a945bab447d62",
+      "file": "PE019-published-actual-reader-first-audit.json"
+    },
+    {
+      "sha256": "94291bcbb00c19e1202de1ddb807a12cc7a30cd34bf11a7ea0210e332c93b7fc",
+      "file": "PE019-final-historical-actual-reader-first-audit.json"
+    },
+    {
+      "sha256": "015039f2bd0bed706d0838e3bc79f29d2a0da3204a30c1f89e2298e957f3dcf5",
+      "file": "PE019-final-historical-native-budget-audit.json"
+    },
+    {
+      "sha256": "4363409864c45bdc09413acbc79ee6776bb62fd916cadcf6911b10ba7f62788f",
+      "file": "PE019-original-lab-DB-preserved-final.json"
+    }
+  ],
+  "restoredManifest": "66796bdca2824b1dee18cc8164ae553e8cb94248",
+  "utc": "2026-10-06T16:03:55.5830411Z",
+  "finalKindPVCUid": "21a31208-789a-4c23-9f28-389407f1b689",
+  "AT14Accepted": true,
+  "sourcePolicy": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "PE019Complete": false,
+  "all19Complete": false,
+  "originalTree": "04664e693342fd37ea1ba32f4c6cee3b4419ab1b",
+  "AT10Accepted": false,
+  "originalLabPVCUid": "f7774170-a00e-4d90-9caa-e692f1e1555a",
+  "restoredPodUid": "f3fb9a1f-ddaa-41e0-9723-73eb46e3cf08",
+  "entireOriginalTreeRestored": true,
+  "restoredTree": "04664e693342fd37ea1ba32f4c6cee3b4419ab1b"
+}

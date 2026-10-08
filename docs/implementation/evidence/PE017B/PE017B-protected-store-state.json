@@ -1,0 +1,144 @@
+{
+  "source": "e927c6c837bf36d41c118225f254d277cf95bb5f",
+  "firstStorageAccepted": true,
+  "firstRecord": {
+    "schemaVersion": 2,
+    "service": "backend",
+    "sourceProjectId": 86247033,
+    "sourceCommit": "e927c6c837bf36d41c118225f254d277cf95bb5f",
+    "buildPipelineId": 2911071988,
+    "buildJobId": 16922783993,
+    "imageRepository": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app",
+    "imageTag": "e927c6c837bf36d41c118225f254d277cf95bb5f",
+    "imageDigest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+    "scanPipelineId": 2911071988,
+    "scanJobId": 16922783996,
+    "scanJobStatus": "success",
+    "inputKind": "build-oci",
+    "inputArchiveSha256": "f518904937053256db93225d535df19f9069ae0b75ce6ef6559455fef8f5a45b",
+    "trivyVersion": "0.75.0",
+    "database": {
+      "version": 2,
+      "updatedAt": "2026-10-04T14:28:15.152965452Z",
+      "metadataSha256": "251ea78ae5b6c42f58527080343e6a710ee0f0f169b4cac561a6f1702e77ea35"
+    },
+    "scannedAt": "2026-10-04T16:30:54.013627316Z",
+    "policyRevision": "e927c6c837bf36d41c118225f254d277cf95bb5f",
+    "policySha256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337",
+    "exceptions": [],
+    "decision": "passed",
+    "failureReason": "",
+    "sbom": {
+      "imageDigest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+      "scanPipelineId": 2911071988,
+      "scanJobId": 16922783996,
+      "url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9/sbom-2911071988-16922783996.cdx.json",
+      "sha256": "536d97512bb4361d3601861c24e5ccec827dbcc8d41e131edda2a5e859959c7e",
+      "format": "CycloneDX",
+      "schemaVersion": "1.7"
+    },
+    "sbomFailureReason": "",
+    "scanReport": {
+      "imageDigest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+      "scanPipelineId": 2911071988,
+      "scanJobId": 16922783996,
+      "url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9/scan-report-2911071988-16922783996.json",
+      "sha256": "9d060c147c367890c9c675f6326dd5bdc8ecc11c47b50e42aee8fe48e089e7f5",
+      "format": "safe-json",
+      "schemaVersion": "1"
+    }
+  },
+  "jobs": [
+    {
+      "id": 16922783999,
+      "name": "release-record-store-rescan",
+      "status": "created"
+    },
+    {
+      "id": 16922783998,
+      "name": "release-record-store",
+      "status": "success"
+    },
+    {
+      "id": 16922783997,
+      "name": "oci-image-rescan-validation",
+      "status": "manual"
+    },
+    {
+      "id": 16922783996,
+      "name": "oci-image-policy-validation",
+      "status": "success"
+    },
+    {
+      "id": 16922783995,
+      "name": "oci-isolated-runtime",
+      "status": "success"
+    },
+    {
+      "id": 16922783994,
+      "name": "oci-format-compatibility",
+      "status": "success"
+    },
+    {
+      "id": 16922783993,
+      "name": "container-build-oci",
+      "status": "success"
+    },
+    {
+      "id": 16922783992,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16922783991,
+      "name": "backend-build",
+      "status": "success"
+    },
+    {
+      "id": 16922783990,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16922783989,
+      "name": "format-and-vet",
+      "status": "success"
+    },
+    {
+      "id": 16922783988,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16922783987,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "manualJob": 16922783997,
+  "status": "manual",
+  "pipeline": 2911071988,
+  "originalBuildArtifactExpiresAt": "2026-10-05T16:28:05.069Z",
+  "unitAccepted": false,
+  "registryPush": false,
+  "AT04Accepted": false,
+  "packageFilesReadable": 3,
+  "stored": {
+    "schemaVersion": 1,
+    "run": {
+      "Service": "backend",
+      "Digest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+      "PipelineID": 2911071988,
+      "JobID": 16922783996
+    },
+    "recordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9/release-record-2911071988-16922783996.json",
+    "recordSha256": "cf4eb4b396fec5547ab5084fcb7f559bf7b874c53b77f9cbdf1dc1152916be09",
+    "decision": "passed",
+    "completedJobAuthority": true,
+    "protectedMainWriter": true,
+    "recordWrittenLast": true,
+    "serverDuplicateDenied": true
+  },
+  "utc": "2026-10-04T16:32:24.6028139Z",
+  "dbUpdatedAt": "2026-10-04T14:28:15.152965452Z"
+}

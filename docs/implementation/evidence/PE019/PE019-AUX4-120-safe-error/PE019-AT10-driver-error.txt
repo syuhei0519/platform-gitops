@@ -1,0 +1,5 @@
+Exception: C:\work\CorePlatform\output\core-platform-v1-phase1-phase2-20261002\acceptance\pe019-final-capacity.ps1:81
+Line |
+  81 |   throw 'Capacity driver failed; preserve safe failure metadata'
+     |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Capacity driver failed; preserve safe failure metadata

@@ -1,0 +1,47 @@
+{
+  "ownStatus": "success",
+  "jobs": [
+    {
+      "id": 16972089746,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16972089745,
+      "name": "kubernetes-schema",
+      "status": "success"
+    },
+    {
+      "id": 16972089744,
+      "name": "render-and-policy",
+      "status": "success"
+    },
+    {
+      "id": 16972089743,
+      "name": "config-checksum-test",
+      "status": "success"
+    },
+    {
+      "id": 16972089742,
+      "name": "checksum-test-build",
+      "status": "success"
+    },
+    {
+      "id": 16972089741,
+      "name": "trusted-boundary-test",
+      "status": "success"
+    },
+    {
+      "id": 16972089740,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "own": 2918269112,
+  "sourcePolicy": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "utc": "2026-10-06T14:34:50.4632074Z",
+  "fixed": 2918273441,
+  "fixedStatus": "success",
+  "source": "3ad6cd7137eb66eea1ed64f3cd635cfa65c7c2b4",
+  "mr": 89
+}

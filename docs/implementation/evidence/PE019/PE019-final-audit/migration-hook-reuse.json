@@ -1,0 +1,9 @@
+{
+  "backoffLimit": 1,
+  "deadlineSeconds": 180,
+  "currentAnnotationBindingCoveredByActualNewKind": true,
+  "currentManifest": "66796bdca2824b1dee18cc8164ae553e8cb94248",
+  "previousManifest": "fac499fb1ec18f09ebbe5ff7c83e791ca299d157",
+  "normalization": "Only PodTemplate release annotations omitted; every other migration-job byte compared with line-ending normalization",
+  "migrationJobContractIdentical": true
+}

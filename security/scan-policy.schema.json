@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "trivyVersion", "dbMaxAgeHours", "exceptions"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "trivyVersion": {"const": "0.75.0"},
+    "dbMaxAgeHours": {"const": 24},
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "kind", "rule", "package", "path", "owner", "reason", "createdAt", "expiresAt"],
+        "properties": {
+          "id": {"type":"string","minLength":1,"maxLength":240},
+          "kind": {"enum":["vulnerability","secret","misconfiguration"]},
+          "rule": {"type":"string","minLength":1,"maxLength":240},
+          "package": {"type":"string","maxLength":240},
+          "path": {"type":"string","minLength":1,"maxLength":240},
+          "owner": {"type":"string","minLength":1},
+          "reason": {"type":"string","minLength":1},
+          "createdAt": {"type":"string","format":"date-time"},
+          "expiresAt": {"type":"string","format":"date-time"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "mainIntegrationOnlyFile": "environments/local/frontend.yaml",
+  "utc": "2026-10-03T09:21:38.9098461Z",
+  "implementationUnchanged": true,
+  "source": "626334c76888ba62678a7351db722af9b71670dd",
+  "testedSource": "51d6be4758e61fadc5098c155c2e4d08ca452a94"
+}

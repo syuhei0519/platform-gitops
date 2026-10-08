@@ -1,0 +1,18 @@
+{
+  "distinctRestoredDBMarkerReadThroughFrontend": true,
+  "sourcePVCUID": "21a31208-789a-4c23-9f28-389407f1b689",
+  "temporaryPodUID": "7f741fb0-606d-48ed-ad15-b7387968b595",
+  "accepted": true,
+  "originalLabUntouched": true,
+  "reconciliationRestored": true,
+  "frontendUID": "c6f46227-3f78-4e06-8f28-da6a29e29165",
+  "ownedBackupMarkersDeleted": true,
+  "utc": "2026-10-06T12:57:19.1291235Z",
+  "restoredPodUID": "a25770f8-57d5-40fe-9b6f-117dcf213620",
+  "initialTestPVCPreserved": true,
+  "secretValuesRecorded": false,
+  "originalDBMarkerReadThroughFrontend": true,
+  "restorePVCUID": "337c4337-d1a8-48f0-a5e8-d7ea6961458b",
+  "originalPodUID": "af44e11e-125a-4cd8-ad47-2e73f273689f",
+  "originalParametersRestored": true
+}

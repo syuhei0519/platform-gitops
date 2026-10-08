@@ -1,0 +1,15 @@
+# PE-015 FS・展開後検査の最終受入
+
+PE015Aはplatform !23/!24のmain統合とIssue15 Aチェックまで完了した。PE015A-acceptance.json内のintegrationPendingは提出時の履歴であり、現在の状態は本索引とpost-merge receiptを正本とする。B/Cは実受入が完了し、この文書のmain統合後にIssueチェックと親Closedを行う。
+
+両アプリmainに固定Trivy0.75.0、全深刻度・vuln/secret/misconfig・include-dev-deps・tracked sourceのみの検査を統合。frontend通常mainCI2908051241、backend2908056014は公開・image検証・配備提案まで成功した。frontend protected-mainでscanner timeout/DB期限/例外期限の3件を実試験し、source-scanだけfailed、validation6件success、publish/verify/proposal3件skippedを確認した。backend protected-mainもtimeoutでvalidation5件success・後続3件skippedを確認した。backendのDB/例外ケースを実施したとは扱わない。
+
+配備2repoは実Helm renderを検査したCI platform2908068054とmanifest2908068166のsource/render安全報告を取得し、両方passを確認した。manifest !44は固定protected-mainのproducer/consumer2908119897 success、候補同一性・直前main/app/source照合・不一致sourceCAS409・統合tree一致を経てcccaa9b77aa428c59e0c3526171ededb52b2348cへ統合した。
+
+新manifest protected-mainでscanner-timeout pipeline2908164863を実行。validation6件success、source-scan failed、trusted producer/consumerの両方skipped。skipped producerのmanual playをAPIで試験しHTTP400で拒否、直後もskippedを確認した。検査失敗から手動操作で後続へ進めない。
+
+AT11の実dev-only inventory、privileged拒否、未発行の合成Secret検出、DB24時間/期限付き例外/ツール実行不能は既存PE015Aの10証跡を参照する。Secret-file環境変数は同一containerのreadOnly Secret volume配下の正規絶対pathに限定して許可し、suffixだけの迂回を拒否する。公開証跡は値なしの許可項目だけで、private Trivy rawとjob traceを再配布しない。自動レビューが拒否した生traceは取得していない。
+
+FS報告にはdev依存を含む。runtime image由来SBOMとは対象が異なり、PE016/017/018のOCI・image scan・SBOM・切替はこの受入では完成していない。両appの旧deliveryは後続のfrontend完全切替→backend展開DAGで撤去する。SourceLabのDB/PVC/data、New Relicの有料設定を変更していない。
+
+公開証跡索引とLF正規化SHA256は [PE015-final-acceptance.json](PE015-final-acceptance.json)。Aの既存10証跡は [PE015A-acceptance.md](PE015A-acceptance.md) とその索引を参照する。

@@ -1,0 +1,18 @@
+{
+  "restartAfter": 1,
+  "restartBefore": 0,
+  "readOnlyDatasource": true,
+  "ready": true,
+  "successfulQueries": 22,
+  "scope": "controlled container restart and Git reapply; phase1 concurrent budget not yet accepted",
+  "dashboardsUnchanged": true,
+  "utc": "2026-10-02T16:02:51.3245872Z",
+  "source": "c2cac322be0a64e66c6dbe542826a55593d874c6",
+  "pvcUid": "4810aa46-2ea5-45bd-8b16-1ee05349054c",
+  "noDataPanels": [
+    "Collector trace send failures / second",
+    "Collector enqueue failures"
+  ],
+  "memoryLimit": "512Mi",
+  "podUid": "1c2849fd-f500-4fb3-ae88-878eb000e452"
+}

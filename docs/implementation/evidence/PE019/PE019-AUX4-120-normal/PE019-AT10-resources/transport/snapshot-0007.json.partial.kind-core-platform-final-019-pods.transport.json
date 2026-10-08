@@ -1,0 +1,15 @@
+{
+  "processExitCode": 0,
+  "hasExited": true,
+  "processId": 24940,
+  "emptyOutput": false,
+  "stdoutReaderCodePage": 65001,
+  "stderrCategory": "none",
+  "stdoutUTF8Bytes": 491626,
+  "startsWithJSONObject": true,
+  "hostConsoleCodePage": 932,
+  "rawValuesRecorded": false,
+  "endsWithJSONObject": true,
+  "stage": "kind-core-platform-final-019-pods",
+  "stdoutComplete": true
+}

@@ -1,0 +1,8 @@
+{
+  "exitCode": 1,
+  "id": "Owning capacity window aborted; restore Collector safely",
+  "stage": "collector-observation-or-fault",
+  "utc": "2026-10-06T17:35:48.3005546Z",
+  "scriptStack": "at Check-Abort, C:\\work\\CorePlatform\\output\\core-platform-v1-phase1-phase2-20261002\\acceptance\\pe019-capacity-fault-worker.ps1: line 9\r\nat <ScriptBlock>, C:\\work\\CorePlatform\\output\\core-platform-v1-phase1-phase2-20261002\\acceptance\\pe019-capacity-fault-worker.ps1: line 18",
+  "type": "System.Management.Automation.RuntimeException"
+}

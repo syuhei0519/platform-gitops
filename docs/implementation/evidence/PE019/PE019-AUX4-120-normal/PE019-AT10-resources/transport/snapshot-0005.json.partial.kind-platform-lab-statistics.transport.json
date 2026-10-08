@@ -1,0 +1,15 @@
+{
+  "processExitCode": 0,
+  "hasExited": true,
+  "processId": 16432,
+  "emptyOutput": false,
+  "stdoutReaderCodePage": 65001,
+  "stderrCategory": "none",
+  "stdoutUTF8Bytes": 100699,
+  "startsWithJSONObject": true,
+  "hostConsoleCodePage": 932,
+  "rawValuesRecorded": false,
+  "endsWithJSONObject": true,
+  "stage": "kind-platform-lab-statistics",
+  "stdoutComplete": true
+}

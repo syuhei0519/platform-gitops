@@ -1,0 +1,17 @@
+{
+  "context": "kind-core-platform-final-019",
+  "restorePVCUID": "337c4337-d1a8-48f0-a5e8-d7ea6961458b",
+  "backupSha256": "ca80512cecbe26d3b2901cdd3529534f34651bb2164ebff882535639a42f8afd",
+  "credentialsRecorded": false,
+  "stateBefore": "1|799a8f2b187617d6e2a2d89bf7b0a4df\n1|2026-10-06 12:48:00.38435+00",
+  "allRowsAndMigrationHistoryMatched": true,
+  "restoreAccepted": true,
+  "restoreNamespace": "pe019-restore",
+  "sourcePVCUID": "21a31208-789a-4c23-9f28-389407f1b689",
+  "utc": "2026-10-06T12:54:58.7200006Z",
+  "ownedId": "2",
+  "ownedEmail": "pe019-backup-bdf80bf3c45842a18f86482e925f9f0e@example.test",
+  "restoredWithApplicationDatabaseRole": true,
+  "restoredState": "1|799a8f2b187617d6e2a2d89bf7b0a4df\n1|2026-10-06 12:48:00.38435+00",
+  "newAPIConnectionPending": true
+}

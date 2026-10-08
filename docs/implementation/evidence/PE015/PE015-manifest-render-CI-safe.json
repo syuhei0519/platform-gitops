@@ -1,0 +1,30 @@
+{
+  "scanJob": 16906275540,
+  "actualRenderedArtifactScanned": true,
+  "project": 86247034,
+  "source": "870ec5f1250098e73921ac0a09f0cfc2a491c3fb",
+  "rawTraceRead": false,
+  "pipeline": 2908068166,
+  "reports": [
+    {
+      "dbUpdatedAt": "2026-10-02T19:00:34.190885353Z",
+      "scannedAt": "2026-10-02T21:51:39.466626327Z",
+      "schemaVersion": 1,
+      "trivyVersion": "0.75.0",
+      "findingCount": 5,
+      "pass": true,
+      "kind": "source-scan"
+    },
+    {
+      "dbUpdatedAt": "2026-10-02T19:00:34.190885353Z",
+      "scannedAt": "2026-10-02T21:51:39.461510378Z",
+      "schemaVersion": 1,
+      "trivyVersion": "0.75.0",
+      "findingCount": 24,
+      "pass": true,
+      "kind": "render-scan"
+    }
+  ],
+  "utc": "2026-10-02T22:21:20.9450830Z",
+  "status": "success"
+}

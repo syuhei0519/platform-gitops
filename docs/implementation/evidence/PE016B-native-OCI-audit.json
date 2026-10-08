@@ -1,0 +1,56 @@
+{
+  "jobs": [
+    {
+      "id": 16920314372,
+      "name": "oci-isolated-runtime",
+      "status": "success"
+    },
+    {
+      "id": 16920314371,
+      "name": "oci-format-compatibility",
+      "status": "success"
+    },
+    {
+      "id": 16920314370,
+      "name": "container-build-oci",
+      "status": "success"
+    },
+    {
+      "id": 16920314369,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16920314368,
+      "name": "backend-build",
+      "status": "success"
+    },
+    {
+      "id": 16920314367,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16920314366,
+      "name": "format-and-vet",
+      "status": "success"
+    },
+    {
+      "id": 16920314365,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16920314364,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "accepted": false,
+  "fullPE016BAcceptance": false,
+  "status": "success",
+  "pipeline": 2910621534,
+  "isolatedRuntimeAccepted": true,
+  "source": "cbfd32e960943131a10ada62f8ff36ceb2f61cc1",
+  "compatibilityAccepted": true
+}

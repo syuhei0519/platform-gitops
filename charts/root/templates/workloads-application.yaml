@@ -1,0 +1,24 @@
+{{/*
+workloadsEnabled時に業務親Applicationを作る。charts/workloadsがDB/backend/frontendへ分岐する。
+platform親と同じwaveなので、このwaveだけで全基盤完了→全業務開始の厳密順序を主張しない。
+*/}}{{- if .Values.workloadsEnabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-local-workloads
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-10"
+    argocd.argoproj.io/sync-options: Prune=confirm
+spec:
+  project: lab-control
+  source:
+    repoURL: {{ .Values.platformRepository }}
+    targetRevision: {{ .Values.targetRevision }}
+    path: charts/workloads
+    helm: {releaseName: workloads, valueFiles: [../../environments/local/workloads.yaml]}
+  destination: {server: https://kubernetes.default.svc, namespace: argocd}
+  syncPolicy:
+    automated: {prune: true, selfHeal: true, allowEmpty: false}
+    syncOptions: [PruneLast=true, FailOnSharedResource=true]
+{{- end }}

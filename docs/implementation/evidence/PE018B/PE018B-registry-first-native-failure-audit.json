@@ -1,0 +1,13 @@
+{
+  "scanJob": 16925240432,
+  "scanStatus": "skipped",
+  "pipeline": 2911521539,
+  "securityStatus": "failed",
+  "rawTraceRead": false,
+  "source": "e4b1905d8aec1c383d9fb4d03c543913b7bfb3cd",
+  "retryPerformed": false,
+  "accepted": false,
+  "securityJob": 16925240426,
+  "localReproduction": "network-none inherited OCI_REGISTRY_RETRIEVAL_ENABLED=true makes post-budget fixture status1 rather than expected2",
+  "utc": "2026-10-04T22:24:37.1512335Z"
+}

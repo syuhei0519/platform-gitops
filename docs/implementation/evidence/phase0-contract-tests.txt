@@ -1,0 +1,26 @@
+PE-002A / PE-006A / PE-005 / PE-008 preparation
+Date: 2026-10-01 Asia/Tokyo
+Base main: platform ad6e06d41b48616066f52b47d2204fd729936158
+manifest 194565e637331e9bcec970809d4853ff5ad59e97
+frontend 94253fa8adfb4305a6a1ccfd6d2f319c3614ab37
+backend 255e471fefeeebb19e3cc71c075277f8b4a56314
+
+PASS: tools/bootstrap go test -v ./...: 10 actual Lua fixture cases and leaf revision/migration evidence refusal.
+PASS: tools/checksum go test -v ./... using Helm4.2.4: 7 config changes alter checksum+PodTemplate; frontend/backend Service.port preserves PodTemplate; backend Secret reference excluded from checksum.
+PASS: tools/inventory go test -v ./...: 8 PodSpec kinds; template/default image, other repo, release-only, sidecar, initContainer, migration change detection; malformed/unknown/duplicate/unpinned refusal.
+PASS: PE-003A actual fixed-SHA merge candidate sandbox render/parse, target194565e..., source/verifier bf2f5cd..., producing job0(test-only). provenanceRequired=false, eligibleForAuthenticatedVerification=false. report SHA256 dc7ba1d224f557d26bbcf868db7a9da9a0d677220b7d61fd38565d348b7354e7. Output is development evidence, not authenticated acceptance.
+PASS: frontend pinned Node24.19.0 Docker: npm ci, lint, typecheck, vitest 9 tests, production build. Go helper tests 2 PASS.
+PASS: backend Go1.27.1 vet, go test ./..., explicit Go helper tests, server build. gofmt listing empty.
+Existing dependency npm install reports 1 high vulnerability. No npm audit fix or Phase2 scanner added. Exact advisory triage remains PE-015; CI language validation is not vulnerability acceptance.
+
+Context kind-platform-lab read-only metadata:
+argocd/repo-platform-gitops Opaque rv3708 keys password,type,url,username
+argocd/repo-application-manifest Opaque rv3710 keys password,type,url,username
+runner-system/gitlab-runner-auth Opaque rv3711 key runner-token
+account/registry-frontend-pull kubernetes.io/dockerconfigjson rv29921 key .dockerconfigjson
+account/registry-backend-pull kubernetes.io/dockerconfigjson rv16853 key .dockerconfigjson
+account/account-db Opaque rv28654 keys admin-password,app-password,app-username
+No Secret value printed or saved; no Secret write/reinjection/rotation performed.
+backend comparison revision194565e... is Synced/Healthy, but latest successful migration syncResult revisiona075223... is older. Do not treat comparison health as current-revision migration acceptance.
+
+UNEXECUTED: isolated kind first bootstrap/order/failure/CRUD; runtime config rollout; Secret reinjection/rotation; AT-01 full authenticated verification/tamper; AT-03 full failure/recovery; AT-13 actual disposable write capability tests. No AT marked passed.

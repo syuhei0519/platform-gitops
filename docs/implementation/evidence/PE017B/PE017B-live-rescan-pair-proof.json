@@ -1,0 +1,71 @@
+{
+  "utc": "2026-10-04T20:44:12.1602534Z",
+  "source": "e927c6c837bf36d41c118225f254d277cf95bb5f",
+  "firstRecordSha256": "cf4eb4b396fec5547ab5084fcb7f559bf7b874c53b77f9cbdf1dc1152916be09",
+  "secondRecordSha256": "b1cda5e887f8db6da692b93639490151ac13ad0fd478498d0700d5077913279b",
+  "secondScanSha256": "bd88ee22320a3b180a6d9fb193ebd9178e86c472d74cad405bb69d70ee7d7ca8",
+  "firstDbUpdatedAt": "2026-10-04T14:28:15.152965452Z",
+  "secondDbUpdatedAt": "2026-10-04T19:39:34.715623444Z",
+  "actualPair": {
+    "priorRun": {
+      "Service": "backend",
+      "Digest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+      "PipelineID": 2911071988,
+      "JobID": 16922783996
+    },
+    "currentRun": {
+      "Service": "backend",
+      "Digest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+      "PipelineID": 2911071988,
+      "JobID": 16922783997
+    },
+    "priorRecordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9/release-record-2911071988-16922783996.json",
+    "priorRecordSha256": "cf4eb4b396fec5547ab5084fcb7f559bf7b874c53b77f9cbdf1dc1152916be09",
+    "sameImageAndBuild": true,
+    "differentDatabase": true,
+    "currentFailed": true,
+    "priorSuccessFallback": false
+  },
+  "currentFailedAdoptionRefused": true,
+  "historicalFirstUsedOnlyAsEvidence": true,
+  "scope": "Checksum-verified actual immutable Package pair; local explicit substitution fixtures; no server or database timestamp mutation",
+  "unitAccepted": false,
+  "cases": [
+    {
+      "case": "original-build-job-substitution",
+      "acceptanceRefused": true
+    },
+    {
+      "case": "original-build-pipeline-substitution",
+      "acceptanceRefused": true
+    },
+    {
+      "case": "original-archive-substitution",
+      "acceptanceRefused": true
+    },
+    {
+      "case": "policy-checksum-substitution",
+      "acceptanceRefused": true
+    },
+    {
+      "case": "source-substitution",
+      "acceptanceRefused": true
+    },
+    {
+      "case": "scan-job-reused-from-first",
+      "acceptanceRefused": true
+    },
+    {
+      "case": "digest-substitution-with-matching-descriptor",
+      "acceptanceRefused": true
+    },
+    {
+      "case": "scan-time-not-later-than-first",
+      "acceptanceRefused": true
+    },
+    {
+      "case": "unchanged-db-cannot-satisfy-AT04",
+      "acceptanceRefused": true
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "noChildOrResourceWorkerOrRealPodRead": true,
+  "rejectedType": "System.Text.Json.JsonReaderException",
+  "actualShortGateAlreadyPassed": true,
+  "UTF8BytesDecodedAsUTF8Accepted": true,
+  "originalExactPodPayloadOrExceptionNotReconstructed": true,
+  "secretValuesRecorded": false,
+  "syntheticCodePoint": "U+3042",
+  "utc": "2026-10-06T18:13:05.3893887Z",
+  "singleEncodingFactorDefectProved": true,
+  "sameBytesDecodedAs932JSONRejected": true,
+  "publicSyntheticInputOnly": true,
+  "containsEscapedQuote": true
+}

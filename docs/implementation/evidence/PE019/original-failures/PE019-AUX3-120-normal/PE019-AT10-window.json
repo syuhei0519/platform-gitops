@@ -1,0 +1,17 @@
+{
+  "endUtc": "2026-10-06T17:37:43.0140045Z",
+  "startUtc": "2026-10-06T17:35:43.0140045Z",
+  "ownedEmailPrefix": "pe019-load-18122925f1a74e538f038e48023049b1",
+  "requests": 120,
+  "resourceIntervalSec": 15,
+  "source": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "durationSec": 120,
+  "prometheusPort": 18050,
+  "buildJob": 16977512437,
+  "profileSha256": "41aa46263240238db0368bdebc9acd45b4aeaa74a3b465f4655b888294cbc61d",
+  "traceId": "c5dc72b56b23a7d3e7ca6313766a9825",
+  "safeSimulatedError": false,
+  "pipeline": 2918955787,
+  "frontendPort": 18049,
+  "purpose": "auxiliary-measurement-preflight"
+}

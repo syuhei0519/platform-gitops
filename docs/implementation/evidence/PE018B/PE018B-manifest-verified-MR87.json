@@ -1,0 +1,64 @@
+{
+  "candidateTree": "2dea9dc2e8080bd99cb31474524b4acb6ec300be",
+  "manifestMainSha": "27a9fa31d1a35e0ad475e4728162de85fe7cc826",
+  "mergeAuthorized": false,
+  "mrIid": 87,
+  "mrSourceSha": "be06c65c9ab2f1303de2b9359fecc8d6c5d520b8",
+  "producerJobId": 16954822968,
+  "producerPipelineId": 2915791753,
+  "provenanceRequired": true,
+  "renderReportSha256": "c298c4a797e7d2e997e5c9c9d8a950ad98f4598a2f2bc93f74b1031ceab56404",
+  "rollbackReason": null,
+  "schema": "core-platform/phase0-verification/v1",
+  "sourceMains": {
+    "86247025": "ce6ec1d94cf1042a824b745f4a5f6367b1c0f845",
+    "86247033": "bcc4126097ab6224e46257560010fc4623a51414"
+  },
+  "verifiedAt": "2026-10-06T09:52:00.648126+09:00",
+  "verifiedImages": [
+    {
+      "commit": "bcc4126097ab6224e46257560010fc4623a51414",
+      "digest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+      "freshnessRequired": true,
+      "nativeScanInspection": {
+        "adoptionAuthorized": false,
+        "nativeInspectionMatched": true,
+        "nativeRecordMatched": true,
+        "policyRevision": "bcc4126097ab6224e46257560010fc4623a51414",
+        "scanBytesVerified": true,
+        "selection": {
+          "buildJobId": 16953548223,
+          "buildPipelineId": 2915581900,
+          "imageDigest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+          "recordSha256": "b8aaf11f006be6fde340719cff3bcb48abf86da25f541ee2c89b247813cfb8f3",
+          "recordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/release-record-2915669295-16954022922.json",
+          "sbomSha256": "e539cabd74b224a0c2d685f3d7d40de204cec3998e6201a1db7ec5eed715b44b",
+          "sbomUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/sbom-2915669295-16954022922.cdx.json",
+          "scanJobId": 16954022922,
+          "scanPipelineId": 2915669295,
+          "service": "backend",
+          "sourceCommit": "bcc4126097ab6224e46257560010fc4623a51414",
+          "sourceProjectId": 86247033
+        }
+      },
+      "phase2Selection": {
+        "buildJobId": 16953548223,
+        "buildPipelineId": 2915581900,
+        "imageDigest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+        "recordSha256": "b8aaf11f006be6fde340719cff3bcb48abf86da25f541ee2c89b247813cfb8f3",
+        "recordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/release-record-2915669295-16954022922.json",
+        "sbomSha256": "e539cabd74b224a0c2d685f3d7d40de204cec3998e6201a1db7ec5eed715b44b",
+        "sbomUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/sbom-2915669295-16954022922.cdx.json",
+        "scanJobId": 16954022922,
+        "scanPipelineId": 2915669295,
+        "service": "backend",
+        "sourceCommit": "bcc4126097ab6224e46257560010fc4623a51414",
+        "sourceProjectId": 86247033
+      },
+      "projectId": 86247033,
+      "repository": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app",
+      "service": "backend",
+      "sourceMainSha": "bcc4126097ab6224e46257560010fc4623a51414"
+    }
+  ]
+}

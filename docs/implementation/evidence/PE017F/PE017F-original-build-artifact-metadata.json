@@ -1,0 +1,14 @@
+{
+  "rawTraceRead": false,
+  "job": 16911641948,
+  "archive": {
+    "filename": "artifacts.zip",
+    "size": 25532632
+  },
+  "finishedAt": "2026-10-03T09:29:54.094Z",
+  "utc": "2026-10-03T10:01:36.6238024Z",
+  "pipeline": 2908988271,
+  "archiveDownloaded": false,
+  "source": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+  "artifactExpiresAt": "2026-10-04T09:29:52.167Z"
+}

@@ -1,0 +1,35 @@
+account/backend-566d54cbbf-2q2dz
+  container/backend requests=map[cpu:100m memory:64Mi] limits=map[cpu:500m memory:256Mi]
+account/frontend-6d66d7d879-6fr5z
+  container/frontend requests=map[cpu:50m memory:64Mi] limits=map[cpu:250m memory:128Mi]
+account/postgresql-0
+  container/postgresql requests=map[cpu:100m memory:256Mi] limits=map[cpu:500m memory:512Mi]
+argocd/argocd-application-controller-0
+  container/application-controller requests=<no value> limits=<no value>
+argocd/argocd-redis-dcf9d5cd7-kf94q
+  container/redis requests=<no value> limits=<no value>
+argocd/argocd-repo-server-6d486d7964-fbd94
+  init/copyutil requests=<no value> limits=<no value>
+  container/repo-server requests=<no value> limits=<no value>
+argocd/argocd-server-56cd4846df-n6k2x
+  container/server requests=<no value> limits=<no value>
+kube-system/coredns-589f44dc88-6fgwk
+  container/coredns requests=map[cpu:100m memory:70Mi] limits=map[memory:170Mi]
+kube-system/coredns-589f44dc88-x85hq
+  container/coredns requests=map[cpu:100m memory:70Mi] limits=map[memory:170Mi]
+kube-system/etcd-platform-lab-control-plane
+  container/etcd requests=map[cpu:100m memory:100Mi] limits=<no value>
+kube-system/kindnet-vb4g5
+  container/kindnet-cni requests=map[cpu:100m memory:50Mi] limits=<no value>
+kube-system/kube-apiserver-platform-lab-control-plane
+  container/kube-apiserver requests=map[cpu:250m] limits=<no value>
+kube-system/kube-controller-manager-platform-lab-control-plane
+  container/kube-controller-manager requests=map[cpu:200m] limits=<no value>
+kube-system/kube-proxy-25hg7
+  container/kube-proxy requests=<no value> limits=<no value>
+kube-system/kube-scheduler-platform-lab-control-plane
+  container/kube-scheduler requests=map[cpu:100m] limits=<no value>
+local-path-storage/local-path-provisioner-56c4685b7c-dzt26
+  container/local-path-provisioner requests=<no value> limits=<no value>
+runner-system/gitlab-runner-6c697bb4d9-pr5mb
+  container/gitlab-runner requests=map[cpu:100m memory:128Mi] limits=map[cpu:500m memory:256Mi]

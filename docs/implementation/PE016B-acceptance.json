@@ -1,0 +1,104 @@
+{
+  "experimentalPipeline": 2910621534,
+  "phase2Switched": false,
+  "technicalAcceptanceComplete": true,
+  "issueUpdatePending": true,
+  "selectedMainDigest": "sha256:4be0274642c1b24beba29bd6ce7f42b34f8eab33c8d4d4209d81a1ef69bc15dd",
+  "directProductionRuntimeUidRead": false,
+  "proofs": [
+    {
+      "sha256": "ae5c17bc467b77a8836c720aed9c67af1afb5a4edd368b891c1ffedf3661e35d",
+      "path": "evidence/PE016B-artifact-limit-proof.json"
+    },
+    {
+      "sha256": "2fc1c39c7c2f756b12c4619fc0016fcce253335007257b3a95dca0bc355a78e4",
+      "path": "evidence/PE016B-real-build-layout-proof.json"
+    },
+    {
+      "sha256": "c267923bc39bdb594b9026bb6969e9e7c4cf6fc57a539ad1590f43691a279970",
+      "path": "evidence/PE016B-real-build-audit.json"
+    },
+    {
+      "sha256": "13e4f73ab2e57dfb96f5bb9ba264bed340c8d9be2f758b099999d8d85afc76c4",
+      "path": "evidence/PE016B-real-compatibility-proof.json"
+    },
+    {
+      "sha256": "687da487cb312727a561f79f71bbfa36ad612c4dfb56b9b1db4c71e1170c36bb",
+      "path": "evidence/PE016B-real-runtime-proof.json"
+    },
+    {
+      "sha256": "adde06d5a40792c262ef16b7623200c94f5c1d4798192ac06d6af20914f71631",
+      "path": "evidence/PE016B-native-OCI-audit.json"
+    },
+    {
+      "sha256": "fccd8a051a88bc4fc7d4a316cd54e4a2688b950f0c5fae500700d1495b51b830",
+      "path": "evidence/PE016B-budget-audit.json"
+    },
+    {
+      "sha256": "f767c1215f610c6f145785bcf2cf93f2e7457b08a9e006439186efa961b5744d",
+      "path": "evidence/PE016B-final-missing-input-audit.json"
+    },
+    {
+      "sha256": "4e76f7a5c58c1c6ffb110c47d8c776e330bdd8879e1299f14f019537d88b93b3",
+      "path": "evidence/PE016B-current-integration-state.json"
+    },
+    {
+      "sha256": "088f360acc02e4cf92c051f04854fd277bd10a9db7a63b2e9e80a569b195a800",
+      "path": "evidence/PE016B-oci-merge.json"
+    },
+    {
+      "sha256": "635ac72334a6703bb3bc337125b965594754da880481640c94d877553fd5c85c",
+      "path": "evidence/PE016B-main-CI-audit.json"
+    },
+    {
+      "sha256": "e0f59550df0c0b48195fce0905e14b3bd8d476dbd708a6e7871202581cfb84c3",
+      "path": "evidence/PE016B-main-runtime-proof.json"
+    },
+    {
+      "sha256": "c3690ebd00343193d6a9acbd48a2012f318dc4034078b824e568fe73c113f710",
+      "path": "evidence/PE016B-source-runtime-before.json"
+    },
+    {
+      "sha256": "58dbaf6cdf943cbcbd9e3fe478f4e3a84a0a23aa7415646f5f64125cfc385b73",
+      "path": "evidence/PE016B-main-CRUD.json"
+    },
+    {
+      "sha256": "3d3073a09f8c30defdb1cba60b293105494742cf7c51cf58f98b71b4954c94c9",
+      "path": "evidence/PE016B-main-forward-closed.json"
+    },
+    {
+      "sha256": "cef04be0b40b5c3823449c6d621b92c227ba7e21c6f31dbcd64817a17459f822",
+      "path": "evidence/PE016B-first-build-disk.json"
+    },
+    {
+      "sha256": "aacb58cc92752b9e5fe09be7c17e9c52ac5376056e0df0ac91337ccdd2cc298d",
+      "path": "evidence/PE016B-budget-reason-failure-audit.json"
+    },
+    {
+      "sha256": "20bfdd4826ccc8ba724cc330dbbaf1db1bfd3d4b81ca50353820bc1701dbc9ec",
+      "path": "evidence/PE016B-context-native-failure-audit.json"
+    },
+    {
+      "sha256": "a60401310fc779f10d767ce1a7304d3e82f47780bbd12e6762e7f716450cff10",
+      "path": "evidence/PE016B-manifest-MR71-merge-proof.json"
+    },
+    {
+      "sha256": "5ce0b75e8649f75b8fc4a990c30d37ecbe207e1f2d10f87cbc013e14efdaa2bd",
+      "path": "evidence/PE016B-manifest-MR71-verification.json"
+    }
+  ],
+  "selectedMainPipeline": 2910650079,
+  "experimentalRegistryPush": false,
+  "artifactExpiryFixture": "missing consumer input, not actual 24-hour wait",
+  "manifestMR": 71,
+  "selectedMainManifest": "d0fd1164384165c6f8bed1887871789d3b05d5ec",
+  "scope": "PE016B only",
+  "parent16ClosedClaim": false,
+  "rawTraceOrPrivateBinaryRead": false,
+  "evidenceIntegrationPending": true,
+  "fullIntermediateAT05Accepted": true,
+  "experimentalOCISource": "cbfd32e960943131a10ada62f8ff36ceb2f61cc1",
+  "configuredRuntimeUid": 10001,
+  "backendApplicationMain": "df0f40786a878c03c79000be027c5bbed59d7257",
+  "backendMR": 12
+}

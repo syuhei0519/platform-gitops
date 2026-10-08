@@ -1,0 +1,29 @@
+# PE017F frontend OCI検証経路の実受入
+
+frontend main d5226af3c1ca1a6eee6e6bcacf5d6629b200933fの既定無効OCI検証経路について、AT04/12、SBOM生成・解析失敗、保持規則と中間AT05の実検証を完了した。このMRのmain証跡統合を最終受入条件とする。PE017B・親17・旧配信経路全体のセキュリティ完成・PE018F全面切替は未完了である。
+
+## 同digestと異なる実DBによる二回の検査
+
+保護main API pipeline2908988271の元build16911641948が生成したdigest `sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c`、archive SHA `98f73e21344fd4b015e0d9d9aa6566e06d9f2e6cd555a13d87d5e1c9ee973e20`を両scanで使用した。第一scan16911641951は実DB07:01:46.027466673Zで合格、CycloneDX1.7/72components/71packagesを同job・同入力から生成した。第二scan16911641952は実DB14:28:08.788288516Zで実検査後、明示したSBOM生成停止fixtureによりfailed/sbom-unavailableとなった。scanner障害や自然な脆弱性増加による失敗とは扱わない。
+
+writer16911641953/16911641954は実job/API/current protected main/元build/source-policyを照合し、scan→同bytes再PUTのサーバーduplicate拒否→SBOM（第一のみ）→record-lastを実行した。第一record SHAは `0296119f28d7aa6c6cc83fe292200aefe0ace68995e8c116b0c722301ce82d4d`、第二は `4c5791eb3e76bbcd82e2d69a44654161a43be2e812818fcb512d1f8b2432bfaa`。1digest:N runの別URLで不変取得できる。第一の成功を第二の合格へ代用せず、第二は公開/提案を許可しない。opt-in DAGに旧publish/verify/proposalは存在しない。
+
+第二runの公開DBを単一2GiB使い捨て領域で実取得してから、公式runnerCacheClearでCIキャッシュ世代だけを切り替え、既存manualを一度playした。元artifact実期限は2026-10-04T09:29:52.167Z。DB metadataの日付を改変せず、NextUpdateやcron時刻を公開更新の証拠に使っていない。
+
+## 読取・入替え・保存境界
+
+manifest main850f437のactual reader2909363659/job16913679128は第一3ファイルと第二2ファイルのraw checksum/固定run/decisionを取得し、新規の予約済非release領域へのPUTを403で拒否した。両runともhistorical evidenceとして読むだけで、readerはdeploymentを許可しない。先のactual bad-hash2909021177とwrong-job2909191233は前提成功・readerのみ期待失敗・成功proof404を確認した。
+
+実Packageから再取得したbytesを同sourceのproduction ValidateBundle/ValidateRescanPairで照合した。digest/scan pipeline/job/SBOM descriptor/URL/body/schema/仮想期限の9fixture、および実二runの元build/pipeline/archive/policy/source/digest/scan ID/時刻/未更新DBの9fixtureを拒否した。fixtureはlocal-onlyで、サーバー証跡やDB日時を変更していない。期限ケースのnow+25hはモデル時計であり実25時間待機ではない。再生GoコードとSHAを保存した。別の実native SBOM生成/解析失敗2908920350/2908930235もfailed record/SBOMnull/positive artifact404・旧releaseジョブ不在で受入済み。
+
+Cの固定URL/認証/redirect/checksum/同値冪等・別値拒否/単一writer共通契約は既受入Cを維持し、Fの実upload/readへ接続した。raw-return transportは固定の安全なrelease JSONのみで、jobtrace/private OCI binary/無関係APIをネットワーク前に拒否する。秘密値やraw scanner入力を保存していない。
+
+## 保持と中間配備
+
+全6Package状態/全pageと全containers/initContainers、明示rollback候補を実収集し、現在のproduction2runへ最新10 OR90日 ORrunning/rollback保持をoperator reviewで適用した。削除候補0、DELETEなし。不明・非default・未列挙productionはcleanup全体を拒否し、予約済schema0 fixture/別Package名は丸ごと保持する。90日経過やbackend実schema2は未受入である。
+
+中間frontend !11/main d522とmanifest !51をown CI/固定検証/直前SHA/tree照合で統合し、通常選択main CI2908961701全10成功、Argo revision f1cbeb81、Pod digest edd45c48…/UID10001/HTTP200、既存synthetic行9とbackend/DB/PVC保持を実確認した。このAT05はPhase0中間配信であり実験OCIのdeploymentではない。manifest !52で実readerをmainへ統合した。
+
+以前のpublic DB probeは512MiB計画を超えて失敗し、旧hostcacheの削除はautomatic policy reviewで拒否された。失敗と残存を証拠として維持し、別経路で削除していない。後の新規probe容量内成功を、以前の失敗/cleanup解消へ置き換えない。このcache整理は別の未解決項目である。
+
+INDEXのSHAは保存したLF bytesを照合した。各proofのunitAccepted=false等は採取時点の限定状態で、最終判定はPE017F-acceptance-auditとこのMRの実main統合/Issueチェックで追跡する。次は18F全面切替→16B→17B→18B→19/全19親Issue・最終AT01〜14監査。

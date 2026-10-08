@@ -1,0 +1,15 @@
+{
+  "processId": 23508,
+  "rawValuesRecorded": false,
+  "endsWithJSONObject": true,
+  "stage": "kind-platform-lab-pods",
+  "stdoutReaderCodePage": 65001,
+  "processExitCode": 0,
+  "hostConsoleCodePage": 932,
+  "startsWithJSONObject": true,
+  "hasExited": true,
+  "stdoutComplete": true,
+  "stderrCategory": "none",
+  "stdoutUTF8Bytes": 446178,
+  "emptyOutput": false
+}

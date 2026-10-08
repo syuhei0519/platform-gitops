@@ -1,0 +1,43 @@
+{{/*
+Runner foundation -10→Runner 0のApplicationを生成。RBAC/SAを先行させる。
+外部固定ChartとGit内valuesのmulti-source構成。Argo selfHeal/進行中Syncは手動停止を戻す場合がある。
+*/}}apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-local-runner-foundation
+  namespace: argocd
+  annotations: {argocd.argoproj.io/sync-wave: "-10", argocd.argoproj.io/sync-options: Prune=confirm}
+spec:
+  project: lab-platform
+  source:
+    repoURL: {{ .Values.platformRepository }}
+    targetRevision: {{ .Values.targetRevision }}
+    path: charts/runner-foundation
+    helm: {releaseName: runner-foundation, valueFiles: [../../environments/local/runner-foundation.yaml]}
+  destination: {server: https://kubernetes.default.svc, namespace: runner-system}
+  syncPolicy:
+    automated: {prune: true, selfHeal: true, allowEmpty: false}
+    syncOptions: [PruneLast=true, FailOnSharedResource=true]
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-local-gitlab-runner
+  namespace: argocd
+  annotations: {argocd.argoproj.io/sync-wave: "0", argocd.argoproj.io/sync-options: Prune=confirm}
+spec:
+  project: lab-platform
+  sources:
+    - repoURL: {{ .Values.runnerChartRepository }}
+      chart: gitlab-runner
+      targetRevision: {{ .Values.runnerChartVersion | quote }}
+      helm:
+        releaseName: gitlab-runner
+        valueFiles: [$values/environments/local/gitlab-runner.yaml]
+    - repoURL: {{ .Values.platformRepository }}
+      targetRevision: {{ .Values.targetRevision }}
+      ref: values
+  destination: {server: https://kubernetes.default.svc, namespace: runner-system}
+  syncPolicy:
+    automated: {prune: true, selfHeal: true, allowEmpty: false}
+    syncOptions: [PruneLast=true, FailOnSharedResource=true]

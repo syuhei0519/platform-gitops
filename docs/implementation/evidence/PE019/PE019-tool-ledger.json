@@ -1,0 +1,61 @@
+{
+  "lockSha256": "be93ac3838681f6b80df2d0477d6a5b2ef1f13e5194b1b75bdd5c7bb06d866cb",
+  "AT10Started": false,
+  "platform": "9c654586c7db8dff458d2934629abd6f96689649",
+  "bootstrapWaiterBinarySha256": "376892747b1db582658795cc1915a3c92e876fa34839642b85e601ad1e774395",
+  "bootstrapTools": {
+    "go": "go version go1.27.1 windows/amd64",
+    "kubectl": "v1.36.4",
+    "helm": "v4.2.4+g3900f43",
+    "kind": "kind v0.33.0 go1.26.7 windows/amd64"
+  },
+  "packages": [
+    {
+      "name": "argo-cd",
+      "matched": true,
+      "version": "10.8.2",
+      "path": "tmp/acceptance-private/argo-cd-10.8.2.tgz",
+      "expected": "96fb5ab2897e3c8758cd8fef409a46668ef1a19a538116b112b0691614a48f20",
+      "actual": "96fb5ab2897e3c8758cd8fef409a46668ef1a19a538116b112b0691614a48f20"
+    },
+    {
+      "name": "gitlab-runner",
+      "matched": true,
+      "version": "0.92.1",
+      "path": "tmp/pe019-private/charts/gitlab-runner-0.92.1.tgz",
+      "expected": "8225bb8acda23398cfb5b9925ad0dd8cc511f5e5461d1450caf92720e05b155c",
+      "actual": "8225bb8acda23398cfb5b9925ad0dd8cc511f5e5461d1450caf92720e05b155c"
+    },
+    {
+      "name": "prometheus",
+      "matched": true,
+      "version": "29.35.0",
+      "path": "tmp/acceptance-private/prometheus-29.35.0.tgz",
+      "expected": "58bd043404026c30298d2f319711fd32c91e255f1c9d29be557a3d465ad91239",
+      "actual": "58bd043404026c30298d2f319711fd32c91e255f1c9d29be557a3d465ad91239"
+    },
+    {
+      "name": "grafana",
+      "matched": true,
+      "version": "13.2.7",
+      "path": "tmp/acceptance-private/grafana-13.2.7.tgz",
+      "expected": "5189a48131311513ef7bf5e22f1ed6424cd1c7cec61bc1995fab04d3cf46f36a",
+      "actual": "5189a48131311513ef7bf5e22f1ed6424cd1c7cec61bc1995fab04d3cf46f36a"
+    }
+  ],
+  "bootstrapWaiterSourceSha256": "364a2f7a8007dc55968af49202fc8ce1344fde2e8a4a4fb3d0f688bdb740df81",
+  "utc": "2026-10-06T12:24:03.5811137Z",
+  "actualCIImagesStillRequireFinalJobBinding": true,
+  "applicationToolInputs": [
+    {
+      "repo": "backend-app",
+      "source": "bcc4126097ab6224e46257560010fc4623a51414",
+      "sha256": "27bf1f8af8f44ad00ee1cabf81e3e946292492a9f91cf5ca52d9db96249416cc"
+    },
+    {
+      "repo": "frontend-app",
+      "source": "455c05400c257ed30abf9ee04aee32769474775c",
+      "sha256": "b7d862038e7196a761dd4028a9f8256e6e9167b5a3b89dc435408e91bb70ab34"
+    }
+  ]
+}

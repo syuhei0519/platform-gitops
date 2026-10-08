@@ -1,0 +1,70 @@
+{
+  "rawTraceRead": false,
+  "case": "positive",
+  "privateBinaryRead": false,
+  "jobs": [
+    {
+      "id": 16920754353,
+      "name": "oci-image-policy-validation",
+      "status": "failed"
+    },
+    {
+      "id": 16920754352,
+      "name": "oci-isolated-runtime",
+      "status": "success"
+    },
+    {
+      "id": 16920754351,
+      "name": "oci-format-compatibility",
+      "status": "success"
+    },
+    {
+      "id": 16920754350,
+      "name": "container-build-oci",
+      "status": "success"
+    },
+    {
+      "id": 16920754349,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16920754348,
+      "name": "backend-build",
+      "status": "success"
+    },
+    {
+      "id": 16920754347,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16920754346,
+      "name": "format-and-vet",
+      "status": "success"
+    },
+    {
+      "id": 16920754345,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16920754344,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "registryPush": false,
+  "accepted": false,
+  "status": "failed",
+  "pipeline": 2910705119,
+  "utc": "2026-10-04T11:16:51.6914544Z",
+  "finalizerFailure": {
+    "schemaVersion": 1,
+    "status": "failed",
+    "failureReason": "build-unproven",
+    "recordAvailable": false
+  },
+  "fullPE017BAcceptance": false,
+  "source": "19c95f4101bbec1aa65504040fb6491ce4500094"
+}

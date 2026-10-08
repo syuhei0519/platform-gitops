@@ -1,0 +1,64 @@
+{
+  "source": "e927c6c837bf36d41c118225f254d277cf95bb5f",
+  "input": {
+    "schemaVersion": 1,
+    "scope": "PE017B policy foundation",
+    "imageDigest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+    "configDigest": "sha256:14a785db705ff3e966085d0dc227a8deedf0457b11cdee321fdaa5da62f83202",
+    "phase2Adoptable": false,
+    "registryPush": false
+  },
+  "buildJob": 16922783993,
+  "sbomProof": {
+    "format": "CycloneDX",
+    "specVersion": "1.7",
+    "sha256": "536d97512bb4361d3601861c24e5ccec827dbcc8d41e131edda2a5e859959c7e",
+    "configDigest": "sha256:14a785db705ff3e966085d0dc227a8deedf0457b11cdee321fdaa5da62f83202",
+    "componentCount": 38,
+    "scannedPackageCount": 36
+  },
+  "privateBinaryRead": false,
+  "accepted": true,
+  "layout": {
+    "schemaVersion": 1,
+    "sourceCommit": "e927c6c837bf36d41c118225f254d277cf95bb5f",
+    "sourceProjectId": 86247033,
+    "archiveSha256": "f518904937053256db93225d535df19f9069ae0b75ce6ef6559455fef8f5a45b",
+    "archiveBytes": 15376896,
+    "expandedBytes": 15361380,
+    "digest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+    "layerCount": 14,
+    "platform": "linux/amd64",
+    "registryPush": false
+  },
+  "scanBudget": {
+    "durationSeconds": 45.220388,
+    "timeoutSeconds": 900,
+    "disk": {
+      "schemaVersion": 1,
+      "scope": "PE016B sampled temporary disk",
+      "kind": "format",
+      "samples": 8,
+      "intervalSeconds": 2,
+      "transientMissingRetryCount": 0,
+      "duAttemptsPerMeasurementMax": 3,
+      "maxWorkspaceKiB": 1553344,
+      "workspaceLimitKiB": 2097152,
+      "maxBuildkitStoreKiB": 4,
+      "buildkitStoreLimitKiB": 10485760,
+      "buildkitStoreObserved": true,
+      "buildkitStoreAggregation": "sumConfiguredRoots",
+      "rootlessNamespaceUsed": false,
+      "minFilesystemFreePercent": 92.501826,
+      "measurementAvailable": true,
+      "withinBudget": true,
+      "continuousPeakClaim": false
+    }
+  },
+  "fullPE017BAcceptance": false,
+  "scanJob": 16922783996,
+  "pipeline": 2911071988,
+  "utc": "2026-10-04T19:49:44.0085196Z",
+  "actualSourcePolicySha256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337",
+  "rawTraceRead": false
+}

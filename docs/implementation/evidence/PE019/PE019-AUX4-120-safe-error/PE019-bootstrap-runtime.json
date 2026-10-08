@@ -1,0 +1,1128 @@
+{
+  "AT10Started": false,
+  "applications": [
+    {
+      "uid": "409f6fbf-7b90-42dc-863f-7b4bda69b113",
+      "sync": "Synced",
+      "finished": "2026-10-06T16:00:25Z",
+      "health": "Healthy",
+      "revision": "66796bdca2824b1dee18cc8164ae553e8cb94248",
+      "revisions": null,
+      "name": "lab-local-backend",
+      "phase": "Succeeded",
+      "syncRevision": "66796bdca2824b1dee18cc8164ae553e8cb94248",
+      "resources": [
+        {
+          "hookType": null,
+          "name": "backend",
+          "hookPhase": "Succeeded",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "ServiceAccount",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "backend-config",
+          "hookPhase": "Succeeded",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "ConfigMap",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "backend",
+          "hookPhase": "Succeeded",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "Service",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": "Sync",
+          "name": "backend-migration",
+          "hookPhase": "Succeeded",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "Job",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "backend",
+          "hookPhase": "Running",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "Deployment",
+          "syncPhase": "Sync"
+        }
+      ],
+      "started": "2026-10-06T16:00:19Z"
+    },
+    {
+      "uid": "4293330f-4952-4b90-a7e9-f9687afdee07",
+      "sync": "Synced",
+      "finished": "2026-10-06T12:48:09Z",
+      "health": "Healthy",
+      "revision": "66796bdca2824b1dee18cc8164ae553e8cb94248",
+      "revisions": null,
+      "name": "lab-local-frontend",
+      "phase": "Succeeded",
+      "syncRevision": "240f9465fe3e3d8b2fb2ba5af8120fd685bdb8d0",
+      "resources": [
+        {
+          "hookType": null,
+          "name": "frontend",
+          "hookPhase": "Running",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "ServiceAccount",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "frontend-config",
+          "hookPhase": "Running",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "ConfigMap",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "frontend",
+          "hookPhase": "Running",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "Service",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "frontend",
+          "hookPhase": "Running",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "Deployment",
+          "syncPhase": "Sync"
+        }
+      ],
+      "started": "2026-10-06T12:48:09Z"
+    },
+    {
+      "uid": "3a572196-3869-420c-abc3-2738a2d6836f",
+      "sync": "Synced",
+      "finished": "2026-10-06T12:46:53Z",
+      "health": "Healthy",
+      "revision": null,
+      "revisions": [
+        "0.92.1",
+        "9c654586c7db8dff458d2934629abd6f96689649"
+      ],
+      "name": "lab-local-gitlab-runner",
+      "phase": "Succeeded",
+      "syncRevision": "",
+      "resources": [
+        {
+          "hookType": null,
+          "name": "gitlab-runner",
+          "hookPhase": "Running",
+          "namespace": "runner-system",
+          "status": "Synced",
+          "kind": "ConfigMap",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "gitlab-runner",
+          "hookPhase": "Running",
+          "namespace": "runner-system",
+          "status": "Synced",
+          "kind": "Deployment",
+          "syncPhase": "Sync"
+        }
+      ],
+      "started": "2026-10-06T12:46:53Z"
+    },
+    {
+      "uid": "bc1656b9-4c3d-402d-907c-6c56c1620cfd",
+      "sync": "Synced",
+      "finished": "2026-10-06T12:46:49Z",
+      "health": "Healthy",
+      "revision": "9c654586c7db8dff458d2934629abd6f96689649",
+      "revisions": null,
+      "name": "lab-local-grafana",
+      "phase": "Succeeded",
+      "syncRevision": "9c654586c7db8dff458d2934629abd6f96689649",
+      "resources": [
+        {
+          "hookType": null,
+          "name": "grafana",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "ConfigMap",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "grafana-dashboards",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "ConfigMap",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "grafana",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "PersistentVolumeClaim",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "grafana",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "Service",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "grafana",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "Deployment",
+          "syncPhase": "Sync"
+        }
+      ],
+      "started": "2026-10-06T12:46:48Z"
+    },
+    {
+      "uid": "6ec5af9a-d9d0-42bd-8e44-b1d81e7a21e0",
+      "sync": "Synced",
+      "finished": "2026-10-06T12:46:44Z",
+      "health": "Healthy",
+      "revision": "9c654586c7db8dff458d2934629abd6f96689649",
+      "revisions": null,
+      "name": "lab-local-observability-foundation",
+      "phase": "Succeeded",
+      "syncRevision": "9c654586c7db8dff458d2934629abd6f96689649",
+      "resources": [
+        {
+          "hookType": null,
+          "name": "kube-state-metrics",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "ServiceAccount",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "prometheus",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "ServiceAccount",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "grafana",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "ServiceAccount",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "otel-collector",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "ServiceAccount",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "lab-prometheus-kind-proxy",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "ClusterRole",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "lab-prometheus-kind-proxy",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "ClusterRoleBinding",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "lab-ksm-account-read",
+          "hookPhase": "Running",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "Role",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "lab-ksm-account-read",
+          "hookPhase": "Running",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "RoleBinding",
+          "syncPhase": "Sync"
+        }
+      ],
+      "started": "2026-10-06T12:46:44Z"
+    },
+    {
+      "uid": "99cef0a5-af17-4083-8b6e-c1eab4c0369d",
+      "sync": "Synced",
+      "finished": "2026-10-06T12:46:49Z",
+      "health": "Healthy",
+      "revision": "9c654586c7db8dff458d2934629abd6f96689649",
+      "revisions": null,
+      "name": "lab-local-otel-collector",
+      "phase": "Succeeded",
+      "syncRevision": "9c654586c7db8dff458d2934629abd6f96689649",
+      "resources": [
+        {
+          "hookType": null,
+          "name": "otel-collector-config",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "ConfigMap",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "otel-collector",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "Service",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "otel-collector",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "Deployment",
+          "syncPhase": "Sync"
+        }
+      ],
+      "started": "2026-10-06T12:46:49Z"
+    },
+    {
+      "uid": "56ab4c69-a091-466d-8f91-e8c70bfe2dce",
+      "sync": "Synced",
+      "finished": "2026-10-06T12:46:48Z",
+      "health": "Healthy",
+      "revision": "9c654586c7db8dff458d2934629abd6f96689649",
+      "revisions": null,
+      "name": "lab-local-platform",
+      "phase": "Succeeded",
+      "syncRevision": "9c654586c7db8dff458d2934629abd6f96689649",
+      "resources": [
+        {
+          "hookType": null,
+          "name": "lab-local-observability-foundation",
+          "hookPhase": "Succeeded",
+          "namespace": "argocd",
+          "status": "Synced",
+          "kind": "Application",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "lab-local-runner-foundation",
+          "hookPhase": "Succeeded",
+          "namespace": "argocd",
+          "status": "Synced",
+          "kind": "Application",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "lab-local-prometheus",
+          "hookPhase": "Running",
+          "namespace": "argocd",
+          "status": "Synced",
+          "kind": "Application",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "lab-local-gitlab-runner",
+          "hookPhase": "Running",
+          "namespace": "argocd",
+          "status": "Synced",
+          "kind": "Application",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "lab-local-grafana",
+          "hookPhase": "Running",
+          "namespace": "argocd",
+          "status": "Synced",
+          "kind": "Application",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "lab-local-otel-collector",
+          "hookPhase": "Running",
+          "namespace": "argocd",
+          "status": "Synced",
+          "kind": "Application",
+          "syncPhase": "Sync"
+        }
+      ],
+      "started": "2026-10-06T12:46:43Z"
+    },
+    {
+      "uid": "762ae632-7a45-49e7-be7e-181146a0d88a",
+      "sync": "Synced",
+      "finished": "2026-10-06T12:46:47Z",
+      "health": "Healthy",
+      "revision": "66796bdca2824b1dee18cc8164ae553e8cb94248",
+      "revisions": null,
+      "name": "lab-local-postgresql",
+      "phase": "Succeeded",
+      "syncRevision": "240f9465fe3e3d8b2fb2ba5af8120fd685bdb8d0",
+      "resources": [
+        {
+          "hookType": null,
+          "name": "postgresql",
+          "hookPhase": "Running",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "ServiceAccount",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "postgresql-init",
+          "hookPhase": "Running",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "ConfigMap",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "postgresql-data",
+          "hookPhase": "Running",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "PersistentVolumeClaim",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "postgresql-headless",
+          "hookPhase": "Running",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "Service",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "postgresql",
+          "hookPhase": "Running",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "Service",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "postgresql",
+          "hookPhase": "Running",
+          "namespace": "account",
+          "status": "Synced",
+          "kind": "StatefulSet",
+          "syncPhase": "Sync"
+        }
+      ],
+      "started": "2026-10-06T12:46:47Z"
+    },
+    {
+      "uid": "dd6bb2ba-5c9a-4747-b1ee-7d044482cd8e",
+      "sync": "Synced",
+      "finished": "2026-10-06T12:46:53Z",
+      "health": "Healthy",
+      "revision": null,
+      "revisions": [
+        "29.35.0",
+        "9c654586c7db8dff458d2934629abd6f96689649"
+      ],
+      "name": "lab-local-prometheus",
+      "phase": "Succeeded",
+      "syncRevision": "",
+      "resources": [
+        {
+          "hookType": null,
+          "name": "prometheus-server",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "ConfigMap",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "prometheus-server",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "PersistentVolumeClaim",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "prometheus-server",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "Service",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "kube-state-metrics",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "Service",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "prometheus-server",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "Deployment",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "kube-state-metrics",
+          "hookPhase": "Running",
+          "namespace": "observability",
+          "status": "Synced",
+          "kind": "Deployment",
+          "syncPhase": "Sync"
+        }
+      ],
+      "started": "2026-10-06T12:46:52Z"
+    },
+    {
+      "uid": "22e1307a-8771-452e-b345-34a0dfac67b8",
+      "sync": "Synced",
+      "finished": "2026-10-06T12:46:43Z",
+      "health": "Healthy",
+      "revision": "9c654586c7db8dff458d2934629abd6f96689649",
+      "revisions": null,
+      "name": "lab-local-root",
+      "phase": "Succeeded",
+      "syncRevision": "9c654586c7db8dff458d2934629abd6f96689649",
+      "resources": [
+        {
+          "hookType": null,
+          "name": "lab-local-workloads",
+          "hookPhase": "Running",
+          "namespace": "argocd",
+          "status": "Synced",
+          "kind": "Application",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "lab-local-platform",
+          "hookPhase": "Running",
+          "namespace": "argocd",
+          "status": "Synced",
+          "kind": "Application",
+          "syncPhase": "Sync"
+        }
+      ],
+      "started": "2026-10-06T12:46:42Z"
+    },
+    {
+      "uid": "7b787bb7-cb54-4010-a5e2-da0ad801183b",
+      "sync": "Synced",
+      "finished": "2026-10-06T12:46:46Z",
+      "health": "Healthy",
+      "revision": "9c654586c7db8dff458d2934629abd6f96689649",
+      "revisions": null,
+      "name": "lab-local-runner-foundation",
+      "phase": "Succeeded",
+      "syncRevision": "9c654586c7db8dff458d2934629abd6f96689649",
+      "resources": [
+        {
+          "hookType": null,
+          "name": "ci-job",
+          "hookPhase": "Running",
+          "namespace": "build",
+          "status": "Synced",
+          "kind": "ServiceAccount",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "runner-manager",
+          "hookPhase": "Running",
+          "namespace": "runner-system",
+          "status": "Synced",
+          "kind": "ServiceAccount",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "gitlab-runner-jobs",
+          "hookPhase": "Running",
+          "namespace": "build",
+          "status": "Synced",
+          "kind": "Role",
+          "syncPhase": "Sync"
+        },
+        {
+          "hookType": null,
+          "name": "gitlab-runner-jobs",
+          "hookPhase": "Running",
+          "namespace": "build",
+          "status": "Synced",
+          "kind": "RoleBinding",
+          "syncPhase": "Sync"
+        }
+      ],
+      "started": "2026-10-06T12:46:46Z"
+    },
+    {
+      "uid": "09372e6c-1c93-4712-bcf3-8962af4d33b8",
+      "sync": "Synced",
+      "finished": "2026-10-06T12:48:09Z",
+      "health": "Healthy",
+      "revision": "9c654586c7db8dff458d2934629abd6f96689649",
+      "revisions": null,
+      "name": "lab-local-workloads",
+      "phase": "Succeeded",
+      "syncRevision": "9c654586c7db8dff458d2934629abd6f96689649",
+      "resources": [
+        {
+          "hookType": null,
+          "name": "lab-local-frontend",
+          "hookPhase": "Running",
+          "namespace": "argocd",
+          "status": "Synced",
+          "kind": "Application",
+          "syncPhase": "Sync"
+        }
+      ],
+      "started": "2026-10-06T12:48:08Z"
+    }
+  ],
+  "context": "kind-core-platform-final-019",
+  "fullRuntimeAcceptance": false,
+  "secretValuesRecorded": false,
+  "pods": [
+    {
+      "containers": [
+        {
+          "imageID": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app@sha256:64e88a0c337c09811c2e0b11160a0d09edcb8b976823fd1ec95bcf255f56a487",
+          "ready": true,
+          "restarts": 0,
+          "name": "backend",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T16:00:25Z",
+      "phase": "Running",
+      "namespace": "account",
+      "releaseAnnotations": {
+        "account.lab/source-project-id": "86247033",
+        "account.lab/restart-nonce": "",
+        "account.lab/scan-job-id": "16971512567",
+        "account.lab/release-record-sha256": "bb32349c064dfc451768dbed0a39abef479be6196758432aa1b6e4e5757549a9",
+        "account.lab/sbom-url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-64e88a0c337c09811c2e0b11160a0d09edcb8b976823fd1ec95bcf255f56a487/sbom-2918186353-16971512567.cdx.json",
+        "account.lab/release-record-url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-64e88a0c337c09811c2e0b11160a0d09edcb8b976823fd1ec95bcf255f56a487/release-record-2918186353-16971512567.json",
+        "account.lab/source-commit": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+        "account.lab/release-schema-version": "2",
+        "account.lab/sbom-sha256": "c2043b23a02f16b3f910882f9717eccbcce906e737519ef3ddfecad9c3950e82",
+        "account.lab/scan-pipeline-id": "2918186353",
+        "account.lab/image-digest": "sha256:64e88a0c337c09811c2e0b11160a0d09edcb8b976823fd1ec95bcf255f56a487",
+        "account.lab/build-pipeline-id": "2918186353",
+        "account.lab/build-job-id": "16971512564"
+      },
+      "uid": "f3fb9a1f-ddaa-41e0-9723-73eb46e3cf08",
+      "name": "backend-59cfcf77f6-szmz8"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app@sha256:68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78",
+          "ready": true,
+          "restarts": 0,
+          "name": "frontend",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:48:09Z",
+      "phase": "Running",
+      "namespace": "account",
+      "releaseAnnotations": {
+        "account.lab/source-project-id": "86247025",
+        "account.lab/restart-nonce": "",
+        "account.lab/scan-job-id": "16918980625",
+        "account.lab/release-record-sha256": "ab17a7862ac31365e277f4483b41ccdf3ad21d8a89f7029447d5958d2aada518",
+        "account.lab/sbom-url": "https://gitlab.com/api/v4/projects/86247025/packages/generic/core-platform-frontend/sha256-68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78/sbom-2910363180-16918980625.cdx.json",
+        "account.lab/release-record-url": "https://gitlab.com/api/v4/projects/86247025/packages/generic/core-platform-frontend/sha256-68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78/release-record-2910363180-16918980625.json",
+        "account.lab/source-commit": "ce6ec1d94cf1042a824b745f4a5f6367b1c0f845",
+        "account.lab/release-schema-version": "2",
+        "account.lab/sbom-sha256": "6a57e4801537aedad95fd755dbb1749ee45467e4b504e8fd909a6fb863a48594",
+        "account.lab/scan-pipeline-id": "2910363180",
+        "account.lab/image-digest": "sha256:68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78",
+        "account.lab/build-pipeline-id": "2910339772",
+        "account.lab/build-job-id": "16918864597"
+      },
+      "uid": "c6f46227-3f78-4e06-8f28-da6a29e29165",
+      "name": "frontend-5bdc8c5fbd-h7l9t"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "docker.io/library/postgres@sha256:9b18b78397054fce88a9552e9d5a3ad5bb7fd258c5b3cc1c5028e46373d6ea8f",
+          "ready": true,
+          "restarts": 0,
+          "name": "postgresql",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:46:47Z",
+      "phase": "Running",
+      "namespace": "account",
+      "releaseAnnotations": {},
+      "uid": "4d770d95-26a3-4e5a-b0ea-51b5a12249cd",
+      "name": "postgresql-0"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "quay.io/argoproj/argocd@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68",
+          "ready": true,
+          "restarts": 0,
+          "name": "application-controller",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:15:41Z",
+      "phase": "Running",
+      "namespace": "argocd",
+      "releaseAnnotations": {},
+      "uid": "4402d3f1-c432-42c0-b6b9-7139e03dca0d",
+      "name": "argocd-application-controller-0"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "ecr-public.aws.com/docker/library/redis@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1",
+          "ready": true,
+          "restarts": 0,
+          "name": "redis",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:15:41Z",
+      "phase": "Running",
+      "namespace": "argocd",
+      "releaseAnnotations": {},
+      "uid": "3dfa9950-1a0d-4df2-96b6-45e5c91ed245",
+      "name": "argocd-redis-79d8689885-c6crt"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "quay.io/argoproj/argocd@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68",
+          "ready": true,
+          "restarts": 0,
+          "name": "repo-server",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:15:41Z",
+      "phase": "Running",
+      "namespace": "argocd",
+      "releaseAnnotations": {},
+      "uid": "e9b01e1f-6434-48f8-841b-ba708938f2cf",
+      "name": "argocd-repo-server-7df84cb77c-rcbrf"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "quay.io/argoproj/argocd@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68",
+          "ready": true,
+          "restarts": 0,
+          "name": "server",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:15:41Z",
+      "phase": "Running",
+      "namespace": "argocd",
+      "releaseAnnotations": {},
+      "uid": "7a2ae195-66b8-4b01-9e7c-4a8ba30eaa48",
+      "name": "argocd-server-578d66848b-rshk7"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "docker.io/moby/buildkit@sha256:d76eb1caecac5733ef7553c1e90a1b21f1bb218cd1142d3553de0747b4a14ba9",
+          "ready": false,
+          "restarts": 0,
+          "name": "diagnostic",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T13:33:12Z",
+      "phase": "Succeeded",
+      "namespace": "build",
+      "releaseAnnotations": {},
+      "uid": "8786b4b7-51cc-446c-b4b7-e1d64135996e",
+      "name": "pe019-budget-namespace-diagnostic"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "docker.io/moby/buildkit@sha256:d76eb1caecac5733ef7553c1e90a1b21f1bb218cd1142d3553de0747b4a14ba9",
+          "ready": false,
+          "restarts": 0,
+          "name": "diagnostic",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T13:38:22Z",
+      "phase": "Succeeded",
+      "namespace": "build",
+      "releaseAnnotations": {},
+      "uid": "921b9c81-962e-4fbe-8aa2-72a043ce268f",
+      "name": "pe019-persistent-sampler-validation"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "docker.io/moby/buildkit@sha256:d76eb1caecac5733ef7553c1e90a1b21f1bb218cd1142d3553de0747b4a14ba9",
+          "ready": false,
+          "restarts": 0,
+          "name": "diagnostic",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T13:39:09Z",
+      "phase": "Succeeded",
+      "namespace": "build",
+      "releaseAnnotations": {},
+      "uid": "1aa6a807-c5ca-4c16-abad-52f1f7138a8b",
+      "name": "pe019-sampler-failure-propagation"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "docker.io/moby/buildkit@sha256:d76eb1caecac5733ef7553c1e90a1b21f1bb218cd1142d3553de0747b4a14ba9",
+          "ready": true,
+          "restarts": 0,
+          "name": "build",
+          "lastReason": null
+        },
+        {
+          "imageID": "registry.gitlab.com/gitlab-org/ci-cd/gitlab-runner-ubi-images/gitlab-runner-helper-ocp@sha256:ebcce5b4e36899e72aa20554962d7270a0eec1e398e1b0a0f746ede4f4bb1b70",
+          "ready": true,
+          "restarts": 0,
+          "name": "helper",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T17:54:04Z",
+      "phase": "Running",
+      "namespace": "build",
+      "releaseAnnotations": {},
+      "uid": "b4a3fe4a-fb98-4792-9b9e-756e3a359fc8",
+      "name": "runner-sezwyuwrb-project-86247033-concurrent-0-r40dtr8t"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "sha256:38667dd9be96c17227adde456e33ad701bdbdc5c6db0272a1d33a929bd8e62d6",
+          "ready": true,
+          "restarts": 0,
+          "name": "coredns",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:14:34Z",
+      "phase": "Running",
+      "namespace": "kube-system",
+      "releaseAnnotations": {},
+      "uid": "fa2aa833-8290-4972-90e9-c47a1ee82fe6",
+      "name": "coredns-589f44dc88-254w8"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "sha256:38667dd9be96c17227adde456e33ad701bdbdc5c6db0272a1d33a929bd8e62d6",
+          "ready": true,
+          "restarts": 0,
+          "name": "coredns",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:14:34Z",
+      "phase": "Running",
+      "namespace": "kube-system",
+      "releaseAnnotations": {},
+      "uid": "d3e67f35-21ce-45a1-8f83-c2124dd83672",
+      "name": "coredns-589f44dc88-k6cv7"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "sha256:ee85eb1f0edd27fd11e3bed20f21a4001ad63107eb2f8d489429648a799c0e86",
+          "ready": true,
+          "restarts": 0,
+          "name": "etcd",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:14:29Z",
+      "phase": "Running",
+      "namespace": "kube-system",
+      "releaseAnnotations": {},
+      "uid": "4088470d-68ec-458c-bbd3-bea042c3adba",
+      "name": "etcd-core-platform-final-019-control-plane"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "sha256:4626fe10df5b930638e6e1662143ee1c7a698de6174fdb61a8ce658e688be2cd",
+          "ready": true,
+          "restarts": 0,
+          "name": "kindnet-cni",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:14:34Z",
+      "phase": "Running",
+      "namespace": "kube-system",
+      "releaseAnnotations": {},
+      "uid": "1b3f6173-b4cf-43cd-8ad1-074cda8dc40f",
+      "name": "kindnet-pgfvj"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "docker.io/library/import-2026-08-26@sha256:2123d119ca32eb19622df2e6279e27bc028d2c33d0e4afb46f197ca134e5f687",
+          "ready": true,
+          "restarts": 0,
+          "name": "kube-apiserver",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:14:29Z",
+      "phase": "Running",
+      "namespace": "kube-system",
+      "releaseAnnotations": {},
+      "uid": "6a38d9c3-5790-41dd-80d4-47eda3bb1ee1",
+      "name": "kube-apiserver-core-platform-final-019-control-plane"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "docker.io/library/import-2026-08-26@sha256:5d1180ec5fa02cc8ffe2244491197efc92b5afe8637dbd2267cdb3a2102cde9c",
+          "ready": true,
+          "restarts": 0,
+          "name": "kube-controller-manager",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:14:29Z",
+      "phase": "Running",
+      "namespace": "kube-system",
+      "releaseAnnotations": {},
+      "uid": "5e29282b-b222-402c-9d25-94a427d429f5",
+      "name": "kube-controller-manager-core-platform-final-019-control-plane"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "docker.io/library/import-2026-08-26@sha256:306a0415be3708a014f45abffffdffbf23c3625029b7b7b35c310b801205512a",
+          "ready": true,
+          "restarts": 0,
+          "name": "kube-proxy",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:14:34Z",
+      "phase": "Running",
+      "namespace": "kube-system",
+      "releaseAnnotations": {},
+      "uid": "4d4feeb4-9ec7-471d-846b-1121e84ad936",
+      "name": "kube-proxy-bzrk7"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "docker.io/library/import-2026-08-26@sha256:8aec479d9e6484c30cd03cc157e65ce2f661e4f5f67876aa6315686602faccdd",
+          "ready": true,
+          "restarts": 0,
+          "name": "kube-scheduler",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:14:29Z",
+      "phase": "Running",
+      "namespace": "kube-system",
+      "releaseAnnotations": {},
+      "uid": "bbb531c4-f62e-4f9d-940d-607f1e27f66e",
+      "name": "kube-scheduler-core-platform-final-019-control-plane"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "sha256:c82008e2cd0186ef96bfd05d6b49d3286768fae5bd7a961f70bd485a3785c006",
+          "ready": true,
+          "restarts": 0,
+          "name": "local-path-provisioner",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:14:34Z",
+      "phase": "Running",
+      "namespace": "local-path-storage",
+      "releaseAnnotations": {},
+      "uid": "6d1cda07-2a55-4059-b32e-4c8651483906",
+      "name": "local-path-provisioner-56c4685b7c-bp8tk"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "docker.io/grafana/grafana@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4",
+          "ready": true,
+          "restarts": 0,
+          "name": "grafana",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:46:49Z",
+      "phase": "Running",
+      "namespace": "observability",
+      "releaseAnnotations": {},
+      "uid": "2d2253d8-713e-4f9f-975d-8320c0e4b780",
+      "name": "grafana-5cb99df4f8-mkphv"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "registry.k8s.io/kube-state-metrics/kube-state-metrics@sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016",
+          "ready": true,
+          "restarts": 0,
+          "name": "kube-state-metrics",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:46:53Z",
+      "phase": "Running",
+      "namespace": "observability",
+      "releaseAnnotations": {},
+      "uid": "a6eedb99-6fc3-4f89-a6a1-2c962230fe03",
+      "name": "kube-state-metrics-69d77fc498-cfjlc"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc",
+          "ready": true,
+          "restarts": 0,
+          "name": "collector",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T13:11:59Z",
+      "phase": "Running",
+      "namespace": "observability",
+      "releaseAnnotations": {},
+      "uid": "88ab8bb0-ccc9-4e91-9d45-2c54506e8917",
+      "name": "otel-collector-5cf455786d-mdmp2"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "quay.io/prometheus/prometheus@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa",
+          "ready": true,
+          "restarts": 0,
+          "name": "prometheus-server",
+          "lastReason": null
+        },
+        {
+          "imageID": "quay.io/prometheus-operator/prometheus-config-reloader@sha256:ac2f46e50daebc6163d2ba17adbbbc7fe8f51a0000e7961e821dcb9331b3702f",
+          "ready": true,
+          "restarts": 0,
+          "name": "prometheus-server-configmap-reload",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:46:53Z",
+      "phase": "Running",
+      "namespace": "observability",
+      "releaseAnnotations": {},
+      "uid": "15ce96b6-184d-4749-b2e5-b2ad030ee576",
+      "name": "prometheus-server-6c88d7f769-2m4mb"
+    },
+    {
+      "containers": [
+        {
+          "imageID": "registry.gitlab.com/gitlab-org/gitlab-runner@sha256:f5578027351e1db11564fff9333977fb0d8d13c802b35d42a2f392872fec6a30",
+          "ready": true,
+          "restarts": 0,
+          "name": "gitlab-runner",
+          "lastReason": null
+        }
+      ],
+      "created": "2026-10-06T12:46:53Z",
+      "phase": "Running",
+      "namespace": "runner-system",
+      "releaseAnnotations": {},
+      "uid": "0b1e439a-d5d8-4825-8358-f8873dc53a90",
+      "name": "gitlab-runner-6db556d775-hpndg"
+    }
+  ],
+  "utc": "2026-10-06T17:56:30.6253486Z",
+  "pvcs": [
+    {
+      "volumeName": "pvc-21a31208-789a-4c23-9f28-389407f1b689",
+      "uid": "21a31208-789a-4c23-9f28-389407f1b689",
+      "name": "postgresql-data",
+      "phase": "Bound"
+    }
+  ]
+}

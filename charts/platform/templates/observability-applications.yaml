@@ -1,0 +1,87 @@
+{{/*
+観測基盤のApplicationを生成。SA/RBAC、Collector、Prometheus、Grafanaへvaluesを渡す。
+固定Chart版とGit設定を結合し、観測の導入とNew Relic資格情報の用意を別責任とする。
+*/}}{{- if .Values.observabilityEnabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-local-observability-foundation
+  namespace: argocd
+  annotations: {argocd.argoproj.io/sync-wave: "-20", argocd.argoproj.io/sync-options: Prune=confirm}
+spec:
+  project: lab-observability
+  source:
+    repoURL: {{ .Values.platformRepository }}
+    targetRevision: {{ .Values.targetRevision }}
+    path: charts/observability-foundation
+    helm: {releaseName: observability-foundation, valueFiles: [../../environments/local/observability-foundation.yaml]}
+  destination: {server: https://kubernetes.default.svc, namespace: observability}
+  syncPolicy:
+    automated: {prune: true, selfHeal: true, allowEmpty: false}
+    syncOptions: [PruneLast=true, FailOnSharedResource=true]
+{{- if .Values.prometheusEnabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-local-prometheus
+  namespace: argocd
+  annotations: {argocd.argoproj.io/sync-wave: "0", argocd.argoproj.io/sync-options: Prune=confirm}
+spec:
+  project: lab-observability
+  sources:
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: prometheus
+      targetRevision: {{ .Values.prometheusChartVersion | quote }}
+      helm:
+        releaseName: prometheus
+        valueFiles: [$values/environments/local/prometheus.yaml]
+    - repoURL: {{ .Values.platformRepository }}
+      targetRevision: {{ .Values.targetRevision }}
+      ref: values
+  destination: {server: https://kubernetes.default.svc, namespace: observability}
+  syncPolicy:
+    automated: {prune: true, selfHeal: true, allowEmpty: false}
+    syncOptions: [PruneLast=true, FailOnSharedResource=true]
+{{- end }}
+{{- if .Values.collectorEnabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-local-otel-collector
+  namespace: argocd
+  annotations: {argocd.argoproj.io/sync-wave: "0", argocd.argoproj.io/sync-options: Prune=confirm}
+spec:
+  project: lab-observability
+  source:
+    repoURL: {{ .Values.platformRepository }}
+    targetRevision: {{ .Values.targetRevision }}
+    path: charts/otel-collector
+    helm: {releaseName: otel-collector, valueFiles: [../../environments/local/otel-collector.yaml]}
+  destination: {server: https://kubernetes.default.svc, namespace: observability}
+  syncPolicy:
+    automated: {prune: true, selfHeal: true, allowEmpty: false}
+    syncOptions: [PruneLast=true, FailOnSharedResource=true]
+{{- end }}
+{{- end }}
+{{- if .Values.grafanaEnabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-local-grafana
+  namespace: argocd
+  annotations: {argocd.argoproj.io/sync-wave: "0", argocd.argoproj.io/sync-options: Prune=confirm}
+spec:
+  project: lab-observability
+  source:
+    repoURL: {{ .Values.platformRepository }}
+    targetRevision: {{ .Values.targetRevision }}
+    path: charts/grafana
+    helm: {releaseName: grafana, valueFiles: [../../environments/local/grafana.yaml]}
+  destination: {server: https://kubernetes.default.svc, namespace: observability}
+  syncPolicy:
+    automated: {prune: true, selfHeal: true, allowEmpty: false}
+    syncOptions: [PruneLast=true, FailOnSharedResource=true]
+{{- end }}

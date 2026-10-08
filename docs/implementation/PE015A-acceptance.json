@@ -1,0 +1,63 @@
+{
+  "status": "policy implemented and integrated; evidence integration pending",
+  "realCredentialsInFixtures": false,
+  "files": [
+    {
+      "file": "evidence/PE015-policy-merge.json",
+      "sha256": "5475df550f89aa57a766be4fb40cd1343f3c65744703258daf43824ca8e1927c",
+      "bytes": 422
+    },
+    {
+      "file": "evidence/PE015-dev-only-inventory.json",
+      "sha256": "c6ed68e8e54d681fea4030c7b7738ce2c113ee0fbe21805bff502c93f8c44ade",
+      "bytes": 516
+    },
+    {
+      "file": "evidence/PE015-dev-only-safe-policy.json",
+      "sha256": "c2849737764c113db632ed7a2d844ff782672c94ce5df08e13f5e54b19202382",
+      "bytes": 1585
+    },
+    {
+      "file": "evidence/PE015-privileged-safe-policy.json",
+      "sha256": "c678d9a2714db92d700264fbf0bf00d72211dc0dac68445b9a0c0e2631a1425b",
+      "bytes": 2987
+    },
+    {
+      "file": "evidence/PE015-secret-safe-policy.json",
+      "sha256": "6b2de495f1065b59d5fa58f9fee1ab7aee6768e5bc49d73c11755ef849cb7509",
+      "bytes": 423
+    },
+    {
+      "file": "evidence/PE015-actual-shell-negative.json",
+      "sha256": "9af1085ee23c21b3d07d5b4a0aaaa1d0186f2093877008eaaacba82b595a53f1",
+      "bytes": 1051
+    },
+    {
+      "file": "evidence/PE015-real-render-structure.json",
+      "sha256": "b8ec3809269593fe04a606ea0167ecc905fd551b31897906051a4a2f5b7a3b22",
+      "bytes": 78
+    },
+    {
+      "file": "evidence/PE015-secret-file-false-positive.json",
+      "sha256": "69e678f99e64ffc1977d98959dc69e6e5142009946c889e6f0f0ebfdeb07ca15",
+      "bytes": 261
+    },
+    {
+      "file": "evidence/PE015-secret-file-reference-safe.json",
+      "sha256": "b8ec3809269593fe04a606ea0167ecc905fd551b31897906051a4a2f5b7a3b22",
+      "bytes": 78
+    },
+    {
+      "file": "evidence/PE015-manifest-real-render-structure.json",
+      "sha256": "b8ec3809269593fe04a606ea0167ecc905fd551b31897906051a4a2f5b7a3b22",
+      "bytes": 78
+    }
+  ],
+  "policyMain": "30ead4f96d67e998c213eb236b63752d9ae0602c",
+  "AT11": "partial policy and local actual Trivy; full fourrepo downstream acceptance pending",
+  "unitC": "pending deployment CI and protected-main trusted downstream acceptance",
+  "policySource": "d16ebe552afdae324a48051e0c3d9bc1201e0e61",
+  "ownCi": 2908019804,
+  "unit": "PE015A",
+  "unitB": "pending application CI and protected-main downstream negative acceptance"
+}

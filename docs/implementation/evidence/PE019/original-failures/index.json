@@ -1,0 +1,1633 @@
+[
+  {
+    "originalFiles": [
+      {
+        "bytes": 11547,
+        "path": "checksums.json",
+        "sha256": "4e9da4ac622639d270d1773999db2b393062f9dfd2ef4fb313614462bf64f2ca"
+      },
+      {
+        "bytes": 124,
+        "path": "PE019-AT10-abort.json",
+        "sha256": "6351c68ae5cf1fcc543407bbf94096e6c79c7926c42be32b84512d9e06efd299"
+      },
+      {
+        "bytes": 165,
+        "path": "PE019-AT10-collector-before.txt",
+        "sha256": "31b71bfd0d39106a78c8decda714559717111c3418fa02b50f5da5934f7b2cf3"
+      },
+      {
+        "bytes": 89108,
+        "path": "PE019-AT10-crud-rows.json",
+        "sha256": "90de0fe2b663e6a64501d0a4111df18e7648ff93c36be115c298125f84670868"
+      },
+      {
+        "bytes": 377,
+        "path": "PE019-AT10-fault-worker-error.txt",
+        "sha256": "02f0b7e8b56a8cf6db866548fdaefbb50617758d853863817ade66c6d06137db"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-fault-worker-output.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 240,
+        "path": "PE019-AT10-fault-worker.json",
+        "sha256": "121ed5a72d9d6774d692774983d4fb9751cd8a019bc4017fb7cc8414826686de"
+      },
+      {
+        "bytes": 142,
+        "path": "PE019-AT10-forwards-closed.json",
+        "sha256": "dafdd326ad4dd7c258d1148a9b8f11f0c35e1cfbe33420a03a5b5b7551d1e3fa"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-frontend-forward-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 9100,
+        "path": "PE019-AT10-frontend-forward.txt",
+        "sha256": "a4b0cd9d41fd39384130848435599aa3e48ec71c3b6464253fc02de5134bc706"
+      },
+      {
+        "bytes": 146,
+        "path": "PE019-AT10-live.json",
+        "sha256": "fc8567febb41c2f9360e5fc4a0ef3adea87e621656c630877e341baf17febefd"
+      },
+      {
+        "bytes": 187,
+        "path": "PE019-AT10-owned-cleanup.json",
+        "sha256": "848305f8a8873c55f91bc54f159f6a01abe65141ba14246287140d7a891a32c6"
+      },
+      {
+        "bytes": 1160,
+        "path": "PE019-AT10-profile-frozen.json",
+        "sha256": "99ff50b90e2bade4f4fcbfc487811650b51b014625630fd9ad83265286223cc8"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-prometheus-server-forward-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 130,
+        "path": "PE019-AT10-prometheus-server-forward.txt",
+        "sha256": "0d81e408bcafcc6cb13332818b612ed8f92423121d175b35b331fab40737922d"
+      },
+      {
+        "bytes": 380,
+        "path": "PE019-AT10-resource-worker-error.txt",
+        "sha256": "853b6aed026387c877e85b13e1ed148809cf1755dab0cf5559555816f019874e"
+      },
+      {
+        "bytes": 7503,
+        "path": "PE019-AT10-resource-worker-output.txt",
+        "sha256": "bee104ba8c21b5dc66ed8f20fe11626b178ff4ac9fa7e3e070391dc8ec63c084"
+      },
+      {
+        "bytes": 194,
+        "path": "PE019-AT10-resource-worker.json",
+        "sha256": "27977f24443276b05d6c8cf43cea225f76032f9f9dbb949e04cbba6c1415464e"
+      },
+      {
+        "bytes": 514,
+        "path": "PE019-AT10-window.json",
+        "sha256": "a27b51e27606913f36311469e4e2e75c02a2cf7f0a8c7bd623e84985d171b983"
+      },
+      {
+        "bytes": 4243,
+        "path": "pe019-capacity-fault-worker.ps1",
+        "sha256": "9fe8443752369f03bf83f8cce26cbe3328de9e268467fcd8646cd9f6d0baeab0"
+      },
+      {
+        "bytes": 2557,
+        "path": "pe019-capacity-resource-worker.ps1",
+        "sha256": "37c627d2cebfebf6d6dcadd2e53550613d6d2c68c3430c09d4ea9aeaf0eae174"
+      },
+      {
+        "bytes": 8182,
+        "path": "pe019-final-capacity.ps1",
+        "sha256": "cefde41bdb76b2892910169b6689e3642dffa5dea653be7d8842c6513248290b"
+      },
+      {
+        "bytes": 243955,
+        "path": "PE019-AT10-resources/snapshot-0000.json",
+        "sha256": "7babedd68c6641643b2724bd8571592cab3b200567198e606ed3e2284c8bee6e"
+      },
+      {
+        "bytes": 243958,
+        "path": "PE019-AT10-resources/snapshot-0001.json",
+        "sha256": "502e547438b910257288eb8a5995bd079198c5ae8a7a06b86d8c18e869f4cadf"
+      },
+      {
+        "bytes": 243949,
+        "path": "PE019-AT10-resources/snapshot-0002.json",
+        "sha256": "84e0363d00c024c9cd0f4db59bb68bc2362d75fdbfc7d3fd86c05f917d6d2f4d"
+      },
+      {
+        "bytes": 243940,
+        "path": "PE019-AT10-resources/snapshot-0003.json",
+        "sha256": "381c123dbe1ba3cf35ec6514d26d22e2588007b7c6260b2149b34f727a4fd9f8"
+      },
+      {
+        "bytes": 243975,
+        "path": "PE019-AT10-resources/snapshot-0004.json",
+        "sha256": "dbc0a7bfec6c5ff0c65ceacd4f61cf2cd93e97c9c24aaebd5ae51483acfb0741"
+      },
+      {
+        "bytes": 243954,
+        "path": "PE019-AT10-resources/snapshot-0005.json",
+        "sha256": "4b93a376da5f7219c5c110ea5a55b23573143821aa629a5c1eaf1f475475bc71"
+      },
+      {
+        "bytes": 245702,
+        "path": "PE019-AT10-resources/snapshot-0006.json",
+        "sha256": "530fa6063c9bf6b443e6df94c6f1ef09bede930562ae9040aaf8957d378c7cfb"
+      },
+      {
+        "bytes": 251840,
+        "path": "PE019-AT10-resources/snapshot-0007.json",
+        "sha256": "998977c18df40e1e90c98415a84b0232051bc3c405ef401ff71ddf57e63e9dd4"
+      },
+      {
+        "bytes": 240166,
+        "path": "PE019-AT10-resources/snapshot-0008.json",
+        "sha256": "c52d011ae108a6a89076dda0b20b44c0c37720eaaf39b4c7637857a3764edc3e"
+      },
+      {
+        "bytes": 238565,
+        "path": "PE019-AT10-resources/snapshot-0009.json",
+        "sha256": "46ca390fe584f6f30fab27fc2dc5f4b1aec059a5cdfd773f22e1a56964dd908c"
+      },
+      {
+        "bytes": 238556,
+        "path": "PE019-AT10-resources/snapshot-0010.json",
+        "sha256": "4f569a418d880b81fa33ed35d53b723bc84ccb1754467e0886de8a785d82ef24"
+      },
+      {
+        "bytes": 246408,
+        "path": "PE019-AT10-resources/snapshot-0011.json",
+        "sha256": "fd8ef2dd6a149129f51bd1d43e774ac10e8ebeec8914426e32027e68dad99d7e"
+      },
+      {
+        "bytes": 238547,
+        "path": "PE019-AT10-resources/snapshot-0012.json",
+        "sha256": "3408d5ace2b1ee8a2f8935ae0244034ebfae4509ea345dd0edb3cce501a86e0c"
+      },
+      {
+        "bytes": 244031,
+        "path": "PE019-AT10-resources/snapshot-0013.json",
+        "sha256": "9981792750ac75974fa2965d7a209b4376523846ee01f9cb2025cd82229cc0f9"
+      },
+      {
+        "bytes": 251858,
+        "path": "PE019-AT10-resources/snapshot-0014.json",
+        "sha256": "c557ea6a47e0eba20c7b52b212bff625eac086382e5e327deb646061f0ccfe97"
+      },
+      {
+        "bytes": 251939,
+        "path": "PE019-AT10-resources/snapshot-0015.json",
+        "sha256": "04f527a738e0aebf1358ea412f810ff33937f84ed3257e6120b91059f0efe74a"
+      },
+      {
+        "bytes": 243990,
+        "path": "PE019-AT10-resources/snapshot-0016.json",
+        "sha256": "cc017e438476110cc9cf79e36ce380fbbaf351e67b88f3b4ed7852a1b1cbd0f5"
+      },
+      {
+        "bytes": 243923,
+        "path": "PE019-AT10-resources/snapshot-0017.json",
+        "sha256": "eeeb4fce5fd2fec09c33e04444c4c679869ad5334a9729dfdb9d84ab685e2f42"
+      },
+      {
+        "bytes": 243950,
+        "path": "PE019-AT10-resources/snapshot-0018.json",
+        "sha256": "ac2987c2c65d8b1c2fcd0532ada5c297e1f79c5c80491555814744bffb72d1b5"
+      },
+      {
+        "bytes": 243975,
+        "path": "PE019-AT10-resources/snapshot-0019.json",
+        "sha256": "e2eabc7424e3c7324f1ce44ca5764a623655d1081bfd171d5b6fef0fd6511594"
+      },
+      {
+        "bytes": 251864,
+        "path": "PE019-AT10-resources/snapshot-0020.json",
+        "sha256": "b017dd3820b187416a79d56e5e28bcd1c4ccd1975f8bd2678893b5d196221d20"
+      },
+      {
+        "bytes": 243845,
+        "path": "PE019-AT10-resources/snapshot-0021.json",
+        "sha256": "323b674ed707794292b54508c3c9b82e011e09af8d338023513d31074c98d823"
+      },
+      {
+        "bytes": 243826,
+        "path": "PE019-AT10-resources/snapshot-0022.json",
+        "sha256": "c0bd2972fbae940fc0a6fc08352280ca4641ba38311603302796c2508b19e7d7"
+      },
+      {
+        "bytes": 243960,
+        "path": "PE019-AT10-resources/snapshot-0023.json",
+        "sha256": "5e913c1b4743e7361e98ca25c74c79b94673bbabc24861d4e23314997e511f90"
+      },
+      {
+        "bytes": 243967,
+        "path": "PE019-AT10-resources/snapshot-0024.json",
+        "sha256": "6ba2350d2d147216080ea773794a5a85781af1e58b16cd04ff4e77476f5b1bac"
+      },
+      {
+        "bytes": 236031,
+        "path": "PE019-AT10-resources/snapshot-0025.json",
+        "sha256": "6532337317c923d37da8c478c927b54f71da8b7eecbdf422c613f4cfd1e33424"
+      },
+      {
+        "bytes": 236054,
+        "path": "PE019-AT10-resources/snapshot-0026.json",
+        "sha256": "79773fea292f8529609ebaad224ad7ef1ebf685b0641b3696ec9cea5655ca722"
+      },
+      {
+        "bytes": 236032,
+        "path": "PE019-AT10-resources/snapshot-0027.json",
+        "sha256": "75ee4f6bb96468218c65c3eff20215f57ddf71adb44a2215b523be1f18cbe376"
+      },
+      {
+        "bytes": 236022,
+        "path": "PE019-AT10-resources/snapshot-0028.json",
+        "sha256": "acf968d02ea9196a7e3a91e7bc3e02adc344726bef4a966d483717e8b921f2a8"
+      },
+      {
+        "bytes": 236025,
+        "path": "PE019-AT10-resources/snapshot-0029.json",
+        "sha256": "e116ad329847ffc99b20a99b930d4c1e7e0b66192b91a815ffdabd50eb26bc3f"
+      },
+      {
+        "bytes": 236027,
+        "path": "PE019-AT10-resources/snapshot-0030.json",
+        "sha256": "5ee799ed6fbb761aa1bfa352b210b996792edc663d67aa5cd0fa26cb714a4a99"
+      },
+      {
+        "bytes": 236015,
+        "path": "PE019-AT10-resources/snapshot-0031.json",
+        "sha256": "a4c76da2404dcfe8fc26dcb23dcd322744e2089eaf7c175f477d008ed2380161"
+      },
+      {
+        "bytes": 236009,
+        "path": "PE019-AT10-resources/snapshot-0032.json",
+        "sha256": "5c4c90de0775b3e859dd6a977409e027f80c0205de17da1b1cc1bdb23be998c9"
+      },
+      {
+        "bytes": 241722,
+        "path": "PE019-AT10-resources/snapshot-0033.json",
+        "sha256": "954d9de9326a42e61bb1721e54e866672914fae55aeda227610bc2a3485d292c"
+      },
+      {
+        "bytes": 244023,
+        "path": "PE019-AT10-resources/snapshot-0034.json",
+        "sha256": "b5f2abc93e64208c7c55dd25bbf69a920b34ba17fa7b778055a685811474c4db"
+      },
+      {
+        "bytes": 243997,
+        "path": "PE019-AT10-resources/snapshot-0035.json",
+        "sha256": "07e85fc32c97f7e85a63bdcd44ca917b4b3fa937ae0055a8dd7db23635fc4630"
+      },
+      {
+        "bytes": 245788,
+        "path": "PE019-AT10-resources/snapshot-0036.json",
+        "sha256": "098ff651aad864c109cb6ec03fb00d712799761f4da6a57609c17055f671063e"
+      },
+      {
+        "bytes": 259636,
+        "path": "PE019-AT10-resources/snapshot-0037.json",
+        "sha256": "c9df34f27ef991c27956a845d532ba5c35fa0d1d14e79a65a0952a77e3f1e8ef"
+      },
+      {
+        "bytes": 251882,
+        "path": "PE019-AT10-resources/snapshot-0038.json",
+        "sha256": "26de51be1755f47a50fa49fcde5b639fc1cadcb13e58158ee3e4a1990be97f63"
+      },
+      {
+        "bytes": 251873,
+        "path": "PE019-AT10-resources/snapshot-0039.json",
+        "sha256": "537ef21694587dd27bc94f4d05d5ebfcd639384fa72f6b8a392715b7e9306ad0"
+      },
+      {
+        "bytes": 253846,
+        "path": "PE019-AT10-resources/snapshot-0040.json",
+        "sha256": "40fe69d86ee042a6b3bfbc8b60135f6ffe786b5a8c5e645e7dad114292880e53"
+      },
+      {
+        "bytes": 251908,
+        "path": "PE019-AT10-resources/snapshot-0041.json",
+        "sha256": "8a1e8693a54d02be831fc0c87dbcebadc65993301ef3e980c02040f9986f2c07"
+      },
+      {
+        "bytes": 251818,
+        "path": "PE019-AT10-resources/snapshot-0042.json",
+        "sha256": "2cce4d998c9263555885234105ceeaf15e9c84908857bd2ff4f9c90423d24144"
+      },
+      {
+        "bytes": 251815,
+        "path": "PE019-AT10-resources/snapshot-0043.json",
+        "sha256": "20058ffda4401951d4d9f413663885770e71d8a10c8e2e9676492a93b24a81c8"
+      },
+      {
+        "bytes": 251904,
+        "path": "PE019-AT10-resources/snapshot-0044.json",
+        "sha256": "ae3285f675ffa8a47e70ac168361438d03cd9fc5635b5d830117ddca4f651e65"
+      },
+      {
+        "bytes": 244014,
+        "path": "PE019-AT10-resources/snapshot-0045.json",
+        "sha256": "07a146eb4ef4ac404e61a8b60a051d20c295d21f2e20f087d62ad3d65644485d"
+      }
+    ],
+    "result": "failed-not-replaced",
+    "copiedPublicFailureRecords": [
+      "checksums.json",
+      "PE019-AT10-abort.json",
+      "PE019-AT10-forwards-closed.json",
+      "PE019-AT10-profile-frozen.json",
+      "PE019-AT10-window.json"
+    ],
+    "directory": "PE019-AT10-attempt1",
+    "originalRetainedUnmodified": true,
+    "replayed": false
+  },
+  {
+    "originalFiles": [
+      {
+        "bytes": 8117,
+        "path": "attempt2-checksums.json",
+        "sha256": "2ce3c1911ab286bc56a911f0759ee6498edcf662ceb4913bd833add74fd31181"
+      },
+      {
+        "bytes": 248777,
+        "path": "diagnostic-after-abort.json",
+        "sha256": "5833ef4223db21db442cc6c7a7144a8f9b376cd8f14cb07a657495c7b48c8976"
+      },
+      {
+        "bytes": 122,
+        "path": "PE019-AT10-abort.json",
+        "sha256": "70aa8b2af30821b2970d8eff11ca32c3c7e10525b9d2bea9672f1ea732dfcbc9"
+      },
+      {
+        "bytes": 351,
+        "path": "PE019-AT10-collector-before.txt",
+        "sha256": "2b57d0d4268045b7d749eece422c0e4d0d75e6b7579dc6d6630d48cf81f925f1"
+      },
+      {
+        "bytes": 887,
+        "path": "PE019-AT10-crud-rows.json",
+        "sha256": "1c9a1620e95f16be47a43e8da98615c2d61245345f0d6672ab345c87c9b7480c"
+      },
+      {
+        "bytes": 328,
+        "path": "PE019-AT10-driver-error.txt",
+        "sha256": "088d8c078518d54af7adf969d6e28602efe6bbac488243ce6f67cd4fb26c6b39"
+      },
+      {
+        "bytes": 148,
+        "path": "PE019-AT10-driver-intent.json",
+        "sha256": "6b5ce6b5e315d4494fdfa7fee30b2d83fecc2316c51a3a8e30590fec4de0f43f"
+      },
+      {
+        "bytes": 358,
+        "path": "PE019-AT10-driver-observation.json",
+        "sha256": "aaa1eb1c751b1d4a74bdf14e316ee326417f6d6036e6d5bd0dbbfd6fc6106ff8"
+      },
+      {
+        "bytes": 210,
+        "path": "PE019-AT10-driver-output.txt",
+        "sha256": "54fad20d5e169fb455b45facc930a947a1c46e1d50a838e115a9943919d025c0"
+      },
+      {
+        "bytes": 209,
+        "path": "PE019-AT10-driver-submitted.json",
+        "sha256": "7a9ca5b08bb087f00c45c5a6e8975deb6cd529d4722ec06cc86e706301b1a9ab"
+      },
+      {
+        "bytes": 377,
+        "path": "PE019-AT10-fault-worker-error.txt",
+        "sha256": "073d1dd3de3560d49b521d78735f51eebb09e38e1f02ab3836817aa6849c9416"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-fault-worker-output.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 188,
+        "path": "PE019-AT10-fault-worker.json",
+        "sha256": "acdd2da1266c4001503fb2cfc13b605982054930f4ae2ef9797277b868bce3a1"
+      },
+      {
+        "bytes": 142,
+        "path": "PE019-AT10-forwards-closed.json",
+        "sha256": "1be0b509501e2fe7d4825aab374279cdd15361ed3e28f2e5869d101c823bd35a"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-frontend-forward-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 130,
+        "path": "PE019-AT10-frontend-forward.txt",
+        "sha256": "fe5b14e7de724a6d9f720120349f346744d7abe2a8f5ac8faa306505c2318058"
+      },
+      {
+        "bytes": 142,
+        "path": "PE019-AT10-live.json",
+        "sha256": "e43932d687c1291665d7be98e0db6235b74f3fe2a97d65a45594a6368c3f2e59"
+      },
+      {
+        "bytes": 187,
+        "path": "PE019-AT10-owned-cleanup.json",
+        "sha256": "be7565ef18d304972a93b7d05956946ba6f8d3d61b8e8acb6926e9cf95c11c46"
+      },
+      {
+        "bytes": 1312,
+        "path": "PE019-AT10-profile-frozen.json",
+        "sha256": "87e5467b47f65dbfb3f6a17f1eb7b0dfcaa7b3b092db914d44d7af030801f2c5"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-prometheus-server-forward-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 40,
+        "path": "PE019-AT10-prometheus-server-forward.txt",
+        "sha256": "675db7920e10587e54fa14151af046f41cfb686ceb70b0f5d73ec0e509344500"
+      },
+      {
+        "bytes": 380,
+        "path": "PE019-AT10-resource-worker-error.txt",
+        "sha256": "f669f9f864758c29572cd02706d092a6a3c9fdbaaeef809eb40aea7386569aab"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-resource-worker-output.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 184,
+        "path": "PE019-AT10-resource-worker.json",
+        "sha256": "fad0d318d56b57c9d38572f4ecf071bc18ac9915f4a44ff3dee878e8c46599e3"
+      },
+      {
+        "bytes": 514,
+        "path": "PE019-AT10-window.json",
+        "sha256": "816003a27b480b6b27cd9af86dc1527e1ff1190351b7b168d8ab08084463cfab"
+      },
+      {
+        "bytes": 36908,
+        "path": "PE019-bootstrap-runtime.json",
+        "sha256": "1d00a74023fd05d2b80e0070075a0e306340b62cb0b3b8b69f9a3ebd7a745164"
+      },
+      {
+        "bytes": 677,
+        "path": "PE019-capacity-native-intent.json",
+        "sha256": "a994a00c5142fbeb4d423ba5bd964ab281b0a2474e9ce98f620b132ed839615c"
+      },
+      {
+        "bytes": 2864,
+        "path": "PE019-capacity-native-state.json",
+        "sha256": "5155970c217637daf7b1d907f5f61443024c94235b8ee1fc885993788419f245"
+      },
+      {
+        "bytes": 243,
+        "path": "PE019-capacity-native-submitted.json",
+        "sha256": "7588c9f3859108fe799d0bc7a5899a2574792c1cf04468f7ad9e82551fb3d87b"
+      },
+      {
+        "bytes": 2542,
+        "path": "PE019-corrected-actual-native-budget.json",
+        "sha256": "24ea2594539b09fa9e9f84bb8ad6c6b428b140824ed830358fa4f7147862cb7e"
+      },
+      {
+        "bytes": 350,
+        "path": "PE019-corrected-attempt-intent.json",
+        "sha256": "e1bfc265f6f0f695438e0a936ca651c2320d05484b450efe093173b9d98bd986"
+      },
+      {
+        "bytes": 3952,
+        "path": "PE019-corrected-binding-accepted.json",
+        "sha256": "ce03c008a2cfd5a6121a1546ab7659175a11c7adf5f2e0b2ae210e987d06f9d3"
+      },
+      {
+        "bytes": 373,
+        "path": "PE019-corrected-telemetry-preflight.json",
+        "sha256": "cc7a696d21abe69546a4db6e74144f02b83c5249c01013c07a4e354bc4f8b0bb"
+      },
+      {
+        "bytes": 997,
+        "path": "PE019-current-log-trace-correlation.json",
+        "sha256": "3f77dfb95a352d680ae077933b3f54324657127e14bf9f3515fcafddf2adbc44"
+      },
+      {
+        "bytes": 1254,
+        "path": "PE019-final-native-CI-plan.json",
+        "sha256": "75fe513add1e60e99b27a75f02b37aa99133555a2ff2e5dd90cda485db9141ba"
+      },
+      {
+        "bytes": 1311,
+        "path": "PE019-final-profile.json",
+        "sha256": "8f06033a16495b37e03e442742c9b4276bdc1ae61b789d0dc69401b8476730db"
+      },
+      {
+        "bytes": 1018,
+        "path": "PE019-NR-final-trace-proof.json",
+        "sha256": "8a0841642fd3965653eefd76df69a960ad03e113d3d7512233252bc37247e5f5"
+      },
+      {
+        "bytes": 3894,
+        "path": "PE019-NR-final-trace-spans.json",
+        "sha256": "f0909075d4aee4034e818fb81c0700ff0d07942e8d43358e7c7fd0977283439f"
+      },
+      {
+        "bytes": 643,
+        "path": "PE019-resource-preflight.json",
+        "sha256": "b937d0dd6147c00ebd86a5e772c9a4612033cd07a9742f32fff30b59a7549039"
+      },
+      {
+        "bytes": 701,
+        "path": "helper-source-at-abort/checksums.json",
+        "sha256": "bc975e67719a1d0b51d5da90f2b885cf66fad2b662004be2712be384231b5d92"
+      },
+      {
+        "bytes": 4296,
+        "path": "helper-source-at-abort/pe019-capacity-fault-worker.ps1",
+        "sha256": "da8f2896bd462287c587e07c9e72a914669790be3b06c347f6c960c3ecdd6a59"
+      },
+      {
+        "bytes": 2901,
+        "path": "helper-source-at-abort/pe019-capacity-resource-worker.ps1",
+        "sha256": "d427d4c6cf3f886153f3de0b33420f9bf9809fecb855d61ce24c33e1a7a43336"
+      },
+      {
+        "bytes": 9647,
+        "path": "helper-source-at-abort/pe019-final-capacity.ps1",
+        "sha256": "dab6ebb565adef0ef53782e10dcdf323a03edef50c1ddd1e7b727abc71c8f022"
+      },
+      {
+        "bytes": 1146,
+        "path": "helper-source-at-abort/private-pe019-kubectl.ps1",
+        "sha256": "560e6af22b2758acaa9acb4b527a5353b37070cf88e692b08073a21f3e4a4322"
+      },
+      {
+        "bytes": 3645,
+        "path": "helper-source-at-abort/read-pe019-resource-snapshot.ps1",
+        "sha256": "848678c86d8017018c637353292cc75ef4f349047ade16cf31169730483bb50b"
+      }
+    ],
+    "result": "failed-not-replaced",
+    "copiedPublicFailureRecords": [
+      "attempt2-checksums.json",
+      "diagnostic-after-abort.json",
+      "PE019-AT10-abort.json",
+      "PE019-AT10-forwards-closed.json",
+      "PE019-AT10-profile-frozen.json",
+      "PE019-AT10-window.json"
+    ],
+    "directory": "PE019-AT10-attempt2",
+    "originalRetainedUnmodified": true,
+    "replayed": false
+  },
+  {
+    "originalFiles": [
+      {
+        "bytes": 6073,
+        "path": "attempt3-checksums.json",
+        "sha256": "be69479c4d679c606974fce8cbc0236eded1202bc408457de55efd382622691c"
+      },
+      {
+        "bytes": 122,
+        "path": "PE019-AT10-abort.json",
+        "sha256": "1f829b44791274f31e683f9ff3a84adca6077f679db2e755f60a34fd77f0c2a3"
+      },
+      {
+        "bytes": 353,
+        "path": "PE019-AT10-collector-before.txt",
+        "sha256": "1334ee45ed342ef3ab69145e2139c02b0ffa15525fb83eab2fabeb5b857e61f9"
+      },
+      {
+        "bytes": 1183,
+        "path": "PE019-AT10-crud-rows.json",
+        "sha256": "d2ca238dd77c40814f0b80eae314fe7855f4a1e0b78110913b98f00890e8470c"
+      },
+      {
+        "bytes": 328,
+        "path": "PE019-AT10-driver-error.txt",
+        "sha256": "088d8c078518d54af7adf969d6e28602efe6bbac488243ce6f67cd4fb26c6b39"
+      },
+      {
+        "bytes": 148,
+        "path": "PE019-AT10-driver-intent.json",
+        "sha256": "19e1522b21210772794204fe7abbbdb093787317c1957df37c147261e08fd2c9"
+      },
+      {
+        "bytes": 211,
+        "path": "PE019-AT10-driver-output.txt",
+        "sha256": "bba6dc90a183f87645ee27ec75011ed5457d19da47b7d0f51027b968577bd9e3"
+      },
+      {
+        "bytes": 209,
+        "path": "PE019-AT10-driver-submitted.json",
+        "sha256": "1554f528e92c59c07943e8ac29f5e8a0f27254df6ecd535e9027030ac32dbd5c"
+      },
+      {
+        "bytes": 443,
+        "path": "PE019-AT10-fault-failure-location.json",
+        "sha256": "ac5bed5655b64e49c42651877dc13ea337ad587d9623f4730d5d60d46050d995"
+      },
+      {
+        "bytes": 377,
+        "path": "PE019-AT10-fault-worker-error.txt",
+        "sha256": "26f319828fc8ba5e4c05c761d1573c9b10c31104bd3646660abab875acb33674"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-fault-worker-output.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 188,
+        "path": "PE019-AT10-fault-worker.json",
+        "sha256": "16307a00f0370dbd1bc58521789ca4239a52ffd63191562d4e68d8f7325cdeb8"
+      },
+      {
+        "bytes": 142,
+        "path": "PE019-AT10-forwards-closed.json",
+        "sha256": "c73df4ff60c89c5e3648c6afc9b7eb9945fa67f8c39908396700d1d9ee059c7f"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-frontend-forward-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 160,
+        "path": "PE019-AT10-frontend-forward.txt",
+        "sha256": "bea414df63aff05bc29e0f29762d4a9014daf21ae847c38fef6273d4163783a4"
+      },
+      {
+        "bytes": 142,
+        "path": "PE019-AT10-live.json",
+        "sha256": "660ea33f7dc3c558290c5124a9ce5a9ea2af08eec2e30e820e49c000bdb38e24"
+      },
+      {
+        "bytes": 187,
+        "path": "PE019-AT10-owned-cleanup.json",
+        "sha256": "0196e8b2462914ec6cd626103d3881176c88788d01083add04431d243d27c766"
+      },
+      {
+        "bytes": 2226,
+        "path": "PE019-AT10-profile-frozen.json",
+        "sha256": "2254c1eccf71271ea1f4b5d7a9ba638e6e9d25dc552c3901c5429aba383e51a7"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-prometheus-server-forward-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 40,
+        "path": "PE019-AT10-prometheus-server-forward.txt",
+        "sha256": "675db7920e10587e54fa14151af046f41cfb686ceb70b0f5d73ec0e509344500"
+      },
+      {
+        "bytes": 474,
+        "path": "PE019-AT10-resource-failure-location.json",
+        "sha256": "2c8538cc7eef6d2bf8540d6de100fa8f6220e84a0303b0df8d970442fcada886"
+      },
+      {
+        "bytes": 334,
+        "path": "PE019-AT10-resource-startup.json",
+        "sha256": "56317ff43f3eecef493e62ca1d0069d3df9b9ace67acb4d242314afa0bd98931"
+      },
+      {
+        "bytes": 380,
+        "path": "PE019-AT10-resource-worker-error.txt",
+        "sha256": "0bd2ed7dcd8bbb42c4613df234b2c90469a79c33a297cad69c9d51b9f038a98b"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-resource-worker-output.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 184,
+        "path": "PE019-AT10-resource-worker.json",
+        "sha256": "2806e6206232a1fef336725c11c0b0b9f16ca5e8424de20fe2aba10b312f3f9c"
+      },
+      {
+        "bytes": 514,
+        "path": "PE019-AT10-window.json",
+        "sha256": "0b963248f0720af073ec7f422356ea4795dcca32216ae0a5d89d33a4f68357de"
+      },
+      {
+        "bytes": 35537,
+        "path": "PE019-bootstrap-runtime.json",
+        "sha256": "7470513c498ca54344a45232b20c0318df6be8aad24807903609a0362d279c18"
+      },
+      {
+        "bytes": 677,
+        "path": "PE019-capacity-native-intent.json",
+        "sha256": "66efae10aa04644a6f78adbb56c90c5345ac22a498e51690f8ebd81edd0726b6"
+      },
+      {
+        "bytes": 2864,
+        "path": "PE019-capacity-native-state.json",
+        "sha256": "8fb300ee3dd8b738acc50c2a713d2956f4b834d823e0a92cbe932f008e13aa15"
+      },
+      {
+        "bytes": 243,
+        "path": "PE019-capacity-native-submitted.json",
+        "sha256": "dfa5d28d0c6968c907a623dc9ff9a97d466cbd92aee0689c578d60ec18d8c837"
+      },
+      {
+        "bytes": 2541,
+        "path": "PE019-corrected-actual-native-budget.json",
+        "sha256": "6955212ac96427f2246a80ed20740805305dae161651a35d24c02da55d6521db"
+      },
+      {
+        "bytes": 3952,
+        "path": "PE019-corrected-binding-accepted.json",
+        "sha256": "7ff43cae7d0c3f05b276b7fe75519eb769cdaac816b698e98b1da7311e284d74"
+      },
+      {
+        "bytes": 518,
+        "path": "PE019-final-attempt-intent.json",
+        "sha256": "92bd8d539bab9522edabb21a30fccc71efe02ac92abe8c02803b3004dd1a5f80"
+      },
+      {
+        "bytes": 1254,
+        "path": "PE019-final-native-CI-plan.json",
+        "sha256": "75fe513add1e60e99b27a75f02b37aa99133555a2ff2e5dd90cda485db9141ba"
+      },
+      {
+        "bytes": 2225,
+        "path": "PE019-final-profile.json",
+        "sha256": "e48464f67f2ac943e6ca4383af18b73866fdb36c4be8859a865a094fe5b043a4"
+      },
+      {
+        "bytes": 782,
+        "path": "PE019-native-plan-reuse-audit.json",
+        "sha256": "1a219118d89fcf18de2abe220de0ff0baabe4c16890f506cbcd8ab2808c36440"
+      },
+      {
+        "bytes": 644,
+        "path": "PE019-resource-preflight.json",
+        "sha256": "0d86e5010b2fab5a70255183c2b9afde735836cf06db58c31db9c2afc9ce5e2f"
+      },
+      {
+        "bytes": 700,
+        "path": "helper-source-at-abort/checksums.json",
+        "sha256": "b568a226172fb8751e1455e30016edff479251c6f7fd2bc9afe96278366397a9"
+      },
+      {
+        "bytes": 1201,
+        "path": "helper-source-at-abort/initialize-pe019-cim.ps1",
+        "sha256": "b85f57bafae5fd55de3c77ea2fdd4c9b243734d29cb2a6845f28050fbb215ccc"
+      },
+      {
+        "bytes": 4509,
+        "path": "helper-source-at-abort/pe019-capacity-fault-worker.ps1",
+        "sha256": "631c3b36bb6a5a6756c380e25d4a870e3cc5f89de4c27e425e267a1f34db2341"
+      },
+      {
+        "bytes": 3375,
+        "path": "helper-source-at-abort/pe019-capacity-resource-worker.ps1",
+        "sha256": "4ad6df6b9db4257d1df64c4ea1cb5047b3bb82b2d553e0a8d04d1d512ab7ba19"
+      },
+      {
+        "bytes": 9647,
+        "path": "helper-source-at-abort/pe019-final-capacity.ps1",
+        "sha256": "dab6ebb565adef0ef53782e10dcdf323a03edef50c1ddd1e7b727abc71c8f022"
+      },
+      {
+        "bytes": 3645,
+        "path": "helper-source-at-abort/read-pe019-resource-snapshot.ps1",
+        "sha256": "848678c86d8017018c637353292cc75ef4f349047ade16cf31169730483bb50b"
+      }
+    ],
+    "result": "failed-not-replaced",
+    "copiedPublicFailureRecords": [
+      "attempt3-checksums.json",
+      "PE019-AT10-abort.json",
+      "PE019-AT10-fault-failure-location.json",
+      "PE019-AT10-forwards-closed.json",
+      "PE019-AT10-profile-frozen.json",
+      "PE019-AT10-resource-failure-location.json",
+      "PE019-AT10-resource-startup.json",
+      "PE019-AT10-window.json"
+    ],
+    "directory": "PE019-AT10-attempt3",
+    "originalRetainedUnmodified": true,
+    "replayed": false
+  },
+  {
+    "originalFiles": [
+      {
+        "bytes": 122,
+        "path": "PE019-AT10-abort.json",
+        "sha256": "8d986f11de5b2f0855aef0165757f578f6c2dd649ebcc7f36370947054799c66"
+      },
+      {
+        "bytes": 355,
+        "path": "PE019-AT10-collector-before.txt",
+        "sha256": "dca2201f5ac38e67a16be37e04c667029c4fd40515d1a201a31c77ab49d6af80"
+      },
+      {
+        "bytes": 1183,
+        "path": "PE019-AT10-crud-rows.json",
+        "sha256": "8129074ab3335d1b8665edb5499240ce5218b99b9663d43af33eb9bb6c14fd58"
+      },
+      {
+        "bytes": 336,
+        "path": "PE019-AT10-driver-error.txt",
+        "sha256": "220499a0c1dd173b68b2446b82f4498ebcbbdfbb1433773d0ef9c3010be5d49a"
+      },
+      {
+        "bytes": 359,
+        "path": "PE019-AT10-driver-failure-location.json",
+        "sha256": "06f1ac606e265f1369aa87dbda58234e5ac8391df27bb6d2d3274d79978d0b51"
+      },
+      {
+        "bytes": 148,
+        "path": "PE019-AT10-driver-intent.json",
+        "sha256": "171a8b0e9644b12fc879b198af8dfb3c5350c603b1ed9b7ea5acc38bcc354024"
+      },
+      {
+        "bytes": 209,
+        "path": "PE019-AT10-driver-output.txt",
+        "sha256": "1ddfbb7f481465622c0d88b03825cdd5d11adcb28f3f80bc592ad97a803a5853"
+      },
+      {
+        "bytes": 208,
+        "path": "PE019-AT10-driver-submitted.json",
+        "sha256": "92acccaa34bc261ec92ac6b5d40f5e5ace150d8231f4dff556b0691480aaa486"
+      },
+      {
+        "bytes": 549,
+        "path": "PE019-AT10-fault-failure-location.json",
+        "sha256": "b25415a7c49f761a28f8874c43c8c57c4ca41e927f257a3c00fed1744779391d"
+      },
+      {
+        "bytes": 377,
+        "path": "PE019-AT10-fault-worker-error.txt",
+        "sha256": "23901d5a5d3397660f46d7abd80688caf7248fa6d30d446c63807fbd484218d6"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-fault-worker-output.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 188,
+        "path": "PE019-AT10-fault-worker.json",
+        "sha256": "1a785aaba60d17ad1abbd7c93d1577dc1e4b2c583b7361201d012d065647551b"
+      },
+      {
+        "bytes": 142,
+        "path": "PE019-AT10-forwards-closed.json",
+        "sha256": "a4301ad1cc38b877d5539b163b4657bda4a0922608df9c481d2a02e37b118443"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-frontend-forward-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 160,
+        "path": "PE019-AT10-frontend-forward.txt",
+        "sha256": "bea414df63aff05bc29e0f29762d4a9014daf21ae847c38fef6273d4163783a4"
+      },
+      {
+        "bytes": 142,
+        "path": "PE019-AT10-live.json",
+        "sha256": "14c8b13affbe793b7b9e1d9f09f80ffa0a18649c75fa9e07a51e615efe9be7c1"
+      },
+      {
+        "bytes": 187,
+        "path": "PE019-AT10-owned-cleanup.json",
+        "sha256": "56e985ca1f5c06b72fd97ad89aa6b407874d06accc49b7d3e8982f1e07961eb2"
+      },
+      {
+        "bytes": 463,
+        "path": "PE019-AT10-process-cleanup.json",
+        "sha256": "7ada47c16894a5fc8e23f87d46aa77cd94dbf360d25d4000bbb8ba32e2bf61bd"
+      },
+      {
+        "bytes": 2770,
+        "path": "PE019-AT10-profile-frozen.json",
+        "sha256": "fe2c5e16c895d859c9e94f7b9fb9ce37c6b8cf00b80e2b055a3c1f4f3fb5e16b"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-prometheus-server-forward-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 40,
+        "path": "PE019-AT10-prometheus-server-forward.txt",
+        "sha256": "675db7920e10587e54fa14151af046f41cfb686ceb70b0f5d73ec0e509344500"
+      },
+      {
+        "bytes": 566,
+        "path": "PE019-AT10-resource-failure-location.json",
+        "sha256": "af063828cd74a0535d0e261585c2a8b41e3c8f750aaf48dad2e84d3ade9070f7"
+      },
+      {
+        "bytes": 334,
+        "path": "PE019-AT10-resource-startup.json",
+        "sha256": "06adf93dc5d39aadd702e1280e002480890191b664c0c763f9e742948b3a1c2a"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-resource-worker-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-resource-worker-output.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 184,
+        "path": "PE019-AT10-resource-worker.json",
+        "sha256": "7384f5b5afdd3b7368e64f079cf871a2c7a4c1629d8b2148740ec97af23a4370"
+      },
+      {
+        "bytes": 604,
+        "path": "PE019-AT10-window.json",
+        "sha256": "b2e11ee92add466f7a55162efb33794368529c8e4fc0867322b1195706185e69"
+      },
+      {
+        "bytes": 369,
+        "path": "PE019-AT10-worker-processes.json",
+        "sha256": "b9c0e1b1b029784d32fb8be7fafae0203b13228a5f39706f65538eb5e3c47f72"
+      },
+      {
+        "bytes": 35537,
+        "path": "PE019-bootstrap-runtime.json",
+        "sha256": "51a12e0ba58acf604e88fe7ff0d9d7f90d208eb517aae628a24dfc0a720bb8f5"
+      },
+      {
+        "bytes": 677,
+        "path": "PE019-capacity-native-intent.json",
+        "sha256": "a51fa40eed942855ea5d7c8d6f8dbd86c90b9718334db64002dd816b6ba42d33"
+      },
+      {
+        "bytes": 2865,
+        "path": "PE019-capacity-native-state.json",
+        "sha256": "98d99a43f53a0310b28905113c6fccec2b988b91f3d7ebb5577768a57513c5b7"
+      },
+      {
+        "bytes": 243,
+        "path": "PE019-capacity-native-submitted.json",
+        "sha256": "b4befb0d8f0ed3c9ee6110eb152305fabe8608aef61b5b2cd595e87a7d5bafe3"
+      },
+      {
+        "bytes": 3952,
+        "path": "PE019-corrected-binding-accepted.json",
+        "sha256": "dafd3fa9da8f93e86a9d15480f9035cc4e8c0431168004842063292f4dbba963"
+      },
+      {
+        "bytes": 481,
+        "path": "PE019-final-attempt-intent.json",
+        "sha256": "e656759462874ce79320a78733d8e255c4cbc9b9af5c7d82a0f68b6358427f4f"
+      },
+      {
+        "bytes": 1254,
+        "path": "PE019-final-native-CI-plan.json",
+        "sha256": "75fe513add1e60e99b27a75f02b37aa99133555a2ff2e5dd90cda485db9141ba"
+      },
+      {
+        "bytes": 2768,
+        "path": "PE019-final-profile.json",
+        "sha256": "361ea6e828b1f7d540e1ac6f5cdb1c6dd0718d9abe24279fd814f2f1074866b0"
+      },
+      {
+        "bytes": 451,
+        "path": "PE019-HTTP-metrics-before.json",
+        "sha256": "44797e438d7e765e3f5383a28c1ee7f00d3402d278eb08ad2f8159046555b872"
+      },
+      {
+        "bytes": 28221,
+        "path": "PE019-HTTP-metrics-before.txt",
+        "sha256": "9ac470e1669d0c670a5c68af9f5fa39e167cf713f1771ce906747bea7b96c865"
+      },
+      {
+        "bytes": 782,
+        "path": "PE019-native-plan-reuse-audit.json",
+        "sha256": "176d692b1a8ba3e3bf949e8e995e7d4d2ed2666106ee89e9a1665ed2846fc04d"
+      },
+      {
+        "bytes": 642,
+        "path": "PE019-resource-preflight.json",
+        "sha256": "2489fb284f45a4c2b9b9f4a8833c5eaf2c48500f4a6ca569e8c77adadc20c7d3"
+      },
+      {
+        "bytes": 1118,
+        "path": "helper-source-at-abort/checksums.json",
+        "sha256": "98c545a1ec307e28691cec0e90e72ce98fd55d7271dc6d3ef874637bb3948ed3"
+      },
+      {
+        "bytes": 1201,
+        "path": "helper-source-at-abort/initialize-pe019-cim.ps1",
+        "sha256": "b85f57bafae5fd55de3c77ea2fdd4c9b243734d29cb2a6845f28050fbb215ccc"
+      },
+      {
+        "bytes": 5076,
+        "path": "helper-source-at-abort/pe019-capacity-fault-worker.ps1",
+        "sha256": "111a4f7f3157dd1f566a87eec89ac9f803a6f36b6cbbf6a777ce289cd6e08c1e"
+      },
+      {
+        "bytes": 4012,
+        "path": "helper-source-at-abort/pe019-capacity-resource-worker.ps1",
+        "sha256": "7848318a10183c8863195dff32bf4f5d4b8a0ad7d637886f5677a7f84a2d79e6"
+      },
+      {
+        "bytes": 12329,
+        "path": "helper-source-at-abort/pe019-final-capacity.ps1",
+        "sha256": "98f2add6870d0a23d4b280961e7f51ebd0e65310cfda43708b951608f20b8ebe"
+      },
+      {
+        "bytes": 1146,
+        "path": "helper-source-at-abort/private-pe019-kubectl.ps1",
+        "sha256": "560e6af22b2758acaa9acb4b527a5353b37070cf88e692b08073a21f3e4a4322"
+      },
+      {
+        "bytes": 2463,
+        "path": "helper-source-at-abort/read-pe019-resource-preflight.ps1",
+        "sha256": "90aa2f01c2295c848dc9a980d7ee96bad88d2e96f2d0f09ee8a1df333cffe52a"
+      },
+      {
+        "bytes": 3876,
+        "path": "helper-source-at-abort/read-pe019-resource-snapshot.ps1",
+        "sha256": "8281be7be0759cb24d618fb5fb2cad4e062b469321fd3986f1bce67f8c9671bc"
+      },
+      {
+        "bytes": 1113,
+        "path": "helper-source-at-abort/read-pe019-statistics-json.ps1",
+        "sha256": "f78ad600f2028aaf17d636b66701afcace52fddbd8055691b6b781e095c26a1e"
+      }
+    ],
+    "result": "failed-not-replaced",
+    "copiedPublicFailureRecords": [
+      "PE019-AT10-abort.json",
+      "PE019-AT10-driver-failure-location.json",
+      "PE019-AT10-fault-failure-location.json",
+      "PE019-AT10-forwards-closed.json",
+      "PE019-AT10-process-cleanup.json",
+      "PE019-AT10-profile-frozen.json",
+      "PE019-AT10-resource-failure-location.json",
+      "PE019-AT10-resource-startup.json",
+      "PE019-AT10-window.json"
+    ],
+    "directory": "PE019-AT10-attempt4",
+    "originalRetainedUnmodified": true,
+    "replayed": false
+  },
+  {
+    "originalFiles": [
+      {
+        "bytes": 122,
+        "path": "PE019-AT10-abort.json",
+        "sha256": "4e3e318ebc0209ec505b30ff3149da3fcf62512c9f09135fea2f6eaa66af79a4"
+      },
+      {
+        "bytes": 355,
+        "path": "PE019-AT10-collector-before.txt",
+        "sha256": "5706ead71e50ada76f17688ac41b475658bf629b7f15431460a4dbcedd41ea8f"
+      },
+      {
+        "bytes": 1183,
+        "path": "PE019-AT10-crud-rows.json",
+        "sha256": "3f0fecb274242f8b63c2674c3394f297b0ee57e86de440340555e84f228467c6"
+      },
+      {
+        "bytes": 336,
+        "path": "PE019-AT10-driver-error.txt",
+        "sha256": "220499a0c1dd173b68b2446b82f4498ebcbbdfbb1433773d0ef9c3010be5d49a"
+      },
+      {
+        "bytes": 359,
+        "path": "PE019-AT10-driver-failure-location.json",
+        "sha256": "22b621b1edac4836b177039a53f284e89957c001ab963c81575a1bbec9ad313c"
+      },
+      {
+        "bytes": 150,
+        "path": "PE019-AT10-driver-intent.json",
+        "sha256": "79cd37c6695cf1ee62757bfebb8df2f9664e36ce71f21d0103bccdae40862581"
+      },
+      {
+        "bytes": 209,
+        "path": "PE019-AT10-driver-output.txt",
+        "sha256": "dd552094c4be967240307fec35d5c141f353097ac52955dd0c1ec5930265fca7"
+      },
+      {
+        "bytes": 261,
+        "path": "PE019-AT10-driver-submitted.json",
+        "sha256": "eb8b6b465b474bcfc449299110f3ed2681abc1fdfa420fac5e587e27520c0e1e"
+      },
+      {
+        "bytes": 549,
+        "path": "PE019-AT10-fault-failure-location.json",
+        "sha256": "400d7d99b8ad42cb0017411e2bd583b8beacca2671ee4cc831cb5683c3f495b8"
+      },
+      {
+        "bytes": 377,
+        "path": "PE019-AT10-fault-worker-error.txt",
+        "sha256": "23901d5a5d3397660f46d7abd80688caf7248fa6d30d446c63807fbd484218d6"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-fault-worker-output.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 188,
+        "path": "PE019-AT10-fault-worker.json",
+        "sha256": "895cbb7f8aaeeeba0ae2629453a8ed00b479ce2fff52ad6b42f0f134cea5f755"
+      },
+      {
+        "bytes": 142,
+        "path": "PE019-AT10-forwards-closed.json",
+        "sha256": "db52720e5aeeeebfa3cc68848a03ae5edf3ce2508199c1fc4a24836481a528d1"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-frontend-forward-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 160,
+        "path": "PE019-AT10-frontend-forward.txt",
+        "sha256": "bea414df63aff05bc29e0f29762d4a9014daf21ae847c38fef6273d4163783a4"
+      },
+      {
+        "bytes": 142,
+        "path": "PE019-AT10-live.json",
+        "sha256": "0688bc1298b28d2c357e5c49a1b96a84aa427469548cd606802841855e82f195"
+      },
+      {
+        "bytes": 187,
+        "path": "PE019-AT10-owned-cleanup.json",
+        "sha256": "f394cc733a6efc8cb5702904787bb8dda3b4f1cc73684164464b4d2e38041cd9"
+      },
+      {
+        "bytes": 462,
+        "path": "PE019-AT10-process-cleanup.json",
+        "sha256": "2b4c1545045d6b115e1ea69dbbcace47a65e69a827d0c00eea55ea0d3ab17964"
+      },
+      {
+        "bytes": 2808,
+        "path": "PE019-AT10-profile-frozen.json",
+        "sha256": "894ff25689a0fae060e64855c0aac6a41affaa5139db359ad96382afa2eb608b"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-prometheus-server-forward-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 40,
+        "path": "PE019-AT10-prometheus-server-forward.txt",
+        "sha256": "675db7920e10587e54fa14151af046f41cfb686ceb70b0f5d73ec0e509344500"
+      },
+      {
+        "bytes": 734,
+        "path": "PE019-AT10-resource-failure-location.json",
+        "sha256": "5157ee3a180ac55412359c9b048d0ce047a6da0c28aa93dad2286ec1ca86d0b9"
+      },
+      {
+        "bytes": 334,
+        "path": "PE019-AT10-resource-startup.json",
+        "sha256": "56b098f6e70408b4a87d09c9b71f1be1e5eaa44e994a4c7dd77f5cf06e7a6956"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-resource-worker-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-resource-worker-output.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 184,
+        "path": "PE019-AT10-resource-worker.json",
+        "sha256": "2f535e551edf81e6cb44801dfd9f8d4101475b5709db2f44aba36077867bfe2c"
+      },
+      {
+        "bytes": 625,
+        "path": "PE019-AT10-window.json",
+        "sha256": "6324a87ff8412e5d09f1d8b5bcdf8a3a2f1a8a6df85dc2c20605cf1e21d5a685"
+      },
+      {
+        "bytes": 369,
+        "path": "PE019-AT10-worker-processes.json",
+        "sha256": "59af863ea7605a137820d53469c4b7538f9b22a70de22ed1f7111a38da1ccfa3"
+      },
+      {
+        "bytes": 1745,
+        "path": "PE019-auxiliary-preflight-intent.json",
+        "sha256": "c4ab7d7c6857a55fe7ab432b7f4cce2c2c4fa6f06205736f86fd81902fb9262a"
+      },
+      {
+        "bytes": 37040,
+        "path": "PE019-bootstrap-runtime.json",
+        "sha256": "499066793d7580a5ce22dfeb69288f8452e78ded62dcada6dc2f2eee665534e2"
+      },
+      {
+        "bytes": 2725,
+        "path": "PE019-capacity-native-state.json",
+        "sha256": "601114edab19abe5692174b443ab89cad3b57b07d7efc9e0b43b6058d832785c"
+      },
+      {
+        "bytes": 243,
+        "path": "PE019-capacity-native-submitted.json",
+        "sha256": "b4befb0d8f0ed3c9ee6110eb152305fabe8608aef61b5b2cd595e87a7d5bafe3"
+      },
+      {
+        "bytes": 3952,
+        "path": "PE019-corrected-binding-accepted.json",
+        "sha256": "92102a1c600a6df99414ca31d888aa5d65ec16abf2b7b5003dacc8ed4fbc8157"
+      },
+      {
+        "bytes": 1254,
+        "path": "PE019-final-native-CI-plan.json",
+        "sha256": "75fe513add1e60e99b27a75f02b37aa99133555a2ff2e5dd90cda485db9141ba"
+      },
+      {
+        "bytes": 2807,
+        "path": "PE019-final-profile.json",
+        "sha256": "7fa8576661013ffc1f251d043e9dcbb276fe7b62edf2f052b9057e204ee7e156"
+      },
+      {
+        "bytes": 451,
+        "path": "PE019-HTTP-metrics-before.json",
+        "sha256": "0bc5645c444d23d305b2eb59db26aa864690abcd6948e546d4c2a3d6ad4cb685"
+      },
+      {
+        "bytes": 28212,
+        "path": "PE019-HTTP-metrics-before.txt",
+        "sha256": "b02df4b485fa8a8d06f42ab8e8b8c77bad3eadd8a5d1ca2a10ce5de0b36f057e"
+      },
+      {
+        "bytes": 642,
+        "path": "PE019-resource-preflight.json",
+        "sha256": "ca71742ca990cc0acbc7ff7f70212a30c1cc5012db8f4b9a63ea8f779ce11398"
+      },
+      {
+        "bytes": 1118,
+        "path": "helper-source-at-abort/checksums.json",
+        "sha256": "acdcab0dc013eeee0a08bfe1cec3f05ac456a0ba5d4ca608bf924da536ddfc39"
+      },
+      {
+        "bytes": 1201,
+        "path": "helper-source-at-abort/initialize-pe019-cim.ps1",
+        "sha256": "b85f57bafae5fd55de3c77ea2fdd4c9b243734d29cb2a6845f28050fbb215ccc"
+      },
+      {
+        "bytes": 5076,
+        "path": "helper-source-at-abort/pe019-capacity-fault-worker.ps1",
+        "sha256": "111a4f7f3157dd1f566a87eec89ac9f803a6f36b6cbbf6a777ce289cd6e08c1e"
+      },
+      {
+        "bytes": 4012,
+        "path": "helper-source-at-abort/pe019-capacity-resource-worker.ps1",
+        "sha256": "7848318a10183c8863195dff32bf4f5d4b8a0ad7d637886f5677a7f84a2d79e6"
+      },
+      {
+        "bytes": 12329,
+        "path": "helper-source-at-abort/pe019-final-capacity.ps1",
+        "sha256": "98f2add6870d0a23d4b280961e7f51ebd0e65310cfda43708b951608f20b8ebe"
+      },
+      {
+        "bytes": 1146,
+        "path": "helper-source-at-abort/private-pe019-kubectl.ps1",
+        "sha256": "560e6af22b2758acaa9acb4b527a5353b37070cf88e692b08073a21f3e4a4322"
+      },
+      {
+        "bytes": 2463,
+        "path": "helper-source-at-abort/read-pe019-resource-preflight.ps1",
+        "sha256": "90aa2f01c2295c848dc9a980d7ee96bad88d2e96f2d0f09ee8a1df333cffe52a"
+      },
+      {
+        "bytes": 4001,
+        "path": "helper-source-at-abort/read-pe019-resource-snapshot.ps1",
+        "sha256": "45dd50421d98e88c818625c9f89f4b01647aa2a3eb49cc380e639bededcf7ec9"
+      },
+      {
+        "bytes": 1113,
+        "path": "helper-source-at-abort/read-pe019-statistics-json.ps1",
+        "sha256": "f78ad600f2028aaf17d636b66701afcace52fddbd8055691b6b781e095c26a1e"
+      }
+    ],
+    "result": "failed-not-replaced",
+    "copiedPublicFailureRecords": [
+      "PE019-AT10-abort.json",
+      "PE019-AT10-driver-failure-location.json",
+      "PE019-AT10-fault-failure-location.json",
+      "PE019-AT10-forwards-closed.json",
+      "PE019-AT10-process-cleanup.json",
+      "PE019-AT10-profile-frozen.json",
+      "PE019-AT10-resource-failure-location.json",
+      "PE019-AT10-resource-startup.json",
+      "PE019-AT10-window.json"
+    ],
+    "directory": "PE019-AUX2-120-normal",
+    "originalRetainedUnmodified": true,
+    "replayed": false
+  },
+  {
+    "originalFiles": [
+      {
+        "bytes": 122,
+        "path": "PE019-AT10-abort.json",
+        "sha256": "6b3982383d0203e558115c4507f04bfec39d65a0f971d8fe6961dbd70223ded4"
+      },
+      {
+        "bytes": 355,
+        "path": "PE019-AT10-collector-before.txt",
+        "sha256": "da6efa14c943fa8a2c99686b68e0c4cae1722f361fc619dcb7fd6957a16a99f6"
+      },
+      {
+        "bytes": 1477,
+        "path": "PE019-AT10-crud-rows.json",
+        "sha256": "d81ebc8fed10d5ea4106b2b81bb77cd6ab62e02974a0bc089dcf9cdab063388a"
+      },
+      {
+        "bytes": 336,
+        "path": "PE019-AT10-driver-error.txt",
+        "sha256": "220499a0c1dd173b68b2446b82f4498ebcbbdfbb1433773d0ef9c3010be5d49a"
+      },
+      {
+        "bytes": 359,
+        "path": "PE019-AT10-driver-failure-location.json",
+        "sha256": "92cb457fd2c08b4d468a851ce8e0fa7094ec924bb794b012ad2c95f1e46246ba"
+      },
+      {
+        "bytes": 150,
+        "path": "PE019-AT10-driver-intent.json",
+        "sha256": "e618ef219c1228d6c8d5b539e5f0a5f9772bdabce485df3556e9b0ca6f6c8b1a"
+      },
+      {
+        "bytes": 211,
+        "path": "PE019-AT10-driver-output.txt",
+        "sha256": "792df447d95328a4933e580cd265bcdbb9d71fa1e02a6a6d9930a5873109ec77"
+      },
+      {
+        "bytes": 261,
+        "path": "PE019-AT10-driver-submitted.json",
+        "sha256": "a56c21d90b0b1ae67cd8d208f9dc60c6a63f000d90e24a0a6ad3d6ccb08ca7f9"
+      },
+      {
+        "bytes": 549,
+        "path": "PE019-AT10-fault-failure-location.json",
+        "sha256": "c6808ad03e8655112e5586cc412011ac414ad9dba917b8d9092ccc8f622554d0"
+      },
+      {
+        "bytes": 377,
+        "path": "PE019-AT10-fault-worker-error.txt",
+        "sha256": "23901d5a5d3397660f46d7abd80688caf7248fa6d30d446c63807fbd484218d6"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-fault-worker-output.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 188,
+        "path": "PE019-AT10-fault-worker.json",
+        "sha256": "a6d96ddb06c6b38440a2e028780e8de26757939dac708e13052c52c9f9270961"
+      },
+      {
+        "bytes": 142,
+        "path": "PE019-AT10-forwards-closed.json",
+        "sha256": "0f194b593ccc2f621f09283d05655c1c8dcfcc99dd18190733fc247f5c0e4ce6"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-frontend-forward-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 190,
+        "path": "PE019-AT10-frontend-forward.txt",
+        "sha256": "c6b0a2a1ecbfda165c0a0957efda1bdd93d32f675a4aca8b666a56f1225284f9"
+      },
+      {
+        "bytes": 142,
+        "path": "PE019-AT10-live.json",
+        "sha256": "3f59383a744eccb14ebb380aa20b0bae113e9cbe6ed13866bc9cc690b9b6b17f"
+      },
+      {
+        "bytes": 187,
+        "path": "PE019-AT10-owned-cleanup.json",
+        "sha256": "97d0ca2ad9a515a583423a975bf8bcc615dab0afbc6fb41e2324e0b278205a62"
+      },
+      {
+        "bytes": 461,
+        "path": "PE019-AT10-process-cleanup.json",
+        "sha256": "877ca90809fe0481340c7bc1b71c404507b4c141c622aea70ebc43a86f701743"
+      },
+      {
+        "bytes": 2808,
+        "path": "PE019-AT10-profile-frozen.json",
+        "sha256": "41aa46263240238db0368bdebc9acd45b4aeaa74a3b465f4655b888294cbc61d"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-prometheus-server-forward-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 40,
+        "path": "PE019-AT10-prometheus-server-forward.txt",
+        "sha256": "675db7920e10587e54fa14151af046f41cfb686ceb70b0f5d73ec0e509344500"
+      },
+      {
+        "bytes": 888,
+        "path": "PE019-AT10-resource-failure-location.json",
+        "sha256": "6b5e77467a7ad1cfe53ba3bd616ef6dfd4d4b108d1fc6cb066fe08544104edf0"
+      },
+      {
+        "bytes": 334,
+        "path": "PE019-AT10-resource-startup.json",
+        "sha256": "c6a1e50a579d21b89ff866647caf05f02e48fab05a889bde362e16b798b0b16b"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-resource-worker-error.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 0,
+        "path": "PE019-AT10-resource-worker-output.txt",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 184,
+        "path": "PE019-AT10-resource-worker.json",
+        "sha256": "cdf342e8b12754bad307a27d444a8c2337c5687c893dc7e754ecbf114a2114ad"
+      },
+      {
+        "bytes": 625,
+        "path": "PE019-AT10-window.json",
+        "sha256": "7fb00480b06db4248045f22fda38c092d5f5a1f0da0d04482daa27d7a236767d"
+      },
+      {
+        "bytes": 368,
+        "path": "PE019-AT10-worker-processes.json",
+        "sha256": "978521ef5d876db30a4b140da8243a4eef7261fa271fa5a4159ed58d720bca0f"
+      },
+      {
+        "bytes": 1745,
+        "path": "PE019-auxiliary-preflight-intent.json",
+        "sha256": "11c7736c756a5dc22df5c3f79f99e7495085febd1f7aa21a965e7577356bb4d2"
+      },
+      {
+        "bytes": 37291,
+        "path": "PE019-bootstrap-runtime.json",
+        "sha256": "21bd09d1ca01e589360924f0b36227c5d9672d919993b9474ae556e6ff36a47b"
+      },
+      {
+        "bytes": 2649,
+        "path": "PE019-capacity-native-state.json",
+        "sha256": "37e42e84903bba7534ae3aa7723215bc79b84428383f5d5b6dc85a2b3a6fb4aa"
+      },
+      {
+        "bytes": 243,
+        "path": "PE019-capacity-native-submitted.json",
+        "sha256": "c4f9aea69c4b815e1678d829bb3f8eec43ec88841ecc3c25837d428a0917353b"
+      },
+      {
+        "bytes": 3952,
+        "path": "PE019-corrected-binding-accepted.json",
+        "sha256": "8b753d1951d62eccfbfd6b65afed0e818f59ce47c0c25c8ed0896e7bbe3d334f"
+      },
+      {
+        "bytes": 1254,
+        "path": "PE019-final-native-CI-plan.json",
+        "sha256": "75fe513add1e60e99b27a75f02b37aa99133555a2ff2e5dd90cda485db9141ba"
+      },
+      {
+        "bytes": 2807,
+        "path": "PE019-final-profile.json",
+        "sha256": "936f0c84cd43bbfb37407175b0ecf109da0e4937bfc01526d66bb858d506b200"
+      },
+      {
+        "bytes": 451,
+        "path": "PE019-HTTP-metrics-before.json",
+        "sha256": "d9b0b1e5ce93fa951529d992ff2f5555d71b523cf3989bb6bd1f1efb389d8639"
+      },
+      {
+        "bytes": 28221,
+        "path": "PE019-HTTP-metrics-before.txt",
+        "sha256": "ff20973cc03f30304a490e854c2a3502585fbffe913a62686e2d7e05059ca49b"
+      },
+      {
+        "bytes": 644,
+        "path": "PE019-resource-preflight.json",
+        "sha256": "9f1823148defb4065c156dd1d09ce88e4253c7b2b05c868dce2ff455c8fe4a82"
+      },
+      {
+        "bytes": 1118,
+        "path": "helper-source-at-abort/checksums.json",
+        "sha256": "ef5b06ebdfe4b23fc57012fc61b6c991c2a0f3e02816a43583867c0ea7f04046"
+      },
+      {
+        "bytes": 1201,
+        "path": "helper-source-at-abort/initialize-pe019-cim.ps1",
+        "sha256": "b85f57bafae5fd55de3c77ea2fdd4c9b243734d29cb2a6845f28050fbb215ccc"
+      },
+      {
+        "bytes": 5076,
+        "path": "helper-source-at-abort/pe019-capacity-fault-worker.ps1",
+        "sha256": "111a4f7f3157dd1f566a87eec89ac9f803a6f36b6cbbf6a777ce289cd6e08c1e"
+      },
+      {
+        "bytes": 4012,
+        "path": "helper-source-at-abort/pe019-capacity-resource-worker.ps1",
+        "sha256": "7848318a10183c8863195dff32bf4f5d4b8a0ad7d637886f5677a7f84a2d79e6"
+      },
+      {
+        "bytes": 12329,
+        "path": "helper-source-at-abort/pe019-final-capacity.ps1",
+        "sha256": "98f2add6870d0a23d4b280961e7f51ebd0e65310cfda43708b951608f20b8ebe"
+      },
+      {
+        "bytes": 1146,
+        "path": "helper-source-at-abort/private-pe019-kubectl.ps1",
+        "sha256": "560e6af22b2758acaa9acb4b527a5353b37070cf88e692b08073a21f3e4a4322"
+      },
+      {
+        "bytes": 2463,
+        "path": "helper-source-at-abort/read-pe019-resource-preflight.ps1",
+        "sha256": "90aa2f01c2295c848dc9a980d7ee96bad88d2e96f2d0f09ee8a1df333cffe52a"
+      },
+      {
+        "bytes": 5603,
+        "path": "helper-source-at-abort/read-pe019-resource-snapshot.ps1",
+        "sha256": "87b81244afd12ca228e6ee84b1308189ee0e59a6f98e742c7538ac8bf8bcff24"
+      },
+      {
+        "bytes": 1113,
+        "path": "helper-source-at-abort/read-pe019-statistics-json.ps1",
+        "sha256": "f78ad600f2028aaf17d636b66701afcace52fddbd8055691b6b781e095c26a1e"
+      },
+      {
+        "bytes": 330,
+        "path": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-core-platform-final-019-nodes.transport.json",
+        "sha256": "de8bffeb5bf7daaa53a310fa035880c3be247e5b21f8a734b7d40ec5366d6d84"
+      },
+      {
+        "bytes": 330,
+        "path": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-core-platform-final-019-pods.transport.json",
+        "sha256": "d1d5bc7d0f6d818d6dc99ccc8744bf47c80ab036ba2de97f924e30812a05e994"
+      },
+      {
+        "bytes": 336,
+        "path": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-core-platform-final-019-statistics.transport.json",
+        "sha256": "fd51b95466b85d08bd7d9fad459a2f5d58fc673352cf118da87190c177bc3ee9"
+      },
+      {
+        "bytes": 319,
+        "path": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-platform-lab-nodes.transport.json",
+        "sha256": "b678e4bf1313d217c287c069d9b0f895478dbcf018499098c1b9574327ba79f5"
+      },
+      {
+        "bytes": 318,
+        "path": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-platform-lab-pods.transport.json",
+        "sha256": "4e821541e68d67466979aecd64ba567348ba4f61f363993f639f37ce87f6f5b0"
+      },
+      {
+        "bytes": 325,
+        "path": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-platform-lab-statistics.transport.json",
+        "sha256": "699d93d0c2269c97016a7b8e30e64d55a82ebc37d7f320001e1449eedf552c71"
+      }
+    ],
+    "result": "failed-not-replaced",
+    "copiedPublicFailureRecords": [
+      "PE019-AT10-abort.json",
+      "PE019-AT10-driver-failure-location.json",
+      "PE019-AT10-fault-failure-location.json",
+      "PE019-AT10-forwards-closed.json",
+      "PE019-AT10-process-cleanup.json",
+      "PE019-AT10-profile-frozen.json",
+      "PE019-AT10-resource-failure-location.json",
+      "PE019-AT10-resource-startup.json",
+      "PE019-AT10-window.json"
+    ],
+    "directory": "PE019-AUX3-120-normal",
+    "originalRetainedUnmodified": true,
+    "replayed": false
+  }
+]

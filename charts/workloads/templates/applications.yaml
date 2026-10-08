@@ -1,0 +1,29 @@
+{{/*
+業務leaf Applicationをpostgresql -10→backend 0→frontend 10で生成する。
+application-manifestのchartsとenvironments/local valuesを参照。backend内部のmigration waveとは別階層。
+親/子Sync状態と対象revisionの最終確認はtools/bootstrap/main.go。
+*/}}{{- $apps := list (dict "name" "postgresql" "wave" "-10") (dict "name" "backend" "wave" "0") (dict "name" "frontend" "wave" "10") }}
+{{- range $index, $app := $apps }}
+{{- if $index }}
+---
+{{- end }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-local-{{ $app.name }}
+  namespace: argocd
+  annotations: {argocd.argoproj.io/sync-wave: {{ $app.wave | quote }}, argocd.argoproj.io/sync-options: Prune=confirm}
+spec:
+  project: lab-account
+  source:
+    repoURL: {{ $.Values.applicationRepository }}
+    targetRevision: {{ $.Values.targetRevision }}
+    path: charts/{{ $app.name }}
+    helm:
+      releaseName: {{ $app.name }}
+      valueFiles: [../../environments/local/{{ $app.name }}.yaml]
+  destination: {server: https://kubernetes.default.svc, namespace: account}
+  syncPolicy:
+    automated: {prune: true, selfHeal: true, allowEmpty: false}
+    syncOptions: [PruneLast=true, FailOnSharedResource=true]
+{{- end }}

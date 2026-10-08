@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "scope": "PE016F artifact expiry/missing input fixture",
+  "sourceCommit": "dc5b8d1028a49d0d6fe32cbff2ce1f28dea8942f",
+  "pipelineId": 2908594182,
+  "jobId": 16909631387,
+  "inputMissingRejected": true,
+  "partialLayoutAbsent": true,
+  "registryFallbackUsed": false,
+  "producerArtifactDeleted": false
+}

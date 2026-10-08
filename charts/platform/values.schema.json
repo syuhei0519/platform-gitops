@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "platformRepository",
+    "targetRevision",
+    "runnerChartRepository",
+    "runnerChartVersion",
+    "observabilityEnabled",
+    "prometheusEnabled",
+    "prometheusChartVersion",
+    "collectorEnabled",
+    "grafanaEnabled"
+  ],
+  "properties": {
+    "platformRepository": {
+      "const": "https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git"
+    },
+    "targetRevision": {
+      "const": "main"
+    },
+    "runnerChartRepository": {
+      "const": "https://charts.gitlab.io"
+    },
+    "runnerChartVersion": {
+      "const": "0.92.1"
+    },
+    "observabilityEnabled": {
+      "type": "boolean"
+    },
+    "prometheusEnabled": {
+      "type": "boolean"
+    },
+    "prometheusChartVersion": {
+      "const": "29.35.0"
+    },
+    "collectorEnabled": {
+      "type": "boolean"
+    },
+    "grafanaEnabled": {
+      "type": "boolean"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "prometheusEnabled": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "observabilityEnabled": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "collectorEnabled": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "observabilityEnabled": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "then": {
+        "properties": {
+          "observabilityEnabled": {
+            "const": true
+          }
+        }
+      },
+      "if": {
+        "properties": {
+          "grafanaEnabled": {
+            "const": true
+          }
+        }
+      }
+    }
+  ]
+}

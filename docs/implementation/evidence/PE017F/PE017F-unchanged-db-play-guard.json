@@ -1,0 +1,9 @@
+{
+  "job": 16911641952,
+  "utc": "2026-10-03T12:32:20.7066962Z",
+  "status": "manual",
+  "playRequestSent": false,
+  "unitAccepted": false,
+  "cacheGenerationMutationSent": false,
+  "actualUnchangedDbRejected": true
+}

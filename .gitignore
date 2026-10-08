@@ -1,0 +1,9 @@
+*.local.yaml
+.env*
+.rendered/
+.build/
+.security/
+.validation/
+.oci/
+.oci-budget-*/
+__pycache__/

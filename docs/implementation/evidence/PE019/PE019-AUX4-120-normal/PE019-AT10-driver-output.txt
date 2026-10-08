@@ -1,0 +1,1 @@
+{"readyToStart":true,"hostFreePercent":41.18188456488298,"hostRequiredAvailableGiB":6.367112731933594,"WSLFreePercent":70.384019771704,"windowsFreeDiskPercent":51.03781811206675,"OneDriveWorkingSetGiB":0.0}

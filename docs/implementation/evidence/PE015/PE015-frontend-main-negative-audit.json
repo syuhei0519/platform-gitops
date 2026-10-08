@@ -1,0 +1,95 @@
+[
+  {
+    "pipeline": 2908053236,
+    "successfulValidationJobs": 6,
+    "downstream": [
+      {
+        "name": "propose-manifest-update",
+        "status": "skipped",
+        "id": 16906167237
+      },
+      {
+        "name": "verify-image",
+        "status": "skipped",
+        "id": 16906167236
+      },
+      {
+        "name": "publish-image",
+        "status": "skipped",
+        "id": 16906167235
+      }
+    ],
+    "failureReason": "scanner execution unavailable",
+    "scanJob": 16906167234,
+    "source": "35d4be130f986466db59793331968b626348b0c9",
+    "ref": "main",
+    "scanStatus": "failed",
+    "pipelineStatus": "failed",
+    "project": 86247025,
+    "case": "scanner-timeout",
+    "rawTraceRead": false,
+    "accepted": true
+  },
+  {
+    "pipeline": 2908053284,
+    "successfulValidationJobs": 6,
+    "downstream": [
+      {
+        "name": "propose-manifest-update",
+        "status": "skipped",
+        "id": 16906167569
+      },
+      {
+        "name": "verify-image",
+        "status": "skipped",
+        "id": 16906167568
+      },
+      {
+        "name": "publish-image",
+        "status": "skipped",
+        "id": 16906167567
+      }
+    ],
+    "failureReason": "security policy gate rejected scanner inputs or findings",
+    "scanJob": 16906167566,
+    "source": "35d4be130f986466db59793331968b626348b0c9",
+    "ref": "main",
+    "scanStatus": "failed",
+    "pipelineStatus": "failed",
+    "project": 86247025,
+    "case": "stale-db",
+    "rawTraceRead": false,
+    "accepted": true
+  },
+  {
+    "pipeline": 2908053351,
+    "successfulValidationJobs": 6,
+    "downstream": [
+      {
+        "name": "propose-manifest-update",
+        "status": "skipped",
+        "id": 16906168300
+      },
+      {
+        "name": "verify-image",
+        "status": "skipped",
+        "id": 16906168299
+      },
+      {
+        "name": "publish-image",
+        "status": "skipped",
+        "id": 16906168298
+      }
+    ],
+    "failureReason": "security policy gate rejected scanner inputs or findings",
+    "scanJob": 16906168297,
+    "source": "35d4be130f986466db59793331968b626348b0c9",
+    "ref": "main",
+    "scanStatus": "failed",
+    "pipelineStatus": "failed",
+    "project": 86247025,
+    "case": "expired-exception",
+    "rawTraceRead": false,
+    "accepted": true
+  }
+]

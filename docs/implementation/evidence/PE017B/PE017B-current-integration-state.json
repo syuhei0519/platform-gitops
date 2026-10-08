@@ -1,0 +1,26 @@
+{
+  "implementationUnchanged": true,
+  "utc": "2026-10-04T15:55:49.6692634Z",
+  "testedSource": "0b855190a3fc52978903a7b2b851d577078856c9",
+  "positivePipeline": 2910986322,
+  "changedPaths": [
+    "ci/IMAGE-SCAN-VALIDATION.md"
+  ],
+  "ownPipeline": 2911032897,
+  "mainAT05Pending": true,
+  "negativeRuns": [
+    {
+      "scanJob": 16922452587,
+      "pipeline": 2911011402,
+      "case": "generate"
+    },
+    {
+      "scanJob": 16922453943,
+      "pipeline": 2911011638,
+      "case": "invalid"
+    }
+  ],
+  "source": "4d1db48db102105d9e03b4b4e9f1ec21dba751a7",
+  "fullPE017BAcceptance": false,
+  "protectedStorageAndTwoDatabaseRunsPending": true
+}

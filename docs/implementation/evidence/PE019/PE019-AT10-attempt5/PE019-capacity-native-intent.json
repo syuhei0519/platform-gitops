@@ -1,0 +1,19 @@
+{
+  "attempt": "b9f7c9f0c7e64bcabe275a606f63d083",
+  "source": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "manifestProposal": false,
+  "utc": "2026-10-06T18:01:53.4645862Z",
+  "registryPublish": false,
+  "negativeFixture": false,
+  "settings": {
+    "OCI_VALIDATION_ENABLED": "true",
+    "OCI_ROLLBACK_RETRIEVAL_ENABLED": "false",
+    "AT17_RESCAN_ACCEPTANCE_ENABLED": "false",
+    "OCI_REGISTRY_RETRIEVAL_ENABLED": "false",
+    "PHASE2_DELIVERY_ENABLED": "false",
+    "IMAGE_SCAN_VALIDATION_ENABLED": "true",
+    "RELEASE_RECORD_STORE_ENABLED": "true",
+    "OCI_DELIVERY_VALIDATION_ENABLED": "false",
+    "OCI_REGISTRY_INSPECTION_ENABLED": "false"
+  }
+}

@@ -1,0 +1,276 @@
+{
+  "originalFailureRecordsUntouched": true,
+  "files": [
+    {
+      "file": "PE019-actual-driver-exit.json",
+      "sha256": "dc2fd40f258ba46bc7f51b1529395a9ad03d60ec5d84e21e3bf0cd1a20fa6e4e"
+    },
+    {
+      "file": "PE019-AT10-abort.json",
+      "sha256": "2b450dcbf61c75cb5d4e4b93ef1b810bd54542962c17ed15329fb8e1073a02a4"
+    },
+    {
+      "file": "PE019-AT10-collector-before.txt",
+      "sha256": "e39447109b3ffa8c69ee1a8ce0559e20d9742f7e696a10e93896281ab36efe80"
+    },
+    {
+      "file": "PE019-AT10-crud-rows.json",
+      "sha256": "93392b2b53f6860b2a1d9b31cd039dfab8db7cb192e7e138251f8c8461073346"
+    },
+    {
+      "file": "PE019-AT10-driver-error.txt",
+      "sha256": "220499a0c1dd173b68b2446b82f4498ebcbbdfbb1433773d0ef9c3010be5d49a"
+    },
+    {
+      "file": "PE019-AT10-driver-failure-location.json",
+      "sha256": "2e48e87362cd1187acccf84c538070f8f587e3ae576d49c0c1af9c987d9c9baa"
+    },
+    {
+      "file": "PE019-AT10-driver-intent.json",
+      "sha256": "5546e23cf168a41eeea3a19c996e7d854cedcdfb7928a2bb6ebfa08b868764e0"
+    },
+    {
+      "file": "PE019-AT10-driver-output.txt",
+      "sha256": "5388fd7f614f19bb32fa7b053f67fbe09425a40abe7a0cf1fb0cdafbc838762a"
+    },
+    {
+      "file": "PE019-AT10-driver-submitted.json",
+      "sha256": "dcf878d5f97888c685190061f15df461054a71481f34a6da5cfb4281c3884529"
+    },
+    {
+      "file": "PE019-AT10-fault-failure-location.json",
+      "sha256": "eb6359425143ba0109e17cbbb00aaa986d80fb8938602af091860125eb39f755"
+    },
+    {
+      "file": "PE019-AT10-fault-worker-error.txt",
+      "sha256": "23901d5a5d3397660f46d7abd80688caf7248fa6d30d446c63807fbd484218d6"
+    },
+    {
+      "file": "PE019-AT10-fault-worker-output.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "PE019-AT10-fault-worker.json",
+      "sha256": "9bab41e074cac9d31605fcb00bc5175edf678b6939d61918244995604362ae24"
+    },
+    {
+      "file": "PE019-AT10-forwards-closed.json",
+      "sha256": "4806936305d354221586a555044b22206447ff51399e1c61456e78025f0f41ae"
+    },
+    {
+      "file": "PE019-AT10-frontend-forward-error.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "PE019-AT10-frontend-forward.txt",
+      "sha256": "063faa7e9940791854a9ada8763b7bbeb91baee20e204847a690b27f5d8dd6f7"
+    },
+    {
+      "file": "PE019-AT10-live.json",
+      "sha256": "5d3712aaee29017cda7249a3d0eac1b76879a954e4fe6704c9ef178d622a4179"
+    },
+    {
+      "file": "PE019-AT10-owned-cleanup.json",
+      "sha256": "210444c177f41e5bf82c493fee8b7409ae87d86b54b305621393265045d5e34c"
+    },
+    {
+      "file": "PE019-AT10-process-cleanup.json",
+      "sha256": "ccd7401664faf6a3a693ab9aafffbd4393d48289dba32d3ca01c9d711e70161a"
+    },
+    {
+      "file": "PE019-AT10-profile-frozen.json",
+      "sha256": "c3f8ef8e1e4b80e5e78f3c8477b2f2deb4722ec4af81d147a0b2a5fe758a00a7"
+    },
+    {
+      "file": "PE019-AT10-prometheus-server-forward-error.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "PE019-AT10-prometheus-server-forward.txt",
+      "sha256": "675db7920e10587e54fa14151af046f41cfb686ceb70b0f5d73ec0e509344500"
+    },
+    {
+      "file": "PE019-AT10-resource-failure-location.json",
+      "sha256": "134b267e8a82f3fd3527516246e1fb75206cee6c737da07902e715bd79dfe85d"
+    },
+    {
+      "file": "PE019-AT10-resource-startup.json",
+      "sha256": "7fa7321671b0a46231115f390a0ff2ca53a1e66420ec1ac6a4107ac72b4e991c"
+    },
+    {
+      "file": "PE019-AT10-resource-worker-error.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "PE019-AT10-resource-worker-output.txt",
+      "sha256": "7eae4012f199d133a371a148b41a03d4490f20d226d5878020d1f885908ddc8f"
+    },
+    {
+      "file": "PE019-AT10-resource-worker.json",
+      "sha256": "cf0c3bfc65636160881efa2cc3dd3ce33e5af5fe873418b7233bc49c10d1c390"
+    },
+    {
+      "file": "PE019-AT10-window.json",
+      "sha256": "d989e63845a1b06adfb476b5c11e2e7eed92d0d3380afadfe4de769159eb0301"
+    },
+    {
+      "file": "PE019-AT10-worker-processes.json",
+      "sha256": "cea1002735dee3180c291d2e38451c19483257e9ab20f93e9e034fa3a17ed918"
+    },
+    {
+      "file": "PE019-auxiliary-preflight-intent.json",
+      "sha256": "2185810308899a2c54557461eedefce4f0d359602e3209dd54584e2a511c4833"
+    },
+    {
+      "file": "PE019-bootstrap-runtime.json",
+      "sha256": "1d882cab8df5fde9e8d0314d559e4e329296bdcf4abcbb5c675f47f1323e1787"
+    },
+    {
+      "file": "PE019-capacity-native-state.json",
+      "sha256": "3dc1f3c38dd7b05e25e599bea6a8aae44f56e6f5761cd4bf06dc8a51f759e241"
+    },
+    {
+      "file": "PE019-capacity-native-submitted.json",
+      "sha256": "c4f9aea69c4b815e1678d829bb3f8eec43ec88841ecc3c25837d428a0917353b"
+    },
+    {
+      "file": "PE019-corrected-binding-accepted.json",
+      "sha256": "3905695ae2c686e4e00b61122e59a6b4b232b07f79d6cb0825e733866c4048d6"
+    },
+    {
+      "file": "PE019-final-native-CI-plan.json",
+      "sha256": "75fe513add1e60e99b27a75f02b37aa99133555a2ff2e5dd90cda485db9141ba"
+    },
+    {
+      "file": "PE019-final-profile.json",
+      "sha256": "939f2d1533508fad64a0e10419a6308b1fca8b891cd11c5ab655f2aaeb6c904c"
+    },
+    {
+      "file": "PE019-HTTP-metrics-before.json",
+      "sha256": "82e744b8ed03d2e7ad09ef60b237341ea0452ab0289f5624a0f6146165ea887c"
+    },
+    {
+      "file": "PE019-HTTP-metrics-before.txt",
+      "sha256": "3200b312c216f651d833ddaabfc5780538f7dfd43d119bfc8f23eb1c9bfb53a3"
+    },
+    {
+      "file": "PE019-resource-preflight.json",
+      "sha256": "c0315bab0396744928a1ffc6405d770e584688720ed33c9fa26e4296a5083bf6"
+    },
+    {
+      "file": "PE019-AT10-resources/snapshot-0000.json",
+      "sha256": "f97ac7628f58532a4fc85858dc45e26f237d6d8903da2d1973960f0a8385a71b"
+    },
+    {
+      "file": "PE019-AT10-resources/snapshot-0001.json",
+      "sha256": "0b1560c4c241bc676422989a17df02141ad42310248c7565f4a81ac1f0d0a819"
+    },
+    {
+      "file": "PE019-AT10-resources/snapshot-0002.json",
+      "sha256": "f277db836ae452544ebb726ea9436c8cacca2a80c0dd8444c67956fabcc8b130"
+    },
+    {
+      "file": "PE019-AT10-resources/snapshot-0003.json",
+      "sha256": "c0bb984d31be4884ad6b675c05f992a4c62e6984f939904a2d3892ed38a2d448"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-core-platform-final-019-nodes.transport.json",
+      "sha256": "a18a34c19795708afe2e442bf94adae14ceaa8552ef97cd243191ff00f147890"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-core-platform-final-019-pods.transport.json",
+      "sha256": "57103ec362bda0fef4d069d55ab31478e1a568e9d4f7b60f8ff2e5e66816b391"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-core-platform-final-019-statistics.transport.json",
+      "sha256": "7ce61138e372de74a03c2e49b463089662acb13b285f8cc68cabd1ff3c535b5c"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-platform-lab-nodes.transport.json",
+      "sha256": "01a6a9a4504474489dca95e685544c38a78d49011bee74e95a828f536e02cea3"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-platform-lab-pods.transport.json",
+      "sha256": "7fbd8b82755994649efa66290966b77716e11988be400eb29c07e7db0d865b45"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-platform-lab-statistics.transport.json",
+      "sha256": "dbddd7b3c05b0ed5f3a799bbd60ea74d5d05f5b4c4e96b70cf64474f9b8fda5e"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0001.json.partial.kind-core-platform-final-019-nodes.transport.json",
+      "sha256": "e0cc8e36dd457ea94e7231e862f7b544cd490fdf0d6164e8b4f9529eef182e2a"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0001.json.partial.kind-core-platform-final-019-pods.transport.json",
+      "sha256": "34b62f659fa30db20f8b6d45e40d915f64959eca6c3e3811f5810dc830750401"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0001.json.partial.kind-core-platform-final-019-statistics.transport.json",
+      "sha256": "c8dee53396f1f11185eae8a1116164667a41f7500796dca74f718ac7eafce26d"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0001.json.partial.kind-platform-lab-nodes.transport.json",
+      "sha256": "7b020759b59c921bb2ed3bd3f1a5d5bb43cc19cb66c64e28aa378f5d1f64778e"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0001.json.partial.kind-platform-lab-pods.transport.json",
+      "sha256": "b4c298fcf6d1cf12907d6e7caa193620835a5cb2a6e6163af2b477cf807abbf7"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0001.json.partial.kind-platform-lab-statistics.transport.json",
+      "sha256": "5faedd660f74ad59963596e9dd1d32c68d48d38a189b0a598f5cd4ef54bd3f69"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0002.json.partial.kind-core-platform-final-019-nodes.transport.json",
+      "sha256": "ecef5a7b88b78bd6752ab9ba5d08bace1049c8f0c368fc48d9ad3a432daca848"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0002.json.partial.kind-core-platform-final-019-pods.transport.json",
+      "sha256": "08658583a3127f2803029f0dd0d44329460f6be201b9f5e4ffe77d2008da70de"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0002.json.partial.kind-core-platform-final-019-statistics.transport.json",
+      "sha256": "97787fae9c4f67e4c8ed5159bebe88c98df188b8567e4ac30eb89d9b32e5ad55"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0002.json.partial.kind-platform-lab-nodes.transport.json",
+      "sha256": "0332ad6105ef545047285d70e61a3a93ca9a989abb0b41702e4ce885e10386c7"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0002.json.partial.kind-platform-lab-pods.transport.json",
+      "sha256": "6692782e922746e3f936de31ba33ab880f3cfa445b9154eaa0c33d632aeea30b"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0002.json.partial.kind-platform-lab-statistics.transport.json",
+      "sha256": "57bc14dbd1df4837a555db80bca8dad5fd1a16b1cfae391a43a7e156bb7095a0"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0003.json.partial.kind-core-platform-final-019-nodes.transport.json",
+      "sha256": "c49bfc8b2ac85c8b8e1d249abae3b1c279f79d2ce28dc8c0d986b8e21675f375"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0003.json.partial.kind-core-platform-final-019-pods.transport.json",
+      "sha256": "0e8660cd5d7bbf338460dc7034a06d66fb87da6d2ce6dfd5eb373042346b0caf"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0003.json.partial.kind-core-platform-final-019-statistics.transport.json",
+      "sha256": "f0b62206133a422686ac7daabe32b420a76a8a3b3c2b592547234c74d578bcd3"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0003.json.partial.kind-platform-lab-nodes.transport.json",
+      "sha256": "ff4f34a564ed5e3f072010223fd0f7832863ae792ae68c77d29336800c2bde76"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0003.json.partial.kind-platform-lab-pods.transport.json",
+      "sha256": "8cd0c8a02a9acdd467cf3a476e3eced8fbcbf8a9fec0436213cae8c48636777d"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0003.json.partial.kind-platform-lab-statistics.transport.json",
+      "sha256": "8a05c9b91272c7328708b989ca12ac0826cdae4c950b82acc4fb74ba7f2cac36"
+    }
+  ],
+  "case": "safe-error",
+  "utc": "2026-10-06T18:01:38.3948140Z",
+  "allRequestedConditionsAccepted": true
+}

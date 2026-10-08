@@ -1,0 +1,128 @@
+{
+  "requiresActualFinalVersionMetricTraceRuntimeBindings": true,
+  "currentRuntimeSourceMains": [
+    {
+      "sha": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+      "project": 86247033,
+      "repo": "backend-app",
+      "protected": true
+    },
+    {
+      "sha": "ce6ec1d94cf1042a824b745f4a5f6367b1c0f845",
+      "project": 86247025,
+      "repo": "frontend-app",
+      "protected": true
+    },
+    {
+      "sha": "9c654586c7db8dff458d2934629abd6f96689649",
+      "project": 86247036,
+      "repo": "platform-gitops",
+      "protected": true
+    }
+  ],
+  "finalAcceptanceComplete": false,
+  "unit": "PE019",
+  "priorNRTraceDoesNotProveCurrentSourceTrace": true,
+  "APIAndCollectorContractEvidenceReusable": true,
+  "precedingIndices": [
+    {
+      "indexSha256": "d0a1f89a6d4a44ee2aad346b62542863c976c667f08eb55057d7518e9cf98b88",
+      "file": "PE012-PE013-acceptance.json",
+      "validatedChecksums": 15
+    },
+    {
+      "indexSha256": "12516b54d2005e4565d13dcddee5845a3b9c09047b15f30f48f9699be6d2e560",
+      "file": "PE014-acceptance.json",
+      "validatedChecksums": 28
+    }
+  ],
+  "manifestBindingNotClaimed": true,
+  "all19Complete": false,
+  "utc": "2026-10-06T15:49:16.0593005Z",
+  "requiresFreshKind": true,
+  "requiresFinalOCITrivySBOMConcurrentAT10": true,
+  "newTestPipelineCreated": false,
+  "unchangedInputs": [
+    {
+      "identical": true,
+      "path": "go.mod",
+      "repository": "backend-app",
+      "inputId": "21573e92042c356991c596f9f3410b030e7a269d",
+      "current": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+      "before": "a300338cefdca94b4a041d71b37faae8d71a8701"
+    },
+    {
+      "identical": true,
+      "path": "go.sum",
+      "repository": "backend-app",
+      "inputId": "7b5078fe1affc646a3dbba1ebbc4c76263212ce1",
+      "current": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+      "before": "a300338cefdca94b4a041d71b37faae8d71a8701"
+    },
+    {
+      "identical": true,
+      "path": "internal/account",
+      "repository": "backend-app",
+      "inputId": "ee90979c61c3844a4bee9691d5178a6e9cd41683",
+      "current": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+      "before": "a300338cefdca94b4a041d71b37faae8d71a8701"
+    },
+    {
+      "identical": true,
+      "path": "internal/config",
+      "repository": "backend-app",
+      "inputId": "3131a4450d18532922d02dfc3d6b93f8f8c67cd4",
+      "current": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+      "before": "a300338cefdca94b4a041d71b37faae8d71a8701"
+    },
+    {
+      "identical": true,
+      "path": "internal/httpapi",
+      "repository": "backend-app",
+      "inputId": "8cd2d0ec6b59b022fb83035094ad28f0d6210df2",
+      "current": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+      "before": "a300338cefdca94b4a041d71b37faae8d71a8701"
+    },
+    {
+      "identical": true,
+      "path": "internal/store",
+      "repository": "backend-app",
+      "inputId": "bd1aa707d3740baf2a4440e2787650c14d20fbeb",
+      "current": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+      "before": "a300338cefdca94b4a041d71b37faae8d71a8701"
+    },
+    {
+      "identical": true,
+      "path": "internal/telemetry",
+      "repository": "backend-app",
+      "inputId": "42a4e144f34b49be4b86ea1bb83b45dc847c59f8",
+      "current": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+      "before": "a300338cefdca94b4a041d71b37faae8d71a8701"
+    },
+    {
+      "identical": true,
+      "path": "charts",
+      "repository": "platform-gitops",
+      "inputId": "4c0b677416067ca905ff1458c477c34120861146",
+      "current": "9c654586c7db8dff458d2934629abd6f96689649",
+      "before": "7ce833dcbddc4097dd36c046c5629124a27bbc1b"
+    },
+    {
+      "identical": true,
+      "path": "environments",
+      "repository": "platform-gitops",
+      "inputId": "3782cce92c448e1425e923b49c0d6ed1d56e1553",
+      "current": "9c654586c7db8dff458d2934629abd6f96689649",
+      "before": "7ce833dcbddc4097dd36c046c5629124a27bbc1b"
+    },
+    {
+      "identical": true,
+      "path": "bootstrap",
+      "repository": "platform-gitops",
+      "inputId": "749759d41d25c3fc1f4aec99e23f85f2edd50b2b",
+      "current": "9c654586c7db8dff458d2934629abd6f96689649",
+      "before": "7ce833dcbddc4097dd36c046c5629124a27bbc1b"
+    }
+  ],
+  "serverDifference": "Only startup build_version logging and linker version variable; HTTP/DB/SDK code otherwise byte-identical"
+}

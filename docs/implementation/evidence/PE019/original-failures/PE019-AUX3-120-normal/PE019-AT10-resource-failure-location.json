@@ -1,0 +1,9 @@
+{
+  "id": "JsonReaderException,read-pe019-resource-snapshot.ps1",
+  "type": "System.Management.Automation.MethodInvocationException",
+  "utc": "2026-10-06T17:35:47.1876291Z",
+  "stage": "snapshot",
+  "exitCode": 1,
+  "safeSimulatedError": false,
+  "scriptStack": "at ConvertFrom-PE019StatisticsJSON, C:\\work\\CorePlatform\\output\\core-platform-v1-phase1-phase2-20261002\\acceptance\\read-pe019-statistics-json.ps1: line 2\r\nat Read-KubernetesJSON, C:\\work\\CorePlatform\\output\\core-platform-v1-phase1-phase2-20261002\\acceptance\\read-pe019-resource-snapshot.ps1: line 26\r\nat <ScriptBlock>, C:\\work\\CorePlatform\\output\\core-platform-v1-phase1-phase2-20261002\\acceptance\\read-pe019-resource-snapshot.ps1: line 37\r\nat <ScriptBlock>, C:\\work\\CorePlatform\\output\\core-platform-v1-phase1-phase2-20261002\\acceptance\\pe019-capacity-resource-worker.ps1: line 21"
+}

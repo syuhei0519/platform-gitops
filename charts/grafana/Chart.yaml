@@ -1,0 +1,9 @@
+apiVersion: v2
+name: lab-grafana
+description: Pinned official Grafana with Git-owned provisioning
+type: application
+version: 0.1.0
+dependencies:
+  - name: grafana
+    version: 13.2.7
+    repository: https://grafana-community.github.io/helm-charts

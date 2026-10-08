@@ -1,0 +1,16 @@
+{
+  "requests": 360,
+  "costCeilingYen": 0,
+  "scrapeSec": 30,
+  "httpTimeoutSec": 5,
+  "profile": "1 request/second for 360 seconds; evaluate fixed final 300-second window",
+  "windowSec": 300,
+  "exportSec": 10,
+  "preScrapes": 2,
+  "utc": "2026-10-02T15:52:07.2202892Z",
+  "expectedTraceSpanUpperBound": 720,
+  "priorFailure": "60-request burst yielded66.67 due to short-window extrapolation; not accepted",
+  "postScrapes": 2,
+  "countTolerance": 30,
+  "fixtureId": 9
+}

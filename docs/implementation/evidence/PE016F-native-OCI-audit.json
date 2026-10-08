@@ -1,0 +1,61 @@
+{
+  "accepted": false,
+  "compatibilityAccepted": true,
+  "source": "dc5b8d1028a49d0d6fe32cbff2ce1f28dea8942f",
+  "isolatedRuntimeAccepted": true,
+  "pipeline": 2908594164,
+  "jobs": [
+    {
+      "id": 16909631209,
+      "name": "oci-isolated-runtime",
+      "status": "success"
+    },
+    {
+      "id": 16909631208,
+      "name": "oci-format-compatibility",
+      "status": "success"
+    },
+    {
+      "id": 16909631207,
+      "name": "container-build-oci",
+      "status": "success"
+    },
+    {
+      "id": 16909631206,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16909631205,
+      "name": "frontend-build",
+      "status": "success"
+    },
+    {
+      "id": 16909631204,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16909631203,
+      "name": "typecheck",
+      "status": "success"
+    },
+    {
+      "id": 16909631202,
+      "name": "lint",
+      "status": "success"
+    },
+    {
+      "id": 16909631201,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16909631200,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "fullPE016FAcceptance": false,
+  "status": "success"
+}

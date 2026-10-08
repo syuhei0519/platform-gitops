@@ -1,0 +1,59 @@
+{
+  "runs": [
+    {
+      "pipeline": 2908988271,
+      "decision": "passed",
+      "job": 16911641951,
+      "recordSha256": "0296119f28d7aa6c6cc83fe292200aefe0ace68995e8c116b0c722301ce82d4d",
+      "packageId": 71324296,
+      "project": 86247025,
+      "scannedAt": "2026-10-03T09:31:48.864649905Z",
+      "digest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c"
+    },
+    {
+      "pipeline": 2908988271,
+      "decision": "failed",
+      "job": 16911641952,
+      "recordSha256": "4c5791eb3e76bbcd82e2d69a44654161a43be2e812818fcb512d1f8b2432bfaa",
+      "packageId": 71324296,
+      "project": 86247025,
+      "scannedAt": "2026-10-03T15:07:52.912327289Z",
+      "digest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c"
+    }
+  ],
+  "allListedProductionVersionsRetained": true,
+  "eligibleCount": 0,
+  "scope": "Current actual inventory with no eligible deletion; no 90-day elapsed claim",
+  "excludedRetainedFixtures": [
+    {
+      "packageId": 71310231,
+      "status": "default",
+      "project": 86247025,
+      "reason": "reserved-nonrelease-fixture-retained-including-hidden-history"
+    },
+    {
+      "packageId": 71311177,
+      "status": "default",
+      "project": 86247033,
+      "reason": "reserved-nonrelease-fixture-retained-including-hidden-history"
+    }
+  ],
+  "plans": {
+    "backend": [],
+    "frontend": [
+      {
+        "packageId": 71324296,
+        "digest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+        "keep": true,
+        "reason": "latest-ten"
+      }
+    ]
+  },
+  "automaticDeletionEnabled": false,
+  "operatorReviewCompleted": true,
+  "inventoryUtc": "2026-10-03T15:14:08.0464218Z",
+  "deleteRequested": false,
+  "utc": "2026-10-03T15:14:09.1501382Z",
+  "model": "latest-ten OR ninety-days OR running/explicit-rollback",
+  "planner": "frontend-app/tools/release-record/retention.go"
+}

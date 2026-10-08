@@ -1,0 +1,28 @@
+{
+  "sha": "7ce833dcbddc4097dd36c046c5629124a27bbc1b",
+  "status": "success",
+  "jobs": [
+    {
+      "name": "kubernetes-and-argo-schema",
+      "started": "2026-10-02T19:58:45.273Z",
+      "status": "success",
+      "finished": "2026-10-02T19:58:56.254Z",
+      "id": 16904911539
+    },
+    {
+      "name": "render-and-policy",
+      "started": "2026-10-02T19:58:24.289Z",
+      "status": "success",
+      "finished": "2026-10-02T19:58:43.399Z",
+      "id": 16904911538
+    },
+    {
+      "name": "bootstrap-contract-test",
+      "started": "2026-10-02T19:58:03.231Z",
+      "status": "success",
+      "finished": "2026-10-02T19:58:22.318Z",
+      "id": 16904911537
+    }
+  ],
+  "pipeline": 2907886612
+}

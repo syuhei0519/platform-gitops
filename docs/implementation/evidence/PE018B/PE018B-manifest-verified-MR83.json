@@ -1,0 +1,19 @@
+{
+  "candidateTree": "9f036c60c7858dd13cbc8026b80dde313763d6c5",
+  "manifestMainSha": "d15172c75005e7576fb9cb737f676613786eeabe",
+  "mergeAuthorized": false,
+  "mrIid": 83,
+  "mrSourceSha": "5155d20122202351ffc1ced4f2b71e09a27f07f2",
+  "producerJobId": 16949725842,
+  "producerPipelineId": 2915027443,
+  "provenanceRequired": false,
+  "renderReportSha256": "a752e5dfbc3fe74fa8c746260802f07cb09937528ae9c964ea4076d5479fa23a",
+  "rollbackReason": null,
+  "schema": "core-platform/phase0-verification/v1",
+  "sourceMains": {
+    "86247025": "ce6ec1d94cf1042a824b745f4a5f6367b1c0f845",
+    "86247033": "f1d3a9bd0d95e9be4e92fa6fe78b0388641d4100"
+  },
+  "verifiedAt": "2026-10-06T05:03:41.773803+09:00",
+  "verifiedImages": []
+}

@@ -1,0 +1,9 @@
+{
+  "frontendPod": "frontend-5bdc8c5fbd-5lss6",
+  "backendServiceEndpointMatched": true,
+  "kind": "final-restore",
+  "route": "frontend/API via backend Service",
+  "backendPodUid": "0ed70bc0-8e65-4a2b-8609-3fb1a519fe19",
+  "frontendPodUid": "6da97e91-4aca-4271-b313-4be4245090dc",
+  "utc": "2026-10-06T00:53:22.3761355Z"
+}

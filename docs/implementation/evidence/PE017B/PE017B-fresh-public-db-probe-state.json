@@ -1,0 +1,21 @@
+{
+  "sourceMutation": false,
+  "probeAccepted": true,
+  "dbUpdatedAt": "2026-10-04T19:39:34.7156234+00:00",
+  "observedFinalKiB": 1461880,
+  "differentDatabase": true,
+  "containerAutoRemoved": true,
+  "manifestDigest": "sha256:d06f3cb1e2fae9a3baca0d1faf3f01e50226b0fa4c80e1c24c3ecd9e9633bd72",
+  "dbVersion": 2,
+  "containerExitCode": 0,
+  "dbNextUpdate": "2026-10-05T19:39:34.7156232+00:00",
+  "observedDownloadAt": "2026-10-04T20:40:26.0849981+00:00",
+  "manualPlayed": false,
+  "previous512MiBFailurePreserved": true,
+  "oldDeniedCacheUntouched": true,
+  "publicOnly": true,
+  "unitAccepted": false,
+  "budgetBytes": 2147483648,
+  "utc": "2026-10-04T20:40:26.6829480Z",
+  "hostMount": false
+}

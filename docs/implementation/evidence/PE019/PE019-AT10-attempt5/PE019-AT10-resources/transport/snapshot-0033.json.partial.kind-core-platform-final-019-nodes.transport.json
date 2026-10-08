@@ -1,0 +1,15 @@
+{
+  "stdoutReaderCodePage": 65001,
+  "hostConsoleCodePage": 932,
+  "hasExited": true,
+  "stage": "kind-core-platform-final-019-nodes",
+  "endsWithJSONObject": true,
+  "stderrCategory": "none",
+  "stdoutUTF8Bytes": 15311,
+  "stdoutComplete": true,
+  "processId": 9664,
+  "processExitCode": 0,
+  "rawValuesRecorded": false,
+  "emptyOutput": false,
+  "startsWithJSONObject": true
+}

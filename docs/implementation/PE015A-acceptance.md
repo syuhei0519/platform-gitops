@@ -1,0 +1,14 @@
+# PE-015A 検査方針と安全fixtureの実受入証跡
+
+固定Trivy 0.75.0、DB Version2のUpdatedAtが24時間以内、最大14日でexact rule/package/pathと所有者・理由を持つ例外を通過条件にした。修正版のあるCRITICAL、すべてのSecret、privilegedを失敗にする。その他の深刻度と未修正CRITICALはwarningを全件残す。展開済YAMLのSecret data/stringData、認証env literal、URL userinfo、ConfigMapの認証値は構造から失敗にし、SecretKeyRefは許可する。平文Secret/privilegedには例外を設けない。
+
+実TrivyでdevDependencyだけのlodash 4.17.20がDev=trueで検査対象に現れることを確認した。これはsource依存の範囲証明であり、最終runtime image SBOMの全npm依存網羅を主張しない。実privileged fixtureはKSV-0017で失敗、合成の未発行トークンはgitlab-pat規則で失敗した。公開要約は値・Match・SourceCode・Titleを含まない。合成値だけを用い、実PAT/License Key/Secretをfixtureへコピーしていない。
+
+実CIと同じshellを固定Trivy Dockerで動かし、実scanner timeout(1ns)、privateの古いDB UpdatedAt、未使用でも失効した例外の3ケースが意図した診断で非0終了することを確認した。private入力は終了時に削除される。共有DB cacheと実policyは変更しない。Goテストでは修正版CRITICAL/未修正CRITICAL/HIGH、未知・未来・古いDB、期限・未知field・duplicate key・wildcard・範囲外例外、SecretKeyRef/禁止設定、秘密値を含めない出力を検証した。
+
+方針source d16ebe552afdae324a48051e0c3d9bc1201e0e61のCI2908019804は全5job成功。MR23は保護mainのfreshness、source CAS、candidate/actual merge tree一致を確認しmain30ead4f96d67e998c213eb236b63752d9ae0602cへ統合した。本証跡JSONはGit LFのSHA-256で各公開proofを固定する。
+
+PE015B/CとAT11全体は未受入。両アプリ・配備2repoの最新CIとprotected-mainの後続publish/verify/proposal/trusted producer停止を実証してから親Issue15を閉じる。rootless BuildKitのno-process-sandboxは既存の限定job/image/Pod profileの明示境界だけを維持し、privilegedや包括ignoreを許可しない。OCI/SBOM/publishの新経路はPE016〜018へ残す。
+
+追加検証: manifest CIのpre-renderで既存POSTGRES_PASSWORD_FILEを平文Secretと誤判定した。失敗proofを保存し、同一containerのreadOnly Secret volumeと正規化絶対pathの対応を確認できる_FILE参照だけ許可する。suffixのみ/emptyDir/別path/traversal/literal/非FILE/非readOnly/root mount/subPathは失敗を維持しGoテストで確認した。frontend/backend/PostgreSQLの実Helm展開と構造判定は修正後pass。raw renderは公開artifactへ成功前に出さない。
+

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "pass": true,
+  "trivyVersion": "0.75.0",
+  "dbUpdatedAt": "2026-10-02T12:48:00.080865328Z",
+  "scannedAt": "2026-10-02T20:27:04.6671054Z",
+  "findings": [
+    {
+      "kind": "vulnerability",
+      "rule": "CVE-2021-23337",
+      "path": "package-lock.json",
+      "package": "lodash",
+      "installedVersion": "4.17.20",
+      "fixedVersion": "4.17.21",
+      "severity": "HIGH",
+      "decision": "warning"
+    },
+    {
+      "kind": "vulnerability",
+      "rule": "CVE-2026-4800",
+      "path": "package-lock.json",
+      "package": "lodash",
+      "installedVersion": "4.17.20",
+      "fixedVersion": "4.18.0",
+      "severity": "HIGH",
+      "decision": "warning"
+    },
+    {
+      "kind": "vulnerability",
+      "rule": "CVE-2020-28500",
+      "path": "package-lock.json",
+      "package": "lodash",
+      "installedVersion": "4.17.20",
+      "fixedVersion": "4.17.21",
+      "severity": "MEDIUM",
+      "decision": "warning"
+    },
+    {
+      "kind": "vulnerability",
+      "rule": "CVE-2025-13465",
+      "path": "package-lock.json",
+      "package": "lodash",
+      "installedVersion": "4.17.20",
+      "fixedVersion": "4.17.23",
+      "severity": "MEDIUM",
+      "decision": "warning"
+    },
+    {
+      "kind": "vulnerability",
+      "rule": "CVE-2026-2950",
+      "path": "package-lock.json",
+      "package": "lodash",
+      "installedVersion": "4.17.20",
+      "fixedVersion": "4.18.0",
+      "severity": "MEDIUM",
+      "decision": "warning"
+    }
+  ],
+  "policySHA256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337"
+}

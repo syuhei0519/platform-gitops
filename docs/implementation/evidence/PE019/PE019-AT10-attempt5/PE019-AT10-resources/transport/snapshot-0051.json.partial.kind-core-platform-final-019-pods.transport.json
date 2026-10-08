@@ -1,0 +1,15 @@
+{
+  "stdoutReaderCodePage": 65001,
+  "hostConsoleCodePage": 932,
+  "hasExited": true,
+  "stage": "kind-core-platform-final-019-pods",
+  "endsWithJSONObject": true,
+  "stderrCategory": "none",
+  "stdoutUTF8Bytes": 435383,
+  "stdoutComplete": true,
+  "processId": 10360,
+  "processExitCode": 0,
+  "rawValuesRecorded": false,
+  "emptyOutput": false,
+  "startsWithJSONObject": true
+}

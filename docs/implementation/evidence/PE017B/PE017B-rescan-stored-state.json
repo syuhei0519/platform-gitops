@@ -1,0 +1,178 @@
+{
+  "stored": {
+    "schemaVersion": 1,
+    "run": {
+      "Service": "backend",
+      "Digest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+      "PipelineID": 2911071988,
+      "JobID": 16922783997
+    },
+    "recordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9/release-record-2911071988-16922783997.json",
+    "recordSha256": "b1cda5e887f8db6da692b93639490151ac13ad0fd478498d0700d5077913279b",
+    "decision": "failed",
+    "completedJobAuthority": true,
+    "protectedMainWriter": true,
+    "recordWrittenLast": true,
+    "serverDuplicateDenied": true
+  },
+  "AT04DifferentDatabaseAccepted": true,
+  "writerJob": 16922783999,
+  "pair": {
+    "priorRun": {
+      "Service": "backend",
+      "Digest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+      "PipelineID": 2911071988,
+      "JobID": 16922783996
+    },
+    "currentRun": {
+      "Service": "backend",
+      "Digest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+      "PipelineID": 2911071988,
+      "JobID": 16922783997
+    },
+    "priorRecordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9/release-record-2911071988-16922783996.json",
+    "priorRecordSha256": "cf4eb4b396fec5547ab5084fcb7f559bf7b874c53b77f9cbdf1dc1152916be09",
+    "sameImageAndBuild": true,
+    "differentDatabase": true,
+    "currentFailed": true,
+    "priorSuccessFallback": false
+  },
+  "safeScan": {
+    "schemaVersion": 1,
+    "pass": true,
+    "trivyVersion": "0.75.0",
+    "dbUpdatedAt": "2026-10-04T19:39:34.715623444Z",
+    "scannedAt": "2026-10-04T20:41:26.578391534Z",
+    "findings": [
+      {
+        "kind": "vulnerability",
+        "rule": "DLA-4792-1",
+        "path": "image/os",
+        "package": "tzdata",
+        "installedVersion": "2026b-0+deb12u1",
+        "fixedVersion": "2026c-0+deb12u1",
+        "severity": "UNKNOWN",
+        "decision": "warning"
+      }
+    ],
+    "policySHA256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337"
+  },
+  "secondScanStatus": "failed",
+  "failedRecordStored": true,
+  "writerStatus": "success",
+  "packageFilesReadable": 2,
+  "pipeline": 2911071988,
+  "unitAccepted": false,
+  "utc": "2026-10-04T20:42:26.1974849Z",
+  "priorSuccessFallback": false,
+  "record": {
+    "schemaVersion": 2,
+    "service": "backend",
+    "sourceProjectId": 86247033,
+    "sourceCommit": "e927c6c837bf36d41c118225f254d277cf95bb5f",
+    "buildPipelineId": 2911071988,
+    "buildJobId": 16922783993,
+    "imageRepository": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app",
+    "imageTag": "e927c6c837bf36d41c118225f254d277cf95bb5f",
+    "imageDigest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+    "scanPipelineId": 2911071988,
+    "scanJobId": 16922783997,
+    "scanJobStatus": "failed",
+    "inputKind": "build-oci",
+    "inputArchiveSha256": "f518904937053256db93225d535df19f9069ae0b75ce6ef6559455fef8f5a45b",
+    "trivyVersion": "0.75.0",
+    "database": {
+      "version": 2,
+      "updatedAt": "2026-10-04T19:39:34.715623444Z",
+      "metadataSha256": "ab39d095f2fdaedb1a0de3041ce1a76e0e0b49b929df9da9c2006af65c3706e6"
+    },
+    "scannedAt": "2026-10-04T20:41:26.578391534Z",
+    "policyRevision": "e927c6c837bf36d41c118225f254d277cf95bb5f",
+    "policySha256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337",
+    "exceptions": [],
+    "decision": "failed",
+    "failureReason": "sbom-unavailable",
+    "sbom": null,
+    "sbomFailureReason": "sbom-unavailable",
+    "scanReport": {
+      "imageDigest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+      "scanPipelineId": 2911071988,
+      "scanJobId": 16922783997,
+      "url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9/scan-report-2911071988-16922783997.json",
+      "sha256": "bd88ee22320a3b180a6d9fb193ebd9178e86c472d74cad405bb69d70ee7d7ca8",
+      "format": "safe-json",
+      "schemaVersion": "1"
+    }
+  },
+  "positiveAdoptionArtifactsAbsent": true,
+  "source": "e927c6c837bf36d41c118225f254d277cf95bb5f",
+  "secondScanJob": 16922783997,
+  "registryPush": false,
+  "jobs": [
+    {
+      "id": 16922783999,
+      "name": "release-record-store-rescan",
+      "status": "success"
+    },
+    {
+      "id": 16922783998,
+      "name": "release-record-store",
+      "status": "success"
+    },
+    {
+      "id": 16922783997,
+      "name": "oci-image-rescan-validation",
+      "status": "failed"
+    },
+    {
+      "id": 16922783996,
+      "name": "oci-image-policy-validation",
+      "status": "success"
+    },
+    {
+      "id": 16922783995,
+      "name": "oci-isolated-runtime",
+      "status": "success"
+    },
+    {
+      "id": 16922783994,
+      "name": "oci-format-compatibility",
+      "status": "success"
+    },
+    {
+      "id": 16922783993,
+      "name": "container-build-oci",
+      "status": "success"
+    },
+    {
+      "id": 16922783992,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16922783991,
+      "name": "backend-build",
+      "status": "success"
+    },
+    {
+      "id": 16922783990,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16922783989,
+      "name": "format-and-vet",
+      "status": "success"
+    },
+    {
+      "id": 16922783988,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16922783987,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ]
+}

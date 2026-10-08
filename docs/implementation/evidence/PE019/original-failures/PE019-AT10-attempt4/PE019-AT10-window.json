@@ -1,0 +1,17 @@
+{
+  "source": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "buildJob": 16977149764,
+  "pipeline": 2918911872,
+  "endUtc": "2026-10-06T17:34:56.6256785Z",
+  "safeSimulatedError": false,
+  "durationSec": 900,
+  "requests": 900,
+  "profileSha256": "fe2c5e16c895d859c9e94f7b9fb9ce37c6b8cf00b80e2b055a3c1f4f3fb5e16b",
+  "prometheusPort": 18050,
+  "frontendPort": 18049,
+  "startUtc": "2026-10-06T17:19:56.6256785Z",
+  "ownedEmailPrefix": "pe019-load-1f070b2292f547bf94bbe46f51a622b8",
+  "traceId": "efe5fc48cae6460f203dec5286b219db",
+  "purpose": "final-AT10",
+  "resourceIntervalSec": 15
+}

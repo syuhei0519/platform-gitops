@@ -1,0 +1,1215 @@
+{
+  "deadline": {
+    "logs": "{\"timestamp\":\"2026-10-02T02:52:22.180556374Z\",\"level\":\"ERROR\",\"msg\":\"migration failed\",\"error\":\"timeout: context deadline exceeded\"}\n",
+    "job": {
+      "apiVersion": "batch/v1",
+      "kind": "Job",
+      "metadata": {
+        "annotations": {
+          "argocd.argoproj.io/hook": "Sync",
+          "argocd.argoproj.io/hook-delete-policy": "BeforeHookCreation,HookSucceeded",
+          "argocd.argoproj.io/sync-wave": "-10",
+          "argocd.argoproj.io/tracking-id": "pe002b-migration:batch/Job:account-pe002b/backend-migration",
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"batch/v1\",\"kind\":\"Job\",\"metadata\":{\"annotations\":{\"argocd.argoproj.io/hook\":\"Sync\",\"argocd.argoproj.io/hook-delete-policy\":\"BeforeHookCreation,HookSucceeded\",\"argocd.argoproj.io/sync-wave\":\"-10\",\"argocd.argoproj.io/tracking-id\":\"pe002b-migration:batch/Job:account-pe002b/backend-migration\"},\"finalizers\":[\"argocd.argoproj.io/hook-finalizer\"],\"labels\":{\"app.kubernetes.io/component\":\"backend\",\"app.kubernetes.io/instance\":\"backend\",\"app.kubernetes.io/managed-by\":\"Helm\",\"app.kubernetes.io/name\":\"backend\",\"app.kubernetes.io/part-of\":\"account\"},\"name\":\"backend-migration\",\"namespace\":\"account-pe002b\"},\"spec\":{\"activeDeadlineSeconds\":180,\"backoffLimit\":1,\"template\":{\"metadata\":{\"annotations\":{\"account.lab/image-digest\":\"sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d\",\"account.lab/pipeline-id\":\"2905200969\",\"account.lab/pipeline-url\":\"https://gitlab.com/syuhei-platform-engineering-lab/backend-app/-/pipelines/2905200969\",\"account.lab/source-commit\":\"7e38def8118ecc5101c5054e64f3eff98dfc819e\",\"account.lab/source-project-id\":\"86247033\"},\"labels\":{\"app.kubernetes.io/component\":\"backend\",\"app.kubernetes.io/instance\":\"backend\",\"app.kubernetes.io/managed-by\":\"Helm\",\"app.kubernetes.io/name\":\"backend\",\"app.kubernetes.io/part-of\":\"account\"}},\"spec\":{\"automountServiceAccountToken\":false,\"containers\":[{\"args\":[\"migrate\"],\"env\":[{\"name\":\"PGHOST\",\"value\":\"late-db.account-pe002b.svc.cluster.local\"},{\"name\":\"PGPORT\",\"value\":\"5432\"},{\"name\":\"PGDATABASE\",\"value\":\"account\"},{\"name\":\"PGSSLMODE\",\"value\":\"disable\"},{\"name\":\"LOG_LEVEL\",\"value\":\"info\"},{\"name\":\"PGUSER\",\"valueFrom\":{\"secretKeyRef\":{\"key\":\"app-username\",\"name\":\"account-db\"}}},{\"name\":\"PGPASSWORD\",\"valueFrom\":{\"secretKeyRef\":{\"key\":\"app-password\",\"name\":\"account-db\"}}}],\"image\":\"registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:7e38def8118ecc5101c5054e64f3eff98dfc819e@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"migrate\",\"resources\":{\"limits\":{\"cpu\":\"500m\",\"memory\":\"256Mi\"},\"requests\":{\"cpu\":\"100m\",\"memory\":\"64Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"readOnlyRootFilesystem\":true},\"volumeMounts\":[{\"mountPath\":\"/tmp\",\"name\":\"tmp\"}]}],\"imagePullSecrets\":[{\"name\":\"registry-backend-pull\"}],\"restartPolicy\":\"Never\",\"securityContext\":{\"fsGroup\":10001,\"runAsGroup\":10001,\"runAsNonRoot\":true,\"runAsUser\":10001,\"seccompProfile\":{\"type\":\"RuntimeDefault\"}},\"serviceAccountName\":\"backend\",\"volumes\":[{\"emptyDir\":{},\"name\":\"tmp\"}]}}}}\n"
+        },
+        "creationTimestamp": "2026-10-02T02:49:31Z",
+        "generation": 1,
+        "labels": {
+          "app.kubernetes.io/component": "backend",
+          "app.kubernetes.io/instance": "backend",
+          "app.kubernetes.io/managed-by": "Helm",
+          "app.kubernetes.io/name": "backend",
+          "app.kubernetes.io/part-of": "account"
+        },
+        "name": "backend-migration",
+        "namespace": "account-pe002b",
+        "resourceVersion": "56577",
+        "uid": "0299ecc7-ec02-4b6b-b96c-569440ece196"
+      },
+      "spec": {
+        "activeDeadlineSeconds": 180,
+        "backoffLimit": 1,
+        "completionMode": "NonIndexed",
+        "completions": 1,
+        "manualSelector": false,
+        "parallelism": 1,
+        "podReplacementPolicy": "TerminatingOrFailed",
+        "selector": {
+          "matchLabels": {
+            "batch.kubernetes.io/controller-uid": "0299ecc7-ec02-4b6b-b96c-569440ece196"
+          }
+        },
+        "suspend": false,
+        "template": {
+          "metadata": {
+            "annotations": {
+              "account.lab/image-digest": "sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d",
+              "account.lab/pipeline-id": "2905200969",
+              "account.lab/pipeline-url": "https://gitlab.com/syuhei-platform-engineering-lab/backend-app/-/pipelines/2905200969",
+              "account.lab/source-commit": "7e38def8118ecc5101c5054e64f3eff98dfc819e",
+              "account.lab/source-project-id": "86247033"
+            },
+            "labels": {
+              "app.kubernetes.io/component": "backend",
+              "app.kubernetes.io/instance": "backend",
+              "app.kubernetes.io/managed-by": "Helm",
+              "app.kubernetes.io/name": "backend",
+              "app.kubernetes.io/part-of": "account",
+              "batch.kubernetes.io/controller-uid": "0299ecc7-ec02-4b6b-b96c-569440ece196",
+              "batch.kubernetes.io/job-name": "backend-migration",
+              "controller-uid": "0299ecc7-ec02-4b6b-b96c-569440ece196",
+              "job-name": "backend-migration"
+            }
+          },
+          "spec": {
+            "automountServiceAccountToken": false,
+            "containers": [
+              {
+                "args": [
+                  "migrate"
+                ],
+                "env": [
+                  {
+                    "name": "PGHOST",
+                    "value": "late-db.account-pe002b.svc.cluster.local"
+                  },
+                  {
+                    "name": "PGPORT",
+                    "value": "5432"
+                  },
+                  {
+                    "name": "PGDATABASE",
+                    "value": "account"
+                  },
+                  {
+                    "name": "PGSSLMODE",
+                    "value": "disable"
+                  },
+                  {
+                    "name": "LOG_LEVEL",
+                    "value": "info"
+                  },
+                  {
+                    "name": "PGUSER",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "key": "app-username",
+                        "name": "account-db"
+                      }
+                    }
+                  },
+                  {
+                    "name": "PGPASSWORD",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "key": "app-password",
+                        "name": "account-db"
+                      }
+                    }
+                  }
+                ],
+                "image": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:7e38def8118ecc5101c5054e64f3eff98dfc819e@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d",
+                "imagePullPolicy": "IfNotPresent",
+                "name": "migrate",
+                "resources": {
+                  "limits": {
+                    "cpu": "500m",
+                    "memory": "256Mi"
+                  },
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "64Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  },
+                  "readOnlyRootFilesystem": true
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "volumeMounts": [
+                  {
+                    "mountPath": "/tmp",
+                    "name": "tmp"
+                  }
+                ]
+              }
+            ],
+            "dnsPolicy": "ClusterFirst",
+            "imagePullSecrets": [
+              {
+                "name": "registry-backend-pull"
+              }
+            ],
+            "restartPolicy": "Never",
+            "schedulerName": "default-scheduler",
+            "securityContext": {
+              "fsGroup": 10001,
+              "runAsGroup": 10001,
+              "runAsNonRoot": true,
+              "runAsUser": 10001,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "serviceAccount": "backend",
+            "serviceAccountName": "backend",
+            "terminationGracePeriodSeconds": 30,
+            "volumes": [
+              {
+                "emptyDir": {},
+                "name": "tmp"
+              }
+            ]
+          }
+        }
+      },
+      "status": {
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-02T02:52:31Z",
+            "lastTransitionTime": "2026-10-02T02:52:31Z",
+            "message": "Job was active longer than specified deadline",
+            "reason": "DeadlineExceeded",
+            "status": "True",
+            "type": "FailureTarget"
+          },
+          {
+            "lastProbeTime": "2026-10-02T02:52:31Z",
+            "lastTransitionTime": "2026-10-02T02:52:31Z",
+            "message": "Job was active longer than specified deadline",
+            "reason": "DeadlineExceeded",
+            "status": "True",
+            "type": "Failed"
+          }
+        ],
+        "failed": 1,
+        "ready": 0,
+        "startTime": "2026-10-02T02:49:31Z",
+        "terminating": 0,
+        "uncountedTerminatedPods": {}
+      }
+    },
+    "utc": "2026-10-02T02:55:26.9486833Z",
+    "operation": {
+      "finishedAt": "2026-10-02T02:52:31Z",
+      "message": "one or more synchronization tasks completed unsuccessfully",
+      "operation": {
+        "initiatedBy": {},
+        "retry": {},
+        "sync": {
+          "revision": "0d806ac8b0cfc83c8b055afbe3718f9a9322860a",
+          "source": {
+            "helm": {
+              "parameters": [
+                {
+                  "name": "config.dbHost",
+                  "value": "late-db.account-pe002b.svc.cluster.local"
+                }
+              ],
+              "releaseName": "backend",
+              "valueFiles": [
+                "../../environments/local/backend.yaml"
+              ]
+            },
+            "path": "charts/backend",
+            "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+            "targetRevision": "0d806ac8b0cfc83c8b055afbe3718f9a9322860a"
+          }
+        }
+      },
+      "phase": "Failed",
+      "startedAt": "2026-10-02T02:49:29Z",
+      "syncResult": {
+        "resources": [
+          {
+            "group": "",
+            "hookPhase": "Succeeded",
+            "kind": "ServiceAccount",
+            "message": "serviceaccount/backend unchanged",
+            "name": "backend",
+            "namespace": "account-pe002b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "",
+            "hookPhase": "Succeeded",
+            "kind": "ConfigMap",
+            "message": "configmap/backend-config unchanged",
+            "name": "backend-config",
+            "namespace": "account-pe002b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "",
+            "hookPhase": "Succeeded",
+            "kind": "Service",
+            "message": "service/backend unchanged",
+            "name": "backend",
+            "namespace": "account-pe002b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "batch",
+            "hookPhase": "Failed",
+            "hookType": "Sync",
+            "images": [
+              "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:7e38def8118ecc5101c5054e64f3eff98dfc819e@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d"
+            ],
+            "kind": "Job",
+            "message": "Job was active longer than specified deadline",
+            "name": "backend-migration",
+            "namespace": "account-pe002b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          }
+        ],
+        "revision": "0d806ac8b0cfc83c8b055afbe3718f9a9322860a",
+        "source": {
+          "helm": {
+            "parameters": [
+              {
+                "name": "config.dbHost",
+                "value": "late-db.account-pe002b.svc.cluster.local"
+              }
+            ],
+            "releaseName": "backend",
+            "valueFiles": [
+              "../../environments/local/backend.yaml"
+            ]
+          },
+          "path": "charts/backend",
+          "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+          "targetRevision": "0d806ac8b0cfc83c8b055afbe3718f9a9322860a"
+        }
+      }
+    },
+    "deploymentAbsent": true
+  },
+  "crud": [
+    {
+      "utc": "2026-10-02T02:59:15.3803112Z",
+      "method": "GET",
+      "path": "/api/accounts",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T02:59:15.4071312Z",
+      "method": "POST",
+      "path": "/api/accounts",
+      "expected": 201,
+      "status": 201
+    },
+    {
+      "utc": "2026-10-02T02:59:15.4178648Z",
+      "method": "GET",
+      "path": "/api/accounts/4",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T02:59:15.4281141Z",
+      "method": "PUT",
+      "path": "/api/accounts/4",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T02:59:15.437413Z",
+      "method": "DELETE",
+      "path": "/api/accounts/4",
+      "expected": 204,
+      "status": 204
+    },
+    {
+      "utc": "2026-10-02T02:59:15.4455625Z",
+      "method": "GET",
+      "path": "/api/accounts/4",
+      "expected": 404,
+      "status": 404
+    }
+  ],
+  "delayed": {
+    "dbAvailableAt": "2026-10-02T02:47:58.2649184Z",
+    "activeDeadline": 180,
+    "image": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:7e38def8118ecc5101c5054e64f3eff98dfc819e@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d",
+    "podStart": "2026-10-02T02:47:51Z",
+    "podUid": "98c7cda6-5cc8-4b09-878a-42b12ed1e63a",
+    "revision": "0d806ac8b0cfc83c8b055afbe3718f9a9322860a",
+    "deploymentAbsent": true,
+    "delayedDB": true,
+    "utc": "2026-10-02T02:47:53.086403Z"
+  },
+  "runtime": {
+    "sameRevisionRecovery": {
+      "finishedAt": "2026-10-02T02:55:34Z",
+      "message": "successfully synced (all tasks run)",
+      "operation": {
+        "initiatedBy": {},
+        "retry": {},
+        "sync": {
+          "revision": "0d806ac8b0cfc83c8b055afbe3718f9a9322860a",
+          "source": {
+            "helm": {
+              "parameters": [
+                {
+                  "name": "config.dbHost",
+                  "value": "late-db.account-pe002b.svc.cluster.local"
+                }
+              ],
+              "releaseName": "backend",
+              "valueFiles": [
+                "../../environments/local/backend.yaml"
+              ]
+            },
+            "path": "charts/backend",
+            "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+            "targetRevision": "0d806ac8b0cfc83c8b055afbe3718f9a9322860a"
+          }
+        }
+      },
+      "phase": "Succeeded",
+      "startedAt": "2026-10-02T02:55:27Z",
+      "syncResult": {
+        "resources": [
+          {
+            "group": "",
+            "hookPhase": "Succeeded",
+            "kind": "ServiceAccount",
+            "message": "serviceaccount/backend unchanged",
+            "name": "backend",
+            "namespace": "account-pe002b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "",
+            "hookPhase": "Succeeded",
+            "kind": "ConfigMap",
+            "message": "configmap/backend-config unchanged",
+            "name": "backend-config",
+            "namespace": "account-pe002b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "",
+            "hookPhase": "Succeeded",
+            "kind": "Service",
+            "message": "service/backend unchanged",
+            "name": "backend",
+            "namespace": "account-pe002b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "batch",
+            "hookPhase": "Succeeded",
+            "hookType": "Sync",
+            "images": [
+              "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:7e38def8118ecc5101c5054e64f3eff98dfc819e@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d"
+            ],
+            "kind": "Job",
+            "message": "Reached expected number of succeeded pods",
+            "name": "backend-migration",
+            "namespace": "account-pe002b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          },
+          {
+            "group": "apps",
+            "hookPhase": "Running",
+            "images": [
+              "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:7e38def8118ecc5101c5054e64f3eff98dfc819e@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d"
+            ],
+            "kind": "Deployment",
+            "message": "deployment.apps/backend created",
+            "name": "backend",
+            "namespace": "account-pe002b",
+            "status": "Synced",
+            "syncPhase": "Sync",
+            "version": "v1"
+          }
+        ],
+        "revision": "0d806ac8b0cfc83c8b055afbe3718f9a9322860a",
+        "source": {
+          "helm": {
+            "parameters": [
+              {
+                "name": "config.dbHost",
+                "value": "late-db.account-pe002b.svc.cluster.local"
+              }
+            ],
+            "releaseName": "backend",
+            "valueFiles": [
+              "../../environments/local/backend.yaml"
+            ]
+          },
+          "path": "charts/backend",
+          "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+          "targetRevision": "0d806ac8b0cfc83c8b055afbe3718f9a9322860a"
+        }
+      }
+    },
+    "context": "kind-core-platform-at0102",
+    "boundary": "Phase 0 finite migration and retry; incompatible schema/rollback acceptance is PE-007A",
+    "allApplications": [
+      {
+        "health": {
+          "lastTransitionTime": "2026-10-02T02:47:04Z",
+          "status": "Healthy"
+        },
+        "operation": {
+          "finishedAt": "2026-10-02T03:07:32Z",
+          "message": "successfully synced (all tasks run)",
+          "operation": {
+            "initiatedBy": {},
+            "retry": {},
+            "sync": {
+              "revision": "a92a7850c4714cf93d0e1b9bd4501896bc849792"
+            }
+          },
+          "phase": "Succeeded",
+          "startedAt": "2026-10-02T03:07:26Z",
+          "syncResult": {
+            "resources": [
+              {
+                "group": "",
+                "hookPhase": "Succeeded",
+                "kind": "ServiceAccount",
+                "message": "serviceaccount/backend unchanged",
+                "name": "backend",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "",
+                "hookPhase": "Succeeded",
+                "kind": "ConfigMap",
+                "message": "configmap/backend-config unchanged",
+                "name": "backend-config",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "",
+                "hookPhase": "Succeeded",
+                "kind": "Service",
+                "message": "service/backend unchanged",
+                "name": "backend",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "batch",
+                "hookPhase": "Succeeded",
+                "hookType": "Sync",
+                "images": [
+                  "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:7e38def8118ecc5101c5054e64f3eff98dfc819e@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d"
+                ],
+                "kind": "Job",
+                "message": "Reached expected number of succeeded pods",
+                "name": "backend-migration",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "apps",
+                "hookPhase": "Running",
+                "images": [
+                  "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:7e38def8118ecc5101c5054e64f3eff98dfc819e@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d"
+                ],
+                "kind": "Deployment",
+                "message": "deployment.apps/backend unchanged",
+                "name": "backend",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              }
+            ],
+            "revision": "a92a7850c4714cf93d0e1b9bd4501896bc849792",
+            "source": {
+              "helm": {
+                "releaseName": "backend",
+                "valueFiles": [
+                  "../../environments/local/backend.yaml"
+                ]
+              },
+              "path": "charts/backend",
+              "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+              "targetRevision": "main"
+            }
+          }
+        },
+        "name": "lab-local-backend",
+        "sync": {
+          "comparedTo": {
+            "destination": {
+              "namespace": "account",
+              "server": "https://kubernetes.default.svc"
+            },
+            "source": {
+              "helm": {
+                "releaseName": "backend",
+                "valueFiles": [
+                  "../../environments/local/backend.yaml"
+                ]
+              },
+              "path": "charts/backend",
+              "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+              "targetRevision": "main"
+            }
+          },
+          "revision": "a92a7850c4714cf93d0e1b9bd4501896bc849792",
+          "status": "Synced"
+        }
+      },
+      {
+        "health": {
+          "lastTransitionTime": "2026-10-02T02:55:45Z",
+          "status": "Healthy"
+        },
+        "operation": {
+          "finishedAt": "2026-10-02T03:07:27Z",
+          "message": "successfully synced (all tasks run)",
+          "operation": {
+            "initiatedBy": {},
+            "retry": {},
+            "sync": {
+              "revision": "a92a7850c4714cf93d0e1b9bd4501896bc849792"
+            }
+          },
+          "phase": "Succeeded",
+          "startedAt": "2026-10-02T03:07:26Z",
+          "syncResult": {
+            "resources": [
+              {
+                "group": "",
+                "hookPhase": "Running",
+                "kind": "ServiceAccount",
+                "message": "serviceaccount/frontend unchanged",
+                "name": "frontend",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "",
+                "hookPhase": "Running",
+                "kind": "ConfigMap",
+                "message": "configmap/frontend-config unchanged",
+                "name": "frontend-config",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "",
+                "hookPhase": "Running",
+                "kind": "Service",
+                "message": "service/frontend unchanged",
+                "name": "frontend",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "apps",
+                "hookPhase": "Running",
+                "images": [
+                  "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app:d8ef13c003f2625b03f20b11c31908c775809cf5@sha256:fb90b488134778d8c730033644fe607751553de6de2809c121c0ed53477f21cf"
+                ],
+                "kind": "Deployment",
+                "message": "deployment.apps/frontend unchanged",
+                "name": "frontend",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              }
+            ],
+            "revision": "a92a7850c4714cf93d0e1b9bd4501896bc849792",
+            "source": {
+              "helm": {
+                "releaseName": "frontend",
+                "valueFiles": [
+                  "../../environments/local/frontend.yaml"
+                ]
+              },
+              "path": "charts/frontend",
+              "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+              "targetRevision": "main"
+            }
+          }
+        },
+        "name": "lab-local-frontend",
+        "sync": {
+          "comparedTo": {
+            "destination": {
+              "namespace": "account",
+              "server": "https://kubernetes.default.svc"
+            },
+            "source": {
+              "helm": {
+                "releaseName": "frontend",
+                "valueFiles": [
+                  "../../environments/local/frontend.yaml"
+                ]
+              },
+              "path": "charts/frontend",
+              "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+              "targetRevision": "main"
+            }
+          },
+          "revision": "a92a7850c4714cf93d0e1b9bd4501896bc849792",
+          "status": "Synced"
+        }
+      },
+      {
+        "health": {
+          "lastTransitionTime": "2026-10-02T00:53:26Z",
+          "status": "Healthy"
+        },
+        "operation": {
+          "finishedAt": "2026-10-02T03:07:26Z",
+          "message": "successfully synced (all tasks run)",
+          "operation": {
+            "initiatedBy": {},
+            "retry": {},
+            "sync": {
+              "revision": "d5d21cc12245f34cd77f0fca4243506229daa4cf"
+            }
+          },
+          "phase": "Succeeded",
+          "startedAt": "2026-10-02T03:07:26Z",
+          "syncResult": {
+            "resources": [
+              {
+                "group": "",
+                "hookPhase": "Running",
+                "kind": "ServiceAccount",
+                "message": "serviceaccount/kube-state-metrics unchanged",
+                "name": "kube-state-metrics",
+                "namespace": "observability",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "",
+                "hookPhase": "Running",
+                "kind": "ServiceAccount",
+                "message": "serviceaccount/prometheus unchanged",
+                "name": "prometheus",
+                "namespace": "observability",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "rbac.authorization.k8s.io",
+                "hookPhase": "Running",
+                "kind": "ClusterRole",
+                "message": "clusterrole.rbac.authorization.k8s.io/lab-prometheus-kind-proxy reconciledclusterrole.rbac.authorization.k8s.io/lab-prometheus-kind-proxy unchanged",
+                "name": "lab-prometheus-kind-proxy",
+                "namespace": "observability",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "rbac.authorization.k8s.io",
+                "hookPhase": "Running",
+                "kind": "ClusterRoleBinding",
+                "message": "clusterrolebinding.rbac.authorization.k8s.io/lab-prometheus-kind-proxy reconciledclusterrolebinding.rbac.authorization.k8s.io/lab-prometheus-kind-proxy unchanged",
+                "name": "lab-prometheus-kind-proxy",
+                "namespace": "observability",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "rbac.authorization.k8s.io",
+                "hookPhase": "Running",
+                "kind": "Role",
+                "message": "role.rbac.authorization.k8s.io/lab-ksm-account-read reconciledrole.rbac.authorization.k8s.io/lab-ksm-account-read unchanged",
+                "name": "lab-ksm-account-read",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "rbac.authorization.k8s.io",
+                "hookPhase": "Running",
+                "kind": "RoleBinding",
+                "message": "rolebinding.rbac.authorization.k8s.io/lab-ksm-account-read reconciledrolebinding.rbac.authorization.k8s.io/lab-ksm-account-read unchanged",
+                "name": "lab-ksm-account-read",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              }
+            ],
+            "revision": "d5d21cc12245f34cd77f0fca4243506229daa4cf",
+            "source": {
+              "helm": {
+                "releaseName": "observability-foundation",
+                "valueFiles": [
+                  "../../environments/local/observability-foundation.yaml"
+                ]
+              },
+              "path": "charts/observability-foundation",
+              "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git",
+              "targetRevision": "main"
+            }
+          }
+        },
+        "name": "lab-local-observability-foundation",
+        "sync": {
+          "comparedTo": {
+            "destination": {
+              "namespace": "observability",
+              "server": "https://kubernetes.default.svc"
+            },
+            "source": {
+              "helm": {
+                "releaseName": "observability-foundation",
+                "valueFiles": [
+                  "../../environments/local/observability-foundation.yaml"
+                ]
+              },
+              "path": "charts/observability-foundation",
+              "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git",
+              "targetRevision": "main"
+            }
+          },
+          "revision": "d5d21cc12245f34cd77f0fca4243506229daa4cf",
+          "status": "Synced"
+        }
+      },
+      {
+        "health": {
+          "lastTransitionTime": "2026-10-01T16:10:53Z",
+          "status": "Healthy"
+        },
+        "operation": {
+          "finishedAt": "2026-10-02T03:07:26Z",
+          "message": "successfully synced (all tasks run)",
+          "operation": {
+            "initiatedBy": {},
+            "retry": {},
+            "sync": {
+              "revision": "a92a7850c4714cf93d0e1b9bd4501896bc849792"
+            }
+          },
+          "phase": "Succeeded",
+          "startedAt": "2026-10-02T03:07:26Z",
+          "syncResult": {
+            "resources": [
+              {
+                "group": "",
+                "hookPhase": "Running",
+                "kind": "ServiceAccount",
+                "message": "serviceaccount/postgresql unchanged",
+                "name": "postgresql",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "",
+                "hookPhase": "Running",
+                "kind": "ConfigMap",
+                "message": "configmap/postgresql-init unchanged",
+                "name": "postgresql-init",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "",
+                "hookPhase": "Running",
+                "kind": "PersistentVolumeClaim",
+                "message": "persistentvolumeclaim/postgresql-data unchanged",
+                "name": "postgresql-data",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "",
+                "hookPhase": "Running",
+                "kind": "Service",
+                "message": "service/postgresql unchanged",
+                "name": "postgresql",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "",
+                "hookPhase": "Running",
+                "kind": "Service",
+                "message": "service/postgresql-headless unchanged",
+                "name": "postgresql-headless",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "apps",
+                "hookPhase": "Running",
+                "images": [
+                  "docker.io/library/postgres:17.10-bookworm@sha256:9b18b78397054fce88a9552e9d5a3ad5bb7fd258c5b3cc1c5028e46373d6ea8f"
+                ],
+                "kind": "StatefulSet",
+                "message": "statefulset.apps/postgresql unchanged",
+                "name": "postgresql",
+                "namespace": "account",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              }
+            ],
+            "revision": "a92a7850c4714cf93d0e1b9bd4501896bc849792",
+            "source": {
+              "helm": {
+                "releaseName": "postgresql",
+                "valueFiles": [
+                  "../../environments/local/postgresql.yaml"
+                ]
+              },
+              "path": "charts/postgresql",
+              "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+              "targetRevision": "main"
+            }
+          }
+        },
+        "name": "lab-local-postgresql",
+        "sync": {
+          "comparedTo": {
+            "destination": {
+              "namespace": "account",
+              "server": "https://kubernetes.default.svc"
+            },
+            "source": {
+              "helm": {
+                "releaseName": "postgresql",
+                "valueFiles": [
+                  "../../environments/local/postgresql.yaml"
+                ]
+              },
+              "path": "charts/postgresql",
+              "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git",
+              "targetRevision": "main"
+            }
+          },
+          "revision": "a92a7850c4714cf93d0e1b9bd4501896bc849792",
+          "status": "Synced"
+        }
+      },
+      {
+        "health": {
+          "lastTransitionTime": "2026-10-02T01:13:38Z",
+          "status": "Healthy"
+        },
+        "operation": {
+          "finishedAt": "2026-10-02T03:07:27Z",
+          "message": "successfully synced (all tasks run)",
+          "operation": {
+            "initiatedBy": {},
+            "retry": {},
+            "sync": {
+              "revisions": [
+                "29.35.0",
+                "d5d21cc12245f34cd77f0fca4243506229daa4cf"
+              ]
+            }
+          },
+          "phase": "Succeeded",
+          "startedAt": "2026-10-02T03:07:26Z",
+          "syncResult": {
+            "resources": [
+              {
+                "group": "",
+                "hookPhase": "Running",
+                "kind": "ConfigMap",
+                "message": "configmap/prometheus-server unchanged",
+                "name": "prometheus-server",
+                "namespace": "observability",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "",
+                "hookPhase": "Running",
+                "kind": "PersistentVolumeClaim",
+                "message": "persistentvolumeclaim/prometheus-server unchanged",
+                "name": "prometheus-server",
+                "namespace": "observability",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "",
+                "hookPhase": "Running",
+                "kind": "Service",
+                "message": "service/kube-state-metrics unchanged",
+                "name": "kube-state-metrics",
+                "namespace": "observability",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "",
+                "hookPhase": "Running",
+                "kind": "Service",
+                "message": "service/prometheus-server unchanged",
+                "name": "prometheus-server",
+                "namespace": "observability",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "apps",
+                "hookPhase": "Running",
+                "images": [
+                  "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.20.0@sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016"
+                ],
+                "kind": "Deployment",
+                "message": "deployment.apps/kube-state-metrics configured",
+                "name": "kube-state-metrics",
+                "namespace": "observability",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              },
+              {
+                "group": "apps",
+                "hookPhase": "Running",
+                "images": [
+                  "quay.io/prometheus-operator/prometheus-config-reloader@sha256:ac2f46e50daebc6163d2ba17adbbbc7fe8f51a0000e7961e821dcb9331b3702f",
+                  "quay.io/prometheus/prometheus@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa"
+                ],
+                "kind": "Deployment",
+                "message": "deployment.apps/prometheus-server configured",
+                "name": "prometheus-server",
+                "namespace": "observability",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1"
+              }
+            ],
+            "revision": "",
+            "revisions": [
+              "29.35.0",
+              "d5d21cc12245f34cd77f0fca4243506229daa4cf"
+            ],
+            "source": {
+              "chart": "prometheus",
+              "helm": {
+                "releaseName": "prometheus",
+                "valueFiles": [
+                  "$values/environments/local/prometheus.yaml"
+                ]
+              },
+              "repoURL": "https://prometheus-community.github.io/helm-charts",
+              "targetRevision": "29.35.0"
+            },
+            "sources": [
+              {
+                "chart": "prometheus",
+                "helm": {
+                  "releaseName": "prometheus",
+                  "valueFiles": [
+                    "$values/environments/local/prometheus.yaml"
+                  ]
+                },
+                "repoURL": "https://prometheus-community.github.io/helm-charts",
+                "targetRevision": "29.35.0"
+              },
+              {
+                "ref": "values",
+                "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git",
+                "targetRevision": "main"
+              }
+            ]
+          }
+        },
+        "name": "lab-local-prometheus",
+        "sync": {
+          "comparedTo": {
+            "destination": {
+              "namespace": "observability",
+              "server": "https://kubernetes.default.svc"
+            },
+            "source": {
+              "repoURL": ""
+            },
+            "sources": [
+              {
+                "chart": "prometheus",
+                "helm": {
+                  "releaseName": "prometheus",
+                  "valueFiles": [
+                    "$values/environments/local/prometheus.yaml"
+                  ]
+                },
+                "repoURL": "https://prometheus-community.github.io/helm-charts",
+                "targetRevision": "29.35.0"
+              },
+              {
+                "ref": "values",
+                "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git",
+                "targetRevision": "main"
+              }
+            ]
+          },
+          "revisions": [
+            "29.35.0",
+            "d5d21cc12245f34cd77f0fca4243506229daa4cf"
+          ],
+          "status": "Synced"
+        }
+      },
+      {
+        "health": {
+          "lastTransitionTime": "2026-10-02T03:07:32Z",
+          "status": "Healthy"
+        },
+        "operation": {
+          "finishedAt": "2026-10-02T03:07:32Z",
+          "message": "successfully synced (all tasks run)",
+          "operation": {
+            "initiatedBy": {},
+            "retry": {},
+            "sync": {
+              "revision": "d5d21cc12245f34cd77f0fca4243506229daa4cf"
+            }
+          },
+          "phase": "Succeeded",
+          "startedAt": "2026-10-02T03:07:26Z",
+          "syncResult": {
+            "resources": [
+              {
+                "group": "argoproj.io",
+                "hookPhase": "Succeeded",
+                "kind": "Application",
+                "message": "Child Application Synced and Healthy; verify leaf revision separately",
+                "name": "lab-local-postgresql",
+                "namespace": "argocd",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1alpha1"
+              },
+              {
+                "group": "argoproj.io",
+                "hookPhase": "Succeeded",
+                "kind": "Application",
+                "message": "Child Application Synced and Healthy; verify leaf revision separately",
+                "name": "lab-local-backend",
+                "namespace": "argocd",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1alpha1"
+              },
+              {
+                "group": "argoproj.io",
+                "hookPhase": "Running",
+                "kind": "Application",
+                "message": "application.argoproj.io/lab-local-frontend unchanged",
+                "name": "lab-local-frontend",
+                "namespace": "argocd",
+                "status": "Synced",
+                "syncPhase": "Sync",
+                "version": "v1alpha1"
+              }
+            ],
+            "revision": "d5d21cc12245f34cd77f0fca4243506229daa4cf",
+            "source": {
+              "helm": {
+                "releaseName": "workloads",
+                "valueFiles": [
+                  "../../environments/local/workloads.yaml"
+                ]
+              },
+              "path": "charts/workloads",
+              "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git",
+              "targetRevision": "main"
+            }
+          }
+        },
+        "name": "lab-local-workloads",
+        "sync": {
+          "comparedTo": {
+            "destination": {
+              "namespace": "argocd",
+              "server": "https://kubernetes.default.svc"
+            },
+            "source": {
+              "helm": {
+                "releaseName": "workloads",
+                "valueFiles": [
+                  "../../environments/local/workloads.yaml"
+                ]
+              },
+              "path": "charts/workloads",
+              "repoURL": "https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git",
+              "targetRevision": "main"
+            }
+          },
+          "revision": "d5d21cc12245f34cd77f0fca4243506229daa4cf",
+          "status": "Synced"
+        }
+      }
+    ],
+    "sqlCancellationEvidence": "PE-002B-migration-integration.txt",
+    "accepted": "PE-002B runtime AT03",
+    "utc": "2026-10-02T03:09:38.0017615Z",
+    "history": "1|2026-10-01 16:11:05.894736+00",
+    "historyTimestampUnchanged": true,
+    "crudEvidence": [
+      "PE002B-same-revision-recovery-CRUD.json",
+      "PE002B-recovered-main-CRUD.json"
+    ]
+  }
+}

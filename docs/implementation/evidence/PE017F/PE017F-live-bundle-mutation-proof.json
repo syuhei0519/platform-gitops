@@ -1,0 +1,66 @@
+{
+  "utc": "2026-10-03T12:49:50.3582719Z",
+  "source": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+  "scanPipeline": 2908988271,
+  "scanJob": 16911641951,
+  "buildJob": 16911641948,
+  "digest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+  "actualOriginalRecordSha256": "0296119f28d7aa6c6cc83fe292200aefe0ace68995e8c116b0c722301ce82d4d",
+  "actualOriginalScanSha256": "b44c7bfea0300e269559223aa75b220c6e1d22fe89f5edaa6b1c6b3e7f5ac7ba",
+  "actualOriginalSbomSha256": "9b7a174933ec2c73d9422e204fc0b6d928bc5d69f52b618b49873aed9103cdc4",
+  "positiveBundleValidated": true,
+  "scope": "Local explicit mutations of checksum-verified actual safe public Package bytes; production frontend validator; not a new scan or server upload",
+  "serverDataMutated": false,
+  "newDatabaseClaimed": false,
+  "adoptionAuthorized": false,
+  "unitAccepted": false,
+  "outcomes": [
+    {
+      "case": "digest-substitution",
+      "refused": true,
+      "boundary": "record/run descriptor binding"
+    },
+    {
+      "case": "scan-pipeline-substitution",
+      "refused": true,
+      "boundary": "record/run descriptor binding"
+    },
+    {
+      "case": "scan-job-substitution",
+      "refused": true,
+      "boundary": "record/run descriptor binding"
+    },
+    {
+      "case": "sbom-descriptor-job-substitution",
+      "refused": true,
+      "boundary": "record/run descriptor binding"
+    },
+    {
+      "case": "sbom-url-other-run",
+      "refused": true,
+      "boundary": "record/run descriptor binding"
+    },
+    {
+      "case": "scan-url-other-run",
+      "refused": true,
+      "boundary": "record/run descriptor binding"
+    },
+    {
+      "case": "sbom-body-checksum-substitution",
+      "refused": true,
+      "boundary": "original stored SBOM checksum"
+    },
+    {
+      "case": "invalid-sbom-schema-with-recomputed-checksum",
+      "refused": true,
+      "boundary": "full official CycloneDX schema"
+    },
+    {
+      "case": "expiry-at-simulated-now-plus-25-hours",
+      "refused": true,
+      "boundary": "explicit clock fixture; not elapsed real time"
+    }
+  ],
+  "validatorHead": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+  "harnessSha256": "fc9e4ad5774cccfcc95458eb0179568787b223539373ff9e0f8e5ff14d6c1aa9"
+}

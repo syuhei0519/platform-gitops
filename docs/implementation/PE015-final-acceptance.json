@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "units": {
+    "PE015A": "accepted-main-and-issue",
+    "PE015B": "actual-acceptance-complete-evidence-integration-pending",
+    "PE015C": "actual-acceptance-complete-evidence-integration-pending"
+  },
+  "parentClosed": false,
+  "frontendMain": "35d4be130f986466db59793331968b626348b0c9",
+  "backendMain": "313e10d8a774520753178e087ffe8b5ea0c21f41",
+  "manifestMain": "cccaa9b77aa428c59e0c3526171ededb52b2348c",
+  "platformPolicyMain": "170a438c56b5cb8eea070202c4f8e7064e6b5661",
+  "normalDeliveryPipelines": {
+    "frontend": 2908051241,
+    "backend": 2908056014
+  },
+  "evidence": [
+    {
+      "file": "evidence/PE015/PE015-frontend-main-negative-audit.json",
+      "sha256": "3fefcd97d041b557466fa1c038271551749bc9671a2c4ab40fe4debf05dd719d"
+    },
+    {
+      "file": "evidence/PE015/PE015-backend-main-negative-audit.json",
+      "sha256": "7078ad8b9b293d1847d3c13f75700979d06036d6fb92e79e99e8388228f38e11"
+    },
+    {
+      "file": "evidence/PE015/PE015-manifest-main-negative-audit.json",
+      "sha256": "7d276b3647e16da10c91409ff5991ced264cfa39b726d2b0819644351ef57eac"
+    },
+    {
+      "file": "evidence/PE015/PE015-platform-render-CI-safe.json",
+      "sha256": "50686f04e86c341d4d7984e4bbd7644e36080e816a4347bc38d6aa5f39e07b47"
+    },
+    {
+      "file": "evidence/PE015/PE015-manifest-render-CI-safe.json",
+      "sha256": "76a3f959392c65f95d849e41883cbc84a385109433d494f2dc3fad10c2ae2f94"
+    },
+    {
+      "file": "evidence/PE015/PE015A-unit-accepted.json",
+      "sha256": "e8d2fe23b8cec916ad2bbf0478fc8d0f99a50e0282b35d416c67978e02f3bb4b"
+    },
+    {
+      "file": "evidence/PE015/PE015A-acceptance-merge.json",
+      "sha256": "dfeceebf1c8a3eb477910e8e758f77e6292a8cfdfcea3d82c6a9b8b801186ded"
+    },
+    {
+      "file": "evidence/PE015/MR44-merge-proof.json",
+      "sha256": "455f522e47b365cf257b876382eac0b3595acd0b6143633ab594cf6545cb61d8"
+    }
+  ],
+  "runtimeImageScanAndSBOMAccepted": false,
+  "secretValuesIncluded": false
+}

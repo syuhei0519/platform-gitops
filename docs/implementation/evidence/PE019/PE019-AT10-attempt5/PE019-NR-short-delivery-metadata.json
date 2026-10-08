@@ -1,0 +1,29 @@
+{
+  "keyPersisted": false,
+  "queries": [
+    {
+      "results": [
+        {
+          "count": 1668,
+          "latest.timestamp": 1791310944873.0
+        }
+      ],
+      "query": "SELECT count(*), latest(timestamp) FROM Span WHERE trace.id = '99ed68d750d9e9688f6faf9434aa8db7' SINCE 30 minutes ago"
+    },
+    {
+      "results": [
+        {
+          "count": 1876,
+          "latest.timestamp": 1791310944873.0
+        }
+      ],
+      "query": "SELECT count(*), latest(timestamp) FROM Span WHERE service.name = 'account-backend' AND service.version = '90de6cecbe4e140b4a5814a4c5018373b38b2359' SINCE 30 minutes ago"
+    }
+  ],
+  "region": "US",
+  "shortAcceptanceNotClaimed": true,
+  "boundedReadOnlyMetadata": true,
+  "utc": "2026-10-06T18:25:39.3377654Z",
+  "account": 8572010,
+  "noNewLoadOrCI": true
+}

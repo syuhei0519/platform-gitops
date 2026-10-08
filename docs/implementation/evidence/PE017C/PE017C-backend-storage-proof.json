@@ -1,0 +1,31 @@
+{
+  "fixture": true,
+  "phase2Adoptable": false,
+  "service": "backend",
+  "sourceCommit": "5a255b329cab3b00e0c9e964700667e6cb083d89",
+  "pipelineId": 2908256232,
+  "jobId": 16907606026,
+  "digest": "sha256:790a9fcdab12f15a6c425cc9c7a46eaecfc33bde8bf9c55a95a893a212e2c33f",
+  "uploadReadChecksum": true,
+  "sameBytesIdempotent": true,
+  "differentBytesDenied": true,
+  "serverDuplicateHttp": 400,
+  "storedBytesUnchanged": true,
+  "artifacts": [
+    {
+      "kind": "record",
+      "url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-790a9fcdab12f15a6c425cc9c7a46eaecfc33bde8bf9c55a95a893a212e2c33f/release-record-2908256232-16907606026.json",
+      "sha256": "47174495b845927818bdf569a0fe43b1aa26cd79f1697263ee51cb608f206e99"
+    },
+    {
+      "kind": "sbom",
+      "url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-790a9fcdab12f15a6c425cc9c7a46eaecfc33bde8bf9c55a95a893a212e2c33f/sbom-2908256232-16907606026.cdx.json",
+      "sha256": "7a1e89a1992056959cf53b22708b95b420671c432715dc7a023c62bc3c5e030c"
+    },
+    {
+      "kind": "scan",
+      "url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-790a9fcdab12f15a6c425cc9c7a46eaecfc33bde8bf9c55a95a893a212e2c33f/scan-report-2908256232-16907606026.json",
+      "sha256": "eb73ca20358621db0ba2c5ca5075413ea83189d72f2ae95ae7880b66ff7d6c88"
+    }
+  ]
+}

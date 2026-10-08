@@ -1,0 +1,71 @@
+{
+  "pipeline": 2911039162,
+  "selectedPath": "publish-image -> verify-image -> propose-manifest-update",
+  "manifestProposal": {
+    "source": "d7154f4363ceebe2d4787ee18da4adc9484544c0",
+    "project": 86247034,
+    "iid": 72,
+    "url": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest/-/merge_requests/72",
+    "draft": false,
+    "state": "merged"
+  },
+  "fullAT05Accepted": true,
+  "main": "e927c6c837bf36d41c118225f254d277cf95bb5f",
+  "phase2Switched": false,
+  "jobs": [
+    {
+      "id": 16922610387,
+      "name": "propose-manifest-update",
+      "status": "success"
+    },
+    {
+      "id": 16922610386,
+      "name": "verify-image",
+      "status": "success"
+    },
+    {
+      "id": 16922610385,
+      "name": "publish-image",
+      "status": "success"
+    },
+    {
+      "id": 16922610384,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16922610383,
+      "name": "backend-build",
+      "status": "success"
+    },
+    {
+      "id": 16922610382,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16922610381,
+      "name": "format-and-vet",
+      "status": "success"
+    },
+    {
+      "id": 16922610380,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16922610379,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "selectedMainCIComplete": true,
+  "runtimeDeploymentClaim": true,
+  "project": 86247033,
+  "status": "success",
+  "runtimeEvidence": "PE017B-main-runtime-proof.json",
+  "ociValidationDefault": false,
+  "utc": "2026-10-04T16:17:22.2631986Z",
+  "rawTraceRead": false,
+  "digest": "sha256:a0719ef3ea129b2fa3eb0cfad20f722378f9ffb003701e4bdbcc79ee64743a9b"
+}

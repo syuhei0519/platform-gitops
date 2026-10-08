@@ -1,0 +1,15 @@
+{
+  "privateRemoved": true,
+  "scope": "Isolated rootless disk measurement fixture",
+  "samples": 2,
+  "actualCIBudgetAcceptance": false,
+  "restrictedOwnerUid": 1,
+  "wrapperExit": 0,
+  "image": "moby/buildkit:v0.30.0-rootless",
+  "rootlessNamespaceUsed": true,
+  "rootlesskitVersion": "3.0.0",
+  "namespaceDuExit": 0,
+  "withinBudget": true,
+  "outerDuExit": 1,
+  "restrictedMode": "0700"
+}

@@ -1,0 +1,23 @@
+# App of Appsのroot入口。bootstrap所有者が適用し、charts/rootからplatform/workloadsの親Applicationを生成する。
+# 自動selfHealが有効な子resourceは手動scale後も元に戻り得る。停止操作は進行中Syncの状態確認と合わせる必要がある。
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-local-root
+  namespace: argocd
+spec:
+  project: lab-root
+  source:
+    repoURL: https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git
+    targetRevision: main
+    path: charts/root
+    helm:
+      releaseName: root
+      valueFiles:
+        - ../../environments/local/root.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated: {prune: true, selfHeal: true, allowEmpty: false}
+    syncOptions: [PruneLast=true, FailOnSharedResource=true]

@@ -1,0 +1,17 @@
+{
+  "prometheusPort": 18050,
+  "traceId": "166e5fe6e5a8f7f0c4bbd294b4468ff2",
+  "purpose": "auxiliary-measurement-preflight",
+  "resourceIntervalSec": 15,
+  "pipeline": 2918955787,
+  "profileSha256": "c3f8ef8e1e4b80e5e78f3c8477b2f2deb4722ec4af81d147a0b2a5fe758a00a7",
+  "startUtc": "2026-10-06T17:56:37.4608296Z",
+  "source": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "frontendPort": 18049,
+  "endUtc": "2026-10-06T17:58:37.4608296Z",
+  "buildJob": 16977512437,
+  "safeSimulatedError": true,
+  "requests": 120,
+  "ownedEmailPrefix": "pe019-load-7d51c85e97324d0a88fc6b6a2d0133ce",
+  "durationSec": 120
+}

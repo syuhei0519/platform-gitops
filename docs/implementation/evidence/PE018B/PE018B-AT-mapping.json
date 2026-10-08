@@ -1,0 +1,57 @@
+{
+  "AT01": "Final actual trusted-boundary/checksum inventory/provenance CI; no repeated test pipeline",
+  "AT05": "Every intermediate main and four final actual runtimes",
+  "actualManifestJobs": [
+    {
+      "id": 16954822969,
+      "name": "trusted-provenance-consumer",
+      "status": "success"
+    },
+    {
+      "id": 16954822968,
+      "name": "trusted-render-producer",
+      "status": "success"
+    },
+    {
+      "id": 16954822967,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16954822966,
+      "name": "kubernetes-schema",
+      "status": "success"
+    },
+    {
+      "id": 16954822965,
+      "name": "render-and-policy",
+      "status": "success"
+    },
+    {
+      "id": 16954822964,
+      "name": "config-checksum-test",
+      "status": "success"
+    },
+    {
+      "id": 16954822963,
+      "name": "checksum-test-build",
+      "status": "success"
+    },
+    {
+      "id": 16954822962,
+      "name": "trusted-boundary-test",
+      "status": "success"
+    },
+    {
+      "id": 16954822961,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "AT13": "Existing actual unprotected 201 probe, current settings and explicit failed validation stop",
+  "fixedPipeline": 2915791753,
+  "ownPipeline": 2915791697,
+  "AT14": "Final registered candidate new scan, actual rollback and restore",
+  "utc": "2026-10-06T00:59:00.0009788Z",
+  "AT04AT12": "Accepted PE017B plus current full run bindings"
+}

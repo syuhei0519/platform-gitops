@@ -1,0 +1,31 @@
+{
+  "candidateTree": "9b0e26e552cd63790e15ad17be872f030365433d",
+  "manifestMainSha": "46223f28d735d0f6bf39e0998d7c5285701091f1",
+  "mergeAuthorized": false,
+  "mrIid": 50,
+  "mrSourceSha": "3e13f3acd27a6eb1b6e17a042991f304f26ae231",
+  "producerJobId": 16909779872,
+  "producerPipelineId": 2908622252,
+  "provenanceRequired": true,
+  "renderReportSha256": "98c21f83c4c77a5f018cc40ef73e3c3f5ef708d4e1cea45b8a3483fce515bf14",
+  "rollbackReason": null,
+  "schema": "core-platform/phase0-verification/v1",
+  "sourceMains": {
+    "86247025": "19da2ae5bd99b908fb6e3a0a3ca0924c1d4ab8d8",
+    "86247033": "5a255b329cab3b00e0c9e964700667e6cb083d89"
+  },
+  "verifiedAt": "2026-10-03T13:16:14.248659+09:00",
+  "verifiedImages": [
+    {
+      "commit": "19da2ae5bd99b908fb6e3a0a3ca0924c1d4ab8d8",
+      "digest": "sha256:6a88974a3da301ed15542cdbd16f11fffdbae3119b30e5879253d2812ad01fbe",
+      "freshnessRequired": true,
+      "pipelineId": 2908613562,
+      "projectId": 86247025,
+      "publishJobId": 16909733804,
+      "repository": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app",
+      "service": "frontend",
+      "sourceMainSha": "19da2ae5bd99b908fb6e3a0a3ca0924c1d4ab8d8"
+    }
+  ]
+}

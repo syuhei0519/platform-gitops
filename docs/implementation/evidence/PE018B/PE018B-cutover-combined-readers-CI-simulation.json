@@ -1,0 +1,25 @@
+{
+  "source": "326efd63c002a704ca5a356722a32e34511f14be",
+  "accepted": true,
+  "simulationOnly": true,
+  "jobs": [
+    "trusted-boundary-test",
+    "checksum-test-build",
+    "security-policy-test",
+    "config-checksum-test",
+    "render-and-policy",
+    "kubernetes-schema",
+    "source-scan",
+    "package-release-reader",
+    "phase2-inspected-reader"
+  ],
+  "expectedJobs": 9,
+  "utc": "2026-10-05T23:19:17.2011961Z",
+  "pipelineCreated": false,
+  "priorSeparateJobs": 16,
+  "ciBlobs": {
+    ".gitlab-ci.yml": "cfbf6d182da93f6a6af60ac91bf202085767564a",
+    "ci/includes/security.yml": "568c95eac20aa1b510dc069f29193216afa471de"
+  },
+  "valid": true
+}

@@ -1,0 +1,83 @@
+[
+  {
+    "sa": "observability/prometheus",
+    "verb": "get",
+    "resource": "nodes/proxy",
+    "namespace": "",
+    "expected": "yes",
+    "actual": "yes",
+    "pass": true
+  },
+  {
+    "sa": "observability/prometheus",
+    "verb": "get",
+    "resource": "secrets",
+    "namespace": "account",
+    "expected": "no",
+    "actual": "no",
+    "pass": true
+  },
+  {
+    "sa": "observability/prometheus",
+    "verb": "get",
+    "resource": "pods",
+    "namespace": "account",
+    "expected": "no",
+    "actual": "no",
+    "pass": true
+  },
+  {
+    "sa": "observability/kube-state-metrics",
+    "verb": "list",
+    "resource": "pods",
+    "namespace": "account",
+    "expected": "yes",
+    "actual": "yes",
+    "pass": true
+  },
+  {
+    "sa": "observability/kube-state-metrics",
+    "verb": "list",
+    "resource": "secrets",
+    "namespace": "account",
+    "expected": "no",
+    "actual": "no",
+    "pass": true
+  },
+  {
+    "sa": "observability/kube-state-metrics",
+    "verb": "get",
+    "resource": "nodes/proxy",
+    "namespace": "",
+    "expected": "no",
+    "actual": "no",
+    "pass": true
+  },
+  {
+    "sa": "observability/kube-state-metrics",
+    "verb": "list",
+    "resource": "pods",
+    "namespace": "argocd",
+    "expected": "no",
+    "actual": "no",
+    "pass": true
+  },
+  {
+    "sa": "account/backend",
+    "verb": "get",
+    "resource": "nodes/proxy",
+    "namespace": "",
+    "expected": "no",
+    "actual": "no",
+    "pass": true
+  },
+  {
+    "sa": "build/ci-job",
+    "verb": "get",
+    "resource": "nodes/proxy",
+    "namespace": "",
+    "expected": "no",
+    "actual": "no",
+    "pass": true
+  }
+]

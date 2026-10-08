@@ -1,0 +1,185 @@
+{
+  "source": "0b855190a3fc52978903a7b2b851d577078856c9",
+  "rawTraceRead": false,
+  "fullPE017BAcceptance": false,
+  "privateBinaryRead": false,
+  "accepted": true,
+  "jobs": [
+    {
+      "id": 16922319798,
+      "name": "oci-image-policy-validation",
+      "status": "success"
+    },
+    {
+      "id": 16922319797,
+      "name": "oci-isolated-runtime",
+      "status": "success"
+    },
+    {
+      "id": 16922319796,
+      "name": "oci-format-compatibility",
+      "status": "success"
+    },
+    {
+      "id": 16922319795,
+      "name": "container-build-oci",
+      "status": "success"
+    },
+    {
+      "id": 16922319794,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16922319793,
+      "name": "backend-build",
+      "status": "success"
+    },
+    {
+      "id": 16922319792,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16922319791,
+      "name": "format-and-vet",
+      "status": "success"
+    },
+    {
+      "id": 16922319790,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16922319789,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "scanBudget": {
+    "durationSeconds": 45.031746,
+    "job": 16922319798,
+    "timeoutSeconds": 900,
+    "disk": {
+      "schemaVersion": 1,
+      "scope": "PE016B sampled temporary disk",
+      "kind": "format",
+      "samples": 8,
+      "intervalSeconds": 2,
+      "transientMissingRetryCount": 0,
+      "duAttemptsPerMeasurementMax": 3,
+      "maxWorkspaceKiB": 1553344,
+      "workspaceLimitKiB": 2097152,
+      "maxBuildkitStoreKiB": 4,
+      "buildkitStoreLimitKiB": 10485760,
+      "buildkitStoreObserved": true,
+      "buildkitStoreAggregation": "sumConfiguredRoots",
+      "rootlessNamespaceUsed": false,
+      "minFilesystemFreePercent": 92.497672,
+      "measurementAvailable": true,
+      "withinBudget": true,
+      "continuousPeakClaim": false
+    }
+  },
+  "status": "success",
+  "pipeline": 2910986322,
+  "input": {
+    "schemaVersion": 1,
+    "scope": "PE017B policy foundation",
+    "imageDigest": "sha256:38bc710f5b26847ab06368af50fe16dae54c979e40a471e062b8eee2e6a25234",
+    "configDigest": "sha256:0c1eb5952c7730db87e25e496dd592122184431cd4abc11d42ba3ce6d2f90566",
+    "phase2Adoptable": false,
+    "registryPush": false
+  },
+  "registryPush": false,
+  "safeScan": {
+    "schemaVersion": 1,
+    "pass": true,
+    "trivyVersion": "0.75.0",
+    "dbUpdatedAt": "2026-10-04T14:28:15.152965452Z",
+    "scannedAt": "2026-10-04T15:24:33.224506701Z",
+    "findings": [
+      {
+        "kind": "vulnerability",
+        "rule": "DLA-4792-1",
+        "path": "image/os",
+        "package": "tzdata",
+        "installedVersion": "2026b-0+deb12u1",
+        "fixedVersion": "2026c-0+deb12u1",
+        "severity": "UNKNOWN",
+        "decision": "warning"
+      }
+    ],
+    "policySHA256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337"
+  },
+  "actualSourcePolicySha256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337",
+  "record": {
+    "schemaVersion": 2,
+    "service": "backend",
+    "sourceProjectId": 86247033,
+    "sourceCommit": "0b855190a3fc52978903a7b2b851d577078856c9",
+    "buildPipelineId": 2910986322,
+    "buildJobId": 16922319795,
+    "imageRepository": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app",
+    "imageTag": "0b855190a3fc52978903a7b2b851d577078856c9",
+    "imageDigest": "sha256:38bc710f5b26847ab06368af50fe16dae54c979e40a471e062b8eee2e6a25234",
+    "scanPipelineId": 2910986322,
+    "scanJobId": 16922319798,
+    "scanJobStatus": "success",
+    "inputKind": "build-oci",
+    "inputArchiveSha256": "3740aa9529c412613d1a34c441a02f8d4a7222acbb40787058b3b28f21d06283",
+    "trivyVersion": "0.75.0",
+    "database": {
+      "version": 2,
+      "updatedAt": "2026-10-04T14:28:15.152965452Z",
+      "metadataSha256": "059da5fd3a265585324c0906b8bcaa3249636102c981915c97de7e15bb97c34e"
+    },
+    "scannedAt": "2026-10-04T15:24:33.224506701Z",
+    "policyRevision": "0b855190a3fc52978903a7b2b851d577078856c9",
+    "policySha256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337",
+    "exceptions": [],
+    "decision": "passed",
+    "failureReason": "",
+    "sbom": {
+      "imageDigest": "sha256:38bc710f5b26847ab06368af50fe16dae54c979e40a471e062b8eee2e6a25234",
+      "scanPipelineId": 2910986322,
+      "scanJobId": 16922319798,
+      "url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-38bc710f5b26847ab06368af50fe16dae54c979e40a471e062b8eee2e6a25234/sbom-2910986322-16922319798.cdx.json",
+      "sha256": "23353d4052dc5277e84e0c62b15668747ddfb4ea17be39430b301a3b701485a8",
+      "format": "CycloneDX",
+      "schemaVersion": "1.7"
+    },
+    "sbomFailureReason": "",
+    "scanReport": {
+      "imageDigest": "sha256:38bc710f5b26847ab06368af50fe16dae54c979e40a471e062b8eee2e6a25234",
+      "scanPipelineId": 2910986322,
+      "scanJobId": 16922319798,
+      "url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-38bc710f5b26847ab06368af50fe16dae54c979e40a471e062b8eee2e6a25234/scan-report-2910986322-16922319798.json",
+      "sha256": "fb5c535a853caf8cf01b21bf4212204853638155c589173039b1007fa6491aca",
+      "format": "safe-json",
+      "schemaVersion": "1"
+    }
+  },
+  "case": "positive",
+  "sbomProof": {
+    "format": "CycloneDX",
+    "specVersion": "1.7",
+    "sha256": "23353d4052dc5277e84e0c62b15668747ddfb4ea17be39430b301a3b701485a8",
+    "configDigest": "sha256:0c1eb5952c7730db87e25e496dd592122184431cd4abc11d42ba3ce6d2f90566",
+    "componentCount": 38,
+    "scannedPackageCount": 36
+  },
+  "layout": {
+    "schemaVersion": 1,
+    "sourceCommit": "0b855190a3fc52978903a7b2b851d577078856c9",
+    "sourceProjectId": 86247033,
+    "archiveSha256": "3740aa9529c412613d1a34c441a02f8d4a7222acbb40787058b3b28f21d06283",
+    "archiveBytes": 15376896,
+    "expandedBytes": 15361380,
+    "digest": "sha256:38bc710f5b26847ab06368af50fe16dae54c979e40a471e062b8eee2e6a25234",
+    "layerCount": 14,
+    "platform": "linux/amd64",
+    "registryPush": false
+  },
+  "utc": "2026-10-04T15:55:25.5649120Z"
+}

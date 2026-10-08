@@ -1,0 +1,9 @@
+{
+  "scriptStack": "at ConvertFrom-PE019StatisticsJSON, C:\\work\\CorePlatform\\output\\core-platform-v1-phase1-phase2-20261002\\acceptance\\read-pe019-statistics-json.ps1: line 2\r\nat <ScriptBlock>, C:\\work\\CorePlatform\\output\\core-platform-v1-phase1-phase2-20261002\\acceptance\\read-pe019-resource-snapshot.ps1: line 22\r\nat <ScriptBlock>, C:\\work\\CorePlatform\\output\\core-platform-v1-phase1-phase2-20261002\\acceptance\\pe019-capacity-resource-worker.ps1: line 21",
+  "utc": "2026-10-06T17:23:55.5742462Z",
+  "safeSimulatedError": false,
+  "stage": "snapshot",
+  "exitCode": 1,
+  "type": "System.Management.Automation.MethodInvocationException",
+  "id": "JsonReaderException,read-pe019-resource-snapshot.ps1"
+}

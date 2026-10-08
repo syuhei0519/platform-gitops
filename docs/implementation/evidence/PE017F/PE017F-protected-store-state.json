@@ -1,0 +1,149 @@
+{
+  "source": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+  "firstStorageAccepted": true,
+  "firstRecord": {
+    "schemaVersion": 2,
+    "service": "frontend",
+    "sourceProjectId": 86247025,
+    "sourceCommit": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+    "buildPipelineId": 2908988271,
+    "buildJobId": 16911641948,
+    "imageRepository": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app",
+    "imageTag": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+    "imageDigest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+    "scanPipelineId": 2908988271,
+    "scanJobId": 16911641951,
+    "scanJobStatus": "success",
+    "inputKind": "build-oci",
+    "inputArchiveSha256": "98f73e21344fd4b015e0d9d9aa6566e06d9f2e6cd555a13d87d5e1c9ee973e20",
+    "trivyVersion": "0.75.0",
+    "database": {
+      "version": 2,
+      "updatedAt": "2026-10-03T07:01:46.027466673Z",
+      "metadataSha256": "bce7de9cf7cb7a1eb14b6b2a04e24f79265dc8ce67c69a5374145c56fe262746"
+    },
+    "scannedAt": "2026-10-03T09:31:48.864649905Z",
+    "policyRevision": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+    "policySha256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337",
+    "exceptions": [],
+    "decision": "passed",
+    "failureReason": "",
+    "sbom": {
+      "imageDigest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+      "scanPipelineId": 2908988271,
+      "scanJobId": 16911641951,
+      "url": "https://gitlab.com/api/v4/projects/86247025/packages/generic/core-platform-frontend/sha256-aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c/sbom-2908988271-16911641951.cdx.json",
+      "sha256": "9b7a174933ec2c73d9422e204fc0b6d928bc5d69f52b618b49873aed9103cdc4",
+      "format": "CycloneDX",
+      "schemaVersion": "1.7"
+    },
+    "sbomFailureReason": "",
+    "scanReport": {
+      "imageDigest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+      "scanPipelineId": 2908988271,
+      "scanJobId": 16911641951,
+      "url": "https://gitlab.com/api/v4/projects/86247025/packages/generic/core-platform-frontend/sha256-aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c/scan-report-2908988271-16911641951.json",
+      "sha256": "b44c7bfea0300e269559223aa75b220c6e1d22fe89f5edaa6b1c6b3e7f5ac7ba",
+      "format": "safe-json",
+      "schemaVersion": "1"
+    }
+  },
+  "jobs": [
+    {
+      "id": 16911641954,
+      "name": "release-record-store-rescan",
+      "status": "created"
+    },
+    {
+      "id": 16911641953,
+      "name": "release-record-store",
+      "status": "success"
+    },
+    {
+      "id": 16911641952,
+      "name": "oci-image-rescan-validation",
+      "status": "manual"
+    },
+    {
+      "id": 16911641951,
+      "name": "oci-image-policy-validation",
+      "status": "success"
+    },
+    {
+      "id": 16911641950,
+      "name": "oci-isolated-runtime",
+      "status": "success"
+    },
+    {
+      "id": 16911641949,
+      "name": "oci-format-compatibility",
+      "status": "success"
+    },
+    {
+      "id": 16911641948,
+      "name": "container-build-oci",
+      "status": "success"
+    },
+    {
+      "id": 16911641947,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16911641946,
+      "name": "frontend-build",
+      "status": "success"
+    },
+    {
+      "id": 16911641945,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16911641944,
+      "name": "typecheck",
+      "status": "success"
+    },
+    {
+      "id": 16911641943,
+      "name": "lint",
+      "status": "success"
+    },
+    {
+      "id": 16911641942,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16911641941,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "manualJob": 16911641952,
+  "status": "manual",
+  "pipeline": 2908988271,
+  "originalBuildArtifactExpiresNoLaterThan": "2026-10-04T09:29:54.0940000+00:00",
+  "unitAccepted": false,
+  "registryPush": false,
+  "AT04Accepted": false,
+  "packageFilesReadable": 3,
+  "stored": {
+    "schemaVersion": 1,
+    "run": {
+      "Service": "frontend",
+      "Digest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+      "PipelineID": 2908988271,
+      "JobID": 16911641951
+    },
+    "recordUrl": "https://gitlab.com/api/v4/projects/86247025/packages/generic/core-platform-frontend/sha256-aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c/release-record-2908988271-16911641951.json",
+    "recordSha256": "0296119f28d7aa6c6cc83fe292200aefe0ace68995e8c116b0c722301ce82d4d",
+    "decision": "passed",
+    "completedJobAuthority": true,
+    "protectedMainWriter": true,
+    "recordWrittenLast": true,
+    "serverDuplicateDenied": true
+  },
+  "utc": "2026-10-03T09:37:29.5993960Z",
+  "dbUpdatedAt": "2026-10-03T07:01:46.027466673Z"
+}

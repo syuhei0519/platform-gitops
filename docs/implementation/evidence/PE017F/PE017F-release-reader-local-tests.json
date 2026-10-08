@@ -1,0 +1,14 @@
+{
+  "actualPermissionProbe": false,
+  "linuxStaticBuildPassed": true,
+  "moduleTestsPassed": true,
+  "source": "51d6be4758e61fadc5098c155c2e4d08ca452a94",
+  "utc": "2026-10-03T09:17:52.7754729Z",
+  "actualPackageRead": false,
+  "newTests": [
+    "TestReleaseReaderActualBytesAndRunSubstitution",
+    "TestReleaseReaderInputAndForbiddenWriteStatus"
+  ],
+  "yamlSyntaxPassed": true,
+  "adoptionAuthorized": false
+}

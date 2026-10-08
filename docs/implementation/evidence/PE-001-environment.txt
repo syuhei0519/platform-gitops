@@ -1,0 +1,14 @@
+日時: 2026-10-01T23:04:03.4911574+09:00
+WSL上限設定: .wslconfig未確認/不存在
+
+TotalPhysicalMemory       : 34183176192
+NumberOfLogicalProcessors : 20
+
+
+
+Name : C
+Used : 429676134400
+Free : 569465794560
+
+
+error: Metrics API not available

@@ -1,0 +1,8 @@
+{
+  "faultNotDueWithinShortWindow": true,
+  "shortObservationCompleted": true,
+  "wholeSpanLossClaim": false,
+  "actualCollectorFaultAccepted": false,
+  "pass": true,
+  "utc": "2026-10-06T17:56:24.1534953Z"
+}

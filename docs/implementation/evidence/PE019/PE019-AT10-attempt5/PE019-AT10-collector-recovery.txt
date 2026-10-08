@@ -1,0 +1,4 @@
+otelcol_exporter_queue_capacity{data_type="traces",exporter="otlphttp/newrelic"} 32
+otelcol_exporter_queue_size{data_type="traces",exporter="otlphttp/newrelic"} 0
+otelcol_exporter_sent_spans{exporter="otlphttp/newrelic",server_address="otlp.nr-data.net",url_path="/v1/traces"} 10
+otelcol_receiver_accepted_spans{receiver="otlp",transport="http"} 14

@@ -1,0 +1,21 @@
+{
+  "utc": "2026-10-06T17:54:21.9488490Z",
+  "OneDriveWorkingSetGiB": 0.0,
+  "secretValuesRecorded": false,
+  "readyToStart": true,
+  "hostFreePercent": 41.18188456488298,
+  "hostTotalKiB": 33382008,
+  "WSLFreePercent": 70.384019771704,
+  "loadStarted": false,
+  "windowsFreeDiskPercent": 51.03781811206675,
+  "WSLAvailableKiB": 11464380,
+  "hostAvailableKiB": 13747340,
+  "all19Complete": false,
+  "existingClusterPreserved": true,
+  "newClusterCreated": true,
+  "unrelatedProcessesStopped": false,
+  "hostRequiredAvailableGiB": 6.367112731933594,
+  "minimumPercent": 20,
+  "WSLTotalKiB": 16288328,
+  "unit": "PE019"
+}

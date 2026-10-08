@@ -1,0 +1,59 @@
+{
+  "ownPipeline": 2908603616,
+  "ownStatus": "success",
+  "utc": "2026-10-03T03:57:01.4060767Z",
+  "source": "3cc4577dad626e65fb3b7de043bdf85a39a5496f",
+  "draft": true,
+  "mains": [
+    {
+      "protected": true,
+      "project": 86247036,
+      "sha": "d2d53ec4a4b2ad95f503e9a3cca055d12d2a2911"
+    },
+    {
+      "protected": true,
+      "project": 86247025,
+      "sha": "40051c972fe88e8d6dbdb369caf7e978d99701e3"
+    },
+    {
+      "protected": true,
+      "project": 86247033,
+      "sha": "5a255b329cab3b00e0c9e964700667e6cb083d89"
+    },
+    {
+      "protected": true,
+      "project": 86247034,
+      "sha": "46223f28d735d0f6bf39e0998d7c5285701091f1"
+    }
+  ],
+  "finalChanges": [
+    "ci/OCI-VALIDATION.md",
+    "ci/includes/security.yml"
+  ],
+  "ociTestSource": "dc5b8d1028a49d0d6fe32cbff2ce1f28dea8942f",
+  "mr": 10,
+  "capabilityScriptRestored": true,
+  "ociImplementationUnchanged": true,
+  "parents": [
+    {
+      "iid": 15,
+      "state": "closed"
+    },
+    {
+      "iid": 16,
+      "state": "opened"
+    },
+    {
+      "iid": 17,
+      "state": "opened"
+    },
+    {
+      "iid": 18,
+      "state": "opened"
+    },
+    {
+      "iid": 19,
+      "state": "opened"
+    }
+  ]
+}

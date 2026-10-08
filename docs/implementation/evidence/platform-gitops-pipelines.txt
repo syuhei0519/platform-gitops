@@ -1,0 +1,658 @@
+- banner [active]:
+  - link "Skip to main content":
+    - /url: "#content-body"
+    - generic: Skip to main content
+  - link "Homepage":
+    - /url: /
+    - generic: Homepage
+  - button "Search or go to… /":
+    - generic: Search or go to…
+    - generic: /
+  - button "Create new…":
+    - generic: Create new…
+  - link "0 Assigned work items":
+    - /url: /dashboard/issues?assignee_username=syuhei0519
+    - generic: "0"
+  - link "0 Merge requests":
+    - /url: /dashboard/merge_requests
+    - generic: "0"
+  - link "2 To-do items":
+    - /url: /dashboard/todos
+    - generic: "2"
+  - link "修平 藤岡 user’s menu":
+    - /url: /syuhei0519
+    - generic: 修平 藤岡 user’s menu
+- navigation "Primary navigation":
+  - heading "Primary navigation" [level=2]
+  - list:
+    - link "platform-gitops":
+      - /url: /syuhei-platform-engineering-lab/platform-gitops
+      - generic: P
+  - button "Pinned" [expanded]:
+  - button "Feature catalog":
+  - separator
+  - list:
+    - button "Manage":
+    - button "Plan":
+    - button "AI":
+    - button "Code":
+    - button "Build" [expanded]:
+    - button "Secure":
+    - button "Deploy":
+    - button "Operate":
+    - button "Monitor":
+    - button "Analyze":
+    - button "Observe":
+    - button "Settings":
+  - link "Upgrade subscription":
+    - /url: /groups/syuhei-platform-engineering-lab/-/billings
+  - button "Help":
+  - button "Expand sidebar":
+- navigation "Breadcrumb":
+  - list:
+    - link "Platform Engineering Lab":
+      - /url: /syuhei-platform-engineering-lab
+    - text: /
+    - link "platform-gitops":
+      - /url: /syuhei-platform-engineering-lab/platform-gitops
+    - text: /
+    - link "Pipelines":
+      - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines
+- main:
+  - tablist:
+    - tab "All 22" [selected]:
+      - generic: All
+      - generic: "22"
+    - tab "Finished":
+      - generic: Finished
+    - tab "Branches":
+      - generic: Branches
+    - tab "Tags":
+      - generic: Tags
+  - tabpanel "All 22"
+  - link "View analytics":
+    - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/charts
+    - generic: View analytics
+  - button "Clear runner caches":
+    - generic: Clear runner caches
+  - link "New pipeline":
+    - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/new
+    - generic: New pipeline
+  - textbox "Search":
+    - /placeholder: Filter pipelines
+  - button "Search":
+  - combobox "Show Pipeline ID":
+    - generic: Show Pipeline ID
+  - table:
+    - rowgroup:
+      - row "Status Pipeline Created by Stages Actions":
+        - columnheader "Status":
+          - generic: Status
+        - columnheader "Pipeline":
+          - generic: Pipeline
+        - columnheader "Created by":
+          - generic: Created by
+        - columnheader "Stages":
+          - generic: Stages
+        - columnheader "Actions":
+          - generic: Actions
+    - rowgroup:
+      - 'row "Passed 00:00:23 3 weeks ago #2833800657 Merge branch ''codex/restore-workloads-after-prune-test'' into ''main'' main 4c4c9d59 修平 藤岡 latest branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:23 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833800657
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:23
+          - paragraph:
+            - time: 3 weeks ago
+        - cell "#2833800657 Merge branch 'codex/restore-workloads-after-prune-test' into 'main' main 4c4c9d59 修平 藤岡 latest branch":
+          - link "#2833800657":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833800657
+          - link "Merge branch 'codex/restore-workloads-after-prune-test' into 'main'":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/4c4c9d59fbb351285b4e1c0ea1ba03a32359b0d5
+          - link "main":
+            - /url: commits/main
+          - link "4c4c9d59":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/4c4c9d59fbb351285b4e1c0ea1ba03a32359b0d5
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "latest":
+            - generic: latest
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:26 3 weeks ago #2833798009 chore: restore workload composition 5 ef603905 修平 藤岡 latest merge request avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:26 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833798009
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:26
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833798009 chore: restore workload composition 5 ef603905 修平 藤岡 latest merge request"':
+          - link "#2833798009":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833798009
+          - 'link "chore: restore workload composition"':
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/ef6039057880bff48d59b9068d4e7538ba0325fd
+          - link "5":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/merge_requests/5
+          - link "ef603905":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/ef6039057880bff48d59b9068d4e7538ba0325fd
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "latest":
+            - generic: latest
+          - button "merge request":
+            - generic: merge request
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:25 3 weeks ago #2833797117 chore: restore workload composition codex/restore-workloads-after-prune-test ef603905 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:25 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833797117
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:25
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833797117 chore: restore workload composition codex/restore-workloads-after-prune-test ef603905 修平 藤岡 branch"':
+          - link "#2833797117":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833797117
+          - 'link "chore: restore workload composition"':
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/ef6039057880bff48d59b9068d4e7538ba0325fd
+          - link "codex/restore-workloads-after-prune-test":
+            - /url: commits/codex/restore-workloads-after-prune-test
+          - link "ef603905":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/ef6039057880bff48d59b9068d4e7538ba0325fd
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:23 3 weeks ago #2833793867 Merge branch ''codex/test-child-prune-confirm'' into ''main'' main 1ee7b0d3 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:23 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833793867
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:23
+          - paragraph:
+            - time: 3 weeks ago
+        - cell "#2833793867 Merge branch 'codex/test-child-prune-confirm' into 'main' main 1ee7b0d3 修平 藤岡 branch":
+          - link "#2833793867":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833793867
+          - link "Merge branch 'codex/test-child-prune-confirm' into 'main'":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/1ee7b0d3f6f13a5c12a55d9b34dc04e3b28e326c
+          - link "main":
+            - /url: commits/main
+          - link "1ee7b0d3":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/1ee7b0d3f6f13a5c12a55d9b34dc04e3b28e326c
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:22 3 weeks ago #2833781926 test: verify child prune confirmation 4 0589f9a8 修平 藤岡 latest merge request avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:22 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833781926
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:22
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833781926 test: verify child prune confirmation 4 0589f9a8 修平 藤岡 latest merge request"':
+          - link "#2833781926":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833781926
+          - 'link "test: verify child prune confirmation"':
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/0589f9a8051f6aa6f0819696174ab0e979fea2d6
+          - link "4":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/merge_requests/4
+          - link "0589f9a8":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/0589f9a8051f6aa6f0819696174ab0e979fea2d6
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "latest":
+            - generic: latest
+          - button "merge request":
+            - generic: merge request
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:21 3 weeks ago #2833780815 test: verify child prune confirmation codex/test-child-prune-confirm 0589f9a8 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:21 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833780815
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:21
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833780815 test: verify child prune confirmation codex/test-child-prune-confirm 0589f9a8 修平 藤岡 branch"':
+          - link "#2833780815":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833780815
+          - 'link "test: verify child prune confirmation"':
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/0589f9a8051f6aa6f0819696174ab0e979fea2d6
+          - link "codex/test-child-prune-confirm":
+            - /url: commits/codex/test-child-prune-confirm
+          - link "0589f9a8":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/0589f9a8051f6aa6f0819696174ab0e979fea2d6
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:25 3 weeks ago #2833655471 Merge branch ''codex/enable-local-workloads'' into ''main'' main 1c3d6ed0 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:25 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833655471
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:25
+          - paragraph:
+            - time: 3 weeks ago
+        - cell "#2833655471 Merge branch 'codex/enable-local-workloads' into 'main' main 1c3d6ed0 修平 藤岡 branch":
+          - link "#2833655471":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833655471
+          - link "Merge branch 'codex/enable-local-workloads' into 'main'":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/1c3d6ed07f8392d41c64f868acda47e064472c64
+          - link "main":
+            - /url: commits/main
+          - link "1c3d6ed0":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/1c3d6ed07f8392d41c64f868acda47e064472c64
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:25 3 weeks ago #2833650295 feat: enable local application workloads 3 4beb4136 修平 藤岡 latest merge request avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:25 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833650295
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:25
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833650295 feat: enable local application workloads 3 4beb4136 修平 藤岡 latest merge request"':
+          - link "#2833650295":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833650295
+          - 'link "feat: enable local application workloads"':
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/4beb41360e2daf1e61d21b1508669317652d6155
+          - link "3":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/merge_requests/3
+          - link "4beb4136":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/4beb41360e2daf1e61d21b1508669317652d6155
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "latest":
+            - generic: latest
+          - button "merge request":
+            - generic: merge request
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:25 3 weeks ago #2833648062 feat: enable local application workloads codex/enable-local-workloads 4beb4136 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:25 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833648062
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:25
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833648062 feat: enable local application workloads codex/enable-local-workloads 4beb4136 修平 藤岡 branch"':
+          - link "#2833648062":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833648062
+          - 'link "feat: enable local application workloads"':
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/4beb41360e2daf1e61d21b1508669317652d6155
+          - link "codex/enable-local-workloads":
+            - /url: commits/codex/enable-local-workloads
+          - link "4beb4136":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/4beb41360e2daf1e61d21b1508669317652d6155
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:25 3 weeks ago #2833644257 Merge branch ''codex/fix-root-render-matrix'' into ''main'' main 0b77d9d8 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:25 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833644257
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:25
+          - paragraph:
+            - time: 3 weeks ago
+        - cell "#2833644257 Merge branch 'codex/fix-root-render-matrix' into 'main' main 0b77d9d8 修平 藤岡 branch":
+          - link "#2833644257":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833644257
+          - link "Merge branch 'codex/fix-root-render-matrix' into 'main'":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/0b77d9d8e87f62ea28b655803a6c15f71d99e590
+          - link "main":
+            - /url: commits/main
+          - link "0b77d9d8":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/0b77d9d8e87f62ea28b655803a6c15f71d99e590
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:23 3 weeks ago #2833639461 test: render both workload flag states explicitly 2 05d49e2c 修平 藤岡 latest merge request avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:23 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833639461
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:23
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833639461 test: render both workload flag states explicitly 2 05d49e2c 修平 藤岡 latest merge request"':
+          - link "#2833639461":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833639461
+          - 'link "test: render both workload flag states explicitly"':
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/05d49e2cdac8344282cea52b67cf370306718a12
+          - link "2":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/merge_requests/2
+          - link "05d49e2c":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/05d49e2cdac8344282cea52b67cf370306718a12
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "latest":
+            - generic: latest
+          - button "merge request":
+            - generic: merge request
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:28 3 weeks ago #2833637866 test: render both workload flag states explicitly codex/fix-root-render-matrix 05d49e2c 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:28 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833637866
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:28
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833637866 test: render both workload flag states explicitly codex/fix-root-render-matrix 05d49e2c 修平 藤岡 branch"':
+          - link "#2833637866":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833637866
+          - 'link "test: render both workload flag states explicitly"':
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/05d49e2cdac8344282cea52b67cf370306718a12
+          - link "codex/fix-root-render-matrix":
+            - /url: commits/codex/fix-root-render-matrix
+          - link "05d49e2c":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/05d49e2cdac8344282cea52b67cf370306718a12
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:23 3 weeks ago #2833630465 Merge branch ''codex/fix-platform-mr-pipeline'' into ''main'' main f38b8716 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:23 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833630465
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:23
+          - paragraph:
+            - time: 3 weeks ago
+        - cell "#2833630465 Merge branch 'codex/fix-platform-mr-pipeline' into 'main' main f38b8716 修平 藤岡 branch":
+          - link "#2833630465":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833630465
+          - link "Merge branch 'codex/fix-platform-mr-pipeline' into 'main'":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/f38b871649ce8c21802ba99e3ea469b86928275f
+          - link "main":
+            - /url: commits/main
+          - link "f38b8716":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/f38b871649ce8c21802ba99e3ea469b86928275f
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:29 3 weeks ago #2833626542 ci: run validation in merge request pipelines 1 a877bd5c 修平 藤岡 latest merge request avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:29 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833626542
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:29
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833626542 ci: run validation in merge request pipelines 1 a877bd5c 修平 藤岡 latest merge request"':
+          - link "#2833626542":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833626542
+          - 'link "ci: run validation in merge request pipelines"':
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/a877bd5ce45bee155f93b054e953ff5992d50b4c
+          - link "1":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/merge_requests/1
+          - link "a877bd5c":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/a877bd5ce45bee155f93b054e953ff5992d50b4c
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "latest":
+            - generic: latest
+          - button "merge request":
+            - generic: merge request
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:29 3 weeks ago #2833611516 ci: run validation in merge request pipelines codex/fix-platform-mr-pipeline a877bd5c 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:29 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833611516
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:29
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833611516 ci: run validation in merge request pipelines codex/fix-platform-mr-pipeline a877bd5c 修平 藤岡 branch"':
+          - link "#2833611516":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/pipelines/2833611516
+          - 'link "ci: run validation in merge request pipelines"':
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/a877bd5ce45bee155f93b054e953ff5992d50b4c
+          - link "codex/fix-platform-mr-pipeline":
+            - /url: commits/codex/fix-platform-mr-pipeline
+          - link "a877bd5c":
+            - /url: /syuhei-platform-engineering-lab/platform-gitops/-/commit/a877bd5ce45bee155f93b054e953ff5992d50b4c
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+  - navigation "Pagination":
+    - button "Previous" [disabled]:
+      - text: Previous
+    - button "Next":
+      - text: Next
+- navigation "Duo controls":
+  - button "GitLab Duo Agent Platform":

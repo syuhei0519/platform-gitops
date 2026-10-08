@@ -1,0 +1,187 @@
+{
+  "pass": true,
+  "postStatuses": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+  ],
+  "recovered": true,
+  "allSpanLossExactClaim": false,
+  "events": [
+    {
+      "message": "Exporting failed. Rejecting data.",
+      "timestamp": "2026-10-02T20:18:44.616Z",
+      "droppedItems": null,
+      "retryInterval": null
+    },
+    {
+      "message": "Exporting failed. Rejecting data.",
+      "timestamp": "2026-10-02T20:18:44.62Z",
+      "droppedItems": null,
+      "retryInterval": null
+    },
+    {
+      "message": "Exporting failed. Rejecting data.",
+      "timestamp": "2026-10-02T20:18:44.62Z",
+      "droppedItems": null,
+      "retryInterval": null
+    },
+    {
+      "message": "Exporting failed. Rejecting data.",
+      "timestamp": "2026-10-02T20:18:44.621Z",
+      "droppedItems": null,
+      "retryInterval": null
+    },
+    {
+      "message": "Exporting failed. Rejecting data.",
+      "timestamp": "2026-10-02T20:18:44.622Z",
+      "droppedItems": null,
+      "retryInterval": null
+    },
+    {
+      "message": "Exporting failed. Rejecting data.",
+      "timestamp": "2026-10-02T20:18:44.624Z",
+      "droppedItems": null,
+      "retryInterval": null
+    },
+    {
+      "message": "Exporting failed. Rejecting data.",
+      "timestamp": "2026-10-02T20:18:44.625Z",
+      "droppedItems": null,
+      "retryInterval": null
+    },
+    {
+      "message": "Exporting failed. Rejecting data.",
+      "timestamp": "2026-10-02T20:18:44.626Z",
+      "droppedItems": null,
+      "retryInterval": null
+    },
+    {
+      "message": "Exporting failed. Rejecting data.",
+      "timestamp": "2026-10-02T20:18:44.628Z",
+      "droppedItems": null,
+      "retryInterval": null
+    },
+    {
+      "message": "Exporting failed. Rejecting data.",
+      "timestamp": "2026-10-02T20:18:44.629Z",
+      "droppedItems": null,
+      "retryInterval": null
+    },
+    {
+      "message": "Exporting failed. Dropping data.",
+      "timestamp": "2026-10-02T20:19:10.455Z",
+      "droppedItems": 512,
+      "retryInterval": null
+    },
+    {
+      "message": "Exporting failed. Dropping data.",
+      "timestamp": "2026-10-02T20:19:37.054Z",
+      "droppedItems": 512,
+      "retryInterval": null
+    },
+    {
+      "message": "Exporting failed. Dropping data.",
+      "timestamp": "2026-10-02T20:20:10.037Z",
+      "droppedItems": 512,
+      "retryInterval": null
+    },
+    {
+      "message": "Exporting failed. Dropping data.",
+      "timestamp": "2026-10-02T20:20:42.111Z",
+      "droppedItems": 512,
+      "retryInterval": null
+    }
+  ],
+  "realProviderTraffic": 0,
+  "queueMax": 32.0,
+  "recoverySec": 4.2021856,
+  "queueCapacity": 32,
+  "OOMKilled": false,
+  "mockCounts": {
+    "mode": "200",
+    "posts": 29,
+    "accepted": 29,
+    "rejected": 0
+  },
+  "finalDropEvents": 4,
+  "utc": "2026-10-02T20:20:51.6222183Z",
+  "sendFailedNotEquatedToFinalDrop": true
+}

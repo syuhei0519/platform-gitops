@@ -1,0 +1,62 @@
+{
+  "context": "kind-platform-lab",
+  "ownedId": 254,
+  "createdRowDeleted": true,
+  "checks": [
+    {
+      "expected": 200,
+      "path": "/",
+      "method": "GET",
+      "status": 200,
+      "utc": "2026-10-06T00:53:36.7499878Z"
+    },
+    {
+      "expected": 200,
+      "path": "/api/accounts",
+      "method": "GET",
+      "status": 200,
+      "utc": "2026-10-06T00:53:36.7616987Z"
+    },
+    {
+      "expected": 201,
+      "path": "/api/accounts",
+      "method": "POST",
+      "status": 201,
+      "utc": "2026-10-06T00:53:36.7752427Z"
+    },
+    {
+      "expected": 200,
+      "path": "/api/accounts/254",
+      "method": "GET",
+      "status": 200,
+      "utc": "2026-10-06T00:53:36.7947685Z"
+    },
+    {
+      "expected": 200,
+      "path": "/api/accounts/254",
+      "method": "PUT",
+      "status": 200,
+      "utc": "2026-10-06T00:53:36.8051355Z"
+    },
+    {
+      "expected": 204,
+      "path": "/api/accounts/254",
+      "method": "DELETE",
+      "status": 204,
+      "utc": "2026-10-06T00:53:36.8138522Z"
+    },
+    {
+      "expected": 404,
+      "path": "/api/accounts/254",
+      "method": "GET",
+      "status": 404,
+      "utc": "2026-10-06T00:53:36.8208907Z"
+    }
+  ],
+  "kind": "final-restore",
+  "accepted": true,
+  "ownedSyntheticOnly": true,
+  "utc": "2026-10-06T00:53:36.8227693Z",
+  "email": "pe018b-23a012cffc0043fba0ad59faf008e389@example.invalid",
+  "podUid": "0ed70bc0-8e65-4a2b-8609-3fb1a519fe19"
+}

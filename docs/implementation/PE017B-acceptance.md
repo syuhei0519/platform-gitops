@@ -1,0 +1,35 @@
+# PE017B 同一OCI検査・SBOM・不変保存の実受入
+
+backendの検証専用OCI経路を受け入れた。実正常検査、SBOM生成・解析失敗、同じ元OCIを実際に異なるDBで再検査した失敗runの不変保存、独立reader/PUT403、保持、中間mainの実AT05を確認している。PE018Bの検査済みregistry公開・全面切替とPE019の総合受入は未完了であり、旧通常配信を含むsecurity完成や全19件完成を主張しない。親17のCloseはこの証跡のmain統合と最新状態の確認後に行う。
+
+## 実装と中間配備
+
+固定実装0b855190a3fc52978903a7b2b851d577078856c9のnative2910986322は全10ジョブ成功。同じOCIのstrict layout/crane/Trivy互換、network noneの実server UID10001/live200/DB不在ready503、4ジョブの容量・時間予算を確認した。CycloneDX1.7の全38components/36packagesとschema/依存graph/config/source/実policy bytes/実DB/固定run参照を結合している。
+
+旧backendのconfig digest未出力と画像policy evaluator不足を既受入Fの契約へ揃えた。SBOMのEpoch・Version・Releaseは完全なバージョンで照合する。自作Go mainmoduleの未知versionは許可せず、実sourceSHA由来0.0.0+git.SHAの開発metadataをコンパイルし、trimpathとTrivyが検出できるGo symbolsを保持する。既存OTel service.versionのsourceSHA契約は維持した。固定分類の診断だけを公開し、raw scanner/error/資格値は公開しない。先行失敗CIと安全な失敗記録を残し、成功runで置換していない。
+
+同sourceの生成失敗2911011402と解析失敗2911011638は各一度実行し、scanだけfailed/他9success、failed record/SBOM null、成功用input/SBOM proof/SBOM artifact404を実確認した。最終source4d1db48は説明書のみの差分。backend !13はlatest own2911032897全6success・直前source/target・実tree一致でmain e927c6c837bf36d41c118225f254d277cf95bb5fへ統合した。
+
+通常選択main2911039162全9successからmanifest !72を作成し、固定2911048864/own2911048298/CAS409/実tree一致でmain9821cde9a5e7bb01ab9260624cbcd016efad76c5へ統合した。実backend Pod UID66e76f5f-1ee7-4862-bb5f-51091fd3c467のsource/digest/pipeline注釈・稼働、frontend6da/DBPVCf777/schema1/既存row9保持を確認。所有する合成row244のCRUD7チェックと削除後404、専用18089 forward終了/nonlistenを確認して中間AT05を受け入れた。この配備は通常配信の中間版であり、実験OCIの公開・採用とは区別する。
+
+## 同じ元OCIの実二runと不変保存
+
+保護main e927のpipeline2911071988、元build16922783993、同OCI digest cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9を固定。第一scan16922783996は実DBUpdatedAt2026-10-04T14:28:15.152965452Zで合格、同job/inputの全SBOMと外側容量・時間予算も再監査した。
+
+固定公開manifestの実更新を確認後、host mountなしの新規2GiB使い捨て領域で実DBUpdatedAt2026-10-04T19:39:34.7156234Zを取得した。前後manifest一致、実容量内、自動除去を確認し、公式runnerCacheClearによるCI cache世代だけの切替後、既存manual16922783997を一度playした。元artifact実期限は2026-10-05T16:28:05.069Zで、実期限内に再取得した。旧host cache削除のtool拒否を別経路で回避せず、元artifact/DBPVCも削除していない。
+
+第二runは実新DBで同元OCIを検査した後、明示したSBOM生成停止によってfailed/sbom-unavailableになった。自然な脆弱性増加やscanner障害による失敗とは扱わない。writer16922783998と第二writerはcurrent protected main/元build/実completed job/実policy bytesを照合し、scan→同bytes再uploadのserver duplicate拒否→SBOM（第一のみ）→record-lastでrun別URLへ不変保存した。第二の失敗はSBOM null/成功用artifact404であり、第一成功へのfallbackや新提案の許可はない。
+
+## 読取・差替え・保持
+
+第一actual reader2911095388と両run reader2911406715は固定runの実bytes/checksumsと予約済み非release領域へのPUT403を確認した。読取はhistorical evidenceとしての検証で、配備を許可しない。bad-hash2911332613/wrong-job2911332695は前提ジョブ成功・readerだけ期待失敗・成功proof404で受け入れた。
+
+実Packageのchecksum確認済みbytesをproduction backend ValidateBundle/ValidateRescanPairで検証した。SBOM/schema/descriptor/URL/digest/scanID/仮想期限の9ケースと、同実二runの元build/archive/policy/source/digest/scan時刻/未更新DBの9ケースを拒否した。明示local fixtureであり、serverデータやDB日時を変えていない。now+25hはモデル時計で、実25時間経過を主張しない。再生Goコードも索引に含めている。
+
+全6Package状態/完全pagination/全running imageと明示rollback候補を実列挙し、現在のproduction16runへ最新10 OR90日 ORrunning/rollback保持をoperator reviewで適用した。削除候補0、DELETEなし。予約済み非release fixtureや不明なPackageは削除しない。90日実経過は主張しない。
+
+backend専用read_api Reporterをhidden/masked/protected/release-evidenceへ設定し、元job/現在protected mainの読取を実確認した。初回のOwner-only namespace設定参照guardで中断した未使用backend tokenだけを一度rotateし、既存frontend/legacy資格は保持した。権限拡張は行わず、namespace duplicateの最終権限は実writerの同値再upload拒否をrecord commit前に確認する。値は表示・証跡保存しない。
+
+## 証跡索引と範囲
+
+[PE017B-acceptance.json](PE017B-acceptance.json)の44件は、保存したUTF-8/LF bytesのSHA256で索引化している。採取時点のunitAccepted=false等は部分工程の限定状態で、最終判定は実受入audit・この証跡MRの実main統合・Issue17のC/F/B確認で行う。Cの固定URL/認証/redirect/checksum/同値冪等・別値拒否・単一writer/保持fixtureは既受入の契約を維持する。次はPE018B全面切替→PE019最終同版AT01〜14/設計8基準監査。

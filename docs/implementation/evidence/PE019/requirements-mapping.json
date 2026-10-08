@@ -1,0 +1,119 @@
+{
+  "sourceOfCriteria": "Frozen DESIGN10.1 and AT01-14",
+  "parentClosureRequired": true,
+  "handoffRequired": true,
+  "design10_1": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "AT": [
+    {
+      "id": "AT-01",
+      "status": "accepted",
+      "details": "../../../../acceptance.md",
+      "precedentChecksums": "PE019-final-audit/precedent-checksums.json",
+      "sameVersionInputAudit": "PE019-final-audit/critical-input-reuse.json"
+    },
+    {
+      "id": "AT-02",
+      "status": "accepted",
+      "details": "../../../../acceptance.md",
+      "precedentChecksums": "PE019-final-audit/precedent-checksums.json",
+      "sameVersionInputAudit": "PE019-final-audit/critical-input-reuse.json"
+    },
+    {
+      "id": "AT-03",
+      "status": "accepted",
+      "details": "../../../../acceptance.md",
+      "precedentChecksums": "PE019-final-audit/precedent-checksums.json",
+      "sameVersionInputAudit": "PE019-final-audit/critical-input-reuse.json"
+    },
+    {
+      "id": "AT-04",
+      "status": "accepted",
+      "details": "../../../../acceptance.md",
+      "precedentChecksums": "PE019-final-audit/precedent-checksums.json",
+      "sameVersionInputAudit": "PE019-final-audit/critical-input-reuse.json"
+    },
+    {
+      "id": "AT-05",
+      "status": "accepted",
+      "details": "../../../../acceptance.md",
+      "precedentChecksums": "PE019-final-audit/precedent-checksums.json",
+      "sameVersionInputAudit": "PE019-final-audit/critical-input-reuse.json"
+    },
+    {
+      "id": "AT-06",
+      "status": "accepted",
+      "details": "../../../../acceptance.md",
+      "precedentChecksums": "PE019-final-audit/precedent-checksums.json",
+      "sameVersionInputAudit": "PE019-final-audit/critical-input-reuse.json"
+    },
+    {
+      "id": "AT-07",
+      "status": "accepted",
+      "details": "../../../../acceptance.md",
+      "precedentChecksums": "PE019-final-audit/precedent-checksums.json",
+      "sameVersionInputAudit": "PE019-final-audit/critical-input-reuse.json"
+    },
+    {
+      "id": "AT-08",
+      "status": "accepted",
+      "details": "../../../../acceptance.md",
+      "precedentChecksums": "PE019-final-audit/precedent-checksums.json",
+      "sameVersionInputAudit": "PE019-final-audit/critical-input-reuse.json"
+    },
+    {
+      "id": "AT-09",
+      "status": "accepted",
+      "details": "../../../../acceptance.md",
+      "precedentChecksums": "PE019-final-audit/precedent-checksums.json",
+      "sameVersionInputAudit": "PE019-final-audit/critical-input-reuse.json"
+    },
+    {
+      "id": "AT-10",
+      "status": "accepted",
+      "details": "../../../../acceptance.md",
+      "precedentChecksums": "PE019-final-audit/precedent-checksums.json",
+      "sameVersionInputAudit": "PE019-final-audit/critical-input-reuse.json"
+    },
+    {
+      "id": "AT-11",
+      "status": "accepted",
+      "details": "../../../../acceptance.md",
+      "precedentChecksums": "PE019-final-audit/precedent-checksums.json",
+      "sameVersionInputAudit": "PE019-final-audit/critical-input-reuse.json"
+    },
+    {
+      "id": "AT-12",
+      "status": "accepted",
+      "details": "../../../../acceptance.md",
+      "precedentChecksums": "PE019-final-audit/precedent-checksums.json",
+      "sameVersionInputAudit": "PE019-final-audit/critical-input-reuse.json"
+    },
+    {
+      "id": "AT-13",
+      "status": "accepted-operational-boundary-technical-write-denial-not-claimed",
+      "details": "../../../../acceptance.md",
+      "precedentChecksums": "PE019-final-audit/precedent-checksums.json",
+      "sameVersionInputAudit": "PE019-final-audit/critical-input-reuse.json"
+    },
+    {
+      "id": "AT-14",
+      "status": "accepted",
+      "details": "../../../../acceptance.md",
+      "precedentChecksums": "PE019-final-audit/precedent-checksums.json",
+      "sameVersionInputAudit": "PE019-final-audit/critical-input-reuse.json"
+    }
+  ],
+  "utc": "2026-10-06T18:55:52.9317165Z",
+  "technicalAcceptanceReady": true,
+  "integrationRequired": true,
+  "semanticReview": "Each requirement/result/evidence/reuse boundary explicitly mapped in docs/acceptance.md; no old trace as final proof; AT13 actual201 and NR66 gap retained"
+}

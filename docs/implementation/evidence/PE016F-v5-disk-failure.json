@@ -1,0 +1,15 @@
+{
+  "pipeline": 2908584310,
+  "job": 16909575611,
+  "failureReason": "script_failure",
+  "source": "3da4a0ec3967c5314bfa33646e08838681bd2f1a",
+  "status": "failed",
+  "accepted": false,
+  "rawTraceRead": false,
+  "disk": {
+    "schemaVersion": 1,
+    "scope": "PE016F sampled temporary disk",
+    "measurementAvailable": false,
+    "withinBudget": false
+  }
+}

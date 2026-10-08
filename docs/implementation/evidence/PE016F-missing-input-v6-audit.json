@@ -1,0 +1,73 @@
+{
+  "accepted": true,
+  "actualExpiryWaitClaim": false,
+  "source": "dc5b8d1028a49d0d6fe32cbff2ce1f28dea8942f",
+  "rawTraceRead": false,
+  "producerArtifactDeleted": false,
+  "pipeline": 2908594182,
+  "scope": "Unavailable downloaded input fixture; not an elapsed one-day expiry test",
+  "jobs": [
+    {
+      "id": 16909631388,
+      "name": "oci-after-missing-input",
+      "status": "skipped",
+      "allow_failure": false
+    },
+    {
+      "id": 16909631387,
+      "name": "oci-missing-input",
+      "status": "failed",
+      "allow_failure": false
+    },
+    {
+      "id": 16909631386,
+      "name": "container-build-oci",
+      "status": "success",
+      "allow_failure": false
+    },
+    {
+      "id": 16909631385,
+      "name": "source-scan",
+      "status": "success",
+      "allow_failure": false
+    },
+    {
+      "id": 16909631384,
+      "name": "frontend-build",
+      "status": "success",
+      "allow_failure": false
+    },
+    {
+      "id": 16909631383,
+      "name": "unit-test",
+      "status": "success",
+      "allow_failure": false
+    },
+    {
+      "id": 16909631382,
+      "name": "typecheck",
+      "status": "success",
+      "allow_failure": false
+    },
+    {
+      "id": 16909631381,
+      "name": "lint",
+      "status": "success",
+      "allow_failure": false
+    },
+    {
+      "id": 16909631380,
+      "name": "manifest-helper-test",
+      "status": "success",
+      "allow_failure": false
+    },
+    {
+      "id": 16909631379,
+      "name": "security-policy-test",
+      "status": "success",
+      "allow_failure": false
+    }
+  ],
+  "downstreamSkipped": true,
+  "status": "failed"
+}

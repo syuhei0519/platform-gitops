@@ -1,0 +1,537 @@
+[
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_process_memory_rss 2.25026048e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 3.0967824,
+    "utc": "2026-10-02T20:18:46.2195295Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_process_memory_rss 2.2503424e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 6.4831135,
+    "utc": "2026-10-02T20:18:49.6059503Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_process_memory_rss 2.25103872e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 9.8815044,
+    "utc": "2026-10-02T20:18:53.0044244Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_process_memory_rss 2.25112064e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 13.2790127,
+    "utc": "2026-10-02T20:18:56.4020155Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_process_memory_rss 2.2511616e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 16.5990133,
+    "utc": "2026-10-02T20:18:59.7220062Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_process_memory_rss 2.25144832e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 19.9834781,
+    "utc": "2026-10-02T20:19:03.1066481Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_process_memory_rss 2.251776e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 23.2947676,
+    "utc": "2026-10-02T20:19:06.4180063Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_process_memory_rss 2.25185792e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 26.5979213,
+    "utc": "2026-10-02T20:19:09.7212552Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 31",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.2550528e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 29.9984232,
+    "utc": "2026-10-02T20:19:13.1218438Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 31",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.25959936e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 33.3980395,
+    "utc": "2026-10-02T20:19:16.5215419Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 31",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26009088e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 36.7817806,
+    "utc": "2026-10-02T20:19:19.9053683Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 31",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26021376e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 41.3806466,
+    "utc": "2026-10-02T20:19:24.5043523Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 31",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26025472e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 44.7960531,
+    "utc": "2026-10-02T20:19:27.9198463Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 31",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26029568e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 48.1793415,
+    "utc": "2026-10-02T20:19:31.3032164Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 31",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26029568e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 51.5812222,
+    "utc": "2026-10-02T20:19:34.7051831Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 30",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26029568e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 54.8983496,
+    "utc": "2026-10-02T20:19:38.0223913Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 30",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26103296e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "429",
+    "elapsedSec": 58.2800534,
+    "utc": "2026-10-02T20:19:41.4041790Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 30",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26103296e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 63.0809764,
+    "utc": "2026-10-02T20:19:46.2052083Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 30",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26103296e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 66.4950303,
+    "utc": "2026-10-02T20:19:49.6193604Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 30",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26172928e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 69.8800334,
+    "utc": "2026-10-02T20:19:53.0044461Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 30",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.2618112e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 73.2968846,
+    "utc": "2026-10-02T20:19:56.4213826Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 30",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26185216e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 76.6970025,
+    "utc": "2026-10-02T20:19:59.8215844Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 30",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26185216e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 80.0946198,
+    "utc": "2026-10-02T20:20:03.2192851Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 30",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26189312e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 83.4794423,
+    "utc": "2026-10-02T20:20:06.6041943Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 30",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26193408e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 86.8948693,
+    "utc": "2026-10-02T20:20:10.0197071Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 29",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"Deadline_Exceeded\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.262016e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 90.2776153,
+    "utc": "2026-10-02T20:20:13.4025352Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 29",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"Deadline_Exceeded\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.262016e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 93.5960503,
+    "utc": "2026-10-02T20:20:16.7210541Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 29",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"Deadline_Exceeded\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.262016e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 97.0815689,
+    "utc": "2026-10-02T20:20:20.2066608Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 29",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"Deadline_Exceeded\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.262016e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 100.4953385,
+    "utc": "2026-10-02T20:20:23.6205111Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 29",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"Deadline_Exceeded\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26205696e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 103.8795335,
+    "utc": "2026-10-02T20:20:27.0047964Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 29",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"Deadline_Exceeded\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26205696e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 107.2809322,
+    "utc": "2026-10-02T20:20:30.4062777Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 29",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"Deadline_Exceeded\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26209792e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 110.5927799,
+    "utc": "2026-10-02T20:20:33.7182042Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 29",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"Deadline_Exceeded\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26209792e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 113.9938273,
+    "utc": "2026-10-02T20:20:37.1193390Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 29",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"Deadline_Exceeded\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 512",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26209792e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 117.2959347,
+    "utc": "2026-10-02T20:20:40.4215244Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 28",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"Deadline_Exceeded\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 0",
+      "otelcol_process_memory_rss 2.26209792e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 40960",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "connection refused",
+    "elapsedSec": 120.6815568,
+    "utc": "2026-10-02T20:20:43.8072219Z"
+  },
+  {
+    "metrics": [
+      "otelcol_exporter_enqueue_failed_spans{exporter=\"otlphttp/newrelic\"} 24576",
+      "otelcol_exporter_queue_capacity{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 32",
+      "otelcol_exporter_queue_size{data_type=\"traces\",exporter=\"otlphttp/newrelic\"} 0",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"Deadline_Exceeded\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_send_failed_spans{error_permanent=\"false\",error_type=\"ResourceExhausted\",exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 1024",
+      "otelcol_exporter_sent_spans{exporter=\"otlphttp/newrelic\",server_address=\"nr-fault\",server_port=\"4319\",url_path=\"/v1/traces\"} 14848",
+      "otelcol_process_memory_rss 2.3021568e+08",
+      "otelcol_receiver_accepted_spans{receiver=\"otlp\",transport=\"http\"} 41472",
+      "otelcol_receiver_refused_spans{receiver=\"otlp\",transport=\"http\"} 0"
+    ],
+    "stage": "recovery",
+    "elapsedSec": 126.87675,
+    "utc": "2026-10-02T20:20:50.0025814Z"
+  }
+]

@@ -1,0 +1,68 @@
+{{/*
+Argo AppProjectでrepository・配備namespace・許可resourceを限定する。
+Kubernetes RBACやGitLab token権限とは異なるArgo側の境界。
+*/}}apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata: {name: lab-control, namespace: argocd, annotations: {argocd.argoproj.io/sync-wave: "-20"}}
+spec:
+  sourceRepos: [{{ .Values.platformRepository }}]
+  destinations: [{server: https://kubernetes.default.svc, namespace: argocd}]
+  clusterResourceWhitelist: []
+  namespaceResourceWhitelist: [{group: argoproj.io, kind: Application}]
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata: {name: lab-platform, namespace: argocd, annotations: {argocd.argoproj.io/sync-wave: "-20"}}
+spec:
+  sourceRepos: [{{ .Values.platformRepository }}, https://charts.gitlab.io]
+  destinations:
+    - {server: https://kubernetes.default.svc, namespace: runner-system}
+    - {server: https://kubernetes.default.svc, namespace: build}
+  clusterResourceWhitelist: []
+  namespaceResourceWhitelist:
+    - {group: apps, kind: Deployment}
+    - {group: "", kind: Service}
+    - {group: "", kind: ConfigMap}
+    - {group: "", kind: ServiceAccount}
+    - {group: rbac.authorization.k8s.io, kind: Role}
+    - {group: rbac.authorization.k8s.io, kind: RoleBinding}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata: {name: lab-account, namespace: argocd, annotations: {argocd.argoproj.io/sync-wave: "-20"}}
+spec:
+  sourceRepos: [{{ .Values.applicationRepository }}]
+  destinations: [{server: https://kubernetes.default.svc, namespace: account}]
+  clusterResourceWhitelist: []
+  namespaceResourceWhitelist:
+    - {group: apps, kind: Deployment}
+    - {group: apps, kind: StatefulSet}
+    - {group: "", kind: Service}
+    - {group: "", kind: ConfigMap}
+    - {group: "", kind: ServiceAccount}
+    - {group: "", kind: PersistentVolumeClaim}
+    - {group: batch, kind: Job}
+{{- if .Values.observabilityEnabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata: {name: lab-observability, namespace: argocd, annotations: {argocd.argoproj.io/sync-wave: "-20"}}
+spec:
+  sourceRepos:
+    - {{ .Values.platformRepository }}
+    - https://prometheus-community.github.io/helm-charts
+  destinations:
+    - {server: https://kubernetes.default.svc, namespace: observability}
+    - {server: https://kubernetes.default.svc, namespace: account}
+  clusterResourceWhitelist:
+    - {group: rbac.authorization.k8s.io, kind: ClusterRole}
+    - {group: rbac.authorization.k8s.io, kind: ClusterRoleBinding}
+  namespaceResourceWhitelist:
+    - {group: "", kind: ServiceAccount}
+    - {group: "", kind: Service}
+    - {group: "", kind: ConfigMap}
+    - {group: "", kind: PersistentVolumeClaim}
+    - {group: apps, kind: Deployment}
+    - {group: rbac.authorization.k8s.io, kind: Role}
+    - {group: rbac.authorization.k8s.io, kind: RoleBinding}
+{{- end }}

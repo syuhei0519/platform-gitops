@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-06T00:41:07.5081685Z",
+  "backendServiceEndpointMatched": true,
+  "closed": true,
+  "kind": "final-rollback",
+  "terminalExitCode": 1,
+  "port": 18089,
+  "frontendPodUid": "6da97e91-4aca-4271-b313-4be4245090dc",
+  "ownedForwardSession": 80275,
+  "ownedCRUD": "PE018B-final-rollback-phase2-CRUD.json",
+  "podUid": "a16d3e01-86fa-4180-9c32-ca78ae6b9242"
+}

@@ -1,0 +1,5 @@
+runnerChartVersion: 0.92.1
+observabilityEnabled: true
+prometheusEnabled: true
+collectorEnabled: true
+grafanaEnabled: true

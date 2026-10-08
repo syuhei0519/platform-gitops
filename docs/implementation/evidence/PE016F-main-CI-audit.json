@@ -1,0 +1,76 @@
+{
+  "pipeline": 2908613562,
+  "selectedPath": "publish-image -> verify-image -> propose-manifest-update",
+  "rawTraceRead": false,
+  "phase2Switched": false,
+  "fullAT05Accepted": true,
+  "runtimeEvidence": "PE016F-main-runtime-proof.json",
+  "utc": "2026-10-03T04:24:47.2609904Z",
+  "status": "success",
+  "digest": "sha256:6a88974a3da301ed15542cdbd16f11fffdbae3119b30e5879253d2812ad01fbe",
+  "jobs": [
+    {
+      "id": 16909733806,
+      "name": "propose-manifest-update",
+      "status": "success"
+    },
+    {
+      "id": 16909733805,
+      "name": "verify-image",
+      "status": "success"
+    },
+    {
+      "id": 16909733804,
+      "name": "publish-image",
+      "status": "success"
+    },
+    {
+      "id": 16909733803,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16909733802,
+      "name": "frontend-build",
+      "status": "success"
+    },
+    {
+      "id": 16909733801,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16909733800,
+      "name": "typecheck",
+      "status": "success"
+    },
+    {
+      "id": 16909733799,
+      "name": "lint",
+      "status": "success"
+    },
+    {
+      "id": 16909733798,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16909733797,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "runtimeDeploymentClaim": true,
+  "manifestProposal": {
+    "source": "3e13f3acd27a6eb1b6e17a042991f304f26ae231",
+    "state": "merged",
+    "iid": 50,
+    "project": 86247034,
+    "draft": false,
+    "url": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest/-/merge_requests/50"
+  },
+  "project": 86247025,
+  "selectedMainCIComplete": true,
+  "ociValidationDefault": false,
+  "main": "19da2ae5bd99b908fb6e3a0a3ca0924c1d4ab8d8"
+}

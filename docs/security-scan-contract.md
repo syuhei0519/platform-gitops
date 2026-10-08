@@ -1,0 +1,16 @@
+# PE-015 FS検査方針
+
+固定Trivy0.75.0のLinux amd64 image digest9db099105405c648166e6b94155eb32f8da12673cf1f455207f7385cc9a77283を使う。MR/mainのtracked sourceをgit archiveで取り出し、vuln,secret,misconfig・include-dev-deps・全severityを明示する。Git認証設定、runner生成物、cache、private reportを入力にしない。空ignorefileを指定し、隠れた包括除外に依存しない。配備repoはそのCIの展開済IaCも別に検査する。
+
+修正版ありCRITICALとsecret検出を失敗にする。未修正CRITICAL/HIGH以下は全件warningとして残す。privilegedと平文Secret（data/stringData・認証envのliteral）を展開YAMLの構造から失敗にする。通常のmisconfigurationはwarning。rootless BuildKitのno-process-sandboxは既存の限定job/image/Pod profileの明示境界でのみ使い、privilegedの許可や包括ignoreにはしない。
+
+policyはJSON（YAML部分集合）、schema version1。機械的schemaとGoの追加条件を合わせて判定する。未知field/重複key/例外ID重複・wildcard pathを拒否し、rule/package/正確path/owner/reason/createdAt/expiresAtを持つ。発行から最大14日、失効した例外は未使用でも失敗する。secret例外はci/fixtures/内の正確pathのみ。privilegedと平文Secretは例外不可。現在の実policyは例外0件。
+
+DBはVersion2とUpdatedAt基準で24時間以内、未来/不明/古い値を拒否する。DownloadedAtで古いDBを正当化しない。取得は最大2回、scanner処理は5分timeout。取得/処理/解析不能と非0終了を成功にせず、後続deliveryを止める。固定scanner versionは実JSON reportとも照合する。
+
+raw JSON・scanner logsはprivate一時ディレクトリにだけ置き、終了時に除去する。artifactはallowlistで再構築したpublic reportだけ。Match、SourceCode、行内容、Title、任意error/header、環境値を再配布しない。公開CVE/package/version/修正版/severity、規則ID、正規化relative path、判定、例外ID、DB更新時刻、policy hashを残す。tgz等のmember pathは安全な相対pseudo-pathへ正規化する。
+
+FSのnpm開発依存は検査範囲に入る。最終runtime imageのSBOMが、ビルド後に消える全npm依存まで網羅するとは主張しない。image-scan/SBOM/publishの通過条件完成はPE016〜018で受け入れる。本契約だけで全4repo CI・AT11完了にはしない。
+
+AT11_CASEは空（通常）またはscanner-timeout/stale-db/expired-exceptionの失敗専用列挙値だけを受け付ける。実Trivyの1ns timeout、privateの古いDBメタデータ、未使用でも失効した固定例外を実際の判定経路へ渡す。共有cacheと実policyは改変せず、未知値も失敗にする。隔離Dockerの実shell試験は三ケースとも意図した診断と非0終了を確認した。protected-main CIで後続publish/verify/proposalの停止を照合する受入は別途必須。
+

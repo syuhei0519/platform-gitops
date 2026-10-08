@@ -1,0 +1,12 @@
+{
+  "podUid": "d6c63522-fdc3-4de7-8d20-4a6ca76affea",
+  "backendServiceEndpointMatched": true,
+  "ownedCRUD": "PE018B-published-phase2-CRUD.json",
+  "utc": "2026-10-05T23:45:30.8284117Z",
+  "ownedForwardSession": 54779,
+  "frontendPodUid": "6da97e91-4aca-4271-b313-4be4245090dc",
+  "closed": true,
+  "terminalExitCode": 1,
+  "kind": "published",
+  "port": 18089
+}

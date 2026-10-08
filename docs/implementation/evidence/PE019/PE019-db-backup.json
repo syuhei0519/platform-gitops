@@ -1,0 +1,15 @@
+{
+  "ownedEmail": "pe019-backup-bdf80bf3c45842a18f86482e925f9f0e@example.test",
+  "backup": "C:\\work\\CorePlatform\\tmp\\pe019-private\\pe019-final-db.sql",
+  "context": "kind-core-platform-final-019",
+  "sourceState": "1|799a8f2b187617d6e2a2d89bf7b0a4df\n1|2026-10-06 12:48:00.38435+00",
+  "sourceNamespace": "account",
+  "credentialsIncluded": false,
+  "ownedId": "2",
+  "restoreNamespace": "pe019-restore",
+  "sourcePVCUID": "21a31208-789a-4c23-9f28-389407f1b689",
+  "onlyOwnedSyntheticRows": true,
+  "restoreAccepted": false,
+  "utc": "2026-10-06T12:53:20.9052000Z",
+  "backupSha256": "ca80512cecbe26d3b2901cdd3529534f34651bb2164ebff882535639a42f8afd"
+}

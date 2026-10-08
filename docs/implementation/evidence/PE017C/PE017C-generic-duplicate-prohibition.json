@@ -1,0 +1,15 @@
+{
+  "after": {
+    "genericDuplicatesAllowed": false,
+    "genericDuplicateExceptionRegex": ""
+  },
+  "scope": "Generic duplicate filename prohibition only; immutable upload/read integration acceptance remains pending",
+  "utc": "2026-10-02T21:45:39.7792255Z",
+  "primaryMutationSource": "https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/namespace/package_settings/update.rb",
+  "groupId": 141770909,
+  "before": {
+    "genericDuplicatesAllowed": true,
+    "genericDuplicateExceptionRegex": ""
+  },
+  "group": "syuhei-platform-engineering-lab"
+}

@@ -1,0 +1,12 @@
+{
+  "terminalExitCode": 1,
+  "ownedForwardSession": 79832,
+  "port": 18089,
+  "ownedCRUD": "PE018B-reinspected-phase2-CRUD.json",
+  "backendServiceEndpointMatched": true,
+  "utc": "2026-10-06T00:13:30.0518044Z",
+  "kind": "reinspected",
+  "closed": true,
+  "frontendPodUid": "6da97e91-4aca-4271-b313-4be4245090dc",
+  "podUid": "035411c7-d33d-45cc-a135-f74b9fa34ca9"
+}

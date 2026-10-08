@@ -1,0 +1,2 @@
+applicationRepository: https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git
+targetRevision: main

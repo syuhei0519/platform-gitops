@@ -1,0 +1,16 @@
+{
+  "source": "4b8652b2ac53cf19e2654d9228df965c09166591",
+  "inputs": [
+    {
+      "pipelineId": 2918186353,
+      "recordSha256": "bb32349c064dfc451768dbed0a39abef479be6196758432aa1b6e4e5757549a9",
+      "jobId": 16971512567,
+      "recordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-64e88a0c337c09811c2e0b11160a0d09edcb8b976823fd1ec95bcf255f56a487/release-record-2918186353-16971512567.json",
+      "digest": "sha256:64e88a0c337c09811c2e0b11160a0d09edcb8b976823fd1ec95bcf255f56a487",
+      "service": "backend"
+    }
+  ],
+  "combinedReaders": true,
+  "utc": "2026-10-06T15:01:56.3358909Z",
+  "attempt": "d2cf2ea6181647cfbc811aa7ccdeb55e"
+}

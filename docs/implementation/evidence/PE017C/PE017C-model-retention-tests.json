@@ -1,0 +1,26 @@
+{
+  "utc": "2026-10-02T23:52:55.504408+00:00",
+  "compiler": "Go1.27.1",
+  "repositories": [
+    "frontend-app",
+    "backend-app",
+    "application-manifest"
+  ],
+  "testFunctionsPerRepository": 11,
+  "passed": true,
+  "freshExecution": true,
+  "retentionFixture": {
+    "versions": 16,
+    "latestTenProtected": true,
+    "exactNinetyDayProtected": true,
+    "failedRescanExtendsRetention": true,
+    "runningProtected": true,
+    "rollbackProtected": true,
+    "unknownInputRejectsWholePlan": true,
+    "underTenAllKept": true
+  },
+  "automaticGenericDeletionEnabled": false,
+  "deleteOperations": 0,
+  "actualNinetyDayElapsedTest": false,
+  "productionInventoryCleanupWired": false
+}

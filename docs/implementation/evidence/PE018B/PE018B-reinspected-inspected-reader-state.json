@@ -1,0 +1,79 @@
+{
+  "adoptionAuthorized": false,
+  "status": "success",
+  "source": "59de92e1b0d7357a7b8fb8a59c57d85d20a9d144",
+  "accepted": true,
+  "proof": {
+    "selection": {
+      "service": "backend",
+      "sourceProjectId": 86247033,
+      "sourceCommit": "bcc4126097ab6224e46257560010fc4623a51414",
+      "imageDigest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+      "buildPipelineId": 2915581900,
+      "buildJobId": 16953548223,
+      "scanPipelineId": 2915669295,
+      "scanJobId": 16954022922,
+      "recordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/release-record-2915669295-16954022922.json",
+      "recordSha256": "b8aaf11f006be6fde340719cff3bcb48abf86da25f541ee2c89b247813cfb8f3",
+      "sbomUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/sbom-2915669295-16954022922.cdx.json",
+      "sbomSha256": "e539cabd74b224a0c2d685f3d7d40de204cec3998e6201a1db7ec5eed715b44b"
+    },
+    "policyRevision": "bcc4126097ab6224e46257560010fc4623a51414",
+    "scanBytesVerified": true,
+    "nativeRecordMatched": true,
+    "nativeInspectionMatched": true,
+    "adoptionAuthorized": false
+  },
+  "jobs": [
+    {
+      "id": 16954192519,
+      "name": "phase2-inspected-reader",
+      "status": "success"
+    },
+    {
+      "id": 16954192518,
+      "name": "package-release-reader",
+      "status": "success"
+    },
+    {
+      "id": 16954192517,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16954192516,
+      "name": "kubernetes-schema",
+      "status": "success"
+    },
+    {
+      "id": 16954192515,
+      "name": "render-and-policy",
+      "status": "success"
+    },
+    {
+      "id": 16954192514,
+      "name": "config-checksum-test",
+      "status": "success"
+    },
+    {
+      "id": 16954192513,
+      "name": "checksum-test-build",
+      "status": "success"
+    },
+    {
+      "id": 16954192512,
+      "name": "trusted-boundary-test",
+      "status": "success"
+    },
+    {
+      "id": 16954192511,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "readerJob": 16954192519,
+  "utc": "2026-10-06T00:06:58.6899279Z",
+  "pipeline": 2915695314,
+  "unitAccepted": false,
+  "reader": "success"
+}

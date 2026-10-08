@@ -1,0 +1,5 @@
+* text=auto eol=lf
+docs/implementation/evidence/PE019/** -text
+*.sh text eol=lf
+*.py text eol=lf
+.github/workflows/*.yml text eol=lf

@@ -1,0 +1,13 @@
+{{/*
+Collectorの内部受信/公開ポートをServiceへつなぐ。OTLPはbackendからpush、metricsはPrometheusからpull。
+probeのhealth成功はNew Relicへの最終保存成功を意味しない。
+*/}}apiVersion: v1
+kind: Service
+metadata: {name: otel-collector, namespace: observability}
+spec:
+  type: ClusterIP
+  selector: {app.kubernetes.io/name: otel-collector}
+  ports:
+    - {name: otlp-http, port: 4318, targetPort: otlp-http}
+    - {name: metrics, port: 8889, targetPort: metrics}
+    - {name: self-metrics, port: 8888, targetPort: self-metrics}

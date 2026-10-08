@@ -1,0 +1,45 @@
+{
+  "treeMatched": true,
+  "utc": "2026-10-03T04:20:15.8838454Z",
+  "sourceCasNegativeStatus": 409,
+  "postTree": "9b0e26e552cd63790e15ad17be872f030365433d",
+  "postTreePending": false,
+  "candidateTree": "9b0e26e552cd63790e15ad17be872f030365433d",
+  "pipeline": 2908622252,
+  "before": {
+    "mrSourceSha": "3e13f3acd27a6eb1b6e17a042991f304f26ae231",
+    "sourceProject": 86247034,
+    "sourceMains": {
+      "86247025": "19da2ae5bd99b908fb6e3a0a3ca0924c1d4ab8d8",
+      "86247033": "5a255b329cab3b00e0c9e964700667e6cb083d89"
+    },
+    "mrIid": 50,
+    "targetProtected": true,
+    "targetProject": 86247034,
+    "checkedAt": "2026-10-03T04:20:08.1780160Z",
+    "mrState": "opened",
+    "appMainsProtected": true,
+    "manifestMainSha": "46223f28d735d0f6bf39e0998d7c5285701091f1",
+    "targetBranch": "main"
+  },
+  "mr": 50,
+  "consumer": 16909779873,
+  "mergeCommit": "4fb1b4f9fafa960a3b6919d3a1e2a0b243a5f55f",
+  "immediate": {
+    "mrSourceSha": "3e13f3acd27a6eb1b6e17a042991f304f26ae231",
+    "sourceProject": 86247034,
+    "sourceMains": {
+      "86247025": "19da2ae5bd99b908fb6e3a0a3ca0924c1d4ab8d8",
+      "86247033": "5a255b329cab3b00e0c9e964700667e6cb083d89"
+    },
+    "mrIid": 50,
+    "targetProtected": true,
+    "targetProject": 86247034,
+    "checkedAt": "2026-10-03T04:20:11.5690715Z",
+    "mrState": "opened",
+    "appMainsProtected": true,
+    "manifestMainSha": "46223f28d735d0f6bf39e0998d7c5285701091f1",
+    "targetBranch": "main"
+  },
+  "producer": 16909779872
+}

@@ -1,0 +1,69 @@
+{
+  "utc": "2026-10-02T20:13:23.7387812Z",
+  "recoverySec": 54.4443846,
+  "ciPipeline": 2907886612,
+  "httpTimeoutSec": 5,
+  "ciSha": "7ce833dcbddc4097dd36c046c5629124a27bbc1b",
+  "minHostFreePercent": 52.81939839291118,
+  "crudSuccessPercent": 100,
+  "ciStatus": "success",
+  "minKindFreePercent": 93.37965161320676,
+  "crudByMethod": [
+    {
+      "success": 225,
+      "method": "DELETE",
+      "requests": 225
+    },
+    {
+      "success": 225,
+      "method": "GET",
+      "requests": 225
+    },
+    {
+      "success": 225,
+      "method": "POST",
+      "requests": 225
+    },
+    {
+      "success": 225,
+      "method": "PUT",
+      "requests": 225
+    }
+  ],
+  "sharedSdkFlushBoundEvidence": "PE012-sdk-unit-tests.txt + SDK telemetry shutdown contract; not whole Pod grace period",
+  "maxNodeWorkingSetBytes": 5254848512.0,
+  "readyMax": 1.0,
+  "faultSec": 61.0,
+  "NR429": "pending separate fixture",
+  "requests": 900,
+  "elapsedSec": 900.3315297,
+  "phase2FinalCiAccepted": false,
+  "overlappingCiJobs": [
+    {
+      "name": "kubernetes-and-argo-schema",
+      "started": "2026-10-02T19:58:45.273Z",
+      "status": "success",
+      "finished": "2026-10-02T19:58:56.254Z",
+      "id": 16904911539
+    },
+    {
+      "name": "render-and-policy",
+      "started": "2026-10-02T19:58:24.289Z",
+      "status": "success",
+      "finished": "2026-10-02T19:58:43.399Z",
+      "id": 16904911538
+    },
+    {
+      "name": "bootstrap-contract-test",
+      "started": "2026-10-02T19:58:03.231Z",
+      "status": "success",
+      "finished": "2026-10-02T19:58:22.318Z",
+      "id": 16904911537
+    }
+  ],
+  "unexpectedPodFailures": [],
+  "secretValuesRecorded": false,
+  "pass": true,
+  "upZeroObserved": true,
+  "wholeSpanLossClaim": false
+}

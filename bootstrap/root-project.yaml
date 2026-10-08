@@ -1,0 +1,19 @@
+# rootを管理するArgo AppProjectの許可repository/namespace/resource境界。
+# ApplicationのSync順と、操作権限の許可範囲は別の設定。
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: lab-root
+  namespace: argocd
+spec:
+  sourceRepos:
+    - https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: argocd
+  clusterResourceWhitelist: []
+  namespaceResourceWhitelist:
+    - group: argoproj.io
+      kind: Application
+    - group: argoproj.io
+      kind: AppProject

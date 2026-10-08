@@ -1,0 +1,62 @@
+{
+  "requestId": "3473688a6115054891a896190e0d72f2",
+  "recordCleanupPending": true,
+  "syntheticOnly": true,
+  "remoteParentId": "6ac7d69117861fa0",
+  "traceId": "61e27bda22f6a68df17b5f84e53ea45d",
+  "utc": "2026-10-02T15:14:42.7284077Z",
+  "recordId": 9,
+  "rows": [
+    {
+      "status": 201,
+      "responseRequestId": "42157f2ba4cdbbe49728facf44762cbd",
+      "elapsedMs": 104.8356,
+      "pathTemplate": "/api/accounts",
+      "method": "POST",
+      "utc": "2026-10-02T15:14:42.5618565Z"
+    },
+    {
+      "status": 200,
+      "responseRequestId": "0e02d28092a9aa7c8e91a0e868222980",
+      "elapsedMs": 7.9474,
+      "pathTemplate": "/api/accounts/{id}",
+      "method": "GET",
+      "utc": "2026-10-02T15:14:42.6841956Z"
+    },
+    {
+      "status": 200,
+      "responseRequestId": "d1047890e026f8730dbe18910a47b973",
+      "elapsedMs": 9.6268,
+      "pathTemplate": "/api/accounts/{id}",
+      "method": "PUT",
+      "utc": "2026-10-02T15:14:42.6932190Z"
+    },
+    {
+      "status": 409,
+      "responseRequestId": "38713c4d1d11f328a1475dcf8094bd4d",
+      "elapsedMs": 10.2412,
+      "pathTemplate": "/api/accounts",
+      "method": "POST",
+      "utc": "2026-10-02T15:14:42.7033204Z"
+    },
+    {
+      "status": 400,
+      "responseRequestId": "8f16f53c40fb117ded986dc76956194d",
+      "elapsedMs": 7.5353,
+      "pathTemplate": "/api/accounts/{id}",
+      "method": "GET",
+      "utc": "2026-10-02T15:14:42.7138508Z"
+    },
+    {
+      "status": 404,
+      "responseRequestId": "a011d001efee0c2211824bcedd392380",
+      "elapsedMs": 6.604,
+      "pathTemplate": "/api/pe012-unmatched",
+      "method": "GET",
+      "utc": "2026-10-02T15:14:42.7216743Z"
+    }
+  ],
+  "expectedSource": "ff5af7e7305e36299b9b0b5629a0d9a016271619",
+  "context": "kind-platform-lab",
+  "via": "frontend Nginx -> backend -> PostgreSQL"
+}

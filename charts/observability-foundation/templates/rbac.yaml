@@ -1,0 +1,58 @@
+{{/*
+Prometheus/KSM/CollectorのSA/RBACを生成する唯一の所有者。各外部Chartでは重複作成しない。
+Prometheusのnodes/proxyはkindのcAdvisor収集に必要な強い権限で、無害な一般read権限とは扱わない。
+*/}}apiVersion: v1
+kind: ServiceAccount
+metadata: {name: grafana, namespace: observability}
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: otel-collector, namespace: observability}
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: prometheus, namespace: observability}
+automountServiceAccountToken: true
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: kube-state-metrics, namespace: observability}
+automountServiceAccountToken: true
+---
+# kind-specific API-server proxy. This grants powerful node access; never bind
+# it to the application, KSM, Collector or a generic Job service account.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata: {name: lab-prometheus-kind-proxy}
+rules:
+  - apiGroups: [""]
+    resources: [nodes]
+    verbs: [get, list, watch]
+  - apiGroups: [""]
+    resources: [nodes/proxy]
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata: {name: lab-prometheus-kind-proxy}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: lab-prometheus-kind-proxy}
+subjects: [{kind: ServiceAccount, name: prometheus, namespace: observability}]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: {name: lab-ksm-account-read, namespace: account}
+rules:
+  - apiGroups: [""]
+    resources: [pods]
+    verbs: [get, list, watch]
+  - apiGroups: [apps]
+    resources: [deployments, replicasets, statefulsets]
+    verbs: [get, list, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: {name: lab-ksm-account-read, namespace: account}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: lab-ksm-account-read}
+subjects: [{kind: ServiceAccount, name: kube-state-metrics, namespace: observability}]

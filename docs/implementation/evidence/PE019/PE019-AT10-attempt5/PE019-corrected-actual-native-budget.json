@@ -1,0 +1,75 @@
+{
+  "source": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "utc": "2026-10-06T18:16:00.6151381Z",
+  "runtime": {
+    "schemaVersion": 1,
+    "scope": "PE016B isolated runtime only",
+    "sourceProjectId": 86247033,
+    "sourceCommit": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+    "buildPipelineId": 2919041561,
+    "buildJobId": 16978182121,
+    "runtimePipelineId": 2919041561,
+    "runtimeJobId": 16978182123,
+    "archiveSha256": "fc552fb99492a28cb9c7bba737b165bebeaaa3ad695f5ba94d365ec2fa2fd483",
+    "digest": "sha256:a78006efc370ff016301eab861fd65a2c0a15e7ebf162f5344171ae3ba83d46c",
+    "runtimeUid": 10001,
+    "backendReadyHttp": 503,
+    "backendLiveHttp": 200,
+    "databaseReadinessRefused": true,
+    "network": "none-loopback-only",
+    "registryPush": false,
+    "sourceDatabaseConnected": false,
+    "phase2Adoptable": false
+  },
+  "pipeline": 2919041561,
+  "nativeAccepted": true,
+  "finalAT10Accepted": false,
+  "budgets": {
+    "runtime": {
+      "job": 16978182123,
+      "disk": {
+        "schemaVersion": 1,
+        "scope": "PE016B sampled temporary disk",
+        "kind": "runtime",
+        "samples": 20,
+        "intervalSeconds": 2,
+        "transientMissingRetryCount": 2,
+        "duAttemptsPerMeasurementMax": 3,
+        "maxWorkspaceKiB": 172944,
+        "workspaceLimitKiB": 2097152,
+        "maxBuildkitStoreKiB": 7399208,
+        "buildkitStoreLimitKiB": 10485760,
+        "buildkitStoreObserved": true,
+        "buildkitStoreAggregation": "sumConfiguredRoots",
+        "rootlessNamespaceUsed": true,
+        "minFilesystemFreePercent": 91.95444,
+        "measurementAvailable": true,
+        "withinBudget": true,
+        "continuousPeakClaim": false
+      }
+    },
+    "build": {
+      "job": 16978182121,
+      "disk": {
+        "schemaVersion": 1,
+        "scope": "PE016B sampled temporary disk",
+        "kind": "build",
+        "samples": 30,
+        "intervalSeconds": 2,
+        "transientMissingRetryCount": 5,
+        "duAttemptsPerMeasurementMax": 3,
+        "maxWorkspaceKiB": 201984,
+        "workspaceLimitKiB": 2097152,
+        "maxBuildkitStoreKiB": 10327144,
+        "buildkitStoreLimitKiB": 10485760,
+        "buildkitStoreObserved": true,
+        "buildkitStoreAggregation": "sumConfiguredRoots",
+        "rootlessNamespaceUsed": true,
+        "minFilesystemFreePercent": 91.681997,
+        "measurementAvailable": true,
+        "withinBudget": true,
+        "continuousPeakClaim": false
+      }
+    }
+  }
+}

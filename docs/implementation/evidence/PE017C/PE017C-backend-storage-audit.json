@@ -1,0 +1,15 @@
+{
+  "pipeline": 2908256232,
+  "job": 16907606026,
+  "allValidationSucceeded": true,
+  "sourceScanSucceeded": true,
+  "phase2Adoptable": false,
+  "allImageDeliveryExcluded": true,
+  "source": "5a255b329cab3b00e0c9e964700667e6cb083d89",
+  "utc": "2026-10-02T23:33:18.0484512Z",
+  "serverDuplicateHttp": 400,
+  "storageCapabilityAccepted": true,
+  "rawTraceRead": false,
+  "project": 86247033,
+  "service": "backend"
+}

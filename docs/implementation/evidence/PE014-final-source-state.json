@@ -1,0 +1,11 @@
+{
+  "podUid": "76402fc4-b8c8-4bab-826f-d80101659dca",
+  "utc": "2026-10-02T20:30:48.7498164Z",
+  "configSHA256": "a7cc1068f792a1aec7dd2c450d868ffab36b0c6cfd9a1e868880b45e474e7975",
+  "ready": true,
+  "reconciliationRestored": true,
+  "imageId": "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc",
+  "source": "7ce833dcbddc4097dd36c046c5629124a27bbc1b",
+  "secretValuesRecorded": false,
+  "applicationHealth": "Healthy"
+}

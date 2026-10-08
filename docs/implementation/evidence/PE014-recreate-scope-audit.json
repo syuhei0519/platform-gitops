@@ -1,0 +1,11 @@
+{
+  "globalAllSpanLossClaim": false,
+  "utc": "2026-10-02T20:30:48.4793393Z",
+  "readyAndReplacementPassed": true,
+  "actualExporterSent": 1608,
+  "fullCrudSourceStopProof": "PE014-phase1-capacity-audit.json",
+  "allRequests200": true,
+  "scope": "Recreate case is 900 GET reads of owned record9; complete POST/GET/PUT/DELETE coverage is the separate900-request source-stop capacity case",
+  "actualReceiverAccepted": 1608,
+  "sourceConfigRestored": true
+}

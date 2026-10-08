@@ -1,0 +1,52 @@
+{
+  "sbomAbsent": true,
+  "legacyReleaseJobsAbsent": true,
+  "utc": "2026-10-03T08:31:30.3518186Z",
+  "scanJobId": 16911293904,
+  "scope": "Controlled SBOM failure fixture; not natural scanner outage",
+  "pipeline": 2908920350,
+  "PE017FAccepted": false,
+  "immutableStorageConfirmed": false,
+  "record": {
+    "schemaVersion": 2,
+    "service": "frontend",
+    "sourceProjectId": 86247025,
+    "sourceCommit": "316e36a0aec76ecda47bd45cdeae4bc12f9531c9",
+    "buildPipelineId": 2908920350,
+    "buildJobId": 16911293901,
+    "imageRepository": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app",
+    "imageTag": "316e36a0aec76ecda47bd45cdeae4bc12f9531c9",
+    "imageDigest": "sha256:5d88bb6f2b709643d69153501c44347365b7c07be083c8f5a50578b8da09e606",
+    "scanPipelineId": 2908920350,
+    "scanJobId": 16911293904,
+    "scanJobStatus": "failed",
+    "inputKind": "build-oci",
+    "inputArchiveSha256": "e455079ef4088cbedb1ec0a5950673be7ad1b28c70a6b2e03879feb41c70d275",
+    "trivyVersion": "0.75.0",
+    "database": {
+      "version": 2,
+      "updatedAt": "2026-10-03T07:01:46.027466673Z",
+      "metadataSha256": "356578d1d96f23939bf3a0d5a535b02bb44c75e181b33ef4209d99f1b7f28f85"
+    },
+    "scannedAt": "2026-10-03T08:27:44.917017698Z",
+    "policyRevision": "316e36a0aec76ecda47bd45cdeae4bc12f9531c9",
+    "policySha256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337",
+    "exceptions": [],
+    "decision": "failed",
+    "failureReason": "sbom-unavailable",
+    "sbom": null,
+    "sbomFailureReason": "sbom-unavailable",
+    "scanReport": {
+      "imageDigest": "sha256:5d88bb6f2b709643d69153501c44347365b7c07be083c8f5a50578b8da09e606",
+      "scanPipelineId": 2908920350,
+      "scanJobId": 16911293904,
+      "url": "https://gitlab.com/api/v4/projects/86247025/packages/generic/core-platform-frontend/sha256-5d88bb6f2b709643d69153501c44347365b7c07be083c8f5a50578b8da09e606/scan-report-2908920350-16911293904.json",
+      "sha256": "7257e6ab54cb2d86ab9c7f3caa679f45d4966d5e255cfd2d3d50933a97229c8c",
+      "format": "safe-json",
+      "schemaVersion": "1"
+    }
+  },
+  "source": "316e36a0aec76ecda47bd45cdeae4bc12f9531c9",
+  "safeScanCompleted": true,
+  "buildJobId": 16911293901
+}

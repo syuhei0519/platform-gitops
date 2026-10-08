@@ -1,0 +1,5 @@
+Exception: C:\work\CorePlatform\output\core-platform-v1-phase1-phase2-20261002\acceptance\pe019-capacity-fault-worker.ps1:53
+Line |
+  53 |   throw 'Final Collector fault or recovery threshold failed; preserve  Åc
+     |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Final Collector fault or recovery threshold failed; preserve actual proof

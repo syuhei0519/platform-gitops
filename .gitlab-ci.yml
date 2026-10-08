@@ -1,0 +1,6 @@
+# GitHub Actions migration preparation. Legacy include files/tools remain for
+# regression tests and historical evidence; they must not publish from GitLab.
+# Active entry points: .github/workflows/*.yml. No remote change until pushed.
+workflow:
+  rules:
+    - when: never

@@ -1,0 +1,13 @@
+# PE-002B / PE-007B 実受入（2026-10-02）
+
+PE-002BはPhase 0由来を検証しMR25で統合したbackendイメージ（source7e38def8118ecc5101c5054e64f3eff98dfc819e、digest sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d）を使った。隔離kind-core-platform-at0102の専用namespaceで、DB DNSがない間にmigrationだけがRunning、Deploymentが存在しないことを記録し、DBを遅れて利用可能にして成功を確認した。
+
+別試験で同じrevisionのmigration advisory lockを230秒保持し、JobがactiveDeadlineSeconds=180でDeadlineExceededとなり、失敗hookの後のDeploymentが存在しないことを実測した。失敗Job/状態/秘密値を除いたログを保存し、lock解除後にApplication全体を同じrevisionで明示syncした。migration再実行後はHealthy/Syncedとなり、復旧したbackend経由の作成・読取・更新・削除が成功。schema_migrationsのversion1と適用時刻は不変だった。SQL中断時のDDL/履歴rollbackと再実行、lockキャンセル/回収は実DB統合テストでもPASS。
+
+全6 Applicationを固定した各repository/chart revisionで再同期し、すべてSucceeded/Synced/Healthyを確認した。accountの3 childは同じmanifest SHA a92a7850c4714cf93d0e1b9bd4501896bc849792。別repositoryのplatform SHAと外部Prometheus chart29.35.0はそれぞれ記録する。異なるrepositoryのSHAを同じ値と呼ばない。これはPE-002Bの受入であり、非互換DB拒否とPhase 0 rollbackはPE-007Aで別実施する。
+
+PE-007Bは隔離account DBの既知レコードをpg_dumpし、kind外のアクセス制限付きファイルへ保存した。別cluster/context kind-core-platform-restoreへ固定PostgreSQL17.10を構築し、同じchecksumのbackupから復元した。全レコードchecksum、migration履歴・時刻、既知レコードが一致。DB role/passwordやSecret dataをbackup/証跡へ含めていない。
+
+削除保護は隔離の専用DB/PVCをArgoが所有するfixtureで実測した。prune要求はStatefulSetのPrune=confirmで確認待ちに停止。専用fixtureだけを明示確認してDBをpruneした後もPVCはPrune=falseで同一UID/volumeのまま保持された。正規chartからDBを再作成して既知markerを読めた。さらにApplicationのcascade deleteを要求し、Delete=confirmのDBとDelete=falseのPVC、既知データが保持された。これらはArgoの操作境界であり、直接kubectlによる削除を防ぐadmission規則ではない。元kind-platform-labのDB/PVC/dataは削除していない。
+
+証跡: [migration](evidence/PE002B-runtime.json)、[backup・復元・削除保護](evidence/PE007B-data-protection.json)、[実DB SQL中断](evidence/PE002B-migration-integration.txt)。親PE-007はPE-007Aも完了してから閉じる。scan/SBOM再検査を要求するPhase 2 rollbackはPE-018/019へ引き継ぐ。

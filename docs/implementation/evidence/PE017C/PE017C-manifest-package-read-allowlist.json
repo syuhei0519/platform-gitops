@@ -1,0 +1,58 @@
+{
+  "configured": [
+    {
+      "sourceProject": 86247025,
+      "actualCIReadConfirmed": false,
+      "beforeIds": [
+        86247025
+      ],
+      "jobTokenPolicies": [
+        "READ_PACKAGES"
+      ],
+      "defaultPermissions": false,
+      "manifestReader": 86247034,
+      "afterIds": [
+        86247025,
+        86247034
+      ]
+    },
+    {
+      "sourceProject": 86247033,
+      "actualCIReadConfirmed": false,
+      "beforeIds": [
+        86247033
+      ],
+      "jobTokenPolicies": [
+        "READ_PACKAGES"
+      ],
+      "defaultPermissions": false,
+      "manifestReader": 86247034,
+      "afterIds": [
+        86247033,
+        86247034
+      ]
+    }
+  ],
+  "actualCIReadConfirmed": false,
+  "source": "https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/mutations/ci/job_token_scope/add_group_or_project.rb",
+  "schemaVersion": 1,
+  "utc": "2026-10-02T22:27:46.561361Z",
+  "independentReadback": [
+    {
+      "source": "gid://gitlab/Project/86247025",
+      "jobTokenPolicies": [
+        "READ_PACKAGES"
+      ],
+      "reader": 86247034,
+      "defaultPermissions": false
+    },
+    {
+      "source": "gid://gitlab/Project/86247033",
+      "jobTokenPolicies": [
+        "READ_PACKAGES"
+      ],
+      "reader": 86247034,
+      "defaultPermissions": false
+    }
+  ]
+}

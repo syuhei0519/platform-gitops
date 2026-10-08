@@ -1,0 +1,601 @@
+{
+  "diagramContractAuditAccepted": true,
+  "reviewedRuntimeDifferences": [
+    "Final acceptance cluster name core-platform-final-019 replaces baseline platform-lab for isolation, same namespaces/RBAC/network contract",
+    "Separate pe019-restore PVC and stopped restore StatefulSet are scoped acceptance fixtures, preserved after validated backup/restore",
+    "Phase2 both services enabled; 1 digest:N scan run/schema2 binding now implemented",
+    "Kong/Istio/Rollouts/Backstage/Crossplane remain future scope, no deployment claim",
+    "Actual metadata confirms 12 healthy Applications; source runner paused/new runner1 during test; handoff pending"
+  ],
+  "utc": "2026-10-06T18:50:42.2271851Z",
+  "frozenDiagramLabelsNotCurrentExecutionEvidence": true,
+  "structuralContracts": [
+    "Four repository responsibilities unchanged",
+    "account: Nginx/Go/PostgreSQL/migration Sync hook/PVC",
+    "observability: OTLP4318 Collector Recreate/Prom8889/KSM/Prometheus/Grafana/NRUS",
+    "argocd/runner-system/build separated; CI concurrent1/rootless OCI",
+    "Immutable source-build-scan-record-SBOM-MR-Argo-Pod provenance",
+    "Logs local kubectl correlation, NR trace storage separately verified"
+  ],
+  "diagrams": [
+    {
+      "frozenPlanningDiagram": true,
+      "name": "cicd-flow.drawio",
+      "labels": [
+        "03  CI/CDの標準配信経路",
+        "同じOCI成果物を検査・公開。frontend全工程を切替後にbackendへ展開する（R03）。",
+        "Core Platform v1 設計案  |  2026-10-01  |  03 / 08",
+        "MR / main：サービス別の検証",
+        "ソースのコミット",
+        "静的検査 / 型検査",
+        "テスト",
+        "アプリのビルド",
+        "起動",
+        "成功",
+        "成功",
+        "検査 / SBOM",
+        "Trivyでソースを検査\n脆弱性 / 機密情報 / 設定",
+        "rootless BuildKit\nOCI形式の成果物",
+        "Trivyでイメージを検査\n同じOCI形式の成果物",
+        "CycloneDX SBOM\nscan run固有の記録",
+        "ソース検査",
+        "成功",
+        "引渡し",
+        "検査合格",
+        "mainのみ",
+        "レジストリへプッシュ\ncraneで同じ成果物を公開",
+        "公開後のダイジェストを照合\nOCIのソース・改訂情報",
+        "配備定義の更新MR\nレビュー・最新状態を再確認",
+        "Argo CD\n再配置",
+        "承認済み成果物",
+        "読取",
+        "更新提案",
+        "マージ",
+        "切替順：frontend 016F → 017F → 018F → backend 016B → 017B → 018B\n016/017は検証専用で旧mainを維持。018切替後は未検査publish・fallbackを撤去。rulesと認可は別。"
+      ],
+      "edges": [
+        {
+          "target": "cell_lint",
+          "id": "cell_e1",
+          "value": "起動",
+          "source": "cell_commit"
+        },
+        {
+          "target": "cell_test",
+          "id": "cell_e2",
+          "value": "成功",
+          "source": "cell_lint"
+        },
+        {
+          "target": "cell_build",
+          "id": "cell_e3",
+          "value": "成功",
+          "source": "cell_test"
+        },
+        {
+          "target": "cell_fs",
+          "id": "cell_e4",
+          "value": "ソース検査",
+          "source": "cell_build"
+        },
+        {
+          "target": "cell_bk",
+          "id": "cell_e5",
+          "value": "成功",
+          "source": "cell_fs"
+        },
+        {
+          "target": "cell_scan",
+          "id": "cell_e6",
+          "value": "引渡し",
+          "source": "cell_bk"
+        },
+        {
+          "target": "cell_sbom",
+          "id": "cell_e7",
+          "value": "検査合格",
+          "source": "cell_scan"
+        },
+        {
+          "target": "cell_push",
+          "id": "cell_e8",
+          "value": "承認済み成果物",
+          "source": "cell_sbom"
+        },
+        {
+          "target": "cell_verify",
+          "id": "cell_e9",
+          "value": "読取",
+          "source": "cell_push"
+        },
+        {
+          "target": "cell_mr",
+          "id": "cell_e10",
+          "value": "更新提案",
+          "source": "cell_verify"
+        },
+        {
+          "target": "cell_cd",
+          "id": "cell_e11",
+          "value": "マージ",
+          "source": "cell_mr"
+        }
+      ],
+      "sha256": "bc9d053074f2da416386ef95c7f778e0c5df0f139e40026678cda5ae960201fd"
+    },
+    {
+      "frozenPlanningDiagram": true,
+      "name": "core-platform-architecture.drawio",
+      "labels": [
+        "01  Core Platform 全体構成",
+        "既存の4リポジトリを拡張し、Kong導入前に配信経路・可観測性・イメージの安全性を完成させる。",
+        "Core Platform v1 設計案  |  2026-10-01  |  01 / 08",
+        "開発者 / ソース管理 / CI / 成果物",
+        "開発者",
+        "frontend-app\nbackend-app",
+        "GitLab CI\nテスト → ビルド → Trivy → SBOM",
+        "コンテナレジストリ\nSHAタグ + ダイジェスト",
+        "git push",
+        "パイプライン起動",
+        "検査後にプッシュ",
+        "GitOps層  ·  Argo CDはkind内のargocd名前空間で稼働",
+        "platform-gitops\n初期構築 / 接続構成 / 基盤",
+        "application-manifest\nアプリのチャート / 環境別の状態",
+        "Argo CD\nApp of Apps / Helmで展開",
+        "MR提案 → レビュー・マージ",
+        "アプリの状態を読取",
+        "基盤構成を読取",
+        "kind実行環境",
+        "account名前空間\nフロントエンド → API → PostgreSQL\nDB移行 / 設定 / 既存Secret参照",
+        "observability名前空間\nOTel Collector / Prometheus / Grafana\nKubernetesメトリクス + APIの計測値",
+        "外部SaaS\nNew Relic\nトレース保存・閲覧",
+        "望ましい状態へ同期",
+        "OTLP送信",
+        "OTLP / TLS",
+        "実行環境は承認済みイメージをダイジェストで取得する。\nCIには配備用の認証情報を渡さない。",
+        "次の段階：Kong\n基盤の子Applicationとして追加"
+      ],
+      "edges": [
+        {
+          "target": "cell_src",
+          "id": "cell_e1",
+          "value": "git push",
+          "source": "cell_dev"
+        },
+        {
+          "target": "cell_ci",
+          "id": "cell_e2",
+          "value": "パイプライン起動",
+          "source": "cell_src"
+        },
+        {
+          "target": "cell_registry",
+          "id": "cell_e3",
+          "value": "検査後にプッシュ",
+          "source": "cell_ci"
+        },
+        {
+          "target": "cell_manifest",
+          "id": "cell_e4",
+          "value": "MR提案 → レビュー・マージ",
+          "source": "cell_ci"
+        },
+        {
+          "target": "cell_argo",
+          "id": "cell_e5",
+          "value": "アプリの状態を読取",
+          "source": "cell_manifest"
+        },
+        {
+          "target": "cell_argo",
+          "id": "cell_e6",
+          "value": "基盤構成を読取",
+          "source": "cell_plat"
+        },
+        {
+          "target": "cell_apps",
+          "id": "cell_e7",
+          "value": "望ましい状態へ同期",
+          "source": "cell_argo"
+        },
+        {
+          "target": "cell_obs",
+          "id": "cell_e8",
+          "value": "OTLP送信",
+          "source": "cell_apps"
+        },
+        {
+          "target": "cell_nr",
+          "id": "cell_e9",
+          "value": "OTLP / TLS",
+          "source": "cell_obs"
+        }
+      ],
+      "sha256": "38b5f78db591f44dbac5cb0137d05ff396884786136a0e7d444d5b27835022e3"
+    },
+    {
+      "frozenPlanningDiagram": true,
+      "name": "future-platform-extension.drawio",
+      "labels": [
+        "08  将来の基盤コンポーネント追加箇所",
+        "v1受入後はKongを最優先で追加する。この図は今後の計画であり、現在の実行構成ではない。",
+        "Core Platform v1 設計案  |  2026-10-01  |  08 / 08",
+        "Core Platform v1：先に完成させる範囲",
+        "配信経路\nソース → CI → 成果物 → GitOps → 実行環境",
+        "維持する契約\nダイジェスト / MR / 既存Secret / OTel / 管理責任",
+        "次の段階：Kong AI Gateway",
+        "platform-gitops\n基盤の子Applicationを追加\n設定値 / 名前空間 / AppProject / 認証情報",
+        "application-manifest\n必要になったアプリの経路設定だけを追加\nアプリのソースとDBの管理責任を維持",
+        "基盤へ追加",
+        "契約を再利用",
+        "v1にはKongのCRD・プラグイン・専用の抽象化を追加しない。\n実際の経路設定・AI向け方針・SecretはKong導入時に設計する。",
+        "Argo Rollouts",
+        "Istio",
+        "Backstage / ApplicationSet\nテンプレート整備",
+        "Crossplane",
+        "実行基盤の\n高度化",
+        "次へ",
+        "次へ",
+        "次へ",
+        "次へ"
+      ],
+      "edges": [
+        {
+          "target": "cell_plat",
+          "id": "cell_e1",
+          "value": "基盤へ追加",
+          "source": "cell_core"
+        },
+        {
+          "target": "cell_app",
+          "id": "cell_e2",
+          "value": "契約を再利用",
+          "source": "cell_contracts"
+        },
+        {
+          "target": "cell_mesh",
+          "id": "cell_e3",
+          "value": "次へ",
+          "source": "cell_roll"
+        },
+        {
+          "target": "cell_devex",
+          "id": "cell_e4",
+          "value": "次へ",
+          "source": "cell_mesh"
+        },
+        {
+          "target": "cell_cross",
+          "id": "cell_e5",
+          "value": "次へ",
+          "source": "cell_devex"
+        },
+        {
+          "target": "cell_adv",
+          "id": "cell_e6",
+          "value": "次へ",
+          "source": "cell_cross"
+        }
+      ],
+      "sha256": "cb82d2669f6b59bef782791bb694ee4bf7bba6a4fe22f1a792d4d11472b964a5"
+    },
+    {
+      "frozenPlanningDiagram": true,
+      "name": "gitops-flow.drawio",
+      "labels": [
+        "04  GitOpsの状態調整",
+        "固定target/MR SHAの最終renderで実imageを検証。マージ直前の3 SHA再確認と末端の準備完了を分ける。",
+        "Core Platform v1 設計案  |  2026-10-01  |  04 / 08",
+        "Gitで管理する望ましい状態",
+        "platform-gitops / main\nApplicationの接続構成 + 基盤の設定値",
+        "application-manifest / main\nチャート + digest + 特定scan run参照",
+        "Argo CD",
+        "lab-local-root\n所属：lab-root",
+        "lab-local-platform\n所属：lab-control",
+        "lab-local-workloads\n所属：lab-control",
+        "Runner / 権限などの基礎設定\nCollector / Prometheus / Grafana\n所属：lab-platform / lab-observability",
+        "PostgreSQL → バックエンド → フロントエンド\n所属：lab-account\napplication-manifestをHelmで展開",
+        "初期構築・状態調整",
+        "子を作成",
+        "子を作成",
+        "末端を作成",
+        "末端を作成",
+        "アプリのチャートを読取",
+        "自動同期 + 自己修復 + PruneLast\nmigration失敗時は停止。復旧後はApplication全体を再sync。\nresource指定selective syncは通常復旧に使わない。",
+        "データ・初期構築の管理責任\nPVC：Prune=false / Delete=false。DB削除：要確認。\n名前空間・Argo本体・Secret：運用者が初期構築。",
+        "固定target + MR SHA\n秘密なしの固定検証器\n全PodSpec → inventory",
+        "信頼済みmain / 認証あり\n固定job・SHA・checksum照合\nアプリrun / 第三者台帳",
+        "3 SHAを再確認 → 人がmerge\n変更時は再render / 再検証\nsha引数はsource HEADのみ"
+      ],
+      "edges": [
+        {
+          "target": "cell_root",
+          "id": "cell_e1",
+          "value": "初期構築・状態調整",
+          "source": "cell_platformrepo"
+        },
+        {
+          "target": "cell_platform",
+          "id": "cell_e2",
+          "value": "子を作成",
+          "source": "cell_root"
+        },
+        {
+          "target": "cell_workloads",
+          "id": "cell_e3",
+          "value": "子を作成",
+          "source": "cell_root"
+        },
+        {
+          "target": "cell_platleaf",
+          "id": "cell_e4",
+          "value": "末端を作成",
+          "source": "cell_platform"
+        },
+        {
+          "target": "cell_appleaf",
+          "id": "cell_e5",
+          "value": "末端を作成",
+          "source": "cell_workloads"
+        },
+        {
+          "target": "cell_appleaf",
+          "id": "cell_e6",
+          "value": "",
+          "source": "cell_manifestrepo"
+        },
+        {
+          "target": "prov_auth",
+          "id": "prov_edge0",
+          "value": null,
+          "source": "prov_render"
+        },
+        {
+          "target": "prov_merge",
+          "id": "prov_edge1",
+          "value": null,
+          "source": "prov_auth"
+        }
+      ],
+      "sha256": "d6d0b45f6995faf9a6cb6510f33d60ac7432413ff0ae8766c23fdf882bbcfbd7"
+    },
+    {
+      "frozenPlanningDiagram": true,
+      "name": "observability-flow.drawio",
+      "labels": [
+        "06  可観測性データの流れ",
+        "APIの生成元instanceとCollectorの集計先を分ける。停止・NR送信失敗・再起動を別々に測る。",
+        "Core Platform v1 設計案  |  2026-10-01  |  06 / 08",
+        "生成 / 収集",
+        "Go API + OTel SDK\nRED / HTTP・DB span\nname / version / instance UUID",
+        "Kubernetesのメトリクス\nkubelet・cAdvisor：CPU・メモリ\nKSM：再起動・準備完了",
+        "アプリの標準出力・標準エラー\nJSONログ + trace_id\nNginxの接続・エラーログ",
+        "処理 / メトリクスの公開",
+        "OTel Collector：1 replica / Recreate\nOTLP/HTTP :4318 → 処理\nversion / instanceを保持",
+        "Prometheus出力 :8889\nAPI instance別の累積値を公開",
+        "保存 / 可視化",
+        "New Relic\nトレース保存・閲覧\n地域別OTLP接続先 / TLS",
+        "Prometheus\n定期取得 → TSDB / PVC",
+        "Grafana\n基盤・アプリの概要を表示",
+        "kubeletのログファイル → kubectl logs\nローカルのみ保持・trace_idで関連付け",
+        "OTLP送信",
+        "メトリクス公開",
+        "トレースを送信 / TLS",
+        "定期取得 :8889",
+        "Kubernetesから定期取得",
+        "PromQLで問合せ",
+        "収集・世代管理",
+        "計測契約：累積 / export 10秒 / scrape 30秒 / 秒explicit histogram\ninstance別rate後に合算。p95はbucket推定。ゼロ件N/A。ログはkubectlでtrace_id照合。",
+        "停止：up欠落・SDKエラー\nNR断：queue / send_failed / drop\n再起動：欠測・counter reset"
+      ],
+      "edges": [
+        {
+          "target": "cell_collector",
+          "id": "cell_e1",
+          "value": "OTLP送信",
+          "source": "cell_api"
+        },
+        {
+          "target": "cell_endpoint",
+          "id": "cell_e2",
+          "value": "メトリクス公開",
+          "source": "cell_collector"
+        },
+        {
+          "target": "cell_nr",
+          "id": "cell_e3",
+          "value": "トレースを送信 / TLS",
+          "source": "cell_collector"
+        },
+        {
+          "target": "cell_endpoint",
+          "id": "cell_e4",
+          "value": "定期取得 :8889",
+          "source": "cell_prom"
+        },
+        {
+          "target": "cell_kube",
+          "id": "cell_e5",
+          "value": "Kubernetesから定期取得",
+          "source": "cell_prom"
+        },
+        {
+          "target": "cell_prom",
+          "id": "cell_e6",
+          "value": "PromQLで問合せ",
+          "source": "cell_grafana"
+        },
+        {
+          "target": "cell_local",
+          "id": "cell_e7",
+          "value": "収集・世代管理",
+          "source": "cell_logs"
+        }
+      ],
+      "sha256": "bd876b504275187400adb8fa6fc025b09e578c299287b7c6c5707e4ea8452075"
+    },
+    {
+      "frozenPlanningDiagram": true,
+      "name": "repository-responsibility.drawio",
+      "labels": [
+        "02  リポジトリの責任分担",
+        "既存の名称とチャートを維持し、ソース・望ましい状態・接続構成・秘密値の管理を分離する。",
+        "Core Platform v1 設計案  |  2026-10-01  |  02 / 08",
+        "frontend-app",
+        "管理するもの\n\nReact / APIクライアント\nテスト / Dockerfile\nNginxの既定設定\nCI / イメージ / 検査",
+        "置かないもの\n\nKubernetes・Argoの定義\nクラスタの認証情報\n秘密値",
+        "backend-app",
+        "管理するもの\n\nGo API / SQL移行\nテスト / Dockerfile\nOTel SDK\nCI / イメージ / 検査",
+        "置かないもの\n\n環境別の配備設定\nArgo Application\nDBパスワード",
+        "application-manifest",
+        "管理するもの\n\n3つの個別Helmチャート\n環境別設定 / イメージの選択\nDB移行Job\nリリース記録への参照",
+        "置かないもの\n\nアプリのソース・SQL\n名前空間 / AppProject\n基盤チャート / 秘密値",
+        "platform-gitops",
+        "管理するもの\n\n初期構築 / 名前空間\nAppProject / Application\nRunner / 可観測性\nダッシュボード",
+        "置かないもの\n\nアプリのチャート・業務SQL\nアプリのイメージ選択\n秘密値 / SaaSの保存データ",
+        "成果物・リリース更新MR",
+        "成果物・リリース更新MR",
+        "秘密値：運用者 → パスワード管理ツール → 初期注入・保護されたCI変数\nGitにはSecretの名称・キー・所有関係だけを記録する。",
+        "PostgreSQLのインスタンス：アプリ側\n保存領域・RBAC：基盤側"
+      ],
+      "edges": [
+        {
+          "target": "cell_g2",
+          "id": "cell_e1",
+          "value": "成果物・リリース更新MR",
+          "source": "cell_g0"
+        },
+        {
+          "target": "cell_g2",
+          "id": "cell_e2",
+          "value": "成果物・リリース更新MR",
+          "source": "cell_g1"
+        }
+      ],
+      "sha256": "76b0e443e6bdf6db6c7971836a3487801bdd62407a6f650026d3a1d70e20b596"
+    },
+    {
+      "frozenPlanningDiagram": true,
+      "name": "runtime-kubernetes.drawio",
+      "labels": [
+        "05  実行環境とKubernetesの境界",
+        "accountの業務領域を1つにまとめる。名前空間とRBACによる分離はネットワーク遮断を意味しない。",
+        "Core Platform v1 設計案  |  2026-10-01  |  05 / 08",
+        "kind：platform-lab  ·  単一ノード / linux-amd64",
+        "account：アプリのライフサイクル / restricted PSA",
+        "フロントエンド\nNginx + React",
+        "バックエンド\nGo API",
+        "PostgreSQL\nStatefulSet",
+        "DB移行Job\nSyncフック / 同期順序 -10",
+        "PVC 2Gi\nstandard\n削除を抑止",
+        "HTTP /api",
+        "SQL :5432",
+        "スキーマ移行",
+        "データをマウント",
+        "observability：基盤のライフサイクル",
+        "OTel Collector\nOTLP → メトリクス・トレース",
+        "Prometheus + KSM\nGrafana",
+        "制御基盤 / CI",
+        "argocd\nGitOpsコントローラー",
+        "runner-system\nRunner管理プロセス + 認証Secret",
+        "build\n使い捨てCI Pod / BuildKit",
+        "ジョブを作成",
+        "ローカルからの接続\nブラウザ → localhostへのポート転送 → フロントエンド。\nGrafana・Argoの画面は別のローカルポートで接続。",
+        "リリース時の順序\nConfigMap -20 → DB移行 -10 → Deployment 0。\n起動・生存・準備完了を確認し、DB待機に上限を設ける。"
+      ],
+      "edges": [
+        {
+          "target": "cell_backend",
+          "id": "cell_e1",
+          "value": "HTTP /api",
+          "source": "cell_frontend"
+        },
+        {
+          "target": "cell_db",
+          "id": "cell_e2",
+          "value": "SQL :5432",
+          "source": "cell_backend"
+        },
+        {
+          "target": "cell_db",
+          "id": "cell_e3",
+          "value": "スキーマ移行",
+          "source": "cell_migration"
+        },
+        {
+          "target": "cell_pvc",
+          "id": "cell_e4",
+          "value": "データをマウント",
+          "source": "cell_db"
+        },
+        {
+          "target": "cell_job",
+          "id": "cell_e5",
+          "value": "ジョブを作成",
+          "source": "cell_manager"
+        }
+      ],
+      "sha256": "ac45e7b4c9219de6051e39ef8af2f8b389f8e3984f4035ea9b7fb7ced3ae0670"
+    },
+    {
+      "frozenPlanningDiagram": true,
+      "name": "supply-chain-flow.drawio",
+      "labels": [
+        "07  ソフトウェア供給網の安全性",
+        "1 image digest : N scan run。元buildと今回scanのIDを分離し、過去の証跡を上書きしない（R02）。",
+        "Core Platform v1 設計案  |  2026-10-01  |  07 / 08",
+        "CIで成果物を引き渡す流れ",
+        "ソースのSHA\n依存固定ファイル",
+        "BuildKit\nOCI形式の成果物",
+        "Trivy\nイメージの検査",
+        "Trivy\nCycloneDX形式のJSON",
+        "一度だけビルド",
+        "同じ成果物",
+        "検査合格",
+        "失敗時の方針",
+        "後続を停止\n修正版のあるCRITICAL脆弱性\n機密情報の検出 / 例外の期限切れ\n検査・脆弱性DB・SBOM生成の異常",
+        "記録して対応を追跡\nHIGH・MEDIUM・LOW・未修正CRITICAL\n設定不備は当初は注意扱い。明示的な禁止事項は停止。",
+        "リリースの証跡",
+        "run固有release-record / SBOM\nbuildPipelineId / buildJobId（元build）\nscanPipelineId / scanJobId（今回検査）\nimage digest + 入力 / SBOM checksum\nDB日時・判定・run固有immutable URL",
+        "Package version：sha256- \nrecord / SBOMの名前はscan pipeline・job ID別\n認証URLは固定GitLab / projectから構成",
+        "照合値を記録",
+        "証跡を保持",
+        "同digestの再検査は新runを追加。新しい不合格で提案停止。旧成功へ差し替えて通さない。\n合格run / checksum → GitOps MR → 最終PodSpec実image照合 → Argo → Pod imageID"
+      ],
+      "edges": [
+        {
+          "target": "cell_layout",
+          "id": "cell_e1",
+          "value": "一度だけビルド",
+          "source": "cell_source"
+        },
+        {
+          "target": "cell_scan",
+          "id": "cell_e2",
+          "value": "同じ成果物",
+          "source": "cell_layout"
+        },
+        {
+          "target": "cell_sbom",
+          "id": "cell_e3",
+          "value": "検査合格",
+          "source": "cell_scan"
+        },
+        {
+          "target": "cell_record",
+          "id": "cell_e4",
+          "value": "照合値を記録",
+          "source": "cell_sbom"
+        },
+        {
+          "target": "cell_store",
+          "id": "cell_e5",
+          "value": "証跡を保持",
+          "source": "cell_record"
+        }
+      ],
+      "sha256": "d630cc84d1cde5ed341562a489311bc55a79af8dfcb21f1e99d794eecd7043cd"
+    }
+  ],
+  "asBuiltEvidence": "PE019-bootstrap-runtime.json + PE019-corrected-binding-accepted.json + final900 and AT14 proof"
+}

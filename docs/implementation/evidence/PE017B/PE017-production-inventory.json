@@ -1,0 +1,596 @@
+{
+  "explicitRollbackRegister": [
+    {
+      "reason": "rollback",
+      "service": "frontend",
+      "basis": "Explicitly retain the pre-PE017F accepted runtime baseline",
+      "digest": "sha256:6a88974a3da301ed15542cdbd16f11fffdbae3119b30e5879253d2812ad01fbe"
+    },
+    {
+      "reason": "rollback",
+      "service": "backend",
+      "basis": "Explicitly retain the pre-PE017F accepted runtime baseline",
+      "digest": "sha256:29c90d8c8024ef9e10821cb773eac6c2dfdda12d10d7a0dea508703bfb685793"
+    }
+  ],
+  "paginationComplete": true,
+  "cleanupAuthorizedByThisSnapshot": false,
+  "operatorReviewAndRetentionPlanPending": true,
+  "deleteRequested": false,
+  "automaticDeletionEnabled": false,
+  "running": [
+    {
+      "service": "backend",
+      "reason": "running",
+      "namespace": "account",
+      "pod": "backend-9d4887cf6-dhdn6",
+      "podUid": "66e76f5f-1ee7-4862-bb5f-51091fd3c467",
+      "image": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:e927c6c837bf36d41c118225f254d277cf95bb5f@sha256:a0719ef3ea129b2fa3eb0cfad20f722378f9ffb003701e4bdbcc79ee64743a9b",
+      "container": "backend",
+      "digest": "sha256:a0719ef3ea129b2fa3eb0cfad20f722378f9ffb003701e4bdbcc79ee64743a9b"
+    },
+    {
+      "service": "frontend",
+      "reason": "running",
+      "namespace": "account",
+      "pod": "frontend-5bdc8c5fbd-5lss6",
+      "podUid": "6da97e91-4aca-4271-b313-4be4245090dc",
+      "image": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app:ce6ec1d94cf1042a824b745f4a5f6367b1c0f845@sha256:68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78",
+      "container": "frontend",
+      "digest": "sha256:68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78"
+    },
+    {
+      "service": "backend",
+      "reason": "running",
+      "namespace": "account",
+      "pod": "pe012-canary-865858dc5d-8twd6",
+      "podUid": "a1b578c0-f848-427a-b06a-67adedabcc4a",
+      "image": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:ff5af7e7305e36299b9b0b5629a0d9a016271619@sha256:ec1ab2e08e26381b554d39c4c133b5ecf2b4056ddcec9d81d740d13a67318db7",
+      "container": "backend",
+      "digest": "sha256:ec1ab2e08e26381b554d39c4c133b5ecf2b4056ddcec9d81d740d13a67318db7"
+    }
+  ],
+  "scope": "Generic Package metadata plus actual Source Pod/initContainer inventory",
+  "utc": "2026-10-04T20:43:51.2840343Z",
+  "allSixStatusesListed": true,
+  "documentation": "https://docs.gitlab.com/api/packages/",
+  "packages": [
+    {
+      "id": 71310231,
+      "version": "sha256-bc04a1166438c5534e41d8036e59aae08d28b792abb58af219a3745b25c4a1c2",
+      "reservedNonreleaseFixture": true,
+      "project": 86247025,
+      "createdAt": "2026-10-02T23:13:27.782Z",
+      "name": "core-platform-frontend",
+      "files": [],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": false
+    },
+    {
+      "id": 71324296,
+      "version": "sha256-aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-03T09:32:32.198Z",
+      "name": "core-platform-frontend",
+      "files": [
+        {
+          "id": 362286010,
+          "file_name": "scan-report-2908988271-16911641951.json",
+          "size": 47341,
+          "file_sha256": "b44c7bfea0300e269559223aa75b220c6e1d22fe89f5edaa6b1c6b3e7f5ac7ba",
+          "created_at": "2026-10-03T09:32:32.267Z"
+        },
+        {
+          "id": 362286018,
+          "file_name": "sbom-2908988271-16911641951.cdx.json",
+          "size": 619591,
+          "file_sha256": "9b7a174933ec2c73d9422e204fc0b6d928bc5d69f52b618b49873aed9103cdc4",
+          "created_at": "2026-10-03T09:32:36.082Z"
+        },
+        {
+          "id": 362286022,
+          "file_name": "release-record-2908988271-16911641951.json",
+          "size": 2197,
+          "file_sha256": "0296119f28d7aa6c6cc83fe292200aefe0ace68995e8c116b0c722301ce82d4d",
+          "created_at": "2026-10-03T09:32:37.592Z"
+        },
+        {
+          "id": 362363411,
+          "file_name": "scan-report-2908988271-16911641952.json",
+          "size": 47341,
+          "file_sha256": "dc66f801a308d57d7b337621a647413a71f6ae2566417223ce09e74682c157e1",
+          "created_at": "2026-10-03T15:08:16.502Z"
+        },
+        {
+          "id": 362363423,
+          "file_name": "release-record-2908988271-16911641952.json",
+          "size": 1726,
+          "file_sha256": "4c5791eb3e76bbcd82e2d69a44654161a43be2e812818fcb512d1f8b2432bfaa",
+          "created_at": "2026-10-03T15:08:19.361Z"
+        }
+      ],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": true
+    },
+    {
+      "id": 71339037,
+      "version": "sha256-ce9caabe905b350e96f3fce4a92694f8e9a9486191a3b3fe072605f5aedc7d76",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-03T18:43:48.256Z",
+      "name": "core-platform-frontend",
+      "files": [
+        {
+          "id": 362400007,
+          "file_name": "scan-report-2909588335-16914937008.json",
+          "size": 47341,
+          "file_sha256": "0d6b30f1f8eaa727a62a507e21462ab5acebf6a2182c6046c8b5cf2dbabdbc24",
+          "created_at": "2026-10-03T18:43:48.305Z"
+        },
+        {
+          "id": 362400016,
+          "file_name": "sbom-2909588335-16914937008.cdx.json",
+          "size": 619585,
+          "file_sha256": "b7fb9efeaeb4c900189516238a3caea7dae295964b4c2863eb66784e433c20ef",
+          "created_at": "2026-10-03T18:43:51.735Z"
+        },
+        {
+          "id": 362400017,
+          "file_name": "release-record-2909588335-16914937008.json",
+          "size": 2206,
+          "file_sha256": "5775a492b53de891801a143244bd0d5db5f0f8fb25a4b4eb9fcff48c8ec2bb40",
+          "created_at": "2026-10-03T18:43:53.153Z"
+        },
+        {
+          "id": 362462105,
+          "file_name": "scan-report-2909968445-16917039546.json",
+          "size": 47341,
+          "file_sha256": "4209577212d6a620a546474a4d5f29570ef60df89b515e6aeb2acefed437032d",
+          "created_at": "2026-10-04T00:24:11.145Z"
+        },
+        {
+          "id": 362462121,
+          "file_name": "sbom-2909968445-16917039546.cdx.json",
+          "size": 622351,
+          "file_sha256": "4ef9b39edf12dfcd8a8010b39fe79914faf855aff6596abaca54cdeea3dae404",
+          "created_at": "2026-10-04T00:24:14.403Z"
+        },
+        {
+          "id": 362462130,
+          "file_name": "release-record-2909968445-16917039546.json",
+          "size": 2206,
+          "file_sha256": "1d85ff1c714cd8fecd28d003781564ecd342dce47368a6d25645d8394551fc7a",
+          "created_at": "2026-10-04T00:24:15.832Z"
+        },
+        {
+          "id": 362549797,
+          "file_name": "scan-report-2910392838-16919122100.json",
+          "size": 47341,
+          "file_sha256": "6f55a30a8f4206afb73931e9cfb761a67608ae573e8055d2e9197b403621554d",
+          "created_at": "2026-10-04T06:17:42.352Z"
+        },
+        {
+          "id": 362549814,
+          "file_name": "sbom-2910392838-16919122100.cdx.json",
+          "size": 619771,
+          "file_sha256": "aed9223725dfefc502ed12488dc020a5776fc89d6a6a0e974bcd09210caa62b3",
+          "created_at": "2026-10-04T06:17:46.35Z"
+        },
+        {
+          "id": 362549828,
+          "file_name": "release-record-2910392838-16919122100.json",
+          "size": 2206,
+          "file_sha256": "4d266d61280dac399ff76374a727c6444709a458c9c17951680fc7ab1c8bc090",
+          "created_at": "2026-10-04T06:17:48.727Z"
+        }
+      ],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": true
+    },
+    {
+      "id": 71341764,
+      "version": "sha256-afbf2531f7dae6284362010c9d934dc86dbee9b3be889d56a46bfca2a5e7d3e9",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-03T20:09:19.705Z",
+      "name": "core-platform-frontend",
+      "files": [
+        {
+          "id": 362415178,
+          "file_name": "scan-report-2909684081-16915473892.json",
+          "size": 47341,
+          "file_sha256": "c1576557670e216c115f550ff4ffa50a7ebe2b0702d043c1a149e72b29a74dc2",
+          "created_at": "2026-10-03T20:09:19.761Z"
+        },
+        {
+          "id": 362415193,
+          "file_name": "sbom-2909684081-16915473892.cdx.json",
+          "size": 622351,
+          "file_sha256": "81e4da43d98ce5a753e4b00934222968b8cd1c02f210830cfda2b2a8b8aaa8d4",
+          "created_at": "2026-10-03T20:09:24.563Z"
+        },
+        {
+          "id": 362415205,
+          "file_name": "release-record-2909684081-16915473892.json",
+          "size": 2206,
+          "file_sha256": "71d994e29d166a07aae1899ccae200d65729d3d65e8a0dbdd27dc4210c889ff0",
+          "created_at": "2026-10-03T20:09:26.445Z"
+        }
+      ],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": true
+    },
+    {
+      "id": 71343215,
+      "version": "sha256-a09af8410dca1e43b35d70b433b8e995621b580f8b454e492dc565cca431e83a",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-03T21:13:06.121Z",
+      "name": "core-platform-frontend",
+      "files": [
+        {
+          "id": 362426330,
+          "file_name": "scan-report-2909756423-16915887544.json",
+          "size": 47341,
+          "file_sha256": "3f653587fe47e49d9943504a700905df1333260c5845f93cbecf6153fb2e0603",
+          "created_at": "2026-10-03T21:13:06.176Z"
+        },
+        {
+          "id": 362426344,
+          "file_name": "sbom-2909756423-16915887544.cdx.json",
+          "size": 622351,
+          "file_sha256": "b28e131bf2ac65a11ffd3ba05e024398be1132d35dbcf468436157bb1e300402",
+          "created_at": "2026-10-03T21:13:09.819Z"
+        },
+        {
+          "id": 362426351,
+          "file_name": "release-record-2909756423-16915887544.json",
+          "size": 2206,
+          "file_sha256": "0196af86db840bedc8236aac2b91bbd7ea8907b99149a0037eb61e8cde0a208e",
+          "created_at": "2026-10-03T21:13:11.567Z"
+        }
+      ],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": true
+    },
+    {
+      "id": 71345525,
+      "version": "sha256-3996ec59b7618e6aa935b13b60b0fc308d7f4cc754802a34b23625d76fd00337",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-03T23:04:24.105Z",
+      "name": "core-platform-frontend",
+      "files": [
+        {
+          "id": 362446215,
+          "file_name": "scan-report-2909878644-16916566311.json",
+          "size": 47341,
+          "file_sha256": "86f67fc278416ed8e6bdc4e677ee1cb1050fdff7124e2b525366e7e146d0e2b7",
+          "created_at": "2026-10-03T23:04:24.155Z"
+        },
+        {
+          "id": 362446225,
+          "file_name": "sbom-2909878644-16916566311.cdx.json",
+          "size": 622351,
+          "file_sha256": "70cd975a219d9e0818256ec540858689a58378b6b06634334d8448ce99140960",
+          "created_at": "2026-10-03T23:04:27.405Z"
+        },
+        {
+          "id": 362446230,
+          "file_name": "release-record-2909878644-16916566311.json",
+          "size": 2206,
+          "file_sha256": "d645b4b381fe10f79222e8a6a4f5e87222f110eaf1eaa50ff169c7349675c675",
+          "created_at": "2026-10-03T23:04:28.868Z"
+        }
+      ],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": true
+    },
+    {
+      "id": 71346292,
+      "version": "sha256-7eb30991a0784a2ec9af4f01ee26f936ae4b6b0d33876dee1836564f0b106e32",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-03T23:57:08.225Z",
+      "name": "core-platform-frontend",
+      "files": [
+        {
+          "id": 362457388,
+          "file_name": "scan-report-2909933458-16916857286.json",
+          "size": 47341,
+          "file_sha256": "7320ec84a0ee949fa0345c19d3b81163f3c804a1148ac5c5ffceaf4034fcad4b",
+          "created_at": "2026-10-03T23:57:08.27Z"
+        },
+        {
+          "id": 362457391,
+          "file_name": "sbom-2909933458-16916857286.cdx.json",
+          "size": 622351,
+          "file_sha256": "56ccf7e513af1e19c2000bb439a7e58b168bb7c7221ebccece9f0fdf9b8a0648",
+          "created_at": "2026-10-03T23:57:12.297Z"
+        },
+        {
+          "id": 362457393,
+          "file_name": "release-record-2909933458-16916857286.json",
+          "size": 2206,
+          "file_sha256": "adf94237fd9ca3cfe76f27dbe9cb6e379720f971e2c219835d2853874a53bf85",
+          "created_at": "2026-10-03T23:57:13.858Z"
+        }
+      ],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": true
+    },
+    {
+      "id": 71348457,
+      "version": "sha256-89feb31193e2dea1375b4d1b3230bb55aad9fe6111bb8d4615435b59ad7144f0",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-04T02:10:33.591Z",
+      "name": "core-platform-frontend",
+      "files": [
+        {
+          "id": 362491755,
+          "file_name": "scan-report-2910097350-16917683877.json",
+          "size": 47341,
+          "file_sha256": "0bd35099fbf990252420ab8e99e893d377e44d1ae33de59279a1cc3a2f38ce04",
+          "created_at": "2026-10-04T02:10:33.663Z"
+        },
+        {
+          "id": 362491776,
+          "file_name": "sbom-2910097350-16917683877.cdx.json",
+          "size": 622351,
+          "file_sha256": "fe325c1e89a7ec3bac64a158abe038202ffeda637cab685cd1e63f04ade326a6",
+          "created_at": "2026-10-04T02:10:38.156Z"
+        },
+        {
+          "id": 362491783,
+          "file_name": "release-record-2910097350-16917683877.json",
+          "size": 2197,
+          "file_sha256": "15300a15a2fc8be878f37af2338be5f1b35e3fef2bfd57b564cb3da3867d6531",
+          "created_at": "2026-10-04T02:10:39.679Z"
+        }
+      ],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": true
+    },
+    {
+      "id": 71351140,
+      "version": "sha256-d79a9948433a89cae4111a1c5a95e45a37869bb22ff3bdbe1709f9cdc9c15b3b",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-04T04:35:22.492Z",
+      "name": "core-platform-frontend",
+      "files": [
+        {
+          "id": 362520608,
+          "file_name": "scan-report-2910275893-16918558108.json",
+          "size": 47341,
+          "file_sha256": "da99d557d0b438b317f6ad380db541f451429d1e74fda2500950c6c213f56a1a",
+          "created_at": "2026-10-04T04:35:22.529Z"
+        },
+        {
+          "id": 362520636,
+          "file_name": "sbom-2910275893-16918558108.cdx.json",
+          "size": 619771,
+          "file_sha256": "a181d77a480693681bc7a2a195aa81f2c290f64151c75b85b4447fba15e5ad10",
+          "created_at": "2026-10-04T04:35:26.417Z"
+        },
+        {
+          "id": 362520651,
+          "file_name": "release-record-2910275893-16918558108.json",
+          "size": 2197,
+          "file_sha256": "7108ae9d15c21ba4c7f64d350592b9a6a91c7d4635cdca5969b4422ee3dad878",
+          "created_at": "2026-10-04T04:35:28.261Z"
+        }
+      ],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": true
+    },
+    {
+      "id": 71352003,
+      "version": "sha256-19453908a7ea2154814a0cbcd6c56caaa4bda89fb0d593fca5540f1b73a524fb",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-04T05:06:26.932Z",
+      "name": "core-platform-frontend",
+      "files": [
+        {
+          "id": 362533609,
+          "file_name": "scan-report-2910309383-16918718901.json",
+          "size": 47341,
+          "file_sha256": "11c970360b6f2409015d8bf2b6719a4725ab9deadaf85af03185242573d36335",
+          "created_at": "2026-10-04T05:06:26.98Z"
+        },
+        {
+          "id": 362533634,
+          "file_name": "sbom-2910309383-16918718901.cdx.json",
+          "size": 619771,
+          "file_sha256": "c57c89960a093df5efb93d90d7f42adf54a4249ba18bcbc000001f0e23b97489",
+          "created_at": "2026-10-04T05:06:30.907Z"
+        },
+        {
+          "id": 362533642,
+          "file_name": "release-record-2910309383-16918718901.json",
+          "size": 2197,
+          "file_sha256": "d9b98303d03ddeaa4da00a14dfa080a4ab97502888f6fe43a676a01c7dcdbcdb",
+          "created_at": "2026-10-04T05:06:32.772Z"
+        }
+      ],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": true
+    },
+    {
+      "id": 71352490,
+      "version": "sha256-68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-04T05:31:28.494Z",
+      "name": "core-platform-frontend",
+      "files": [
+        {
+          "id": 362540095,
+          "file_name": "scan-report-2910339772-16918864600.json",
+          "size": 47340,
+          "file_sha256": "b67be8829b383f98da145a32504c950b122ab138b4c20eef490c1ea600943fa9",
+          "created_at": "2026-10-04T05:31:28.546Z"
+        },
+        {
+          "id": 362540108,
+          "file_name": "sbom-2910339772-16918864600.cdx.json",
+          "size": 619771,
+          "file_sha256": "e7662b15915540e57f87dda43d0a1bfbc097f4655f15c6bc3e83a5267c8366b7",
+          "created_at": "2026-10-04T05:31:32.644Z"
+        },
+        {
+          "id": 362540118,
+          "file_name": "release-record-2910339772-16918864600.json",
+          "size": 2196,
+          "file_sha256": "c049f1daece26abaae441b7b41d3f558b41747443d19a4a7f27d4c537e405c13",
+          "created_at": "2026-10-04T05:31:34.598Z"
+        },
+        {
+          "id": 362543387,
+          "file_name": "scan-report-2910363180-16918980625.json",
+          "size": 47341,
+          "file_sha256": "9c2456884eb2bf71a4030087fd58a210a6c5f41a6283e20613157e55db344d87",
+          "created_at": "2026-10-04T05:51:59.511Z"
+        },
+        {
+          "id": 362543391,
+          "file_name": "sbom-2910363180-16918980625.cdx.json",
+          "size": 619771,
+          "file_sha256": "6a57e4801537aedad95fd755dbb1749ee45467e4b504e8fd909a6fb863a48594",
+          "created_at": "2026-10-04T05:52:03.841Z"
+        },
+        {
+          "id": 362543396,
+          "file_name": "release-record-2910363180-16918980625.json",
+          "size": 2206,
+          "file_sha256": "ab17a7862ac31365e277f4483b41ccdf3ad21d8a89f7029447d5958d2aada518",
+          "created_at": "2026-10-04T05:52:05.691Z"
+        }
+      ],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": true
+    },
+    {
+      "id": 71206300,
+      "version": "16885530135",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-02T02:38:31.055Z",
+      "name": "at13-permission-fixture",
+      "files": [],
+      "status": "pending_destruction",
+      "outsideFixedEvidenceNameRetained": true,
+      "filesListed": false
+    },
+    {
+      "id": 71206477,
+      "version": "16885612226",
+      "reservedNonreleaseFixture": false,
+      "project": 86247025,
+      "createdAt": "2026-10-02T02:47:21.879Z",
+      "name": "at13-permission-fixture",
+      "files": [],
+      "status": "pending_destruction",
+      "outsideFixedEvidenceNameRetained": true,
+      "filesListed": false
+    },
+    {
+      "id": 71311177,
+      "version": "sha256-790a9fcdab12f15a6c425cc9c7a46eaecfc33bde8bf9c55a95a893a212e2c33f",
+      "reservedNonreleaseFixture": true,
+      "project": 86247033,
+      "createdAt": "2026-10-02T23:32:05.873Z",
+      "name": "core-platform-backend",
+      "files": [],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": false
+    },
+    {
+      "id": 71368161,
+      "version": "sha256-cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+      "reservedNonreleaseFixture": false,
+      "project": 86247033,
+      "createdAt": "2026-10-04T16:31:37.497Z",
+      "name": "core-platform-backend",
+      "files": [
+        {
+          "id": 362656217,
+          "file_name": "scan-report-2911071988-16922783996.json",
+          "size": 543,
+          "file_sha256": "9d060c147c367890c9c675f6326dd5bdc8ecc11c47b50e42aee8fe48e089e7f5",
+          "created_at": "2026-10-04T16:31:37.536Z"
+        },
+        {
+          "id": 362656229,
+          "file_name": "sbom-2911071988-16922783996.cdx.json",
+          "size": 44655,
+          "file_sha256": "536d97512bb4361d3601861c24e5ccec827dbcc8d41e131edda2a5e859959c7e",
+          "created_at": "2026-10-04T16:31:41.129Z"
+        },
+        {
+          "id": 362656230,
+          "file_name": "release-record-2911071988-16922783996.json",
+          "size": 2193,
+          "file_sha256": "cf4eb4b396fec5547ab5084fcb7f559bf7b874c53b77f9cbdf1dc1152916be09",
+          "created_at": "2026-10-04T16:31:43.073Z"
+        },
+        {
+          "id": 362701551,
+          "file_name": "scan-report-2911071988-16922783997.json",
+          "size": 543,
+          "file_sha256": "bd88ee22320a3b180a6d9fb193ebd9178e86c472d74cad405bb69d70ee7d7ca8",
+          "created_at": "2026-10-04T20:41:47.214Z"
+        },
+        {
+          "id": 362701567,
+          "file_name": "release-record-2911071988-16922783997.json",
+          "size": 1723,
+          "file_sha256": "b1cda5e887f8db6da692b93639490151ac13ad0fd478498d0700d5077913279b",
+          "created_at": "2026-10-04T20:41:50.879Z"
+        }
+      ],
+      "status": "default",
+      "outsideFixedEvidenceNameRetained": false,
+      "filesListed": true
+    },
+    {
+      "id": 71206310,
+      "version": "16885530419",
+      "reservedNonreleaseFixture": false,
+      "project": 86247033,
+      "createdAt": "2026-10-02T02:38:48.092Z",
+      "name": "at13-permission-fixture",
+      "files": [],
+      "status": "pending_destruction",
+      "outsideFixedEvidenceNameRetained": true,
+      "filesListed": false
+    },
+    {
+      "id": 71206480,
+      "version": "16885612284",
+      "reservedNonreleaseFixture": false,
+      "project": 86247033,
+      "createdAt": "2026-10-02T02:47:39.585Z",
+      "name": "at13-permission-fixture",
+      "files": [],
+      "status": "pending_destruction",
+      "outsideFixedEvidenceNameRetained": true,
+      "filesListed": false
+    }
+  ]
+}

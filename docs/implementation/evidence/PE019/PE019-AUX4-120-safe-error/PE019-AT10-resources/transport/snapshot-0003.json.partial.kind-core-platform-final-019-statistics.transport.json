@@ -1,0 +1,15 @@
+{
+  "processId": 14312,
+  "rawValuesRecorded": false,
+  "endsWithJSONObject": true,
+  "stage": "kind-core-platform-final-019-statistics",
+  "stdoutReaderCodePage": 65001,
+  "processExitCode": 0,
+  "hostConsoleCodePage": 932,
+  "startsWithJSONObject": true,
+  "hasExited": true,
+  "stdoutComplete": true,
+  "stderrCategory": "none",
+  "stdoutUTF8Bytes": 108398,
+  "emptyOutput": false
+}

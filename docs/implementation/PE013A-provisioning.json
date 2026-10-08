@@ -1,0 +1,29 @@
+{
+  "phase1Budget": "PE014 pending",
+  "memoryLimit": "512Mi",
+  "successfulQueries": 22,
+  "secretsRecorded": false,
+  "original256Mi": "failed OOM137",
+  "utc": "2026-10-02T16:07:00.4304725Z",
+  "acceptedScope": "PE013A provisioning/core UI/restart/reapply only",
+  "platformRuntimeSource": "c2cac322be0a64e66c6dbe542826a55593d874c6",
+  "readOnlyProvisioning": true,
+  "restartSamePod": true,
+  "parentPE013": "open until PE012B and PE013B fully accepted",
+  "proofs": [
+    {
+      "file": "PE013-restart-reapply-proof.json",
+      "sha256": "63d41f1551ddadbbe7bf462fc60a27e490d6485cc32cf62d18692f458daf5dbc"
+    },
+    {
+      "file": "PE013-runtime-memory.json",
+      "sha256": "c0a2c3369d6422417c1b2850f1f148c26e5a482b1109c96e762b9d058fabe64d"
+    },
+    {
+      "file": "PE013-grafana-api-proof.json",
+      "sha256": "1d0bf4058e36619008622497023d12ebba0665e5658d7955bb7b84ef676f8d1c"
+    }
+  ],
+  "grafanaVersion": "13.2.3",
+  "protectedPvcPreserved": true
+}

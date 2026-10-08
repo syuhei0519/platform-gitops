@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-06T17:56:26.7114364Z",
+  "completed": true,
+  "samples": 9,
+  "thresholdsPassed": true,
+  "scope": "Windows WSL both kind clusters and every Pod/container",
+  "maxCombinedCIWorkingSetBytes": 1750056960,
+  "CIMemoryBudgetBytes": 2147483648
+}

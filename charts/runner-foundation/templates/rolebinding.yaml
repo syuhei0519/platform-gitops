@@ -1,0 +1,10 @@
+{{/*
+build Roleをrunner-systemのmanager SAへ結び、CI job自身のSAとは分離する。
+*/}}apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: {name: gitlab-runner-jobs, namespace: {{ .Values.job.namespace }} }
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.manager.serviceAccount }}
+    namespace: {{ .Values.manager.namespace }}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: gitlab-runner-jobs}

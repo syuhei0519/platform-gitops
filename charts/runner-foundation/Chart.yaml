@@ -1,0 +1,5 @@
+apiVersion: v2
+name: runner-foundation
+description: Narrow cross-namespace RBAC for GitLab Runner
+type: application
+version: 0.1.0

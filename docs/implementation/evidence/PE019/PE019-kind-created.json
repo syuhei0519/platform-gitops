@@ -1,0 +1,16 @@
+{
+  "before": [
+    "platform-lab"
+  ],
+  "dedicatedKubeconfig": true,
+  "nodeUID": "266ae877-3a14-4405-b687-5ba324b92805",
+  "runnerStarted": false,
+  "name": "core-platform-final-019",
+  "namespacesApplied": true,
+  "outboundExporterStarted": false,
+  "kubelet": "v1.36.4",
+  "utc": "2026-10-06T12:14:47.5756985Z",
+  "rootApplied": false,
+  "nodeName": "core-platform-final-019-control-plane",
+  "context": "kind-core-platform-final-019"
+}

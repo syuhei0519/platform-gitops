@@ -1,0 +1,57 @@
+{
+  "visibility": "private",
+  "registryCacheEnabled": false,
+  "mergeAccess": [
+    {
+      "access_level": 40,
+      "access_level_description": "Maintainers"
+    }
+  ],
+  "probeRecreated": false,
+  "mainAllowForcePush": false,
+  "operationalConstraint": "未保護jobにもSHAタグ/main-cache/証跡Packageへの実書込能力がある。信頼済みコードのみの同一project MR、外部MR禁止、保護された環境限定資格とlive main/job権限検証、元record不変保存/完全対応検査に依存する。rulesのみで技術的書込不能とは主張しない。",
+  "actualUnprotectedWriteEvidence": "PE008-AT13-exact-86247033.json",
+  "separatedCaches": true,
+  "source": "bcc4126097ab6224e46257560010fc4623a51414",
+  "technicalRegistryWriteDenyClaim": false,
+  "protectedMain": true,
+  "technicalJobTokenPackageWriteDenyClaim": false,
+  "actualProbe": {
+    "blobUploadStatus": 201,
+    "job": "16885612284",
+    "project": "86247033",
+    "proposalCredentialPresent": false,
+    "protected": "false",
+    "registryAuthStatus": 200,
+    "schema": "core-platform/at13-permissions/v1",
+    "sourceSha": "e43670a01e79b404081bbd1dae49f3240cdf1192",
+    "writes": [
+      {
+        "allowed": true,
+        "kind": "sha-tag",
+        "status": 201,
+        "target": "e43670a01e79b404081bbd1dae49f3240cdf1192"
+      },
+      {
+        "allowed": true,
+        "kind": "main-cache",
+        "status": 201,
+        "target": "at13-main-cache-16885612284"
+      },
+      {
+        "allowed": true,
+        "kind": "evidence-package",
+        "status": 201,
+        "target": "at13-permission-fixture/16885612284"
+      }
+    ]
+  },
+  "project": 86247033,
+  "pushAccess": [
+    {
+      "access_level": 0,
+      "access_level_description": "No one"
+    }
+  ],
+  "utc": "2026-10-06T00:41:48.7683277Z"
+}

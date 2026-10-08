@@ -1,0 +1,45 @@
+grafana:
+  fullnameOverride: grafana
+  replicas: 1
+  deploymentStrategy: {type: Recreate}
+  image: {registry: docker.io, repository: grafana/grafana, tag: "13.2.3", sha: "d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4", pullPolicy: IfNotPresent}
+  rbac: {create: false, pspEnabled: false}
+  serviceAccount: {create: false, name: grafana, automountServiceAccountToken: false}
+  automountServiceAccountToken: false
+  initChownData: {enabled: false}
+  testFramework: {enabled: false}
+  admin: {existingSecret: grafana-admin, userKey: admin-user, passwordKey: admin-password}
+  securityContext: {runAsUser: 10001, runAsGroup: 10001, fsGroup: 10001, runAsNonRoot: true, seccompProfile: {type: RuntimeDefault}}
+  containerSecurityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+  resources:
+    requests: {cpu: 100m, memory: 128Mi, ephemeral-storage: 16Mi}
+    limits: {cpu: 500m, memory: 512Mi, ephemeral-storage: 128Mi}
+  service: {type: ClusterIP, port: 80}
+  ingress: {enabled: false}
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClassName: standard
+    annotations: {argocd.argoproj.io/sync-options: "Prune=confirm,Delete=confirm", helm.sh/resource-policy: keep}
+  env: {GF_PLUGINS_PREINSTALL_DISABLED: "true"}
+  grafana.ini:
+    analytics: {reporting_enabled: false, check_for_updates: false, check_for_plugin_updates: false}
+    auth.anonymous: {enabled: false}
+    users: {allow_sign_up: false}
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      deleteDatasources: [{name: Prometheus, orgId: 1}]
+      datasources:
+        - {name: Prometheus, uid: prometheus, type: prometheus, access: proxy, url: "http://prometheus-server.observability.svc.cluster.local", isDefault: true, editable: false, jsonData: {timeInterval: "30s"}}
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - {name: default, orgId: 1, folder: "Core Platform v1", type: file, disableDeletion: false, editable: false, updateIntervalSeconds: 10, options: {path: /var/lib/grafana/dashboards/default}}
+  dashboardsConfigMaps: {default: grafana-dashboards}
+  sidecar:
+    dashboards: {enabled: false}
+    datasources: {enabled: false}
+    alerts: {enabled: false}
+    notifiers: {enabled: false}

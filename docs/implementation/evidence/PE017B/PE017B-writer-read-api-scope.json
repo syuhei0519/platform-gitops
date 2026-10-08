@@ -1,0 +1,26 @@
+{
+  "role": "Reporter on existing three projects",
+  "secretPersisted": false,
+  "legacyReaderPreserved": true,
+  "protectedBranchRead": true,
+  "duplicateAuthority": "Actual identical safe-report reupload rejection before record commit",
+  "namespaceSettingsOwnerOnly": true,
+  "expiresAt": "2026-11-01",
+  "project": 86247033,
+  "utc": "2026-10-04T16:20:00.6510477Z",
+  "variable": {
+    "masked": true,
+    "key": "RELEASE_EVIDENCE_READ_API_TOKEN",
+    "environmentScope": "release-evidence",
+    "protected": true,
+    "hidden": true
+  },
+  "originalJobRead": true,
+  "scope": "read_api",
+  "rotatedUnusedTokenId": 28086169,
+  "frontendCredentialReissued": false,
+  "valuesDisplayedOrSaved": false,
+  "tokenId": 28086184,
+  "readerUserId": 42958290,
+  "actualBackendJobRead": true
+}

@@ -1,0 +1,29 @@
+# PE016F 単一OCI検証と中間main配信の受入
+
+frontend MR !10をmainへ統合し、既定無効のOCI検証経路と選択中mainの配信完結を実証した。検証source dc5b8d1と最終source3cc4577は別で保持し、最終変更が説明書と除外されたPackage能力fixtureの単一コマンド復元だけであることを全文Gitdiffで確認した。最終source自身のMR CI2908603616全7success、直前source/main鮮度、protected main、candidate/actual tree一致を確認してmain19da2ae5へ統合した。
+
+## 実OCI・形式・隔離実行
+
+pipeline2908594164全10success。元build16909631207、形式16909631208、隔離runtime16909631209を別IDで保存した。固定BuildKit0.30.0/rootlessからlinux amd64単一OCIを一度export、tar25609728bytes/展開payload25596244bytes、digest e47e9dad144cb1aa3b1558492dd27506de4f0be86e39920da1ac00f7ffc7f842。checksum、単一manifest/config/source/revision、全blob size/hash/layer diffID、安全なbounded展開を確認した。Goの破損・複数記述子・path/link/重複/hash/サイズ/入力欠落の拒否試験も同CI前提で合格。
+
+同tarをnative needs artifactで再取得・再検証し、固定Trivy0.75.0の同layout directory読取と、固定crane v0.21.7 CLIと同じ公式readerによる完全layer/digest互換を確認した。crane CLIのregistry pushはPE018Fの受入対象であり、この検証経路でregistry clientを呼ばない。OCI tarをDocker tarとして渡さない。raw report/ログはprivate一時領域で削除し、公開proofは件数と型付き許可項目のみ。securityGateApplied/phase2Adoptable=falseであり、PE017Fの方針/SBOM完成を主張しない。
+
+同OCI rootfsでUID10001/nginx/readyz/livez/staticHTTP200を実確認した。検証RUNはnetwork none/loopbackのみ、backend DNSはdummy、Source DB/PVCへの接続なし。アプリの再コンパイル・公開・配備は行わない。
+
+## 予算と入力期限
+
+既存PE009予算repo2Gi/BuildKit10Gi/空き20%以上を維持した。2秒sampleの最大workspace/store/最小freeとAPI durationを照合し、build47.50s（store約2.31Gi）、format52.75s（workspace約1.47Gi）、runtime22.48sが全て予算内。free最小92.996%。subordinate UIDのrootfsを通常duが読めない不具合は失敗証拠を保持し、同UID mappingのrootless namespace測定で修正・実再試験した。連続peak/memory測定は主張しない。
+
+100MiB初期archive目標と、project max_artifacts_size=null/overrideなし＋公式GitLab.com SaaS資料の圧縮artifact1GBを比較した。実約25.5MB zipのupload成功を保存した。admin設定直接read/1GB境界uploadは未実施。
+
+pipeline2908594182ではproducerのremote artifactを維持し、consumer自身のtarコピーだけを欠落させた。missing16909631387は明示failed、after16909631388はskipped、全前提success、partial layoutなし/no registry fallbackをAPIと公開proofで確認。実24時間待機ではなく欠落/期限切れ入力fixtureと区別し、artifact expire_inは1日。失敗を過去成功や別image再buildで救済しない。
+
+## 中間AT05・回帰・残工程
+
+main19da2ae5の通常pipeline2908613562全10success、既定false/OCIjobsなしで旧publish→verify→proposalを維持した。digest6a88974a3da301ed15542cdbd16f11fffdbae3119b30e5879253d2812ad001fbeをproposal !50へ固定した。fixed manifest main46223f2のpipeline2908622252で全PodSpec/render/provenanceを独立検証し、source/target/両app直前鮮度・sourceCAS409・実tree一致を通してmanifest main4fb1b4f9へ統合した。
+
+Source Argoの同revision/SyncedHealthy、新frontend実imageID、UID10001/live-ready-staticHTTP200を確認した。backend Pod/旧imageは不変、DBPVC UID f7774170-a00e-4d90-9caa-e692f1e1555aはBoundのまま、既存owned synthetic row9をfrontend経由で読取できた。data write/deleteはなし。このdigestは選択中Phase0配信であり、実験OCI digestのPhase2公開と混同しない。
+
+protected mainのC能力回帰pipeline2908613988/job16909737601も全前提・source-scan成功。非release fixtureの実JOB-TOKEN upload/read/checksum・同値冪等/別値拒否/元bytes保持/server duplicate400を再確認し、既存PE017C証拠は上書きしなかった。
+
+技術受入は上記scopeで完了した。証跡MRのmain統合とIssue16Fのreadbackまでは内部unit受入を更新しない。親16/B、PE017Fのscan/SBOM/保存実結合、PE018Fの同OCI公開・consumer/rollback切替、backend移植とPE019は未完了。frontend全切替後にbackendへ進める。JSON indexのSHA256は保存済みLF bytesを対象とし、premerge/失敗proofは各時点の限定scopeとして保持する。秘密値・生job trace・ローカルbinary artifact取得は含めない。

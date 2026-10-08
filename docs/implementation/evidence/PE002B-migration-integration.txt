@@ -1,0 +1,6 @@
+=== RUN   TestMigrationDisposableDatabase
+    migrate_integration_test.go:117: idempotence, lock cancellation/recovery, interrupted DDL/history rollback and retry passed
+--- PASS: TestMigrationDisposableDatabase (2.29s)
+PASS
+ok  	gitlab.com/platform-engineering-lab/backend-app/internal/store/postgres	2.403s
+

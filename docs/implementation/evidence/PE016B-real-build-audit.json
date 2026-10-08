@@ -1,0 +1,18 @@
+{
+  "source": "cbfd32e960943131a10ada62f8ff36ceb2f61cc1",
+  "buildJob": 16920314370,
+  "expandedBytes": 8130865,
+  "durationSeconds": 190.954071,
+  "archiveSha256": "b3a629b32bb686eabd7367fa9bed71a2ebde478641a6258617f6b62aed9bb03f",
+  "actualArtifactUploadSucceeded": true,
+  "fullPE016BAcceptance": false,
+  "rawTraceRead": false,
+  "noPublishJobs": true,
+  "archiveBytes": 8146432,
+  "project": 86247033,
+  "allPrerequisitesSucceeded": true,
+  "pipeline": 2910621534,
+  "utc": "2026-10-04T10:10:03.3812112Z",
+  "layoutAccepted": true,
+  "digest": "sha256:07b0e72d65233b715ddcde722ea7d69a498ce8f33d3606130852b9220223095e"
+}

@@ -1,0 +1,436 @@
+{
+  "originalFailureRecordsUntouched": true,
+  "files": [
+    {
+      "file": "PE019-actual-driver-exit.json",
+      "sha256": "0135c1ef7867c6761adb14eee23190b36378d9e41b4e56b1e62786e8004598fa"
+    },
+    {
+      "file": "PE019-AT10-collector-after-short.txt",
+      "sha256": "cb17e411e99959798592990424e5d9f28dfaf7889532021854cdb13788e09821"
+    },
+    {
+      "file": "PE019-AT10-collector-before.txt",
+      "sha256": "0d44c9273332ed861c5a093b4df40131f2d448d386224eb2ed836a058c45cb56"
+    },
+    {
+      "file": "PE019-AT10-crud-rows.json",
+      "sha256": "7ebac381cb81cef61a75d31a8a88e0790c1bae2e44b80cf33d50c9a176a403a5"
+    },
+    {
+      "file": "PE019-AT10-driver-error.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "PE019-AT10-driver-intent.json",
+      "sha256": "7239ec0e3b556299bcd50f783baeb0001e0d0e67e60f7ae9b950d80c7e52afb7"
+    },
+    {
+      "file": "PE019-AT10-driver-output.txt",
+      "sha256": "d1b3d135275565dfb29cc3005ca24077918a074f0a34329fb65eead66dd07c9c"
+    },
+    {
+      "file": "PE019-AT10-driver-submitted.json",
+      "sha256": "bc0636cfc337d3c6fbb4467ceb6f7ed252fe4becc3500a1e7fb7991692823dd3"
+    },
+    {
+      "file": "PE019-AT10-fault-worker-error.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "PE019-AT10-fault-worker-output.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "PE019-AT10-fault-worker.json",
+      "sha256": "67542035f504623764b5b94fa8ed6342fbaa0cd85be18018b84f3782d32e780a"
+    },
+    {
+      "file": "PE019-AT10-forwards-closed.json",
+      "sha256": "237db807cdac6e3edeaec60f68767188ea8bbdc1f4e39be7d6a2fc15ed2a4570"
+    },
+    {
+      "file": "PE019-AT10-frontend-forward-error.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "PE019-AT10-frontend-forward.txt",
+      "sha256": "2fe4c0b77cbbc8d559528eb88b7ce932be29b8bc330017e21acb4fa159fb2e7b"
+    },
+    {
+      "file": "PE019-AT10-live.json",
+      "sha256": "0f77c1766596617276835e2e41c243664a0220a7a37bcb581a5b71bc8c2faaeb"
+    },
+    {
+      "file": "PE019-AT10-owned-cleanup.json",
+      "sha256": "b435ae9721707a60399b820b235eef4053851f90887c3e9002ebc7f8359df430"
+    },
+    {
+      "file": "PE019-AT10-process-cleanup.json",
+      "sha256": "bdb0b64bdfa024d72561d8007b6a3833e0de6274430b75b1373d0d2f9149aa29"
+    },
+    {
+      "file": "PE019-AT10-profile-frozen.json",
+      "sha256": "a4c22b479e8d238baad5fe4d7904493c2e7348c65543d23109dc929382783637"
+    },
+    {
+      "file": "PE019-AT10-prometheus-server-forward-error.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "PE019-AT10-prometheus-server-forward.txt",
+      "sha256": "675db7920e10587e54fa14151af046f41cfb686ceb70b0f5d73ec0e509344500"
+    },
+    {
+      "file": "PE019-AT10-resource-startup.json",
+      "sha256": "1261cfa293aa35356c73800fce8b54e292da1e4b1b5e1ce06f356ba800b71b9a"
+    },
+    {
+      "file": "PE019-AT10-resource-worker-error.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "PE019-AT10-resource-worker-output.txt",
+      "sha256": "c670518612fd057c3e5dac5da3a2bb0eaeae276b16bb59eed09144c899b025f4"
+    },
+    {
+      "file": "PE019-AT10-resource-worker.json",
+      "sha256": "b83c091a7e7c2967c080e014086b33dfba107611bf027f1f31fd18e09ef79d60"
+    },
+    {
+      "file": "PE019-AT10-runtime-result.json",
+      "sha256": "52f33f9e032939af1d5ef112d82a33f361768c028693d20d9c6cb4616384bfcb"
+    },
+    {
+      "file": "PE019-AT10-window.json",
+      "sha256": "c37af9ca1dab4993d8a38deed128bb0340f91abd07f2f8581b0584cefd64201e"
+    },
+    {
+      "file": "PE019-AT10-worker-processes.json",
+      "sha256": "90f1d409f9609fcd6990079ae3fc338e970c5e5eae3d2246af7d2b198d18b202"
+    },
+    {
+      "file": "PE019-auxiliary-preflight-intent.json",
+      "sha256": "257cf7f1c05ebc59cc4d00a2d3189504f5abe1d5977937ed9945b847d00c3e7a"
+    },
+    {
+      "file": "PE019-bootstrap-runtime.json",
+      "sha256": "09ab1975ef23e33f57ce0d14afd7a5f77830de5dddb1658f0d6f9fa97d05232c"
+    },
+    {
+      "file": "PE019-capacity-native-state.json",
+      "sha256": "e3932f221ab7e21e4b18092cc1aae5a106e664ab8605d0eebb7972a24366fa02"
+    },
+    {
+      "file": "PE019-capacity-native-submitted.json",
+      "sha256": "45c85457c40207630985eb2c5316ce96daacc28c02a102ae7b1d9376f0176d96"
+    },
+    {
+      "file": "PE019-corrected-binding-accepted.json",
+      "sha256": "85927966ad1980e7cc7ab4130965dbfe42b7fcac93cb701855bef39fae5d7298"
+    },
+    {
+      "file": "PE019-final-native-CI-plan.json",
+      "sha256": "75fe513add1e60e99b27a75f02b37aa99133555a2ff2e5dd90cda485db9141ba"
+    },
+    {
+      "file": "PE019-final-profile.json",
+      "sha256": "d375ead51eec547ed8285b637fab64a03f19fd4e26c4924f7508353f2233da06"
+    },
+    {
+      "file": "PE019-HTTP-metrics-after.json",
+      "sha256": "c11aeb193f599376a7c1880d9cc0731c26693c34bcaf672b3fa396eade60c1e1"
+    },
+    {
+      "file": "PE019-HTTP-metrics-after.txt",
+      "sha256": "3200b312c216f651d833ddaabfc5780538f7dfd43d119bfc8f23eb1c9bfb53a3"
+    },
+    {
+      "file": "PE019-HTTP-metrics-before.json",
+      "sha256": "c030ec05d9b3778e6f084c64c036aaba9b13095b787f721356bc064bb8e992cb"
+    },
+    {
+      "file": "PE019-HTTP-metrics-before.txt",
+      "sha256": "5300a9717712139c3a180c56846b3d1a294d52bf5ee819b20d766873abcf6b99"
+    },
+    {
+      "file": "PE019-NR-final-trace-proof.json",
+      "sha256": "8952c201edbff9f39275c52b778d7628f469dce986af3eae369c3a1dfc401fe5"
+    },
+    {
+      "file": "PE019-NR-final-trace-spans.json",
+      "sha256": "65bb66a5aa0f7f52d5dcb9af478118162f842ee7d33b2474dc257d3340b3a346"
+    },
+    {
+      "file": "PE019-NR-short-delivery-metadata.json",
+      "sha256": "e7fea33e3e7ae0f0398ed9ea7cb6c527e058494e93d121d6c1d2d94e99bec8e5"
+    },
+    {
+      "file": "PE019-resource-preflight.json",
+      "sha256": "e822915fdeb2cc334e0b97b5a14b028ce202800fe694923231c7bbb27a48f6f1"
+    },
+    {
+      "file": "PE019-window-correlated-application-logs.json",
+      "sha256": "921c755db0850e8ef2262c173f18359d774e4e17386c63850a8ad8490bf79c36"
+    },
+    {
+      "file": "PE019-window-log-correlation-proof.json",
+      "sha256": "27b43ebfc02c3ca9dce9e7a92c4b8a4596fd0e5de944050ce0da781b3c171510"
+    },
+    {
+      "file": "PE019-AT10-resources/snapshot-0000.json",
+      "sha256": "d2fab703557eb86b824ff105aa835b0112c20785f0b7d9ba8c895891806fc754"
+    },
+    {
+      "file": "PE019-AT10-resources/snapshot-0001.json",
+      "sha256": "25dcf8ae1d9b35386042cef0fd8458a1ae27e9c8eaa2e6a0c1ae6fc1878a8def"
+    },
+    {
+      "file": "PE019-AT10-resources/snapshot-0002.json",
+      "sha256": "d17a09ced0fd4774644376ccdc031d9a517e733e1e43a8e807e0b74973e6bbb8"
+    },
+    {
+      "file": "PE019-AT10-resources/snapshot-0003.json",
+      "sha256": "e368183e6711faa41ae52df2150302a127da354104d54e858e6fba264af893dc"
+    },
+    {
+      "file": "PE019-AT10-resources/snapshot-0004.json",
+      "sha256": "157119871377f78f6a7b7e0b84243d77855e5608676584fcf21c48daedd6509c"
+    },
+    {
+      "file": "PE019-AT10-resources/snapshot-0005.json",
+      "sha256": "58c6783e451ff4a10c2f1d54fea501f890d9729ace4d96d51dbc843daa571c0e"
+    },
+    {
+      "file": "PE019-AT10-resources/snapshot-0006.json",
+      "sha256": "da5f633d6ac816987e0f6dab8ccd50670840649a268735560f34eb66f21f7583"
+    },
+    {
+      "file": "PE019-AT10-resources/snapshot-0007.json",
+      "sha256": "ad9c7d680fe16c2396a4d34eb1d87578145ab16bd2eb66cb8a43759d581604f8"
+    },
+    {
+      "file": "PE019-AT10-resources/snapshot-0008.json",
+      "sha256": "6c28f2cbfde5d508313e48b3b3d340b00d6f3c1f7b921d226a4ea7b7734c0475"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-core-platform-final-019-nodes.transport.json",
+      "sha256": "64aff294a9053f757e7fced0bd4440aea51a454036916bd9fc24a3b3c6edaeb1"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-core-platform-final-019-pods.transport.json",
+      "sha256": "d7fb7b5df2097f3be626f464b9a93e62f66946b0f10dfa54b5fc4f466a777a01"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-core-platform-final-019-statistics.transport.json",
+      "sha256": "d83a834acc6ee0dea394b0170ca7161d049d5ceb56bb3d3ab981e07b82de5776"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-platform-lab-nodes.transport.json",
+      "sha256": "d56a7d9b7e71d3b86d17e4aacd903b962fba8cc6f3fe51afa5995dcafe06c806"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-platform-lab-pods.transport.json",
+      "sha256": "e16caa96415ed1c21d0f03664d71509e3e860dd08d48bcbcfdd0bdc8c7ffc007"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0000.json.partial.kind-platform-lab-statistics.transport.json",
+      "sha256": "298e6c7a9de964ff9224208523e54a68e43a8271c810655202a23b0e6637afc7"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0001.json.partial.kind-core-platform-final-019-nodes.transport.json",
+      "sha256": "3391cf2ce04855178ac25762d13bd9bc7a7d8aeb34bdf6354bfbfc720ed6afd2"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0001.json.partial.kind-core-platform-final-019-pods.transport.json",
+      "sha256": "700bb65cfa6a190f981fd9bb6b9925fdfa0e6abc073d72eea6836f38cc87cfa6"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0001.json.partial.kind-core-platform-final-019-statistics.transport.json",
+      "sha256": "7023d117a12a69092c4353cc7d988655d77b18748a3c6853f97d715d916150df"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0001.json.partial.kind-platform-lab-nodes.transport.json",
+      "sha256": "96af0a1dbcd921d84077eb7f5476f6056cafc1eec1dcbd0fef4a35708f48e436"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0001.json.partial.kind-platform-lab-pods.transport.json",
+      "sha256": "59b689b910a57f20ffb84942f33602a1c196a2c09e42093c343d15828cfc8f3e"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0001.json.partial.kind-platform-lab-statistics.transport.json",
+      "sha256": "597ca65743fadc277f0b2c04449dbebf06656522c666451ea85a3e2e65e2de52"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0002.json.partial.kind-core-platform-final-019-nodes.transport.json",
+      "sha256": "86eb1b2c0c69de14d1e8c9a39a4007c22cea7c9e343ca09c870519c6ba6a584b"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0002.json.partial.kind-core-platform-final-019-pods.transport.json",
+      "sha256": "402b21780338c8efb7d396a0f53f5e886a5f46dec2fc9f8e4b8885af32994a06"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0002.json.partial.kind-core-platform-final-019-statistics.transport.json",
+      "sha256": "6cd00340b2913e1c3178b624aef5c8005f5b53b7a5b8f12d0c64559756882d7d"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0002.json.partial.kind-platform-lab-nodes.transport.json",
+      "sha256": "e2745011bb637436bd40c445220846107b4b0372de8126eaf62c0b8f0461efb6"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0002.json.partial.kind-platform-lab-pods.transport.json",
+      "sha256": "db220acd1934e1871a80fbf2c5490edda346f1b70ce61fd11c0fa3b0ca8fe84a"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0002.json.partial.kind-platform-lab-statistics.transport.json",
+      "sha256": "668ddf580f154dfdf80d18d8bf51553032e08a33fa1a45e8154cf985a5ad5a28"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0003.json.partial.kind-core-platform-final-019-nodes.transport.json",
+      "sha256": "701205655effb16fa16f8d47630c7ff0036eee5cfeb455fcb5006190daf427de"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0003.json.partial.kind-core-platform-final-019-pods.transport.json",
+      "sha256": "5240bffe75546236d1942817517de8dba0d319f6476a47768320a8a9232f983e"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0003.json.partial.kind-core-platform-final-019-statistics.transport.json",
+      "sha256": "535a68ecce827ac62bb189abe5daab5959d3aa2d04ee7c27534630c0130aee2f"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0003.json.partial.kind-platform-lab-nodes.transport.json",
+      "sha256": "2147cb88e551d8f9c44603e185fe30cf9185dc339da1ed6d55965cac2a3ee704"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0003.json.partial.kind-platform-lab-pods.transport.json",
+      "sha256": "6a060003dca58715c432c1a409ec6caa39975fbd3c337060214607b444e7fef8"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0003.json.partial.kind-platform-lab-statistics.transport.json",
+      "sha256": "49b2924013a7401d94153c41c37f1b91dd3ebaa4a8ffc6f9a702e8f4c715df3c"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0004.json.partial.kind-core-platform-final-019-nodes.transport.json",
+      "sha256": "72bf49e5f6aac424a1b77543f98254d7ccea5992761b3ad562ddbb6801226ea0"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0004.json.partial.kind-core-platform-final-019-pods.transport.json",
+      "sha256": "caa465d37a015f1dda7924ad4c084cb3e8a37031a4377e2205f85b02324bc48e"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0004.json.partial.kind-core-platform-final-019-statistics.transport.json",
+      "sha256": "35f14c8c4707c62ccf6effead450dc7987eeead908c40263566ea98a249139b5"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0004.json.partial.kind-platform-lab-nodes.transport.json",
+      "sha256": "9f26cf2a9ac55a430b69f22f8d6b1eb7a66ba93929f6189726bb615327a54061"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0004.json.partial.kind-platform-lab-pods.transport.json",
+      "sha256": "8a769c2069c7f455a792e99148c551102bc7bd6afbad5d6d1ad9e4fba5a7f827"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0004.json.partial.kind-platform-lab-statistics.transport.json",
+      "sha256": "abf4146aacc1b1af63a162b2932489389ac7b8616f770632d26d33cf87df3fcd"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0005.json.partial.kind-core-platform-final-019-nodes.transport.json",
+      "sha256": "958dc19b38d75889d6103324ad5bf80ab710d3751c75c4a3bee66cefece1d0cb"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0005.json.partial.kind-core-platform-final-019-pods.transport.json",
+      "sha256": "028dc83a55d085d2805594a7d44afb44b22a2cfd916be9e9864d2fb1a7462280"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0005.json.partial.kind-core-platform-final-019-statistics.transport.json",
+      "sha256": "48c5af42f1ae19015f189a69cbc9c2076340be925381e788132099e8e3316cae"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0005.json.partial.kind-platform-lab-nodes.transport.json",
+      "sha256": "376f26d4d43fc67a68a5437def2b1e2fb65f979aa9815332a9572014189390b3"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0005.json.partial.kind-platform-lab-pods.transport.json",
+      "sha256": "0d7a32f0865e78c7fd09970fc9099ad05a48937abc6151896dba17f53ddf3a54"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0005.json.partial.kind-platform-lab-statistics.transport.json",
+      "sha256": "0862018681ac0b623199cad91d6cbf92a3cba2411f1088d89d65624d797aeac4"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0006.json.partial.kind-core-platform-final-019-nodes.transport.json",
+      "sha256": "e490b7172ad12cbd8872b0139b9cc7e7a135ec961485ec5a2b0eac62f4da83ab"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0006.json.partial.kind-core-platform-final-019-pods.transport.json",
+      "sha256": "9f0a679d952210d8786fdddd7bbb00179aff13dd63745ffb168842209dc6bd8c"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0006.json.partial.kind-core-platform-final-019-statistics.transport.json",
+      "sha256": "d7c48989208ab62c266bac239a88c7fba062e615a04f9dee6c436907cead2405"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0006.json.partial.kind-platform-lab-nodes.transport.json",
+      "sha256": "405e9c02afc6cbea885aeb9078a4d742299d122dad33954d7365a7ff3a5f33b2"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0006.json.partial.kind-platform-lab-pods.transport.json",
+      "sha256": "5eda1e67e2c8ab83d1db24e2025348e184940097ee12b175618ca1f8fe640786"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0006.json.partial.kind-platform-lab-statistics.transport.json",
+      "sha256": "58caef73d95ec35df567b4a8e434d966d97446cf8e59076951fa8542b3a5debc"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0007.json.partial.kind-core-platform-final-019-nodes.transport.json",
+      "sha256": "4e7274162b773818ae264aa6c2a41dc0b63a256f420968b24fe5b35bae44be2a"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0007.json.partial.kind-core-platform-final-019-pods.transport.json",
+      "sha256": "c59ffaa4a6e68fe88c3d4e38625cb88e142033802c18f068b1c6e3c3d06ff417"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0007.json.partial.kind-core-platform-final-019-statistics.transport.json",
+      "sha256": "38cb46b0158db7f2393983885af9c9d1031f65417960a6804f274263f1003c96"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0007.json.partial.kind-platform-lab-nodes.transport.json",
+      "sha256": "157cfdbf998a36f0ece8f8eb5dcc2baa911d1c61e68b2d7de2d64965f638aeae"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0007.json.partial.kind-platform-lab-pods.transport.json",
+      "sha256": "8c5a168dc69ed31236cffaf8e4eca83c0477c02892080250a458a0cb4771736a"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0007.json.partial.kind-platform-lab-statistics.transport.json",
+      "sha256": "cc48368608ad419204f140fb1c840504f5f68e865e452d1888bea6675406ad59"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0008.json.partial.kind-core-platform-final-019-nodes.transport.json",
+      "sha256": "d4637884896896e8f031b8ba11e31aae5943ec2ae0c2089fcffdd4a9eb0cf069"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0008.json.partial.kind-core-platform-final-019-pods.transport.json",
+      "sha256": "4d3b1c2992b22bba25cc0bfc76617cccfddc168045aecc7cef4f1dfd35206f28"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0008.json.partial.kind-core-platform-final-019-statistics.transport.json",
+      "sha256": "8a86a7527ead18ecec0cfc40151a704729fc01a2b83bf6f6d9c9d58b9b96a26c"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0008.json.partial.kind-platform-lab-nodes.transport.json",
+      "sha256": "233ef329f4ce8f58e9ad70892cdfab3bb8a507dc7191e7f71bccaaa68a6fe5fd"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0008.json.partial.kind-platform-lab-pods.transport.json",
+      "sha256": "d1c627447d924cd5b2a7b9e76e44b19db2cb83b4ffae86b67766130bc2e15460"
+    },
+    {
+      "file": "PE019-AT10-resources/transport/snapshot-0008.json.partial.kind-platform-lab-statistics.transport.json",
+      "sha256": "b40b7afb42978a89fa33bef59c55ff03daef22656090288fdb12c2f6e9819172"
+    }
+  ],
+  "case": "normal",
+  "utc": "2026-10-06T18:01:38.3155833Z",
+  "allRequestedConditionsAccepted": true
+}

@@ -1,0 +1,25 @@
+# PE-011 Collector受入契約
+
+Collector contrib0.161.0はbootstrap/versions.lock.yamlの固定digestを使用。chartがDeployment/ConfigMap/ClusterIP Service、observability foundationがtoken mountなしServiceAccountを所有する。replicas=1/Recreate、resource requests100m/128Mi・limits500m/256Mi、OTLP HTTP4318のみ、Prometheus8889、自監視8888、health13133。Kubernetes APIアクセス不要、OTLP/metricsの外部公開なし。
+
+name/version/instanceは送信元のResourceを保持し、environment=local/namespace=accountはinsertで不足時だけ補う。競合する既存environment/namespaceはresource contract違反としてfilterで破棄し、正常値へ上書きしない。OTLP HTTPの200は全入力が保存されたという証明ではないので、違反fixtureの出力不存在とfilter counterも検証する。service versionはtarget_infoだけへ付随し、全business histogramへSHA labelを複製しない。Prometheusのapplication scrapeはhonor_labels=trueでsource job/instanceを保つ。
+
+pipeline順序はmemory_limiter→resource contract filter→resource/defaults→batch。memory limit192Mi/spike48Mi/check1s、batch512/最大1024/5s、trace exporter timeout5s/queue32/consumer1/retry最大30s。永続queueなし、更新・停止時の欠損を許容してPE-014で測定する。send_failedと最終drop、counter resetを別に扱う。
+
+New Relic account8572010は既存ログインUIのone.newrelic.com（US）、Free:0/100GB ingestedを確認し、US OTLPへempty resourceSpansを送り認証200/span0を実測した。Browser Keyを使用しない。license-keyはobservability/newrelic-otlpのSecretKeyRefでCollectorだけへ渡し、Git・render・ログへ値を含めない。ヘッダーapi-key、HTTPS/TLS検証あり。追加費用上限0円で有料プラン変更/カード登録/有料機能追加をしない。
+
+newRelicEnabled=falseは外部送信なしnop trace exporterで動作する。接続受入時だけtrueに切替し、少量synthetic traceの到達をNew Relic画面で確認する。業務のemail/body/SQL/Authorization/cookieはSDKで収集しない（PE-012）。テストのtraceはsyntheticな非秘密属性のみ。接続試験の受信HTTP成功だけでNR保存合格にせずtrace ID/version/instanceを検索照合する。
+
+PE-011Aの2instance/Resource保持fixtureはPE-012/013の実API結合の代替ではない。AT-07障害受入はPE-014、最終OCI/Trivy/SBOM同時負荷はPE-019で実測する。まだ未受入項目をClosedにしない。
+
+## 実受入（2026-10-02）
+
+実装MR !13とUS転送有効化MR !14はそれぞれ成功したsource SHAのCIを確認し、protected mainのfreshness/source CAS/候補treeと実merge tree一致を検証して統合した。SourceLab kind-platform-labの子Applicationはmain ff16230bc96e51db1f71f06935a4636465361937でHealthy/Synced/Succeeded、実imageIDは固定digestと一致する。更新中の24回・約2秒間隔の観測でReady最大1、最小0。連続全期間の無欠測保証ではない。
+
+Kubernetes上で2生成元のinstance・version・jobを保持し、versionはtarget_infoにだけ存在、counter系列は2つで各7を実測。欠損environment/namespaceの補完と、競合2件の出力不存在/filter counter増加を確認。Collector ServiceAccountのget secretsとget nodes/proxyはともに拒否。Prometheusの既存3targetとapplication/selfの計5targetがUP。
+
+New Relic Account8572010のNRQL結果にsynthetic parent/childの2spanが保存された。trace ID 5ef1d9001bae43fcbb9150f1af785280、parent ID 0c7afb379f5b4f72、child ID 6b8e19878f5a418e、child.parent.idがparentと一致。両spanのservice.name=account-backend、version=5a21bf5ebf4ea1ee0f54c53cce1bdd87814adbfd、instance=pe011-c4158a1e42e248f3bb9ecf7a9c8e1df5を照合した。ペイロード1,096 bytes、exporter_sent_spans=2、queue capacity32/size0、検索画面0 compute capacity units。
+
+Free planは100GB/月、Billingに支払カード・請求記録なし。Usage Summaryは0GB表示だが月全体の集計取得警告があり、正確な残量は未確定。追加費用0円を維持するため有料upgrade/カード登録/有料機能追加を行わず、試験は少量syntheticに限定する。継続送信前には使用量の取得状態を再確認する。受信成功だけで保存を合格にせず実検索を証拠とする。
+
+[証跡索引とSHA256](implementation/PE011-acceptance.json)の原本は作業出力のevidenceに保存。AT-06のfixture部分を合格、実API結合はPE-012/013、AT-07障害ケースはPE-014に残す。停止時はnewRelicEnabled=falseへGitで戻して同期すれば外部trace転送を止められる。Secretはoperator所有でGitOps pruneの対象にしない。

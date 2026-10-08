@@ -1,0 +1,14 @@
+{
+  "allPrerequisitesSucceeded": true,
+  "case": "wrong-job",
+  "job": 16912713974,
+  "expectedFailure": true,
+  "rawTraceRead": false,
+  "positivePipeline": 2909006262,
+  "pipeline": 2909191233,
+  "unitAccepted": false,
+  "utc": "2026-10-03T12:34:22.0912052Z",
+  "successProofAbsent": true,
+  "source": "850f437590f227c8533ac23a17be8c44fcbb1f9f",
+  "controlledInputDifference": "Only selected scan jobId changed; original actual record URL/checksum retained. Input/run binding refusal, not server SBOM mutation."
+}

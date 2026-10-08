@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-06T16:02:43.1456993Z",
+  "databaseWriteOrDeletion": false,
+  "schemaReadOnly": true,
+  "businessRowsNotRead": true,
+  "context": "kind-platform-lab",
+  "schemaVersion": 1,
+  "PVCUid": "f7774170-a00e-4d90-9caa-e692f1e1555a",
+  "bound": true
+}

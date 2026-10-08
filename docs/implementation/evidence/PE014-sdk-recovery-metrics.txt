@@ -1,0 +1,4 @@
+pe_telemetry_export_errors_total{instance="ba62a768-0968-4b59-b03c-8c1979d8d34c",job="account-backend",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version=""} 7
+pe_telemetry_export_errors_total{instance="ed4c0ebe-194c-4a2e-b67d-ac234fb73449",job="account-backend",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version=""} 69
+target_info{deployment_environment_name="local",instance="ba62a768-0968-4b59-b03c-8c1979d8d34c",job="account-backend",k8s_namespace_name="account",k8s_pod_uid="a1b578c0-f848-427a-b06a-67adedabcc4a",service_version="ff5af7e7305e36299b9b0b5629a0d9a016271619"} 1
+target_info{deployment_environment_name="local",instance="ed4c0ebe-194c-4a2e-b67d-ac234fb73449",job="account-backend",k8s_namespace_name="account",k8s_pod_uid="55cfd1cb-2ac4-451f-8a9c-adcb55662cbf",service_version="a300338cefdca94b4a041d71b37faae8d71a8701"} 1

@@ -1,0 +1,33 @@
+{
+  "actualOCITrivySBOMOverlapAuditStillRequired": true,
+  "crudSuccessPercent": 100,
+  "resource": {
+    "thresholdsPassed": true,
+    "samples": 61,
+    "CIMemoryBudgetBytes": 2147483648,
+    "maxCombinedCIWorkingSetBytes": 1874735104,
+    "utc": "2026-10-06T18:22:27.8184936Z",
+    "completed": true,
+    "scope": "Windows WSL both kind clusters and every Pod/container"
+  },
+  "fault": {
+    "recoverySec": 13.237525,
+    "restoreAt": "2026-10-06T18:10:26.6635519Z",
+    "exportedAt": "2026-10-06T18:10:39.9010924Z",
+    "pass": true,
+    "faultStart": "2026-10-06T18:09:26.3220498Z",
+    "NRUIStoredTraceNotYetProven": true,
+    "receivedAt": "2026-10-06T18:10:39.9010769Z",
+    "faultSec": 60.3415021,
+    "wholeSpanLossClaim": false,
+    "utc": "2026-10-06T18:10:39.9030393Z",
+    "exportRecoverySec": 13.2375405
+  },
+  "fullAT10Accepted": false,
+  "utc": "2026-10-06T18:22:27.8670652Z",
+  "elapsedSec": 902.0377097,
+  "pipeline": 2919041561,
+  "capacityRuntimePassed": true,
+  "currentNRStoredTraceStillRequiresEvidence": true,
+  "requests": 900
+}

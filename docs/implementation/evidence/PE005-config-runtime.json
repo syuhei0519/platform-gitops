@@ -1,0 +1,834 @@
+{
+  "configCrud": [
+    {
+      "utc": "2026-10-02T03:59:16.000421Z",
+      "method": "GET",
+      "path": "/",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T03:59:16.0221536Z",
+      "method": "GET",
+      "path": "/api-pe005/accounts",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T03:59:16.0458323Z",
+      "method": "POST",
+      "path": "/api-pe005/accounts",
+      "expected": 201,
+      "status": 201
+    },
+    {
+      "utc": "2026-10-02T03:59:16.0578827Z",
+      "method": "GET",
+      "path": "/api-pe005/accounts/5",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T03:59:16.0696967Z",
+      "method": "PUT",
+      "path": "/api-pe005/accounts/5",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T03:59:16.0794467Z",
+      "method": "DELETE",
+      "path": "/api-pe005/accounts/5",
+      "expected": 204,
+      "status": 204
+    },
+    {
+      "utc": "2026-10-02T03:59:16.0866732Z",
+      "method": "GET",
+      "path": "/api-pe005/accounts/5",
+      "expected": 404,
+      "status": 404
+    }
+  ],
+  "config": {
+    "apiContentType": [
+      "application/json"
+    ],
+    "utc": "2026-10-02T03:59:56.8863232Z",
+    "backendDebugObserved": true,
+    "scope": "Config-only rollout; Service-only and restore acceptance pending",
+    "configRollout": [
+      {
+        "imageUnchanged": true,
+        "podUidChanged": true,
+        "after": {
+          "checksum": "13ec63454efe9c740d7b470e3f961f9cafa8fc29c07d8ce42c6aa57d16db7ce0",
+          "revision": "3",
+          "context": "kind-core-platform-at0102",
+          "restartNonce": "",
+          "deploymentUid": "66241e3a-4450-4a50-a97f-4275989e19ab",
+          "utc": "2026-10-02T03:58:19.793039Z",
+          "application": {
+            "operation": "Succeeded",
+            "sync": "Synced",
+            "health": "Healthy",
+            "revision": "fac499fb1ec18f09ebbe5ff7c83e791ca299d157"
+          },
+          "generation": 3,
+          "image": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app:d8ef13c003f2625b03f20b11c31908c775809cf5@sha256:fb90b488134778d8c730033644fe607751553de6de2809c121c0ed53477f21cf",
+          "servicePorts": [
+            {
+              "name": "http",
+              "port": 80,
+              "protocol": "TCP",
+              "targetPort": "http"
+            }
+          ],
+          "name": "frontend",
+          "templateSha256": "9360da10c8320bc347662ac5a133bf91a8eee01133cb6b8c6e8d6021c8e75483",
+          "pods": [
+            {
+              "imageIDs": [
+                "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app@sha256:fb90b488134778d8c730033644fe607751553de6de2809c121c0ed53477f21cf"
+              ],
+              "name": "frontend-86dc75697c-7f8jm",
+              "uid": "837a2281-ed9f-4426-ac3e-e77fb6a23cbc",
+              "phase": "Running",
+              "ready": [
+                true
+              ]
+            }
+          ],
+          "activeReplicaSets": [
+            {
+              "replicas": 1,
+              "name": "frontend-86dc75697c",
+              "ready": 1,
+              "uid": "fe1bb12d-7671-4a18-8795-7ab660a4dac7",
+              "revision": "3"
+            }
+          ]
+        },
+        "revisionAdvanced": true,
+        "name": "frontend",
+        "before": {
+          "name": "frontend",
+          "checksum": "1bcac951cf3483345ae5119088a2acfed11f2b07edc53d87f883cadf32dbc1df",
+          "context": "kind-core-platform-at0102",
+          "generation": 2,
+          "application": {
+            "health": "Healthy",
+            "operation": "Succeeded",
+            "sync": "Synced",
+            "revision": "a92a7850c4714cf93d0e1b9bd4501896bc849792"
+          },
+          "deploymentUid": "66241e3a-4450-4a50-a97f-4275989e19ab",
+          "templateSha256": "2dd30f9cb2694190c7a34791cee2144218d77df97efd03b5e58d087cafd0446d",
+          "utc": "2026-10-02T03:03:54.2953492Z",
+          "servicePorts": [
+            {
+              "name": "http",
+              "port": 80,
+              "protocol": "TCP",
+              "targetPort": "http"
+            }
+          ],
+          "image": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app:d8ef13c003f2625b03f20b11c31908c775809cf5@sha256:fb90b488134778d8c730033644fe607751553de6de2809c121c0ed53477f21cf",
+          "revision": "2",
+          "restartNonce": "",
+          "pods": [
+            {
+              "phase": "Running",
+              "uid": "dfcc1e95-7e03-4ed0-9498-6a97ac495ec2",
+              "ready": [
+                true
+              ],
+              "name": "frontend-7f849c996f-ls4qt",
+              "imageIDs": [
+                "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app@sha256:fb90b488134778d8c730033644fe607751553de6de2809c121c0ed53477f21cf"
+              ]
+            }
+          ],
+          "activeReplicaSets": [
+            {
+              "replicas": 1,
+              "uid": "ed53db3d-d2f1-4d26-aad1-a31357b1c84e",
+              "ready": 1,
+              "name": "frontend-7f849c996f",
+              "revision": "2"
+            }
+          ]
+        },
+        "checksumChanged": true
+      },
+      {
+        "imageUnchanged": true,
+        "podUidChanged": true,
+        "after": {
+          "checksum": "609cd51e84de26cf5f276d4e032eb44c52f64828b84bea1e9abd0b5cff63d78c",
+          "revision": "3",
+          "context": "kind-core-platform-at0102",
+          "restartNonce": "2026-09-10T00:30:18Z",
+          "deploymentUid": "08923b04-4c21-47f4-8bb5-4c8cb71862b3",
+          "utc": "2026-10-02T03:58:20.289102Z",
+          "application": {
+            "operation": "Succeeded",
+            "sync": "Synced",
+            "health": "Healthy",
+            "revision": "fac499fb1ec18f09ebbe5ff7c83e791ca299d157"
+          },
+          "generation": 3,
+          "image": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:7e38def8118ecc5101c5054e64f3eff98dfc819e@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d",
+          "servicePorts": [
+            {
+              "name": "http",
+              "port": 8080,
+              "protocol": "TCP",
+              "targetPort": "http"
+            }
+          ],
+          "name": "backend",
+          "templateSha256": "5c394195b8f259f1ffe41386c7c6ca9e4534705ca4176379b664721fba5e5a9b",
+          "pods": [
+            {
+              "imageIDs": [
+                "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d"
+              ],
+              "name": "backend-764685dc98-fh2j4",
+              "uid": "4a688138-c821-4e98-9cc6-af8e5270ed56",
+              "phase": "Running",
+              "ready": [
+                true
+              ]
+            }
+          ],
+          "activeReplicaSets": [
+            {
+              "replicas": 1,
+              "name": "backend-764685dc98",
+              "ready": 1,
+              "uid": "0c8ecad0-733d-4fa5-a68f-1cb2371ce423",
+              "revision": "3"
+            }
+          ]
+        },
+        "revisionAdvanced": true,
+        "name": "backend",
+        "before": {
+          "name": "backend",
+          "checksum": "292a4c89ef5d461bd2f7a4bbc0966b8bc8461c785bb0fca687abc9b4a93d5911",
+          "context": "kind-core-platform-at0102",
+          "generation": 2,
+          "application": {
+            "health": "Healthy",
+            "operation": "Succeeded",
+            "sync": "Synced",
+            "revision": "a92a7850c4714cf93d0e1b9bd4501896bc849792"
+          },
+          "deploymentUid": "08923b04-4c21-47f4-8bb5-4c8cb71862b3",
+          "templateSha256": "847ba93f6e1791e30be3cdb6efb8a66581e6e2f8b4e859ee599569b1267a9f61",
+          "utc": "2026-10-02T03:03:54.811255Z",
+          "servicePorts": [
+            {
+              "name": "http",
+              "port": 8080,
+              "protocol": "TCP",
+              "targetPort": "http"
+            }
+          ],
+          "image": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:7e38def8118ecc5101c5054e64f3eff98dfc819e@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d",
+          "revision": "2",
+          "restartNonce": "2026-09-10T00:30:18Z",
+          "pods": [
+            {
+              "phase": "Running",
+              "uid": "236b2e3b-1d3d-4a47-a908-193a04c75ffc",
+              "ready": [
+                true
+              ],
+              "name": "backend-5cb9d654f-wdmsh",
+              "imageIDs": [
+                "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d"
+              ]
+            }
+          ],
+          "activeReplicaSets": [
+            {
+              "replicas": 1,
+              "uid": "762ccb45-1167-4e33-acad-20ddc4c3bb8d",
+              "ready": 1,
+              "name": "backend-5cb9d654f",
+              "revision": "2"
+            }
+          ]
+        },
+        "checksumChanged": true
+      }
+    ],
+    "crudEvidence": "PE005-config-CRUD.json",
+    "oldApiPathContentType": [
+      "text/html"
+    ]
+  },
+  "restore": {
+    "debugStartup": false,
+    "apiContentType": [
+      "application/json"
+    ],
+    "after": [
+      {
+        "application": {
+          "operation": "Succeeded",
+          "sync": "Synced",
+          "revision": "d782ff546f3bbd1efb22d0846f9be0d36b982b71",
+          "health": "Healthy"
+        },
+        "pods": [
+          {
+            "name": "frontend-7f849c996f-n8qr7",
+            "ready": [
+              true
+            ],
+            "imageIDs": [
+              "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app@sha256:fb90b488134778d8c730033644fe607751553de6de2809c121c0ed53477f21cf"
+            ],
+            "uid": "e1e7aeb2-8096-44ad-a6d6-6d1228447a17",
+            "phase": "Running"
+          }
+        ],
+        "restartNonce": "",
+        "revision": "4",
+        "image": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app:d8ef13c003f2625b03f20b11c31908c775809cf5@sha256:fb90b488134778d8c730033644fe607751553de6de2809c121c0ed53477f21cf",
+        "checksum": "1bcac951cf3483345ae5119088a2acfed11f2b07edc53d87f883cadf32dbc1df",
+        "templateSha256": "2dd30f9cb2694190c7a34791cee2144218d77df97efd03b5e58d087cafd0446d",
+        "generation": 4,
+        "deploymentUid": "66241e3a-4450-4a50-a97f-4275989e19ab",
+        "servicePorts": [
+          {
+            "name": "http",
+            "port": 80,
+            "protocol": "TCP",
+            "targetPort": "http"
+          }
+        ],
+        "utc": "2026-10-02T05:36:42.3464842Z",
+        "context": "kind-core-platform-at0102",
+        "activeReplicaSets": [
+          {
+            "replicas": 1,
+            "name": "frontend-7f849c996f",
+            "ready": 1,
+            "revision": "4",
+            "uid": "ed53db3d-d2f1-4d26-aad1-a31357b1c84e"
+          }
+        ],
+        "name": "frontend"
+      },
+      {
+        "application": {
+          "operation": "Succeeded",
+          "sync": "Synced",
+          "revision": "d782ff546f3bbd1efb22d0846f9be0d36b982b71",
+          "health": "Healthy"
+        },
+        "pods": [
+          {
+            "name": "backend-5cb9d654f-c7w5p",
+            "ready": [
+              true
+            ],
+            "imageIDs": [
+              "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d"
+            ],
+            "uid": "b253a46b-9e63-4d8e-8061-20ee21aec783",
+            "phase": "Running"
+          },
+          {
+            "name": "backend-764685dc98-fh2j4",
+            "ready": [
+              false
+            ],
+            "imageIDs": [
+              "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d"
+            ],
+            "uid": "4a688138-c821-4e98-9cc6-af8e5270ed56",
+            "phase": "Succeeded"
+          }
+        ],
+        "restartNonce": "2026-09-10T00:30:18Z",
+        "revision": "4",
+        "image": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:7e38def8118ecc5101c5054e64f3eff98dfc819e@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d",
+        "checksum": "292a4c89ef5d461bd2f7a4bbc0966b8bc8461c785bb0fca687abc9b4a93d5911",
+        "templateSha256": "847ba93f6e1791e30be3cdb6efb8a66581e6e2f8b4e859ee599569b1267a9f61",
+        "generation": 4,
+        "deploymentUid": "08923b04-4c21-47f4-8bb5-4c8cb71862b3",
+        "servicePorts": [
+          {
+            "name": "http",
+            "port": 8080,
+            "protocol": "TCP",
+            "targetPort": "http"
+          }
+        ],
+        "utc": "2026-10-02T05:36:42.8145086Z",
+        "context": "kind-core-platform-at0102",
+        "activeReplicaSets": [
+          {
+            "replicas": 1,
+            "name": "backend-5cb9d654f",
+            "ready": 1,
+            "revision": "4",
+            "uid": "762ccb45-1167-4e33-acad-20ddc4c3bb8d"
+          }
+        ],
+        "name": "backend"
+      }
+    ],
+    "originalChecksumsImagesRestored": true,
+    "utc": "2026-10-02T05:37:31.9973174Z",
+    "infoStartup": true,
+    "newPodsAfterRestore": true,
+    "crud": "PE005-restored-CRUD.json"
+  },
+  "service": {
+    "newServicePort": 8088,
+    "crud": "PE005-service-CRUD.json",
+    "podTemplateChecksumRevisionUidUnchanged": true,
+    "utc": "2026-10-02T05:27:21.4149478Z",
+    "after": [
+      {
+        "deploymentUid": "66241e3a-4450-4a50-a97f-4275989e19ab",
+        "revision": "3",
+        "image": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app:d8ef13c003f2625b03f20b11c31908c775809cf5@sha256:fb90b488134778d8c730033644fe607751553de6de2809c121c0ed53477f21cf",
+        "restartNonce": "",
+        "templateSha256": "9360da10c8320bc347662ac5a133bf91a8eee01133cb6b8c6e8d6021c8e75483",
+        "activeReplicaSets": [
+          {
+            "revision": "3",
+            "name": "frontend-86dc75697c",
+            "uid": "fe1bb12d-7671-4a18-8795-7ab660a4dac7",
+            "replicas": 1,
+            "ready": 1
+          }
+        ],
+        "name": "frontend",
+        "application": {
+          "health": "Healthy",
+          "revision": "c6c13dc7baa10f3fb984f7f1b4ee9e9b3a1cd3ae",
+          "sync": "Synced",
+          "operation": "Succeeded"
+        },
+        "context": "kind-core-platform-at0102",
+        "generation": 3,
+        "pods": [
+          {
+            "ready": [
+              true
+            ],
+            "phase": "Running",
+            "name": "frontend-86dc75697c-7f8jm",
+            "uid": "837a2281-ed9f-4426-ac3e-e77fb6a23cbc",
+            "imageIDs": [
+              "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app@sha256:fb90b488134778d8c730033644fe607751553de6de2809c121c0ed53477f21cf"
+            ]
+          }
+        ],
+        "utc": "2026-10-02T05:26:38.0429589Z",
+        "checksum": "13ec63454efe9c740d7b470e3f961f9cafa8fc29c07d8ce42c6aa57d16db7ce0",
+        "servicePorts": [
+          {
+            "name": "http",
+            "port": 8088,
+            "protocol": "TCP",
+            "targetPort": "http"
+          }
+        ]
+      },
+      {
+        "deploymentUid": "08923b04-4c21-47f4-8bb5-4c8cb71862b3",
+        "revision": "3",
+        "image": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:7e38def8118ecc5101c5054e64f3eff98dfc819e@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d",
+        "restartNonce": "2026-09-10T00:30:18Z",
+        "templateSha256": "5c394195b8f259f1ffe41386c7c6ca9e4534705ca4176379b664721fba5e5a9b",
+        "activeReplicaSets": [
+          {
+            "revision": "3",
+            "name": "backend-764685dc98",
+            "uid": "0c8ecad0-733d-4fa5-a68f-1cb2371ce423",
+            "replicas": 1,
+            "ready": 1
+          }
+        ],
+        "name": "backend",
+        "application": {
+          "health": "Healthy",
+          "revision": "fac499fb1ec18f09ebbe5ff7c83e791ca299d157",
+          "sync": "Synced",
+          "operation": "Succeeded"
+        },
+        "context": "kind-core-platform-at0102",
+        "generation": 3,
+        "pods": [
+          {
+            "ready": [
+              true
+            ],
+            "phase": "Running",
+            "name": "backend-764685dc98-fh2j4",
+            "uid": "4a688138-c821-4e98-9cc6-af8e5270ed56",
+            "imageIDs": [
+              "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d"
+            ]
+          }
+        ],
+        "utc": "2026-10-02T05:26:38.523626Z",
+        "checksum": "609cd51e84de26cf5f276d4e032eb44c52f64828b84bea1e9abd0b5cff63d78c",
+        "servicePorts": [
+          {
+            "name": "http",
+            "port": 8080,
+            "protocol": "TCP",
+            "targetPort": "http"
+          }
+        ]
+      }
+    ],
+    "before": [
+      {
+        "checksum": "13ec63454efe9c740d7b470e3f961f9cafa8fc29c07d8ce42c6aa57d16db7ce0",
+        "revision": "3",
+        "context": "kind-core-platform-at0102",
+        "restartNonce": "",
+        "deploymentUid": "66241e3a-4450-4a50-a97f-4275989e19ab",
+        "utc": "2026-10-02T03:58:19.793039Z",
+        "application": {
+          "operation": "Succeeded",
+          "sync": "Synced",
+          "health": "Healthy",
+          "revision": "fac499fb1ec18f09ebbe5ff7c83e791ca299d157"
+        },
+        "generation": 3,
+        "image": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app:d8ef13c003f2625b03f20b11c31908c775809cf5@sha256:fb90b488134778d8c730033644fe607751553de6de2809c121c0ed53477f21cf",
+        "servicePorts": [
+          {
+            "name": "http",
+            "port": 80,
+            "protocol": "TCP",
+            "targetPort": "http"
+          }
+        ],
+        "name": "frontend",
+        "templateSha256": "9360da10c8320bc347662ac5a133bf91a8eee01133cb6b8c6e8d6021c8e75483",
+        "pods": [
+          {
+            "imageIDs": [
+              "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app@sha256:fb90b488134778d8c730033644fe607751553de6de2809c121c0ed53477f21cf"
+            ],
+            "name": "frontend-86dc75697c-7f8jm",
+            "uid": "837a2281-ed9f-4426-ac3e-e77fb6a23cbc",
+            "phase": "Running",
+            "ready": [
+              true
+            ]
+          }
+        ],
+        "activeReplicaSets": [
+          {
+            "replicas": 1,
+            "name": "frontend-86dc75697c",
+            "ready": 1,
+            "uid": "fe1bb12d-7671-4a18-8795-7ab660a4dac7",
+            "revision": "3"
+          }
+        ]
+      },
+      {
+        "checksum": "609cd51e84de26cf5f276d4e032eb44c52f64828b84bea1e9abd0b5cff63d78c",
+        "revision": "3",
+        "context": "kind-core-platform-at0102",
+        "restartNonce": "2026-09-10T00:30:18Z",
+        "deploymentUid": "08923b04-4c21-47f4-8bb5-4c8cb71862b3",
+        "utc": "2026-10-02T03:58:20.289102Z",
+        "application": {
+          "operation": "Succeeded",
+          "sync": "Synced",
+          "health": "Healthy",
+          "revision": "fac499fb1ec18f09ebbe5ff7c83e791ca299d157"
+        },
+        "generation": 3,
+        "image": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:7e38def8118ecc5101c5054e64f3eff98dfc819e@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d",
+        "servicePorts": [
+          {
+            "name": "http",
+            "port": 8080,
+            "protocol": "TCP",
+            "targetPort": "http"
+          }
+        ],
+        "name": "backend",
+        "templateSha256": "5c394195b8f259f1ffe41386c7c6ca9e4534705ca4176379b664721fba5e5a9b",
+        "pods": [
+          {
+            "imageIDs": [
+              "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app@sha256:a0afd2d49a106c7769932a462b2ae239b5aad02eba6c4ec5256eb8def847c39d"
+            ],
+            "name": "backend-764685dc98-fh2j4",
+            "uid": "4a688138-c821-4e98-9cc6-af8e5270ed56",
+            "phase": "Running",
+            "ready": [
+              true
+            ]
+          }
+        ],
+        "activeReplicaSets": [
+          {
+            "replicas": 1,
+            "name": "backend-764685dc98",
+            "ready": 1,
+            "uid": "0c8ecad0-733d-4fa5-a68f-1cb2371ce423",
+            "revision": "3"
+          }
+        ]
+      }
+    ]
+  },
+  "serviceCrud": [
+    {
+      "utc": "2026-10-02T05:27:21.284075Z",
+      "method": "GET",
+      "path": "/",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T05:27:21.3064641Z",
+      "method": "GET",
+      "path": "/api-pe005/accounts",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T05:27:21.3231533Z",
+      "method": "POST",
+      "path": "/api-pe005/accounts",
+      "expected": 201,
+      "status": 201
+    },
+    {
+      "utc": "2026-10-02T05:27:21.3341234Z",
+      "method": "GET",
+      "path": "/api-pe005/accounts/6",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T05:27:21.3466863Z",
+      "method": "PUT",
+      "path": "/api-pe005/accounts/6",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T05:27:21.3579263Z",
+      "method": "DELETE",
+      "path": "/api-pe005/accounts/6",
+      "expected": 204,
+      "status": 204
+    },
+    {
+      "utc": "2026-10-02T05:27:21.3678849Z",
+      "method": "GET",
+      "path": "/api-pe005/accounts/6",
+      "expected": 404,
+      "status": 404
+    }
+  ],
+  "restoreCrud": [
+    {
+      "utc": "2026-10-02T05:37:31.7410698Z",
+      "method": "GET",
+      "path": "/",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T05:37:31.7587334Z",
+      "method": "GET",
+      "path": "/api/accounts",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T05:37:31.7806332Z",
+      "method": "POST",
+      "path": "/api/accounts",
+      "expected": 201,
+      "status": 201
+    },
+    {
+      "utc": "2026-10-02T05:37:31.7909431Z",
+      "method": "GET",
+      "path": "/api/accounts/7",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T05:37:31.8017319Z",
+      "method": "PUT",
+      "path": "/api/accounts/7",
+      "expected": 200,
+      "status": 200
+    },
+    {
+      "utc": "2026-10-02T05:37:31.810576Z",
+      "method": "DELETE",
+      "path": "/api/accounts/7",
+      "expected": 204,
+      "status": 204
+    },
+    {
+      "utc": "2026-10-02T05:37:31.8183246Z",
+      "method": "GET",
+      "path": "/api/accounts/7",
+      "expected": 404,
+      "status": 404
+    }
+  ],
+  "mergeProofs": [
+    {
+      "pipeline": 2905312149,
+      "postTree": "38862cea084b98794022dfc905d8c2439c28c5f7",
+      "treeMatched": true,
+      "sourceCasNegativeStatus": 409,
+      "producer": 16886194178,
+      "utc": "2026-10-02T03:49:26.0186762Z",
+      "consumer": 16886194179,
+      "mergeCommit": "fac499fb1ec18f09ebbe5ff7c83e791ca299d157",
+      "postTreePending": false,
+      "mr": 28,
+      "candidateTree": "38862cea084b98794022dfc905d8c2439c28c5f7",
+      "before": {
+        "manifestMainSha": "a92a7850c4714cf93d0e1b9bd4501896bc849792",
+        "checkedAt": "2026-10-02T03:49:21.408188Z",
+        "targetBranch": "main",
+        "mrSourceSha": "1a7c7ecfac6c98ed40b3cc07ac14ec9bbd44b874",
+        "mrIid": 28,
+        "targetProtected": true,
+        "sourceProject": 86247034,
+        "sourceMains": {
+          "86247025": "6c2b429340f91caa8cac84a4b0476468b7316693",
+          "86247033": "5a21bf5ebf4ea1ee0f54c53cce1bdd87814adbfd"
+        },
+        "appMainsProtected": true,
+        "targetProject": 86247034,
+        "mrState": "opened"
+      },
+      "immediate": {
+        "manifestMainSha": "a92a7850c4714cf93d0e1b9bd4501896bc849792",
+        "checkedAt": "2026-10-02T03:49:24.1389065Z",
+        "targetBranch": "main",
+        "mrSourceSha": "1a7c7ecfac6c98ed40b3cc07ac14ec9bbd44b874",
+        "mrIid": 28,
+        "targetProtected": true,
+        "sourceProject": 86247034,
+        "sourceMains": {
+          "86247025": "6c2b429340f91caa8cac84a4b0476468b7316693",
+          "86247033": "5a21bf5ebf4ea1ee0f54c53cce1bdd87814adbfd"
+        },
+        "appMainsProtected": true,
+        "targetProject": 86247034,
+        "mrState": "opened"
+      }
+    },
+    {
+      "pipeline": 2905483039,
+      "postTree": "fd9dbdd4e03f2d518cd2d4b3a262dcf85dffd524",
+      "treeMatched": true,
+      "sourceCasNegativeStatus": 409,
+      "producer": 16887217789,
+      "utc": "2026-10-02T05:26:16.2526115Z",
+      "consumer": 16887217790,
+      "mergeCommit": "c6c13dc7baa10f3fb984f7f1b4ee9e9b3a1cd3ae",
+      "postTreePending": false,
+      "mr": 32,
+      "candidateTree": "fd9dbdd4e03f2d518cd2d4b3a262dcf85dffd524",
+      "before": {
+        "manifestMainSha": "fac499fb1ec18f09ebbe5ff7c83e791ca299d157",
+        "checkedAt": "2026-10-02T05:26:11.5647554Z",
+        "targetBranch": "main",
+        "mrSourceSha": "2c22778f7add53316b35e28b4c39dd337eac7e58",
+        "mrIid": 32,
+        "targetProtected": true,
+        "sourceProject": 86247034,
+        "sourceMains": {
+          "86247025": "6c2b429340f91caa8cac84a4b0476468b7316693",
+          "86247033": "5a21bf5ebf4ea1ee0f54c53cce1bdd87814adbfd"
+        },
+        "appMainsProtected": true,
+        "targetProject": 86247034,
+        "mrState": "opened"
+      },
+      "immediate": {
+        "manifestMainSha": "fac499fb1ec18f09ebbe5ff7c83e791ca299d157",
+        "checkedAt": "2026-10-02T05:26:14.2540669Z",
+        "targetBranch": "main",
+        "mrSourceSha": "2c22778f7add53316b35e28b4c39dd337eac7e58",
+        "mrIid": 32,
+        "targetProtected": true,
+        "sourceProject": 86247034,
+        "sourceMains": {
+          "86247025": "6c2b429340f91caa8cac84a4b0476468b7316693",
+          "86247033": "5a21bf5ebf4ea1ee0f54c53cce1bdd87814adbfd"
+        },
+        "appMainsProtected": true,
+        "targetProject": 86247034,
+        "mrState": "opened"
+      }
+    },
+    {
+      "pipeline": 2905488818,
+      "postTree": "3bbe44bce408f5ab538d1dba920930767d8ea39f",
+      "treeMatched": true,
+      "sourceCasNegativeStatus": 409,
+      "producer": 16887256957,
+      "utc": "2026-10-02T05:35:16.8473624Z",
+      "consumer": 16887256958,
+      "mergeCommit": "d782ff546f3bbd1efb22d0846f9be0d36b982b71",
+      "postTreePending": false,
+      "mr": 33,
+      "candidateTree": "3bbe44bce408f5ab538d1dba920930767d8ea39f",
+      "before": {
+        "manifestMainSha": "c6c13dc7baa10f3fb984f7f1b4ee9e9b3a1cd3ae",
+        "checkedAt": "2026-10-02T05:35:12.2014223Z",
+        "targetBranch": "main",
+        "mrSourceSha": "e0d0cb9589410e9bed08b98584a8091dc5cff4e2",
+        "mrIid": 33,
+        "targetProtected": true,
+        "sourceProject": 86247034,
+        "sourceMains": {
+          "86247025": "6c2b429340f91caa8cac84a4b0476468b7316693",
+          "86247033": "5a21bf5ebf4ea1ee0f54c53cce1bdd87814adbfd"
+        },
+        "appMainsProtected": true,
+        "targetProject": 86247034,
+        "mrState": "opened"
+      },
+      "immediate": {
+        "manifestMainSha": "c6c13dc7baa10f3fb984f7f1b4ee9e9b3a1cd3ae",
+        "checkedAt": "2026-10-02T05:35:14.9116644Z",
+        "targetBranch": "main",
+        "mrSourceSha": "e0d0cb9589410e9bed08b98584a8091dc5cff4e2",
+        "mrIid": 33,
+        "targetProtected": true,
+        "sourceProject": 86247034,
+        "sourceMains": {
+          "86247025": "6c2b429340f91caa8cac84a4b0476468b7316693",
+          "86247033": "5a21bf5ebf4ea1ee0f54c53cce1bdd87814adbfd"
+        },
+        "appMainsProtected": true,
+        "targetProject": 86247034,
+        "mrState": "opened"
+      }
+    }
+  ]
+}

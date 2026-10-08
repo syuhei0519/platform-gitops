@@ -1,0 +1,27 @@
+{{/*
+managerがbuild namespaceのjob Pod等を管理するRole。cluster-wideの任意resource操作権限は付けない。
+*/}}apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: {name: gitlab-runner-jobs, namespace: {{ .Values.job.namespace }} }
+rules:
+  - apiGroups: [""]
+    resources: [pods]
+    verbs: [create, delete, get, list, watch]
+  - apiGroups: [""]
+    resources: [pods/attach, pods/exec]
+    verbs: [create, delete, get, patch]
+  - apiGroups: [""]
+    resources: [pods/log]
+    verbs: [get, list]
+  - apiGroups: [""]
+    resources: [secrets]
+    verbs: [create, delete, get, update]
+  - apiGroups: [""]
+    resources: [serviceaccounts]
+    verbs: [get]
+  - apiGroups: [""]
+    resources: [services]
+    verbs: [create, get]
+  - apiGroups: [""]
+    resources: [events]
+    verbs: [list, watch]

@@ -1,0 +1,25 @@
+{
+  "fixture": true,
+  "phase2Adoptable": false,
+  "manifestCommit": "46223f28d735d0f6bf39e0998d7c5285701091f1",
+  "pipelineId": 2908297735,
+  "jobId": 16907884468,
+  "sources": [
+    {
+      "service": "frontend",
+      "readChecksum": true,
+      "fixtureNotDeployable": true,
+      "forbiddenWriteHttp": 403,
+      "sourcePipelineId": 2908243077,
+      "sourceJobId": 16907514770
+    },
+    {
+      "service": "backend",
+      "readChecksum": true,
+      "fixtureNotDeployable": true,
+      "forbiddenWriteHttp": 403,
+      "sourcePipelineId": 2908256232,
+      "sourceJobId": 16907606026
+    }
+  ]
+}

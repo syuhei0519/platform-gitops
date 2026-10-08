@@ -1,0 +1,50 @@
+# 通常CIのjob定義。入口は.gitlab-ci.yml。既存のrules/needs/成果物契約を一括で維持する。
+include:
+  - local: ci/includes/security.yml
+
+bootstrap-contract-test:
+  stage: test
+  image: golang:1.27.1-bookworm@sha256:648f440f42a0958804efb24df176f806f9d353b41f1c0627f666428e40310f6b
+  variables:
+    GOCACHE: /tmp/go-build
+    GOPATH: /tmp/go
+  script:
+    - cd tools/bootstrap
+    - go test -v ./...
+    - mkdir -p ../../.build
+    - CGO_ENABLED=0 go test -c -o ../../.build/bootstrap-test .
+  artifacts:
+    expire_in: 1 day
+    paths: [.build/bootstrap-test]
+
+render-and-policy:
+  stage: render
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH'
+  image:
+    name: alpine/helm:4.2.4@sha256:76c375eed56144c68d6197c55bc5a4552fb42002190b796729901cbab3ae6e51
+    entrypoint: [""]
+  needs: [bootstrap-contract-test, security-policy-test]
+  script:
+    - sh ci/validate.sh
+    - mkdir -p .security/public
+    - .security/scan-gate -check-render-only .rendered -out .security/public/pre-render.json
+    - PE_OBSERVABILITY_RENDER_DIR=.rendered .build/bootstrap-test -test.run 'TestObservabilityContract|TestCollectorContract|TestGrafanaProvisioningBoundary' -test.v
+  artifacts:
+    expire_in: 7 days
+    paths: [.rendered/]
+
+kubernetes-and-argo-schema:
+  stage: schema
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH'
+  image:
+    name: ghcr.io/yannh/kubeconform:v0.7.0-alpine@sha256:8f0eeaaa96ba27ba1500b0e4b1c215acc358d159c62a7ecae58d7a03403287b0
+    entrypoint: [""]
+  needs: [render-and-policy]
+  script:
+    - /kubeconform -strict -summary -kubernetes-version 1.36.0 .rendered/runner-foundation.yaml .rendered/gitlab-runner.yaml .rendered/observability-foundation.yaml .rendered/prometheus.yaml .rendered/argocd-pods.yaml .rendered/collector-disabled.yaml .rendered/collector-enabled.yaml .rendered/grafana.yaml
+    - /kubeconform -strict -summary -schema-location https://raw.githubusercontent.com/datreeio/CRDs-catalog/ad3b08c5045129d7bb1eeffd8e61719b2c8dd1e2/argoproj.io/application_v1alpha1.json .rendered/applications.yaml
+    - /kubeconform -strict -summary -schema-location https://raw.githubusercontent.com/datreeio/CRDs-catalog/ad3b08c5045129d7bb1eeffd8e61719b2c8dd1e2/argoproj.io/appproject_v1alpha1.json .rendered/projects.yaml

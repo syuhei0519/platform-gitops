@@ -1,0 +1,19 @@
+{
+  "probeBudgetBytes": 536870912,
+  "reason": "expanded-public-db-exceeded-local-probe-budget",
+  "newRelicAccess": false,
+  "sourceRuntimeOrDataMutation": false,
+  "nextUpdate": "2026-10-04T07:01:46.027466402Z",
+  "probeAccepted": false,
+  "firstDbUpdatedAt": "2026-10-03T07:01:46.027466673Z",
+  "publicDatabaseOnly": true,
+  "metadataSha256": "9f44b77ff7606da80167e4c134d60459d11e23d334d94a9f07ad06317d8d5e89",
+  "cacheBytes": 1481576601.0,
+  "cachePath": "C:\\Users\\espoi\\OneDrive\\ドキュメント\\New project\\tmp\\pe017-public-db-probe",
+  "version": 2,
+  "updatedAt": "2026-10-03T07:01:46.027466673Z",
+  "trivyVersion": "0.75.0",
+  "utc": "2026-10-03T09:51:19.8063727Z",
+  "cacheRemovalDeniedByPolicy": true,
+  "differentDatabase": false
+}

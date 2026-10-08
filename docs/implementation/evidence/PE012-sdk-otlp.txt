@@ -1,0 +1,5 @@
+=== RUN   TestSDKCollectorMetricNames
+    telemetry_test.go:100: SDK actual OTLP cumulative7, seconds histogram7, instance=3bd16638-ece6-4926-ae4f-6a4f46e82a3b version=5a21bf5ebf4ea1ee0f54c53cce1bdd87814adbfd; scrape and names checked by acceptance script
+--- PASS: TestSDKCollectorMetricNames (0.01s)
+PASS
+ok  	gitlab.com/platform-engineering-lab/backend-app/internal/telemetry	0.123s

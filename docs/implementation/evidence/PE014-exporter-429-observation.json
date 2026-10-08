@@ -1,0 +1,12 @@
+{
+  "rejected": 14,
+  "accepted": 0,
+  "posts": 14,
+  "observation": "Actual internal mock /status read during 429 stage, before restart reset counters",
+  "secretValuesRecorded": false,
+  "mode": "429",
+  "actualNewRelicAccountQuotaFailure": false,
+  "recordedAt": "2026-10-02T20:22:53.4252817Z",
+  "source": "Docker internal client HTTP /status response observed in tool output",
+  "traceId": "582d8ad0985134c53f47d305ca012181"
+}

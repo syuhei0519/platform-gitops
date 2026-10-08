@@ -1,0 +1,71 @@
+# Core Platform固定ツール/node/chartの版台帳。bootstrap/CIの実引数と照合する資料。
+# ここに値があるだけで実バイナリや取得packageの同一性は証明されず、checksum確認も必要。
+apiVersion: platform.lab/v1alpha1
+kind: VersionLock
+metadata:
+  name: local-platform
+spec:
+  kind:
+    version: v0.33.0
+    nodeImage: kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed
+    kubernetesMinor: v1.36
+  kubectl: v1.36.4
+  helm: v4.2.4
+  argoCd:
+    repository: https://argoproj.github.io/argo-helm
+    chart: argo-cd
+    version: 10.8.2
+    appVersion: v3.5.2
+    packageDigest: sha256:96fb5ab2897e3c8758cd8fef409a46668ef1a19a538116b112b0691614a48f20
+    image: quay.io/argoproj/argocd:v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68
+    redisImage: ecr-public.aws.com/docker/library/redis:8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1
+  gitlabRunner:
+    repository: https://charts.gitlab.io
+    chart: gitlab-runner
+    version: 0.92.1
+    appVersion: 19.3.1
+    managerImage: registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v19.3.1@sha256:f5578027351e1db11564fff9333977fb0d8d13c802b35d42a2f392872fec6a30
+    packageDigest: sha256:8225bb8acda23398cfb5b9925ad0dd8cc511f5e5461d1450caf92720e05b155c
+    helperImage: registry.gitlab.com/gitlab-org/ci-cd/gitlab-runner-ubi-images/gitlab-runner-helper-ocp:x86_64-v19.3.1@sha256:ebcce5b4e36899e72aa20554962d7270a0eec1e398e1b0a0f746ede4f4bb1b70
+  buildkit:
+    image: moby/buildkit:v0.30.0-rootless@sha256:d76eb1caecac5733ef7553c1e90a1b21f1bb218cd1142d3553de0747b4a14ba9
+  prometheus:
+    repository: https://prometheus-community.github.io/helm-charts
+    chart: prometheus
+    version: 29.35.0
+    packageDigest: sha256:58bd043404026c30298d2f319711fd32c91e255f1c9d29be557a3d465ad91239
+    appVersion: v3.15.0
+    image: quay.io/prometheus/prometheus:v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
+    configReloaderImage: quay.io/prometheus-operator/prometheus-config-reloader:v0.94.1@sha256:ac2f46e50daebc6163d2ba17adbbbc7fe8f51a0000e7961e821dcb9331b3702f
+    kubeStateMetrics:
+      chartVersion: 8.6.0
+      appVersion: v2.20.0
+      image: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.20.0@sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016
+  plannedObservability:
+    # この記述の時点ではCollectorはPE-011で検証/受入済み、GrafanaはPE-013の予定だった。現在の導入状態はenvironments/local/platform.yaml等と区別して読む。
+    collectorContrib:
+      version: 0.161.0
+      image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc
+      enabled: true
+    grafana:
+      repository: https://grafana-community.github.io/helm-charts
+      chart: grafana
+      version: 13.2.7
+      packageDigest: sha256:5189a48131311513ef7bf5e22f1ed6424cd1c7cec61bc1995fab04d3cf46f36a
+      appVersion: 13.2.3
+      image: docker.io/grafana/grafana:13.2.3@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4
+      enabled: true
+  ciTools:
+    nodeImage: node:24.19.0-alpine3.23@sha256:244cc2b53f46f9e876304391d17682b0ddae9ac33491f4857e25e35a36ba7995
+    goImage: golang:1.27.1-bookworm@sha256:648f440f42a0958804efb24df176f806f9d353b41f1c0627f666428e40310f6b
+    craneImage: gcr.io/go-containerregistry/crane/debug:v0.21.7@sha256:54b27703e6c602fbd6f95712910e9c8d45d4361a59274bde38aeec943734e424
+    helmImage: alpine/helm:4.2.4@sha256:76c375eed56144c68d6197c55bc5a4552fb42002190b796729901cbab3ae6e51
+    targetPlatform: linux/amd64
+    registryCacheOutput: disabled
+    applicationToolContracts:
+      frontend:
+        path: ci/tool-versions.env
+        commit: 83192bb6bf17af5d87cc73d75f99c9462f2c4a8d
+      backend:
+        path: ci/tool-versions.env
+        commit: 9649d4b0d23bd46cb614711fd6c3c483217bf258

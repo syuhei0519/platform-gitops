@@ -1,0 +1,152 @@
+{
+  "AT07": "passed scoped fault scenarios; exact allspan loss not claimed",
+  "AT10": "phase1 provisional only, PE019 final OCI/Trivy/SBOM remains pending",
+  "additionalRecreateGETs": 900,
+  "costCeilingYen": 0,
+  "fixtureRealProviderTraffic": 0,
+  "files": [
+    {
+      "bytes": 635,
+      "sha256": "9400b7744eec3920e06a71a7d654ea5487f559db89426cb496bce427cb30f54c",
+      "file": "evidence/PE014-profile.json"
+    },
+    {
+      "bytes": 455,
+      "sha256": "9b045589927f40b26a6e69b10ef541cc55f7f6c972df4b658abf5ffe1678fa01",
+      "file": "evidence/PE014-stop-capacity-result.json"
+    },
+    {
+      "bytes": 1743,
+      "sha256": "a8238c2c1e24e64184405917a2b95cd31542b4f7eccde64273ca65453cc082a5",
+      "file": "evidence/PE014-phase1-capacity-audit.json"
+    },
+    {
+      "bytes": 213399,
+      "sha256": "52e69ba3914b204d70721e09472d383a6d4de8b38e70717ca3e4c744529598fc",
+      "file": "evidence/PE014-crud-rows.json"
+    },
+    {
+      "bytes": 2396818,
+      "sha256": "ee4ef04084c769ed62ac67cfcf83f9bcebcfc957b8af1c73dcc9c5eb5931f174",
+      "file": "evidence/PE014-capacity-samples.json"
+    },
+    {
+      "bytes": 289,
+      "sha256": "6432faf7c956d76fbd124da68d39728206497dac92c6f7881f48c6d46e4fd686",
+      "file": "evidence/PE014-concurrent-CI.json"
+    },
+    {
+      "bytes": 706,
+      "sha256": "34df19071710fbc5d0496afcd1dc1b218ac451f1181212ca67755a44a70e8380",
+      "file": "evidence/PE014-concurrent-CI-result.json"
+    },
+    {
+      "bytes": 409,
+      "sha256": "0a80ded24254c8f910420a3912487531a80cd773a51f2c6649ae196d4b1e7da6",
+      "file": "evidence/PE014-stop-observation.json"
+    },
+    {
+      "bytes": 124,
+      "sha256": "369418f5d0286bcb214169207fae2ddf76341204b9d04482e30f4c6676324b93",
+      "file": "evidence/PE014-stop-log-summary.json"
+    },
+    {
+      "bytes": 895,
+      "sha256": "3fd1fc1aad237735c5ef9b0a8aedbb14af3f67f82ec82d0a3bd4c4dfa4ac6daa",
+      "file": "evidence/PE014-sdk-recovery-metrics.txt"
+    },
+    {
+      "bytes": 353,
+      "sha256": "8905bf7fc3666d75f216d96153619d91fbd0751431eb6901fc91ab99635cb353",
+      "file": "evidence/PE014-collector-recovery-metrics.txt"
+    },
+    {
+      "bytes": 239,
+      "sha256": "fb9ebd88154c022f6d9e94fcb7b90b496d68cb0d89fd1fa6606c10593deab42c",
+      "file": "evidence/PE014-harness-PF-repair.json"
+    },
+    {
+      "bytes": 546,
+      "sha256": "cc6cf8f48787baa5f64d56fcb9063ca30185d62b16731f7a878cb2d006fd5d65",
+      "file": "evidence/PE014-exporter-profile.json"
+    },
+    {
+      "bytes": 3532,
+      "sha256": "9aa8399fce5eb35984499d35b5dc6fcc9adf17d8550b480e17e29b011a29569b",
+      "file": "evidence/PE014-exporter-result.json"
+    },
+    {
+      "bytes": 34732,
+      "sha256": "ae537f2904c3db9a4018c85e442871ca358b12f3af301e61b87f2e6391d74461",
+      "file": "evidence/PE014-exporter-metrics.json"
+    },
+    {
+      "bytes": 432,
+      "sha256": "455fcb49f9e79e5103ae572b9fab54caa0c5f02062a721f2e946aa4bb4157f1a",
+      "file": "evidence/PE014-exporter-429-observation.json"
+    },
+    {
+      "bytes": 481,
+      "sha256": "7048e9d52364a65074e4bf24422391aac017112cd3079c5c47df34734c81682d",
+      "file": "evidence/PE014-exporter-harness-internal-network-failure.json"
+    },
+    {
+      "bytes": 392,
+      "sha256": "63d5e7ceaac721c3e47c8106cc7e78c990b63eb334d8b0e0cb4201be8aaede13",
+      "file": "evidence/PE014-exporter-harness-network-repair.json"
+    },
+    {
+      "bytes": 383,
+      "sha256": "05938235dbc7af541f9a4c027fd64d0e85b7404365f5eaea362bc57d8d3fe5dc",
+      "file": "evidence/PE014-recreate-profile.json"
+    },
+    {
+      "bytes": 536,
+      "sha256": "f369bc55957061888f12dd6427d34186ca07591671b1d950365a1e5de5018bc0",
+      "file": "evidence/PE014-recreate-result.json"
+    },
+    {
+      "bytes": 385117,
+      "sha256": "2927f42bd00000e2f48fcf15e2fa8bf34089cddd9d1e0ffa5d95d3f0a9da617f",
+      "file": "evidence/PE014-recreate-samples.json"
+    },
+    {
+      "bytes": 97895,
+      "sha256": "98a45be33a312886335cccca07acf3e4be3b4c4328dce49768a91d992b048162",
+      "file": "evidence/PE014-recreate-crud.json"
+    },
+    {
+      "bytes": 190,
+      "sha256": "fcd855831508a015c51009984d9c13ad496284dac89a5f0594a8a45f26fa205c",
+      "file": "evidence/PE014-recreate-reception.txt"
+    },
+    {
+      "bytes": 457,
+      "sha256": "b745e15c7d46052216199629870e193a372b898f02e09ae5138ba46bfd32e3a5",
+      "file": "evidence/PE014-recreate-scope-audit.json"
+    },
+    {
+      "bytes": 532,
+      "sha256": "66bc0d4ef28b6c11990b163572edf500df5a98921c1c97f262c87649fb90b070",
+      "file": "evidence/PE014-final-source-state.json"
+    },
+    {
+      "bytes": 163,
+      "sha256": "a1bdec7875212d9e09f94366bb697fb20892ba99fc122f3aed2f6db16d7b2ef7",
+      "file": "evidence/PE014-host-memory-during.json"
+    },
+    {
+      "bytes": 90,
+      "sha256": "82124ca3e7a0b96105ed059f3d4bce3367624e985006a62d9ebd872ace444b07",
+      "file": "evidence/PE014-host-memory-near-end.json"
+    },
+    {
+      "bytes": 90,
+      "sha256": "419d7d482f3b2c4104528503aa17f6cdc447ddf3faf865cec6ea2255a1fce921",
+      "file": "evidence/PE014-host-memory-after-stop-profile.json"
+    }
+  ],
+  "accepted": "PE014 source stop, actual single-Recreate update/restoration, isolated429/disconnect/queue saturation, phase1CI concurrent capacity",
+  "secretsRecorded": false,
+  "fullCrudRequests": 900
+}

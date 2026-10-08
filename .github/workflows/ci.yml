@@ -1,0 +1,98 @@
+name: CI
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+defaults:
+  run:
+    shell: bash
+jobs:
+  classify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      docs: ${{ steps.diff.outputs.docs }}
+      base: ${{ steps.diff.outputs.base }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - id: diff
+        run: python3 -I ci/github/classify.py
+  docs:
+    needs: classify
+    if: needs.classify.outputs.docs == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Documentation and secret checks
+        env:
+          DOCS_BASE: ${{ needs.classify.outputs.base }}
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD:/work" -w /work \
+            -e CI_PIPELINE_SOURCE=merge_request_event -e CI_MERGE_REQUEST_DIFF_BASE_SHA="$DOCS_BASE" \
+            --entrypoint sh aquasec/trivy:0.75.0@sha256:9db099105405c648166e6b94155eb32f8da12673cf1f455207f7385cc9a77283 -ec 'git config --global --add safe.directory /work; sh ci/docs-check.sh'
+  validate:
+    needs: classify
+    if: needs.classify.outputs.docs != 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16
+        with:
+          go-version: '1.27.1'
+          cache: false
+      - name: Policy and boundary tests
+        run: bash ci/github/test.sh
+      - name: Render, policy and checksum checks
+        run: |
+          mkdir -p .security/public
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD:/work" -w /work --entrypoint sh alpine/helm:4.2.4@sha256:76c375eed56144c68d6197c55bc5a4552fb42002190b796729901cbab3ae6e51 -ec "sh ci/validate.sh; .security/scan-gate -check-render-only .rendered -out .security/public/pre-render.json; PE_OBSERVABILITY_RENDER_DIR=.rendered .build/bootstrap-test -test.run 'TestObservabilityContract|TestCollectorContract|TestGrafanaProvisioningBoundary' -test.v"
+      - name: Kubernetes schema checks
+        run: |
+          docker run --rm -v "$PWD:/work:ro" -w /work ghcr.io/yannh/kubeconform:v0.7.0-alpine@sha256:8f0eeaaa96ba27ba1500b0e4b1c215acc358d159c62a7ecae58d7a03403287b0 -strict -summary -kubernetes-version 1.36.0 .rendered/runner-foundation.yaml .rendered/gitlab-runner.yaml .rendered/observability-foundation.yaml .rendered/prometheus.yaml .rendered/argocd-pods.yaml .rendered/collector-disabled.yaml .rendered/collector-enabled.yaml .rendered/grafana.yaml
+            docker run --rm -v "$PWD:/work:ro" -w /work ghcr.io/yannh/kubeconform:v0.7.0-alpine@sha256:8f0eeaaa96ba27ba1500b0e4b1c215acc358d159c62a7ecae58d7a03403287b0 -strict -summary -schema-location https://raw.githubusercontent.com/datreeio/CRDs-catalog/ad3b08c5045129d7bb1eeffd8e61719b2c8dd1e2/argoproj.io/application_v1alpha1.json .rendered/applications.yaml
+            docker run --rm -v "$PWD:/work:ro" -w /work ghcr.io/yannh/kubeconform:v0.7.0-alpine@sha256:8f0eeaaa96ba27ba1500b0e4b1c215acc358d159c62a7ecae58d7a03403287b0 -strict -summary -schema-location https://raw.githubusercontent.com/datreeio/CRDs-catalog/ad3b08c5045129d7bb1eeffd8e61719b2c8dd1e2/argoproj.io/appproject_v1alpha1.json .rendered/projects.yaml
+      - name: Source and rendered security checks
+        env:
+          SECURITY_RENDER_REQUIRED: 'true'
+        run: bash ci/github/source-scan.sh
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: security-results-${{ github.run_attempt }}
+          path: .security/public/
+          include-hidden-files: true
+          retention-days: 30
+  ci-result:
+    if: always()
+    needs: [classify, docs, validate]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Required check
+        env:
+          DOCS: ${{ needs.classify.outputs.docs }}
+          CLASSIFY: ${{ needs.classify.result }}
+          DOCS_RESULT: ${{ needs.docs.result }}
+          VALIDATE: ${{ needs.validate.result }}
+        run: |
+          test "$CLASSIFY" = success
+          if test "$DOCS" = true; then test "$DOCS_RESULT" = success; else
+            test "$VALIDATE" = success
+          fi

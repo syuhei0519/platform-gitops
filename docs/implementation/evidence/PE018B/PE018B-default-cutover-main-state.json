@@ -1,0 +1,332 @@
+{
+  "format": {
+    "archiveBytes": 15376896,
+    "archiveSha256": "bdf3dc0b9322e6f77a3b0a0492fc781a535d1e5356aae3bb58d7a3e6785144c0",
+    "buildJobId": 16953548223,
+    "buildPipelineId": 2915581900,
+    "craneReader": "v0.21.7",
+    "dbUpdatedAt": "2026-10-05T19:07:00.467981014Z",
+    "digest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+    "expandedBytes": 15361379,
+    "fullCraneLayerValidation": true,
+    "misconfigurationCount": 0,
+    "phase2Adoptable": false,
+    "registryPush": false,
+    "reportSchemaVersion": 2,
+    "sameDirectoryRead": true,
+    "schemaVersion": 1,
+    "scope": "PE016B format compatibility only",
+    "secretCount": 0,
+    "securityGateApplied": false,
+    "sourceCommit": "bcc4126097ab6224e46257560010fc4623a51414",
+    "sourceProjectId": 86247033,
+    "trivyVersion": "0.75.0",
+    "utc": "2026-10-05T23:22:53.293078674Z",
+    "validationJobId": 16953548224,
+    "validationPipelineId": 2915581900,
+    "vulnerabilityCount": 1
+  },
+  "pipeline": 2915581900,
+  "status": "success",
+  "runtime": {
+    "schemaVersion": 1,
+    "scope": "PE016B isolated runtime only",
+    "sourceProjectId": 86247033,
+    "sourceCommit": "bcc4126097ab6224e46257560010fc4623a51414",
+    "buildPipelineId": 2915581900,
+    "buildJobId": 16953548223,
+    "runtimePipelineId": 2915581900,
+    "runtimeJobId": 16953548225,
+    "archiveSha256": "bdf3dc0b9322e6f77a3b0a0492fc781a535d1e5356aae3bb58d7a3e6785144c0",
+    "digest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+    "runtimeUid": 10001,
+    "backendReadyHttp": 503,
+    "backendLiveHttp": 200,
+    "databaseReadinessRefused": true,
+    "network": "none-loopback-only",
+    "registryPush": false,
+    "sourceDatabaseConnected": false,
+    "phase2Adoptable": false
+  },
+  "jobs": [
+    {
+      "id": 16953548230,
+      "name": "propose-oci-manifest-update",
+      "status": "success"
+    },
+    {
+      "id": 16953548229,
+      "name": "verify-oci-release",
+      "status": "success"
+    },
+    {
+      "id": 16953548228,
+      "name": "publish-oci",
+      "status": "success"
+    },
+    {
+      "id": 16953548227,
+      "name": "release-record-store",
+      "status": "success"
+    },
+    {
+      "id": 16953548226,
+      "name": "oci-image-policy-validation",
+      "status": "success"
+    },
+    {
+      "id": 16953548225,
+      "name": "oci-isolated-runtime",
+      "status": "success"
+    },
+    {
+      "id": 16953548224,
+      "name": "oci-format-compatibility",
+      "status": "success"
+    },
+    {
+      "id": 16953548223,
+      "name": "container-build-oci",
+      "status": "success"
+    },
+    {
+      "id": 16953548222,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16953548221,
+      "name": "backend-build",
+      "status": "success"
+    },
+    {
+      "id": 16953548220,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16953548219,
+      "name": "format-and-vet",
+      "status": "success"
+    },
+    {
+      "id": 16953548218,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16953548217,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "fullAT05Accepted": false,
+  "unitAccepted": false,
+  "sameDigestReused": false,
+  "source": "bcc4126097ab6224e46257560010fc4623a51414",
+  "scanBudget": {
+    "schemaVersion": 1,
+    "scope": "PE016B sampled temporary disk",
+    "kind": "format",
+    "samples": 8,
+    "intervalSeconds": 2,
+    "transientMissingRetryCount": 0,
+    "duAttemptsPerMeasurementMax": 3,
+    "maxWorkspaceKiB": 1618888,
+    "workspaceLimitKiB": 2097152,
+    "maxBuildkitStoreKiB": 4,
+    "buildkitStoreLimitKiB": 10485760,
+    "buildkitStoreObserved": true,
+    "buildkitStoreAggregation": "sumConfiguredRoots",
+    "rootlessNamespaceUsed": false,
+    "minFilesystemFreePercent": 92.478857,
+    "measurementAvailable": true,
+    "withinBudget": true,
+    "continuousPeakClaim": false
+  },
+  "actualDBFreshAtScan": true,
+  "verifierJob": 16953548229,
+  "release": {
+    "sbomUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/sbom-2915581900-16953548226.cdx.json",
+    "buildPipelineId": "2915581900",
+    "recordSha256": "05eee5d56bf573297d90f5f24d8d3194ffeca60c705dee737a3b5adf7d34c2d9",
+    "sourceProjectId": "86247033",
+    "buildJobId": "16953548223",
+    "scanJobId": "16953548226",
+    "sourceCommit": "bcc4126097ab6224e46257560010fc4623a51414",
+    "recordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/release-record-2915581900-16953548226.json",
+    "schemaVersion": "2",
+    "sbomSha256": "71f8a897bb5a08ab8820e58898837c16f49455488855cc5f6d145c039e671033",
+    "scanPipelineId": "2915581900"
+  },
+  "actualPolicySha256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337",
+  "record": {
+    "schemaVersion": 2,
+    "service": "backend",
+    "sourceProjectId": 86247033,
+    "sourceCommit": "bcc4126097ab6224e46257560010fc4623a51414",
+    "buildPipelineId": 2915581900,
+    "buildJobId": 16953548223,
+    "imageRepository": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app",
+    "imageTag": "bcc4126097ab6224e46257560010fc4623a51414",
+    "imageDigest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+    "scanPipelineId": 2915581900,
+    "scanJobId": 16953548226,
+    "scanJobStatus": "success",
+    "inputKind": "build-oci",
+    "inputArchiveSha256": "bdf3dc0b9322e6f77a3b0a0492fc781a535d1e5356aae3bb58d7a3e6785144c0",
+    "trivyVersion": "0.75.0",
+    "database": {
+      "version": 2,
+      "updatedAt": "2026-10-05T19:07:00.467981014Z",
+      "metadataSha256": "00d23da4ab3a3ea0ce53fc6be53e3e1680c29b9bc563a5a7182ac680cd182586"
+    },
+    "scannedAt": "2026-10-05T23:25:11.087498658Z",
+    "policyRevision": "bcc4126097ab6224e46257560010fc4623a51414",
+    "policySha256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337",
+    "exceptions": [],
+    "decision": "passed",
+    "failureReason": "",
+    "sbom": {
+      "imageDigest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+      "scanPipelineId": 2915581900,
+      "scanJobId": 16953548226,
+      "url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/sbom-2915581900-16953548226.cdx.json",
+      "sha256": "71f8a897bb5a08ab8820e58898837c16f49455488855cc5f6d145c039e671033",
+      "format": "CycloneDX",
+      "schemaVersion": "1.7"
+    },
+    "sbomFailureReason": "",
+    "scanReport": {
+      "imageDigest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+      "scanPipelineId": 2915581900,
+      "scanJobId": 16953548226,
+      "url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/scan-report-2915581900-16953548226.json",
+      "sha256": "1930f2067847871c1181bb159649401d5490055199f41a016ea54c3775925904",
+      "format": "safe-json",
+      "schemaVersion": "1"
+    }
+  },
+  "newOCIAndProposalAccepted": true,
+  "proposalJob": 16953548230,
+  "budgets": {
+    "runtime": {
+      "schemaVersion": 1,
+      "scope": "PE016B sampled temporary disk",
+      "kind": "runtime",
+      "samples": 18,
+      "intervalSeconds": 2,
+      "transientMissingRetryCount": 1,
+      "duAttemptsPerMeasurementMax": 3,
+      "maxWorkspaceKiB": 172944,
+      "workspaceLimitKiB": 2097152,
+      "maxBuildkitStoreKiB": 7399224,
+      "buildkitStoreLimitKiB": 10485760,
+      "buildkitStoreObserved": true,
+      "buildkitStoreAggregation": "sumConfiguredRoots",
+      "rootlessNamespaceUsed": true,
+      "minFilesystemFreePercent": 92.628977,
+      "measurementAvailable": true,
+      "withinBudget": true,
+      "continuousPeakClaim": false
+    },
+    "publish": {
+      "schemaVersion": 1,
+      "scope": "PE016B sampled temporary disk",
+      "kind": "publish",
+      "samples": 31,
+      "intervalSeconds": 2,
+      "transientMissingRetryCount": 0,
+      "duAttemptsPerMeasurementMax": 3,
+      "maxWorkspaceKiB": 173040,
+      "workspaceLimitKiB": 2097152,
+      "maxBuildkitStoreKiB": 4,
+      "buildkitStoreLimitKiB": 10485760,
+      "buildkitStoreObserved": true,
+      "buildkitStoreAggregation": "sumConfiguredRoots",
+      "rootlessNamespaceUsed": false,
+      "minFilesystemFreePercent": 93.316215,
+      "measurementAvailable": true,
+      "withinBudget": true,
+      "continuousPeakClaim": false
+    },
+    "build": {
+      "schemaVersion": 1,
+      "scope": "PE016B sampled temporary disk",
+      "kind": "build",
+      "samples": 26,
+      "intervalSeconds": 2,
+      "transientMissingRetryCount": 3,
+      "duAttemptsPerMeasurementMax": 3,
+      "maxWorkspaceKiB": 201988,
+      "workspaceLimitKiB": 2097152,
+      "maxBuildkitStoreKiB": 10217548,
+      "buildkitStoreLimitKiB": 10485760,
+      "buildkitStoreObserved": true,
+      "buildkitStoreAggregation": "sumConfiguredRoots",
+      "rootlessNamespaceUsed": true,
+      "minFilesystemFreePercent": 92.357837,
+      "measurementAvailable": true,
+      "withinBudget": true,
+      "continuousPeakClaim": false
+    },
+    "format": {
+      "schemaVersion": 1,
+      "scope": "PE016B sampled temporary disk",
+      "kind": "format",
+      "samples": 8,
+      "intervalSeconds": 2,
+      "transientMissingRetryCount": 0,
+      "duAttemptsPerMeasurementMax": 3,
+      "maxWorkspaceKiB": 1618700,
+      "workspaceLimitKiB": 2097152,
+      "maxBuildkitStoreKiB": 4,
+      "buildkitStoreLimitKiB": 10485760,
+      "buildkitStoreObserved": true,
+      "buildkitStoreAggregation": "sumConfiguredRoots",
+      "rootlessNamespaceUsed": false,
+      "minFilesystemFreePercent": 92.218764,
+      "measurementAvailable": true,
+      "withinBudget": true,
+      "continuousPeakClaim": false
+    }
+  },
+  "manifestProposal": {
+    "branch": "update/local/backend/bcc4126097ab6224e46257560010fc4623a51414/run-2915581900-16953548226",
+    "source": "ac08aba9a59d1599932c7d6f221fc7ce614ddabe",
+    "mr": 84,
+    "url": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest/-/merge_requests/84"
+  },
+  "published": {
+    "schemaVersion": 1,
+    "imageDigest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+    "sourceCommit": "bcc4126097ab6224e46257560010fc4623a51414",
+    "scanPipelineId": 2915581900,
+    "scanJobId": 16953548226,
+    "sameLayoutPublished": true,
+    "registryReused": false,
+    "remoteDigestMatched": true,
+    "recordSha256": "05eee5d56bf573297d90f5f24d8d3194ffeca60c705dee737a3b5adf7d34c2d9",
+    "proposalAuthorized": false
+  },
+  "utc": "2026-10-05T23:28:45.8007631Z",
+  "nativeInspectionAccepted": true,
+  "digest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+  "stored": {
+    "schemaVersion": 1,
+    "run": {
+      "Service": "backend",
+      "Digest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+      "PipelineID": 2915581900,
+      "JobID": 16953548226
+    },
+    "recordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/release-record-2915581900-16953548226.json",
+    "recordSha256": "05eee5d56bf573297d90f5f24d8d3194ffeca60c705dee737a3b5adf7d34c2d9",
+    "decision": "passed",
+    "completedJobAuthority": true,
+    "protectedMainWriter": true,
+    "recordWrittenLast": true,
+    "serverDuplicateDenied": true
+  },
+  "registryReinspection": false
+}

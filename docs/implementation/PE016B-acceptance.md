@@ -1,0 +1,29 @@
+# PE016B 単一OCI検証とbackend中間main配信の実受入
+
+PE018F完了後にbackendへ検証専用OCI経路を移植し、backend !12をmain `df0f40786a878c03c79000be027c5bbed59d7257`へ統合した。検証ソース`cbfd32e960943131a10ada62f8ff36ceb2f61cc1`と最終ソース`5eaf29673faca533431bee961512fd57295cf62b`は区別して保存し、差分が受入説明書のみであること、最終own CI2910645588全6success、直前の保護main/source、candidate/actual tree一致を確認した。対応する公開proofのLF SHA256一覧は[受入索引](PE016B-acceptance.json)に保存した。
+
+## 実OCIと隔離実行
+
+正例2910621534全9success。元build16920314370、互換性16920314371、隔離runtime16920314372。同一linux/amd64 OCIのtarは8,146,432 bytes、展開payload8,130,865 bytes、digest `sha256:07b0e72d65233b715ddcde722ea7d69a498ce8f33d3606130852b9220223095e`、archive SHA256 `b3a629b32bb686eabd7367fa9bed71a2ebde478641a6258617f6b62aed9bb03f`。厳密layout/checksum/blob/manifest/config/sourceラベルと破損・複数記述子・path/hash/サイズ拒否のGo試験を前提ジョブで確認した。
+
+両consumerのsource/build tuple/digest/archiveを元layoutと照合し、固定Trivy0.75.0とcrane v0.21.7の公式readerで完全layer互換を確認した。同じOCI内の実serverをUID10001/network noneのloopbackで起動し、livez200・意図した不在DBreadyz503を実確認した。この503は実DB互換性の証拠ではなく、隔離拒否である。registry認証/push、Source DB、OTLP接続は検証経路にない。securityGateApplied/phase2Adoptable=falseで、PE017Bのscan/SBOM完成を主張しない。
+
+## 予算・成果物・失敗
+
+2秒sampleでbuild190.954秒/26sample/store10,324,292KiB、format51.804秒/8sample/workspace1,506,648KiB、runtime74.169秒/19sample/store7,355,808KiB。workspace2GiB・BuildKit保存領域合計10GiB・filesystem空き20%以上・各時間上限600/900/300秒を全て満たした。空き最小92.267776%。build/runtimeのrootless namespace内保存領域を実観測した。連続peak/memory測定は主張しない。
+
+初期の計測取得失敗、実10GiB超過、runtime du中のsnapshot消失は失敗証跡として保持した。生成済みCI output/cacheをbuild contextから除外し、部分du出力を破棄する完全再計測を追加した。ENOENTのみ、権限拒否やnamespace起動失敗を除外した場合だけ最大3回。今回build/runtime各1回の再計測で合格し、閾値緩和や過去failed pipelineのretryを行っていない。権限拒否・df拒否・通常成功・消失一度・消失継続・消失と権限混在の6shell fixtureでも非漏洩/有限拒否/cleanupを確認した。
+
+backend自身のproject max_artifacts_size overrideはnull。公式GitLab SaaS資料の圧縮artifact上限1GBと100MiB初期目標を比較し、実圧縮artifact8,115,468 bytesのupload成功を確認した。公式資料snapshot SHA256はartifact-limit-proofに保存。admin設定の直接読取や上限境界uploadは未実施である。
+
+同じ検証sourceの負例2910636802では前段6job/build16920393220がsuccess、missing16920393221が意図したfailed、after16920393222がskipped。consumerの入力だけを欠落させ、厳密readerの拒否・partial layout不在・registry fallbackなしを確認した。元producerの成功job metadataと安全なlayout JSONを再取得でき、artifact残存も実確認した。これは入力欠落/期限切れfixtureであり、実24時間待機ではない。初期負例のbuild失敗/missing skippedを合格に流用していない。
+
+## 中間AT05と残工程
+
+main `df0f407`の通常push CI2910650079全9success。OCI_VALIDATION_ENABLEDは既定falseで、検証専用jobは存在せず、従来publish→verify→proposalを維持した。配信digest `sha256:4be0274642c1b24beba29bd6ce7f42b34f8eab33c8d4d4209d81a1ef69bcc15dd`をmanifest !71/source d52562bへ固定した。
+
+保護manifest main397deedからの独立検証2910669864・own2910668381成功、trusted consumer16920558400、直前両app/source/target、source CAS409、candidate/actual tree一致を確認し、manifest main `d0fd1164384165c6f8bed1887871789d3b05d5ec`へ統合した。通常Argo backend refreshを一度実行した。
+
+実backend Pod `backend-8556bddf86-5rkgm`/UID e95d6113-20f6-4c85-a5fb-0493b4a47f9eで配信digest/imageID・source/pipeline注釈・Ready/live200を確認。Pod設定のUID10001と、隔離実行で測った実UIDを区別する。frontend UID6da97e91/image/Ready、DB PVC UIDf7774170/Bound、実schema1と既存合成row9を維持した。exact backend Podへの専用forwardでCRUD7check、合成row243を作成/取得/更新/削除し削除後404を確認した。forward終了とport18089非Listenも保存し、中間AT05合格。
+
+この証跡MRのmain統合後にIssue16Bチェックと親16完了を行う。PE017Bのscan/SBOM/不変record/実reader・PE018Bの同一OCI公開/最新DB再検査/rollback/全面切替・PE019の最終AT01〜14監査は未完了。既存main経路を検査済みセキュリティ完成とは扱わない。

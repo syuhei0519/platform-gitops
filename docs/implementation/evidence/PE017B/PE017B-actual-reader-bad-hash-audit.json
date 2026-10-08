@@ -1,0 +1,14 @@
+{
+  "allPrerequisitesSucceeded": true,
+  "case": "bad-hash",
+  "job": 16924159715,
+  "expectedFailure": true,
+  "rawTraceRead": false,
+  "positivePipeline": 2911095388,
+  "pipeline": 2911332613,
+  "unitAccepted": false,
+  "utc": "2026-10-04T19:47:29.8369056Z",
+  "successProofAbsent": true,
+  "source": "9821cde9a5e7bb01ab9260624cbcd016efad76c5",
+  "controlledInputDifference": "Only external record checksum changed to a valid-format wrong hash"
+}

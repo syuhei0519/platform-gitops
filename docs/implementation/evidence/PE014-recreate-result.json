@@ -1,0 +1,19 @@
+{
+  "oldUids": [
+    "37d4c993-efe5-414f-a114-1200510a2315"
+  ],
+  "restoredReady": "2026-10-02T20:15:24.5388983Z",
+  "firstNew": "2026-10-02T20:13:54.524146Z",
+  "pass": true,
+  "elapsedSec": 900.0908604,
+  "newUid": "24e081f7-3e3b-4026-ab46-3dea960e3612",
+  "readyMax": 1.0,
+  "imageUnchanged": true,
+  "crudSuccessPercent": 100,
+  "utc": "2026-10-02T20:28:47.5622793Z",
+  "restoreAt": "2026-10-02T20:15:17.6076283Z",
+  "secretValuesRecorded": false,
+  "configRestored": true,
+  "restorationRecoverySec": 6.93127,
+  "requests": 900
+}

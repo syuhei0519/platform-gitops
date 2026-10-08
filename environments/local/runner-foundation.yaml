@@ -1,0 +1,2 @@
+manager: {namespace: runner-system, serviceAccount: runner-manager}
+job: {namespace: build, serviceAccount: ci-job}

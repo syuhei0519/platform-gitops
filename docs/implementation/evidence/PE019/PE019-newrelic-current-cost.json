@@ -1,0 +1,15 @@
+{
+  "additionalCostCapJPY": 0,
+  "exactUsageAmountProvided": false,
+  "billingBaseline": "Previously verified Free/no registered payment method; current user answer confirms capacity, not an exact GB or a fresh billing-screen value",
+  "secretValuesRecorded": false,
+  "source": "Direct user response in this development chat",
+  "region": "US",
+  "account": 8572010,
+  "contractGB": 100,
+  "paidPlanChangesAllowed": false,
+  "monthlyUsageGB": null,
+  "userStatement": "確認しました。容量問題ないです",
+  "userConfirmedCapacitySufficient": true,
+  "utc": "2026-10-06T12:46:31.1363739Z"
+}

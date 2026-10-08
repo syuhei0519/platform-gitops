@@ -1,0 +1,32 @@
+# HELP pe_go_goroutines 
+# TYPE pe_go_goroutines gauge
+pe_go_goroutines{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version=""} 3
+# HELP pe_go_memory_alloc_bytes 
+# TYPE pe_go_memory_alloc_bytes gauge
+pe_go_memory_alloc_bytes{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version=""} 939536
+# HELP pe_http_server_request_duration_seconds 
+# TYPE pe_http_server_request_duration_seconds histogram
+pe_http_server_request_duration_seconds_bucket{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx",le="0.005"} 0
+pe_http_server_request_duration_seconds_bucket{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx",le="0.01"} 0
+pe_http_server_request_duration_seconds_bucket{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx",le="0.025"} 0
+pe_http_server_request_duration_seconds_bucket{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx",le="0.05"} 7
+pe_http_server_request_duration_seconds_bucket{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx",le="0.1"} 7
+pe_http_server_request_duration_seconds_bucket{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx",le="0.25"} 7
+pe_http_server_request_duration_seconds_bucket{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx",le="0.5"} 7
+pe_http_server_request_duration_seconds_bucket{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx",le="1"} 7
+pe_http_server_request_duration_seconds_bucket{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx",le="2.5"} 7
+pe_http_server_request_duration_seconds_bucket{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx",le="5"} 7
+pe_http_server_request_duration_seconds_bucket{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx",le="10"} 7
+pe_http_server_request_duration_seconds_bucket{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx",le="+Inf"} 7
+pe_http_server_request_duration_seconds_sum{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx"} 0.21
+pe_http_server_request_duration_seconds_count{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx"} 7
+# HELP pe_http_server_requests_total 
+# TYPE pe_http_server_requests_total counter
+pe_http_server_requests_total{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",method="GET",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version="",route="/sdk-fixture",status_class="2xx"} 7
+# HELP pe_telemetry_export_errors_total 
+# TYPE pe_telemetry_export_errors_total counter
+pe_telemetry_export_errors_total{instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",otel_scope_name="account-backend",otel_scope_schema_url="",otel_scope_version=""} 0
+# HELP target_info Target metadata
+# TYPE target_info gauge
+target_info{deployment_environment_name="local",instance="3bd16638-ece6-4926-ae4f-6a4f46e82a3b",job="account-backend",k8s_namespace_name="account",k8s_pod_uid="",service_version="5a21bf5ebf4ea1ee0f54c53cce1bdd87814adbfd"} 1
+

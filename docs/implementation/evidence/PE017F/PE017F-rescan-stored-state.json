@@ -1,0 +1,2003 @@
+{
+  "stored": {
+    "schemaVersion": 1,
+    "run": {
+      "Service": "frontend",
+      "Digest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+      "PipelineID": 2908988271,
+      "JobID": 16911641952
+    },
+    "recordUrl": "https://gitlab.com/api/v4/projects/86247025/packages/generic/core-platform-frontend/sha256-aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c/release-record-2908988271-16911641952.json",
+    "recordSha256": "4c5791eb3e76bbcd82e2d69a44654161a43be2e812818fcb512d1f8b2432bfaa",
+    "decision": "failed",
+    "completedJobAuthority": true,
+    "protectedMainWriter": true,
+    "recordWrittenLast": true,
+    "serverDuplicateDenied": true
+  },
+  "AT04DifferentDatabaseAccepted": true,
+  "writerJob": 16911641954,
+  "pair": {
+    "priorRun": {
+      "Service": "frontend",
+      "Digest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+      "PipelineID": 2908988271,
+      "JobID": 16911641951
+    },
+    "currentRun": {
+      "Service": "frontend",
+      "Digest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+      "PipelineID": 2908988271,
+      "JobID": 16911641952
+    },
+    "priorRecordUrl": "https://gitlab.com/api/v4/projects/86247025/packages/generic/core-platform-frontend/sha256-aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c/release-record-2908988271-16911641951.json",
+    "priorRecordSha256": "0296119f28d7aa6c6cc83fe292200aefe0ace68995e8c116b0c722301ce82d4d",
+    "sameImageAndBuild": true,
+    "differentDatabase": true,
+    "currentFailed": true,
+    "priorSuccessFallback": false
+  },
+  "safeScan": {
+    "schemaVersion": 1,
+    "pass": true,
+    "trivyVersion": "0.75.0",
+    "dbUpdatedAt": "2026-10-03T14:28:08.788288516Z",
+    "scannedAt": "2026-10-03T15:07:52.912327289Z",
+    "findings": [
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-33630",
+        "path": "image/os",
+        "package": "c-ares",
+        "installedVersion": "1.34.6-r0",
+        "fixedVersion": "1.34.8-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-11352",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-11586",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-12064",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-5773",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-6276",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-8286",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-8458",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-8925",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-8927",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-9547",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2025-14017",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.18.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-10536",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-11564",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-11856",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-1965",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.19.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-19931",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-3783",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.19.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-3784",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.19.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-3805",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.19.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-4873",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-5545",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-6253",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-6429",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-7009",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-7168",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-80229",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-82208",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-8924",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-8926",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-8932",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-9079",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-9080",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-9545",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-9546",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2025-14524",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.18.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2025-14819",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.18.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-13608",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-18924",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-80230",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-80231",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-80255",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-82209",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-80256",
+        "path": "image/os",
+        "package": "curl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "UNKNOWN",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-14456",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-45447",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-18798",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-34182",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-34183",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-42764",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-45445",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-63072",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-63076",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-14457",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-34180",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-34181",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-42766",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-42767",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-42768",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-42769",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-42770",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-45446",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-54874",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-63073",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-63074",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-63075",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-7383",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-75803",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-9076",
+        "path": "image/os",
+        "package": "libcrypto3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-11352",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-11586",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-12064",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-5773",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-6276",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-8286",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-8458",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-8925",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-8927",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-9547",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2025-14017",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.18.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-10536",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-11564",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-11856",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-1965",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.19.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-19931",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-3783",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.19.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-3784",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.19.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-3805",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.19.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-4873",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-5545",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-6253",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-6429",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-7009",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-7168",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.20.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-80229",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-82208",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-8924",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-8926",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-8932",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-9079",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-9080",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-9545",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-9546",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2025-14524",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.18.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2025-14819",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.18.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-13608",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-18924",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-80230",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-80231",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-80255",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-82209",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-80256",
+        "path": "image/os",
+        "package": "libcurl",
+        "installedVersion": "8.17.0-r1",
+        "fixedVersion": "8.22.0-r0",
+        "severity": "UNKNOWN",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-45186",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.1-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-66046",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.4-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-76641",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.4-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-76956",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.4-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-76957",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.4-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-93990",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.5-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-50219",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.2-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-56131",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.2-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-56132",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.2-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-56403",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.2-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-56404",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.2-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-56405",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.2-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-56406",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.2-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-56407",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.2-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-56408",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.2-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-56409",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.2-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-56410",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.2-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-56411",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.2-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-56412",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.2-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-41080",
+        "path": "image/os",
+        "package": "libexpat",
+        "installedVersion": "2.7.5-r0",
+        "fixedVersion": "2.8.1-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-40930",
+        "path": "image/os",
+        "package": "libpng",
+        "installedVersion": "1.6.57-r0",
+        "fixedVersion": "1.6.58-r1",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-46675",
+        "path": "image/os",
+        "package": "libpng",
+        "installedVersion": "1.6.57-r0",
+        "fixedVersion": "1.6.59-r0",
+        "severity": "UNKNOWN",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-14456",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-45447",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-18798",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-34182",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-34183",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-42764",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-45445",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-63072",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-63076",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-14457",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-34180",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-34181",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-42766",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-42767",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-42768",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-42769",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-42770",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-45446",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-54874",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-63073",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-63074",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-63075",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-7383",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-75803",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.8-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-9076",
+        "path": "image/os",
+        "package": "libssl3",
+        "installedVersion": "3.5.6-r0",
+        "fixedVersion": "3.5.7-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-53612",
+        "path": "image/os",
+        "package": "libuuid",
+        "installedVersion": "2.41.4-r0",
+        "fixedVersion": "2.41.6-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-53613",
+        "path": "image/os",
+        "package": "libuuid",
+        "installedVersion": "2.41.4-r0",
+        "fixedVersion": "2.41.6-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-53614",
+        "path": "image/os",
+        "package": "libuuid",
+        "installedVersion": "2.41.4-r0",
+        "fixedVersion": "2.41.6-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-76642",
+        "path": "image/os",
+        "package": "libuuid",
+        "installedVersion": "2.41.4-r0",
+        "fixedVersion": "2.41.6-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-78408",
+        "path": "image/os",
+        "package": "libuuid",
+        "installedVersion": "2.41.4-r0",
+        "fixedVersion": "2.41.6-r1",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-78410",
+        "path": "image/os",
+        "package": "libuuid",
+        "installedVersion": "2.41.4-r0",
+        "fixedVersion": "2.41.6-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-6732",
+        "path": "image/os",
+        "package": "libxml2",
+        "installedVersion": "2.13.9-r0",
+        "fixedVersion": "2.13.9-r1",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-4367",
+        "path": "image/os",
+        "package": "libxpm",
+        "installedVersion": "3.5.17-r0",
+        "fixedVersion": "3.5.19-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-40200",
+        "path": "image/os",
+        "package": "musl",
+        "installedVersion": "1.2.5-r21",
+        "fixedVersion": "1.2.5-r23",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-6042",
+        "path": "image/os",
+        "package": "musl",
+        "installedVersion": "1.2.5-r21",
+        "fixedVersion": "1.2.5-r22",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-40200",
+        "path": "image/os",
+        "package": "musl-utils",
+        "installedVersion": "1.2.5-r21",
+        "fixedVersion": "1.2.5-r23",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-6042",
+        "path": "image/os",
+        "package": "musl-utils",
+        "installedVersion": "1.2.5-r21",
+        "fixedVersion": "1.2.5-r22",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-27135",
+        "path": "image/os",
+        "package": "nghttp2-libs",
+        "installedVersion": "1.68.0-r0",
+        "fixedVersion": "1.68.1",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-103111",
+        "path": "image/os",
+        "package": "pcre2",
+        "installedVersion": "10.47-r0",
+        "fixedVersion": "10.49-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-86145",
+        "path": "image/os",
+        "package": "pcre2",
+        "installedVersion": "10.47-r0",
+        "fixedVersion": "10.48-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-89157",
+        "path": "image/os",
+        "package": "pcre2",
+        "installedVersion": "10.47-r0",
+        "fixedVersion": "10.48-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-89161",
+        "path": "image/os",
+        "package": "pcre2",
+        "installedVersion": "10.47-r0",
+        "fixedVersion": "10.48-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-89156",
+        "path": "image/os",
+        "package": "pcre2",
+        "installedVersion": "10.47-r0",
+        "fixedVersion": "10.48-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-89158",
+        "path": "image/os",
+        "package": "pcre2",
+        "installedVersion": "10.47-r0",
+        "fixedVersion": "10.48-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-89160",
+        "path": "image/os",
+        "package": "pcre2",
+        "installedVersion": "10.47-r0",
+        "fixedVersion": "10.48-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-89162",
+        "path": "image/os",
+        "package": "pcre2",
+        "installedVersion": "10.47-r0",
+        "fixedVersion": "10.48-r0",
+        "severity": "LOW",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-34743",
+        "path": "image/os",
+        "package": "xz-libs",
+        "installedVersion": "5.8.2-r0",
+        "fixedVersion": "5.8.3-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-22184",
+        "path": "image/os",
+        "package": "zlib",
+        "installedVersion": "1.3.1-r2",
+        "fixedVersion": "1.3.2-r0",
+        "severity": "HIGH",
+        "decision": "warning"
+      },
+      {
+        "kind": "vulnerability",
+        "rule": "CVE-2026-27171",
+        "path": "image/os",
+        "package": "zlib",
+        "installedVersion": "1.3.1-r2",
+        "fixedVersion": "1.3.2-r0",
+        "severity": "MEDIUM",
+        "decision": "warning"
+      }
+    ],
+    "policySHA256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337"
+  },
+  "secondScanStatus": "failed",
+  "failedRecordStored": true,
+  "writerStatus": "success",
+  "packageFilesReadable": 2,
+  "pipeline": 2908988271,
+  "unitAccepted": false,
+  "utc": "2026-10-03T15:08:44.8849459Z",
+  "priorSuccessFallback": false,
+  "record": {
+    "schemaVersion": 2,
+    "service": "frontend",
+    "sourceProjectId": 86247025,
+    "sourceCommit": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+    "buildPipelineId": 2908988271,
+    "buildJobId": 16911641948,
+    "imageRepository": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app",
+    "imageTag": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+    "imageDigest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+    "scanPipelineId": 2908988271,
+    "scanJobId": 16911641952,
+    "scanJobStatus": "failed",
+    "inputKind": "build-oci",
+    "inputArchiveSha256": "98f73e21344fd4b015e0d9d9aa6566e06d9f2e6cd555a13d87d5e1c9ee973e20",
+    "trivyVersion": "0.75.0",
+    "database": {
+      "version": 2,
+      "updatedAt": "2026-10-03T14:28:08.788288516Z",
+      "metadataSha256": "a7854156e1474fb227b5c9aaeb8c5829ede9cbd9827c7cac5e649fd7d8819c8e"
+    },
+    "scannedAt": "2026-10-03T15:07:52.912327289Z",
+    "policyRevision": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+    "policySha256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337",
+    "exceptions": [],
+    "decision": "failed",
+    "failureReason": "sbom-unavailable",
+    "sbom": null,
+    "sbomFailureReason": "sbom-unavailable",
+    "scanReport": {
+      "imageDigest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+      "scanPipelineId": 2908988271,
+      "scanJobId": 16911641952,
+      "url": "https://gitlab.com/api/v4/projects/86247025/packages/generic/core-platform-frontend/sha256-aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c/scan-report-2908988271-16911641952.json",
+      "sha256": "dc66f801a308d57d7b337621a647413a71f6ae2566417223ce09e74682c157e1",
+      "format": "safe-json",
+      "schemaVersion": "1"
+    }
+  },
+  "positiveAdoptionArtifactsAbsent": true,
+  "source": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+  "secondScanJob": 16911641952,
+  "registryPush": false,
+  "jobs": [
+    {
+      "id": 16911641954,
+      "name": "release-record-store-rescan",
+      "status": "success"
+    },
+    {
+      "id": 16911641953,
+      "name": "release-record-store",
+      "status": "success"
+    },
+    {
+      "id": 16911641952,
+      "name": "oci-image-rescan-validation",
+      "status": "failed"
+    },
+    {
+      "id": 16911641951,
+      "name": "oci-image-policy-validation",
+      "status": "success"
+    },
+    {
+      "id": 16911641950,
+      "name": "oci-isolated-runtime",
+      "status": "success"
+    },
+    {
+      "id": 16911641949,
+      "name": "oci-format-compatibility",
+      "status": "success"
+    },
+    {
+      "id": 16911641948,
+      "name": "container-build-oci",
+      "status": "success"
+    },
+    {
+      "id": 16911641947,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16911641946,
+      "name": "frontend-build",
+      "status": "success"
+    },
+    {
+      "id": 16911641945,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16911641944,
+      "name": "typecheck",
+      "status": "success"
+    },
+    {
+      "id": 16911641943,
+      "name": "lint",
+      "status": "success"
+    },
+    {
+      "id": 16911641942,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16911641941,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ]
+}

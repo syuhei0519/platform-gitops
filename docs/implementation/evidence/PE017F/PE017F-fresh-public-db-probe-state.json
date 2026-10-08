@@ -1,0 +1,21 @@
+{
+  "observedDownloadAt": "2026-10-03T15:07:01.1706392+00:00",
+  "dbVersion": 2,
+  "hostMount": false,
+  "differentDatabase": true,
+  "sourceMutation": false,
+  "manifestDigest": "sha256:fd1fa8d3f00e22fea5a362015fb3278182565892498b0db2587b3896cc46dd8c",
+  "observedFinalKiB": 1447288,
+  "dbNextUpdate": "2026-10-04T14:28:08.7882882+00:00",
+  "previous512MiBFailurePreserved": true,
+  "unitAccepted": false,
+  "containerAutoRemoved": true,
+  "utc": "2026-10-03T15:07:01.8558157Z",
+  "budgetBytes": 2147483648,
+  "dbUpdatedAt": "2026-10-03T14:28:08.7882885+00:00",
+  "oldDeniedCacheUntouched": true,
+  "probeAccepted": true,
+  "containerExitCode": 0,
+  "publicOnly": true,
+  "manualPlayed": false
+}

@@ -1,0 +1,88 @@
+{
+  "pipeline": 2910621534,
+  "memoryMeasurementClaim": false,
+  "continuousPeakClaim": false,
+  "accepted": true,
+  "source": "cbfd32e960943131a10ada62f8ff36ceb2f61cc1",
+  "status": "success",
+  "measurements": [
+    {
+      "kind": "build",
+      "job": 16920314370,
+      "timeoutSeconds": 600,
+      "disk": {
+        "schemaVersion": 1,
+        "scope": "PE016B sampled temporary disk",
+        "kind": "build",
+        "samples": 26,
+        "intervalSeconds": 2,
+        "transientMissingRetryCount": 1,
+        "duAttemptsPerMeasurementMax": 3,
+        "maxWorkspaceKiB": 84752,
+        "workspaceLimitKiB": 2097152,
+        "maxBuildkitStoreKiB": 10324292,
+        "buildkitStoreLimitKiB": 10485760,
+        "buildkitStoreObserved": true,
+        "buildkitStoreAggregation": "sumConfiguredRoots",
+        "rootlessNamespaceUsed": true,
+        "minFilesystemFreePercent": 92.395097,
+        "measurementAvailable": true,
+        "withinBudget": true,
+        "continuousPeakClaim": false
+      },
+      "durationSeconds": 190.954071
+    },
+    {
+      "kind": "format",
+      "job": 16920314371,
+      "timeoutSeconds": 900,
+      "disk": {
+        "schemaVersion": 1,
+        "scope": "PE016B sampled temporary disk",
+        "kind": "format",
+        "samples": 8,
+        "intervalSeconds": 2,
+        "transientMissingRetryCount": 0,
+        "duAttemptsPerMeasurementMax": 3,
+        "maxWorkspaceKiB": 1506648,
+        "workspaceLimitKiB": 2097152,
+        "maxBuildkitStoreKiB": 4,
+        "buildkitStoreLimitKiB": 10485760,
+        "buildkitStoreObserved": true,
+        "buildkitStoreAggregation": "sumConfiguredRoots",
+        "rootlessNamespaceUsed": false,
+        "minFilesystemFreePercent": 92.267776,
+        "measurementAvailable": true,
+        "withinBudget": true,
+        "continuousPeakClaim": false
+      },
+      "durationSeconds": 51.80378
+    },
+    {
+      "kind": "runtime",
+      "job": 16920314372,
+      "timeoutSeconds": 300,
+      "disk": {
+        "schemaVersion": 1,
+        "scope": "PE016B sampled temporary disk",
+        "kind": "runtime",
+        "samples": 19,
+        "intervalSeconds": 2,
+        "transientMissingRetryCount": 1,
+        "duAttemptsPerMeasurementMax": 3,
+        "maxWorkspaceKiB": 55712,
+        "workspaceLimitKiB": 2097152,
+        "maxBuildkitStoreKiB": 7355808,
+        "buildkitStoreLimitKiB": 10485760,
+        "buildkitStoreObserved": true,
+        "buildkitStoreAggregation": "sumConfiguredRoots",
+        "rootlessNamespaceUsed": true,
+        "minFilesystemFreePercent": 92.661564,
+        "measurementAvailable": true,
+        "withinBudget": true,
+        "continuousPeakClaim": false
+      },
+      "durationSeconds": 74.16891
+    }
+  ]
+}

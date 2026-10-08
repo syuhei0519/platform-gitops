@@ -1,0 +1,89 @@
+{
+  "sourceManifest": "13161a37dc1769c0c49548ee7f287c24864eea0c",
+  "scope": "kind-platform-lab, owned synthetic record9/canary; source data/PVC retained",
+  "AT08": "passed reader exact and PromQL estimated N300=300.00444451,p95.00475,zeroN-A",
+  "secretsRecorded": false,
+  "sourceBackend": "a300338cefdca94b4a041d71b37faae8d71a8701",
+  "PE012A": "accepted SDK reader/OTLP/cumulative/privacy/shutdown",
+  "PE012B": "accepted actual HTTP-DB/log/NR/old-new image and UUID/Pod restart",
+  "PE013B": "accepted actual RED/AT08/N-A/version/NR lookup; dependency012B acceptance in same change",
+  "files": [
+    {
+      "sha256": "a742c683cd47a03a23e8affc820ffa3bb14b50228b5175ad9563f801b51533bf",
+      "bytes": 2905,
+      "file": "evidence/PE012-sdk-unit-tests.txt"
+    },
+    {
+      "sha256": "cd4b7ec212ff4d0a3cd0e6263d4fff25d64a04fbef4453c785995821167c48b7",
+      "bytes": 386,
+      "file": "evidence/PE012-sdk-otlp.txt"
+    },
+    {
+      "sha256": "ff3c23735f163b7ff672d42e8188612fe505fd4c26c194a4f2ba429296611c75",
+      "bytes": 5133,
+      "file": "evidence/PE012-sdk-prometheus.txt"
+    },
+    {
+      "sha256": "fdc2adea0ac7849e7cefda6261efdad0de32d3e67fdedeaaf2f52ba47067fd42",
+      "bytes": 1830,
+      "file": "evidence/PE012-api-fixture.json"
+    },
+    {
+      "sha256": "bf37290bff620177b9ac9a19910e3f07e3763471ef61cf760fc08ae40933b772",
+      "bytes": 2777,
+      "file": "evidence/PE012-api-log-correlation.json"
+    },
+    {
+      "sha256": "66e186532b3a47b769340f9c95cce1942c50b5bd81dbe61e311b9185e92eda1f",
+      "bytes": 1102,
+      "file": "evidence/PE012-newrelic-actual-spans.json"
+    },
+    {
+      "sha256": "d9a75f240d8ed947a3f7dbe6430d984e37264c1bf59e33f852005e19668d56ec",
+      "bytes": 3020,
+      "file": "evidence/PE012-two-instance-count.json"
+    },
+    {
+      "sha256": "809c8d40b54b6972a4bf67fe680aa9ef5ddc2d25939631b03113db07fc533479",
+      "bytes": 482,
+      "file": "evidence/PE012-same-pod-process-restart.json"
+    },
+    {
+      "sha256": "5a63c9eeae5b11f8802ab4df51dc5b6d6a328ccd8dd264e80c466c889181e3a8",
+      "bytes": 474,
+      "file": "evidence/PE012-promql-profile.json"
+    },
+    {
+      "sha256": "3c2e02ab9c0110f13490b7ec304a5b87b2d89178a32622d3ca9ac31ef0b47733",
+      "bytes": 41710,
+      "file": "evidence/PE012-promql-window.json"
+    },
+    {
+      "sha256": "4299e409d7ecdd64deca36c7ef944ce5cb8d11c91ee21e94eee6e7b231eedefa",
+      "bytes": 789,
+      "file": "evidence/PE012-old-new-version-proof.json"
+    },
+    {
+      "sha256": "b5735e42351c0ddd0738bbf1481264fc3e37bbdf9338e31dab7e6823a0aec741",
+      "bytes": 1803,
+      "file": "evidence/PE012-new-source-nr-trace.json"
+    },
+    {
+      "sha256": "9d9f230ad16f8c50ee0a0db5c9fd50fa9599e95dc6e4ecc15dc73eb1ca52d456",
+      "bytes": 3077,
+      "file": "evidence/PE012-old-new-count-count.json"
+    },
+    {
+      "sha256": "afce35e6b0a0a56cbdcd2f630c7e8300d4a2baf2bc148aca06a42e6b7efc1224",
+      "bytes": 225423,
+      "file": "evidence/PE013B-grafana-api-proof.json"
+    },
+    {
+      "sha256": "b62134a05734fcfa4d489648c3ce984153bcf42b08701f79c7e2cfa5aacd9572",
+      "bytes": 584,
+      "file": "evidence/PE013-restart-reapply-proof.json"
+    }
+  ],
+  "AT06": "passed identities and actual old/new source image",
+  "AT07": "remaining real fault/capacity belongs PE014, not asserted passed"
+}

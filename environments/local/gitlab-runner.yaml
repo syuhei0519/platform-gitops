@@ -1,0 +1,112 @@
+# Runner manager/実jobのKubernetes executor設定。外部固定Runner Chartへ渡す。
+# managerはrunner-system、jobはbuild。認証tokenはSecret参照のみ、権限はcharts/runner-foundation/templatesに分離する。
+gitlabUrl: https://gitlab.com/
+replicas: 1
+image:
+  registry: registry.gitlab.com
+  image: gitlab-org/gitlab-runner
+  tag: alpine-v19.3.1@sha256:f5578027351e1db11564fff9333977fb0d8d13c802b35d42a2f392872fec6a30
+# 別々のconcurrent=1を持つmanagerを、短時間でも2つ同時稼働させない意図のRecreate。
+strategy: {type: Recreate}
+# managerごとの同時実行上限1。別clusterにmanagerが2つあれば全体で2になり得る。
+# R03: 進行中Argo Syncが停止Deploymentを再生成した経緯があり、この設定だけで引継ぎ単一稼働を保証しない。
+concurrent: 1
+checkInterval: 3
+shutdown_timeout: 0
+unregisterRunners: false
+terminationGracePeriodSeconds: 3600
+runnerToken: ""
+extraEnvFrom:
+  CI_SERVER_TOKEN:
+    secretKeyRef:
+      name: gitlab-runner-auth
+      key: runner-token
+rbac:
+  create: false
+serviceAccount:
+  create: false
+  name: runner-manager
+automountServiceAccountToken: true
+resources:
+  requests: {cpu: 100m, memory: 128Mi, ephemeral-storage: 16Mi}
+  limits: {cpu: 500m, memory: 256Mi, ephemeral-storage: 128Mi}
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities: {drop: [ALL]}
+  runAsNonRoot: true
+  seccompProfile: {type: RuntimeDefault}
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile: {type: RuntimeDefault}
+runners:
+  jobNamespace: build
+  # この下はTOML文字列。job上限2Gi、helper256Miやdisk予算を別々に定義する。
+  # rootless BuildKit用のbuild containerだけallow_privilege_escalation/Unconfined例外がある。
+  # privileged=falseと例外なしの完全sandboxは同義でない。overwrite禁止でjob変数からSA/namespace等を差し替えさせない。
+  config: |
+    [[runners]]
+      name = "platform-lab"
+      url = "https://gitlab.com/"
+      executor = "kubernetes"
+      limit = 1
+      request_concurrency = 1
+      maximum_timeout = 1200
+      environment = ["FF_USE_ADVANCED_POD_SPEC_CONFIGURATION=true", "BUILDKITD_FLAGS=--oci-worker-snapshotter=native --oci-worker-no-process-sandbox"]
+      builds_dir = "/builds"
+      [runners.kubernetes]
+        namespace = "build"
+        service_account = "ci-job"
+        helper_image = "registry.gitlab.com/gitlab-org/ci-cd/gitlab-runner-ubi-images/gitlab-runner-helper-ocp:x86_64-v19.3.1@sha256:ebcce5b4e36899e72aa20554962d7270a0eec1e398e1b0a0f746ede4f4bb1b70"
+        privileged = false
+        allow_privilege_escalation = false
+        poll_timeout = 180
+        cleanup_resources_timeout = "5m"
+        automount_service_account_token = false
+        namespace_overwrite_allowed = ""
+        service_account_overwrite_allowed = ""
+        pod_annotations_overwrite_allowed = ""
+        node_selector_overwrite_allowed = ""
+        bearer_token_overwrite_allowed = false
+        cpu_request = "500m"
+        cpu_limit = "2"
+        memory_request = "512Mi"
+        memory_limit = "2Gi"
+        ephemeral_storage_request = "2Gi"
+        ephemeral_storage_limit = "14Gi"
+        helper_cpu_request = "100m"
+        helper_cpu_limit = "500m"
+        helper_memory_request = "128Mi"
+        helper_memory_limit = "256Mi"
+        helper_ephemeral_storage_request = "64Mi"
+        helper_ephemeral_storage_limit = "512Mi"
+        [runners.kubernetes.build_container_security_context]
+          run_as_user = 1000
+          run_as_group = 1000
+          run_as_non_root = true
+          allow_privilege_escalation = true
+          [runners.kubernetes.build_container_security_context.seccomp_profile]
+            type = "Unconfined"
+          [runners.kubernetes.build_container_security_context.app_armor_profile]
+            type = "Unconfined"
+        [runners.kubernetes.helper_container_security_context]
+          run_as_user = 1000
+          run_as_group = 0
+          run_as_non_root = true
+          allow_privilege_escalation = false
+          [runners.kubernetes.helper_container_security_context.seccomp_profile]
+            type = "RuntimeDefault"
+        [[runners.kubernetes.volumes.empty_dir]]
+          name = "repo"
+          mount_path = "/builds"
+          size_limit = "2Gi"
+        [[runners.kubernetes.volumes.empty_dir]]
+          name = "buildkit-state"
+          mount_path = "/home/user/.local/share/buildkit"
+          size_limit = "10Gi"
+        [[runners.kubernetes.pod_spec]]
+          name = "fixed-job-policy"
+          patch_type = "strategic"
+          patch = '''
+            enableServiceLinks: false
+            terminationGracePeriodSeconds: 30
+          '''

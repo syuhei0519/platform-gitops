@@ -1,0 +1,28 @@
+{
+  "source": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+  "buildJob": 16911641948,
+  "sbom": {
+    "format": "CycloneDX",
+    "specVersion": "1.7",
+    "sha256": "9b7a174933ec2c73d9422e204fc0b6d928bc5d69f52b618b49873aed9103cdc4",
+    "configDigest": "sha256:7dd317775e301a5bc78750996a911414c39607700dd33cc9b05c68280433df85",
+    "componentCount": 72,
+    "scannedPackageCount": 71
+  },
+  "layout": {
+    "schemaVersion": 1,
+    "sourceCommit": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+    "sourceProjectId": 86247025,
+    "archiveSha256": "98f73e21344fd4b015e0d9d9aa6566e06d9f2e6cd555a13d87d5e1c9ee973e20",
+    "archiveBytes": 25609728,
+    "expandedBytes": 25596249,
+    "digest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+    "layerCount": 11,
+    "platform": "linux/amd64",
+    "registryPush": false
+  },
+  "scope": "Native actual main scan/full SBOM inventory and same original OCI; no registry publication",
+  "scanJob": 16911641951,
+  "unitAccepted": false,
+  "utc": "2026-10-03T15:16:11.7213636Z"
+}

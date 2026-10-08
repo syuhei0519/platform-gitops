@@ -1,0 +1,30 @@
+{
+  "url": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest/-/merge_requests/86",
+  "sourceCommit": "f1d3a9bd0d95e9be4e92fa6fe78b0388641d4100",
+  "release": {
+    "schemaVersion": "2",
+    "sourceProjectId": "86247033",
+    "sourceCommit": "f1d3a9bd0d95e9be4e92fa6fe78b0388641d4100",
+    "pipelineId": null,
+    "pipelineUrl": null,
+    "buildPipelineId": "2913916635",
+    "buildJobId": "16941447837",
+    "scanPipelineId": "2915736522",
+    "scanJobId": "16954454278",
+    "recordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-62c4ed9b9a4be90ab3ba910577f1b706e2bee74f0275bc10162b8f5de38e6791/release-record-2915736522-16954454278.json",
+    "recordSha256": "748077c2062f21fa8f5defd1f2efa2174ee25807051362930d9195d93d0d7d95",
+    "sbomUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-62c4ed9b9a4be90ab3ba910577f1b706e2bee74f0275bc10162b8f5de38e6791/sbom-2915736522-16954454278.cdx.json",
+    "sbomSha256": "b4723a6a47c06fc06778aefac726ce0b32d76207bc201dc8332b5c9b45fb392a"
+  },
+  "utc": "2026-10-06T00:28:22.4096819Z",
+  "sourcePolicy": "bcc4126097ab6224e46257560010fc4623a51414",
+  "branch": "rollback/local/backend/pe018b-final-latest-db",
+  "rollbackReason": "今回の最新DB再検査で合格した登録候補を用い、既存APIとDB互換性およびCRUDを実確認するため。",
+  "source": "13610d3f5194ce4bf45b571784a510d081fe20ba",
+  "digest": "sha256:62c4ed9b9a4be90ab3ba910577f1b706e2bee74f0275bc10162b8f5de38e6791",
+  "kind": "final-rollback",
+  "operatorProposal": true,
+  "mr": 86,
+  "sourceCIProposalClaim": false,
+  "target": "c2ffa1575b7831633cd13decf7388a642ba26df0"
+}

@@ -1,0 +1,10 @@
+{
+  "pipeline": 2911406715,
+  "actualReadChecksums": true,
+  "accepted": true,
+  "job": 16924591158,
+  "utc": "2026-10-04T20:47:15.8449261Z",
+  "unitAccepted": false,
+  "case": "both",
+  "sourceWriteDeniedHTTP": 403
+}

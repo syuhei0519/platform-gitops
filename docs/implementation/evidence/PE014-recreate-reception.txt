@@ -1,0 +1,2 @@
+otelcol_exporter_sent_spans{exporter="otlphttp/newrelic",server_address="otlp.nr-data.net",url_path="/v1/traces"} 1608
+otelcol_receiver_accepted_spans{receiver="otlp",transport="http"} 1608

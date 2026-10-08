@@ -1,0 +1,10 @@
+{
+  "powershellVersion": "7.6.5",
+  "utc": "2026-10-06T18:07:28.0419943Z",
+  "originalFailureCauseProven": false,
+  "moduleSha256": "519739d5e7c97fe36619e2f371c2e0c56b7bbcf611ed9bb59bf0e46cc07e6969",
+  "initialCimCommandImported": true,
+  "explicitImportUsed": false,
+  "processId": 23428,
+  "dependencyInitialized": true
+}

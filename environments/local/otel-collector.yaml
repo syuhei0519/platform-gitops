@@ -1,0 +1,5 @@
+# local用のCollector上書き値。charts/platform/templates/observability-applications.yamlがChart既定値へ重ねる。
+# 対象アカウントはUS地域を使用。外部転送には既存License Secretと実測した無料取り込み余裕が必要。
+# 有効フラグだけで認証成功や費用条件を保証しない。運用条件はdocs/operations/final-rebuild.mdを参照。
+newRelicEnabled: true
+newRelicEndpoint: https://otlp.nr-data.net

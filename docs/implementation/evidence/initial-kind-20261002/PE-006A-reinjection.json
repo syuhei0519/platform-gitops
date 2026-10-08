@@ -1,0 +1,76 @@
+[
+  {
+    "namespace": "argocd",
+    "name": "repo-platform-gitops",
+    "type": "Opaque",
+    "keys": [
+      "password",
+      "type",
+      "url",
+      "username"
+    ],
+    "uid": "d51dcbd2-053b-49b1-a553-97090f04fad8",
+    "resourceVersion": "532",
+    "reinjectionEqual": true
+  },
+  {
+    "namespace": "argocd",
+    "name": "repo-application-manifest",
+    "type": "Opaque",
+    "keys": [
+      "password",
+      "type",
+      "url",
+      "username"
+    ],
+    "uid": "2a890b4d-19de-4774-b20c-7e2e69e9fb1b",
+    "resourceVersion": "534",
+    "reinjectionEqual": true
+  },
+  {
+    "namespace": "runner-system",
+    "name": "gitlab-runner-auth",
+    "type": "Opaque",
+    "keys": [
+      "runner-token"
+    ],
+    "uid": "f96c8084-2967-4fa3-9b4f-770c506e6eea",
+    "resourceVersion": "535",
+    "reinjectionEqual": true
+  },
+  {
+    "namespace": "account",
+    "name": "registry-frontend-pull",
+    "type": "kubernetes.io/dockerconfigjson",
+    "keys": [
+      ".dockerconfigjson"
+    ],
+    "uid": "d6df1496-1dff-45ac-a0a4-9a46217240be",
+    "resourceVersion": "536",
+    "reinjectionEqual": true
+  },
+  {
+    "namespace": "account",
+    "name": "registry-backend-pull",
+    "type": "kubernetes.io/dockerconfigjson",
+    "keys": [
+      ".dockerconfigjson"
+    ],
+    "uid": "71080f39-fd8f-48e8-b910-13327a800598",
+    "resourceVersion": "537",
+    "reinjectionEqual": true
+  },
+  {
+    "namespace": "account",
+    "name": "account-db",
+    "type": "Opaque",
+    "keys": [
+      "admin-password",
+      "app-password",
+      "app-username"
+    ],
+    "uid": "decb0d35-33df-4a18-af8e-3cc89883b344",
+    "resourceVersion": "539",
+    "reinjectionEqual": true
+  }
+]

@@ -1,0 +1,142 @@
+{
+  "historicalTime": 1790903524,
+  "historicalSample": [
+    {
+      "metric": {
+        "__name__": "up",
+        "instance": "localhost:9090",
+        "job": "prometheus"
+      },
+      "value": [
+        1790903524,
+        "1"
+      ]
+    }
+  ],
+  "pass": true,
+  "disk": [
+    "476\t/data",
+    "Filesystem           1K-blocks      Used Available Use% Mounted on",
+    "/dev/sdf             1055762868  16236616 985822780   2% /data"
+  ],
+  "targets": [
+    {
+      "discoveredLabels": {
+        "__address__": "kube-state-metrics.observability.svc:8080",
+        "__always_scrape_classic_histograms__": "false",
+        "__convert_classic_histograms_to_nhcb__": "false",
+        "__metrics_path__": "/metrics",
+        "__scheme__": "http",
+        "__scrape_interval__": "30s",
+        "__scrape_native_histograms__": "false",
+        "__scrape_timeout__": "10s",
+        "job": "kube-state-metrics"
+      },
+      "labels": {
+        "instance": "kube-state-metrics.observability.svc:8080",
+        "job": "kube-state-metrics"
+      },
+      "scrapePool": "kube-state-metrics",
+      "scrapeUrl": "http://kube-state-metrics.observability.svc:8080/metrics",
+      "globalUrl": "http://kube-state-metrics.observability.svc:8080/metrics",
+      "lastError": "",
+      "lastScrape": "2026-10-02T01:14:34.839301555Z",
+      "lastScrapeDuration": 0.001370768,
+      "health": "up",
+      "scrapeInterval": "30s",
+      "scrapeTimeout": "10s"
+    },
+    {
+      "discoveredLabels": {
+        "__address__": "172.20.0.3:10250",
+        "__always_scrape_classic_histograms__": "false",
+        "__convert_classic_histograms_to_nhcb__": "false",
+        "__meta_kubernetes_node_address_Hostname": "core-platform-at0102-control-plane",
+        "__meta_kubernetes_node_address_InternalIP": "172.20.0.3",
+        "__meta_kubernetes_node_annotation_node_alpha_kubernetes_io_ttl": "0",
+        "__meta_kubernetes_node_annotation_volumes_kubernetes_io_controller_managed_attach_detach": "true",
+        "__meta_kubernetes_node_annotationpresent_node_alpha_kubernetes_io_ttl": "true",
+        "__meta_kubernetes_node_annotationpresent_volumes_kubernetes_io_controller_managed_attach_detach": "true",
+        "__meta_kubernetes_node_condition_diskpressure": "false",
+        "__meta_kubernetes_node_condition_memorypressure": "false",
+        "__meta_kubernetes_node_condition_pidpressure": "false",
+        "__meta_kubernetes_node_condition_ready": "true",
+        "__meta_kubernetes_node_label_beta_kubernetes_io_arch": "amd64",
+        "__meta_kubernetes_node_label_beta_kubernetes_io_os": "linux",
+        "__meta_kubernetes_node_label_kubernetes_io_arch": "amd64",
+        "__meta_kubernetes_node_label_kubernetes_io_hostname": "core-platform-at0102-control-plane",
+        "__meta_kubernetes_node_label_kubernetes_io_os": "linux",
+        "__meta_kubernetes_node_labelpresent_beta_kubernetes_io_arch": "true",
+        "__meta_kubernetes_node_labelpresent_beta_kubernetes_io_os": "true",
+        "__meta_kubernetes_node_labelpresent_kubernetes_io_arch": "true",
+        "__meta_kubernetes_node_labelpresent_kubernetes_io_hostname": "true",
+        "__meta_kubernetes_node_labelpresent_kubernetes_io_os": "true",
+        "__meta_kubernetes_node_labelpresent_node_role_kubernetes_io_control_plane": "true",
+        "__meta_kubernetes_node_name": "core-platform-at0102-control-plane",
+        "__meta_kubernetes_node_provider_id": "kind://docker/core-platform-at0102/core-platform-at0102-control-plane",
+        "__metrics_path__": "/metrics",
+        "__scheme__": "https",
+        "__scrape_interval__": "30s",
+        "__scrape_native_histograms__": "false",
+        "__scrape_timeout__": "10s",
+        "instance": "core-platform-at0102-control-plane",
+        "job": "kubernetes-cadvisor"
+      },
+      "labels": {
+        "instance": "core-platform-at0102-control-plane",
+        "job": "kubernetes-cadvisor",
+        "node": "core-platform-at0102-control-plane"
+      },
+      "scrapePool": "kubernetes-cadvisor",
+      "scrapeUrl": "https://kubernetes.default.svc:443/api/v1/nodes/core-platform-at0102-control-plane/proxy/metrics/cadvisor",
+      "globalUrl": "https://kubernetes.default.svc:443/api/v1/nodes/core-platform-at0102-control-plane/proxy/metrics/cadvisor",
+      "lastError": "",
+      "lastScrape": "2026-10-02T01:14:24.91761008Z",
+      "lastScrapeDuration": 0.03157466,
+      "health": "up",
+      "scrapeInterval": "30s",
+      "scrapeTimeout": "10s"
+    },
+    {
+      "discoveredLabels": {
+        "__address__": "localhost:9090",
+        "__always_scrape_classic_histograms__": "false",
+        "__convert_classic_histograms_to_nhcb__": "false",
+        "__metrics_path__": "/metrics",
+        "__scheme__": "http",
+        "__scrape_interval__": "30s",
+        "__scrape_native_histograms__": "false",
+        "__scrape_timeout__": "10s",
+        "job": "prometheus"
+      },
+      "labels": {
+        "instance": "localhost:9090",
+        "job": "prometheus"
+      },
+      "scrapePool": "prometheus",
+      "scrapeUrl": "http://localhost:9090/metrics",
+      "globalUrl": "http://prometheus-server-6c6dff4fd7-xkq7b:9090/metrics",
+      "lastError": "",
+      "lastScrape": "2026-10-02T01:14:37.841395443Z",
+      "lastScrapeDuration": 0.007903637,
+      "health": "up",
+      "scrapeInterval": "30s",
+      "scrapeTimeout": "10s"
+    }
+  ],
+  "pv": "pvc-d577e803-e0b8-4556-85a5-bd819c080f4d",
+  "afterTime": "2026-10-02T01:14:44.8558073Z",
+  "claimProtection": {
+    "argocd.argoproj.io/sync-options": "Prune=confirm,Delete=confirm",
+    "argocd.argoproj.io/tracking-id": "lab-local-prometheus:/PersistentVolumeClaim:observability/prometheus-server",
+    "helm.sh/resource-policy": "keep",
+    "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"v1\",\"kind\":\"PersistentVolumeClaim\",\"metadata\":{\"annotations\":{\"argocd.argoproj.io/sync-options\":\"Prune=confirm,Delete=confirm\",\"argocd.argoproj.io/tracking-id\":\"lab-local-prometheus:/PersistentVolumeClaim:observability/prometheus-server\",\"helm.sh/resource-policy\":\"keep\"},\"labels\":{\"app.kubernetes.io/component\":\"server\",\"app.kubernetes.io/instance\":\"prometheus\",\"app.kubernetes.io/name\":\"prometheus\",\"app.kubernetes.io/part-of\":\"prometheus\",\"app.kubernetes.io/version\":\"v3.15.0\",\"helm.sh/chart\":\"prometheus-29.35.0\"},\"name\":\"prometheus-server\",\"namespace\":\"observability\"},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"5Gi\"}},\"storageClassName\":\"standard\"}}\n",
+    "pv.kubernetes.io/bind-completed": "yes",
+    "pv.kubernetes.io/bound-by-controller": "yes",
+    "volume.beta.kubernetes.io/storage-provisioner": "rancher.io/local-path",
+    "volume.kubernetes.io/selected-node": "core-platform-at0102-control-plane",
+    "volume.kubernetes.io/storage-provisioner": "rancher.io/local-path"
+  },
+  "pvcUid": "d577e803-e0b8-4556-85a5-bd819c080f4d",
+  "afterPodUid": "b31818ff-3996-478e-ab4a-fbae96aa0bef"
+}

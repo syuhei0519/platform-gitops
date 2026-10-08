@@ -1,0 +1,9 @@
+{
+  "exitCode": 1,
+  "type": "System.ArgumentException",
+  "safeSimulatedError": false,
+  "stage": "snapshot",
+  "id": "System.ArgumentException,Microsoft.PowerShell.Commands.ConvertFromJsonCommand",
+  "scriptStack": "at <ScriptBlock>, C:\\work\\CorePlatform\\output\\core-platform-v1-phase1-phase2-20261002\\acceptance\\read-pe019-resource-snapshot.ps1: line 19\r\nat <ScriptBlock>, C:\\work\\CorePlatform\\output\\core-platform-v1-phase1-phase2-20261002\\acceptance\\pe019-capacity-resource-worker.ps1: line 21",
+  "utc": "2026-10-06T17:19:59.9958197Z"
+}

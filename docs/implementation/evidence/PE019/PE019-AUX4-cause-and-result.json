@@ -1,0 +1,74 @@
+{
+  "originalFailurePreserved": [
+    "PE019-AT10-attempt2",
+    "PE019-AT10-attempt3",
+    "PE019-AT10-attempt4",
+    "PE019-AUX2-120-normal",
+    "PE019-AUX3-120-normal"
+  ],
+  "noOwnedProcessesOrConnectionsRemain": true,
+  "safeActualDriverExitCode": 1,
+  "oldExactJSONMessageOrByteOffsetUnavailable": true,
+  "allShortConditionsAccepted": true,
+  "sameEightScriptHashes": [
+    {
+      "sha256": "b85f57bafae5fd55de3c77ea2fdd4c9b243734d29cb2a6845f28050fbb215ccc",
+      "file": "initialize-pe019-cim.ps1"
+    },
+    {
+      "sha256": "00e5c75f82971bf3aba8d27a33bc6a50b1d2f080c95ddc590f27a01722ed53b5",
+      "file": "read-pe019-statistics-json.ps1"
+    },
+    {
+      "sha256": "1b08185b0b9188c9b1a8aebb0ee97471d562beb1ae83c7933f720aff1eb56ef8",
+      "file": "pe019-capacity-resource-worker.ps1"
+    },
+    {
+      "sha256": "111a4f7f3157dd1f566a87eec89ac9f803a6f36b6cbbf6a777ce289cd6e08c1e",
+      "file": "pe019-capacity-fault-worker.ps1"
+    },
+    {
+      "sha256": "903d79ffb0b1eb550da6f1914f80d651e463134367930d679ae2e7be722d1dba",
+      "file": "read-pe019-resource-snapshot.ps1"
+    },
+    {
+      "sha256": "98f2add6870d0a23d4b280961e7f51ebd0e65310cfda43708b951608f20b8ebe",
+      "file": "pe019-final-capacity.ps1"
+    },
+    {
+      "sha256": "90aa2f01c2295c848dc9a980d7ee96bad88d2e96f2d0f09ee8a1df333cffe52a",
+      "file": "read-pe019-resource-preflight.ps1"
+    },
+    {
+      "sha256": "560e6af22b2758acaa9acb4b527a5353b37070cf88e692b08073a21f3e4a4322",
+      "file": "private-pe019-kubectl.ps1"
+    }
+  ],
+  "normalActualDriverExitCode": 0,
+  "sampleCount": 9,
+  "normalHTTPSpans": 120,
+  "deniedEquivalentDiagnosticsExecuted": false,
+  "utc": "2026-10-06T18:00:46.475995Z",
+  "CIMInitializationPassed": true,
+  "shortNormal": "output/core-platform-v1-phase1-phase2-20261002/evidence/PE019-AUX4-120-normal",
+  "nativeTransportExitZeroAndCompleteProved": true,
+  "inference": "Implicit Windows output decoding in hidden host (console codepage932) is the leading cause: old ProcessStartInfo used no explicit encoding; strictUTF8 reader65001 now parses full548KB active-CI inventory continuously. Explicit maxDepth1024 was also applied, so an isolated one-factor cause claim is not made.",
+  "full900Accepted": false,
+  "confirmedFailure": "Resource worker snapshot -> Kubernetes Pod JSON parse during running OCI CI",
+  "corrections": [
+    "Explicit strictUTF8 stdout/stderr; complete async read and actual process exit before parse",
+    "Explicit System.Text.Json maxDepth1024, preserves timestamp strings/integer types",
+    "Safe parser category/line/byteoffset and failure stage/type/stack/actual exit code; no raw Pod env recorded"
+  ],
+  "shortActiveCIMaxWorkingSetBytes": 1750056960,
+  "intervalSec": 15,
+  "secretValuesPersisted": false,
+  "full900MayStart": true,
+  "shortSafeError": "output/core-platform-v1-phase1-phase2-20261002/evidence/PE019-AUX4-120-safe-error",
+  "normalDBSpans": 120,
+  "runtimePrimarySource": "https://raw.githubusercontent.com/dotnet/runtime/v10.0.0/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/Process.Windows.cs",
+  "normalMatchingApplicationLogs": 120,
+  "publicSingleEncodingFactorDefectProved": true,
+  "syntheticCauseProof": "PE019-AUX4-encoding-cause-synthetic.json",
+  "originalExactPayloadNotReconstructed": true
+}

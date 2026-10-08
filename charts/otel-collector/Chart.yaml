@@ -1,0 +1,6 @@
+apiVersion: v2
+name: otel-collector
+description: Fixed single-instance OTLP receiver, Prometheus bridge and trace exporter
+type: application
+version: 0.1.0
+appVersion: "0.161.0"

@@ -1,0 +1,472 @@
+{
+  "schema": "core-platform/at09/v1",
+  "before": {
+    "time": "2026-10-02T01:04:46.8325302Z",
+    "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+    "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+    "phase": "Running",
+    "ready": true,
+    "restarts": 0,
+    "exitCode": null,
+    "containerId": "containerd://e571346af586603c8b9ef070c3b932e61cf5b23351361ec1133357b99b9c35e9"
+  },
+  "sameUidRestart": {
+    "time": "2026-10-02T01:05:43.7971716Z",
+    "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+    "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+    "phase": "Running",
+    "ready": true,
+    "restarts": 1,
+    "exitCode": 137,
+    "containerId": "containerd://b0dccebb2edf5e87b49496ab12f67a219302443444fd24a6dc58fb6ecd526c10"
+  },
+  "baselineScrape": [
+    {
+      "metric": {
+        "__name__": "kube_pod_container_status_restarts_total",
+        "container": "fixture",
+        "instance": "kube-state-metrics.observability.svc:8080",
+        "job": "kube-state-metrics",
+        "namespace": "account",
+        "pod": "pe010-at09-fixture-5b96dcb646-pwg8n",
+        "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492"
+      },
+      "value": [
+        1790903101.029,
+        "0"
+      ]
+    }
+  ],
+  "restartScrape": [
+    {
+      "metric": {
+        "__name__": "kube_pod_container_status_restarts_total",
+        "container": "fixture",
+        "instance": "kube-state-metrics.observability.svc:8080",
+        "job": "kube-state-metrics",
+        "namespace": "account",
+        "pod": "pe010-at09-fixture-5b96dcb646-pwg8n",
+        "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492"
+      },
+      "value": [
+        1790903161.944,
+        "1"
+      ]
+    }
+  ],
+  "replacement": {
+    "time": "2026-10-02T01:06:09.0958357Z",
+    "name": "pe010-at09-fixture-5b96dcb646-z4nkw",
+    "uid": "9adf3be9-651d-46db-8947-24433d61b6c4",
+    "phase": "Running",
+    "ready": true,
+    "restarts": 0,
+    "exitCode": null,
+    "containerId": "containerd://8a80ef55fc80e3d31a769a58c1763ef376720e2ce79e50ff757548424dd1d8cb"
+  },
+  "replacementScrape": [
+    {
+      "metric": {
+        "__name__": "kube_pod_info",
+        "created_by_kind": "ReplicaSet",
+        "created_by_name": "pe010-at09-fixture-5b96dcb646",
+        "host_ip": "172.20.0.3",
+        "host_network": "false",
+        "instance": "kube-state-metrics.observability.svc:8080",
+        "job": "kube-state-metrics",
+        "namespace": "account",
+        "node": "core-platform-at0102-control-plane",
+        "pod": "pe010-at09-fixture-5b96dcb646-z4nkw",
+        "pod_ip": "10.244.0.19",
+        "uid": "9adf3be9-651d-46db-8947-24433d61b6c4"
+      },
+      "value": [
+        1790903191.277,
+        "1"
+      ]
+    }
+  ],
+  "states": [
+    {
+      "time": "2026-10-02T01:04:39.7956357Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Pending",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": null
+    },
+    {
+      "time": "2026-10-02T01:04:40.3920345Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Pending",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": null
+    },
+    {
+      "time": "2026-10-02T01:04:40.9796500Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://e571346af586603c8b9ef070c3b932e61cf5b23351361ec1133357b99b9c35e9"
+    },
+    {
+      "time": "2026-10-02T01:04:41.5631523Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://e571346af586603c8b9ef070c3b932e61cf5b23351361ec1133357b99b9c35e9"
+    },
+    {
+      "time": "2026-10-02T01:04:42.1561687Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://e571346af586603c8b9ef070c3b932e61cf5b23351361ec1133357b99b9c35e9"
+    },
+    {
+      "time": "2026-10-02T01:04:42.7566409Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://e571346af586603c8b9ef070c3b932e61cf5b23351361ec1133357b99b9c35e9"
+    },
+    {
+      "time": "2026-10-02T01:04:43.3320434Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://e571346af586603c8b9ef070c3b932e61cf5b23351361ec1133357b99b9c35e9"
+    },
+    {
+      "time": "2026-10-02T01:04:43.9129642Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://e571346af586603c8b9ef070c3b932e61cf5b23351361ec1133357b99b9c35e9"
+    },
+    {
+      "time": "2026-10-02T01:04:44.4932656Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://e571346af586603c8b9ef070c3b932e61cf5b23351361ec1133357b99b9c35e9"
+    },
+    {
+      "time": "2026-10-02T01:04:45.0770386Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://e571346af586603c8b9ef070c3b932e61cf5b23351361ec1133357b99b9c35e9"
+    },
+    {
+      "time": "2026-10-02T01:04:45.6648024Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://e571346af586603c8b9ef070c3b932e61cf5b23351361ec1133357b99b9c35e9"
+    },
+    {
+      "time": "2026-10-02T01:04:46.2525767Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://e571346af586603c8b9ef070c3b932e61cf5b23351361ec1133357b99b9c35e9"
+    },
+    {
+      "time": "2026-10-02T01:04:46.8314745Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": true,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://e571346af586603c8b9ef070c3b932e61cf5b23351361ec1133357b99b9c35e9"
+    },
+    {
+      "time": "2026-10-02T01:05:37.3775638Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": true,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://e571346af586603c8b9ef070c3b932e61cf5b23351361ec1133357b99b9c35e9"
+    },
+    {
+      "time": "2026-10-02T01:05:37.9611225Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 1,
+      "exitCode": 137,
+      "containerId": "containerd://b0dccebb2edf5e87b49496ab12f67a219302443444fd24a6dc58fb6ecd526c10"
+    },
+    {
+      "time": "2026-10-02T01:05:38.5486751Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 1,
+      "exitCode": 137,
+      "containerId": "containerd://b0dccebb2edf5e87b49496ab12f67a219302443444fd24a6dc58fb6ecd526c10"
+    },
+    {
+      "time": "2026-10-02T01:05:39.1400595Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 1,
+      "exitCode": 137,
+      "containerId": "containerd://b0dccebb2edf5e87b49496ab12f67a219302443444fd24a6dc58fb6ecd526c10"
+    },
+    {
+      "time": "2026-10-02T01:05:39.7118687Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 1,
+      "exitCode": 137,
+      "containerId": "containerd://b0dccebb2edf5e87b49496ab12f67a219302443444fd24a6dc58fb6ecd526c10"
+    },
+    {
+      "time": "2026-10-02T01:05:40.2933528Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 1,
+      "exitCode": 137,
+      "containerId": "containerd://b0dccebb2edf5e87b49496ab12f67a219302443444fd24a6dc58fb6ecd526c10"
+    },
+    {
+      "time": "2026-10-02T01:05:40.8842919Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 1,
+      "exitCode": 137,
+      "containerId": "containerd://b0dccebb2edf5e87b49496ab12f67a219302443444fd24a6dc58fb6ecd526c10"
+    },
+    {
+      "time": "2026-10-02T01:05:41.4716237Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 1,
+      "exitCode": 137,
+      "containerId": "containerd://b0dccebb2edf5e87b49496ab12f67a219302443444fd24a6dc58fb6ecd526c10"
+    },
+    {
+      "time": "2026-10-02T01:05:42.0484436Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 1,
+      "exitCode": 137,
+      "containerId": "containerd://b0dccebb2edf5e87b49496ab12f67a219302443444fd24a6dc58fb6ecd526c10"
+    },
+    {
+      "time": "2026-10-02T01:05:42.6253056Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 1,
+      "exitCode": 137,
+      "containerId": "containerd://b0dccebb2edf5e87b49496ab12f67a219302443444fd24a6dc58fb6ecd526c10"
+    },
+    {
+      "time": "2026-10-02T01:05:43.2179411Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 1,
+      "exitCode": 137,
+      "containerId": "containerd://b0dccebb2edf5e87b49496ab12f67a219302443444fd24a6dc58fb6ecd526c10"
+    },
+    {
+      "time": "2026-10-02T01:05:43.7971716Z",
+      "name": "pe010-at09-fixture-5b96dcb646-pwg8n",
+      "uid": "263832ba-2bae-412a-8d9f-0f108bfcc492",
+      "phase": "Running",
+      "ready": true,
+      "restarts": 1,
+      "exitCode": 137,
+      "containerId": "containerd://b0dccebb2edf5e87b49496ab12f67a219302443444fd24a6dc58fb6ecd526c10"
+    },
+    {
+      "time": "2026-10-02T01:06:02.1097287Z",
+      "name": "pe010-at09-fixture-5b96dcb646-z4nkw",
+      "uid": "9adf3be9-651d-46db-8947-24433d61b6c4",
+      "phase": "Pending",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": null
+    },
+    {
+      "time": "2026-10-02T01:06:02.7017046Z",
+      "name": "pe010-at09-fixture-5b96dcb646-z4nkw",
+      "uid": "9adf3be9-651d-46db-8947-24433d61b6c4",
+      "phase": "Pending",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": null
+    },
+    {
+      "time": "2026-10-02T01:06:03.2775367Z",
+      "name": "pe010-at09-fixture-5b96dcb646-z4nkw",
+      "uid": "9adf3be9-651d-46db-8947-24433d61b6c4",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://8a80ef55fc80e3d31a769a58c1763ef376720e2ce79e50ff757548424dd1d8cb"
+    },
+    {
+      "time": "2026-10-02T01:06:03.8574028Z",
+      "name": "pe010-at09-fixture-5b96dcb646-z4nkw",
+      "uid": "9adf3be9-651d-46db-8947-24433d61b6c4",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://8a80ef55fc80e3d31a769a58c1763ef376720e2ce79e50ff757548424dd1d8cb"
+    },
+    {
+      "time": "2026-10-02T01:06:04.4485270Z",
+      "name": "pe010-at09-fixture-5b96dcb646-z4nkw",
+      "uid": "9adf3be9-651d-46db-8947-24433d61b6c4",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://8a80ef55fc80e3d31a769a58c1763ef376720e2ce79e50ff757548424dd1d8cb"
+    },
+    {
+      "time": "2026-10-02T01:06:05.0282348Z",
+      "name": "pe010-at09-fixture-5b96dcb646-z4nkw",
+      "uid": "9adf3be9-651d-46db-8947-24433d61b6c4",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://8a80ef55fc80e3d31a769a58c1763ef376720e2ce79e50ff757548424dd1d8cb"
+    },
+    {
+      "time": "2026-10-02T01:06:05.6081556Z",
+      "name": "pe010-at09-fixture-5b96dcb646-z4nkw",
+      "uid": "9adf3be9-651d-46db-8947-24433d61b6c4",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://8a80ef55fc80e3d31a769a58c1763ef376720e2ce79e50ff757548424dd1d8cb"
+    },
+    {
+      "time": "2026-10-02T01:06:06.1765988Z",
+      "name": "pe010-at09-fixture-5b96dcb646-z4nkw",
+      "uid": "9adf3be9-651d-46db-8947-24433d61b6c4",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://8a80ef55fc80e3d31a769a58c1763ef376720e2ce79e50ff757548424dd1d8cb"
+    },
+    {
+      "time": "2026-10-02T01:06:06.7604135Z",
+      "name": "pe010-at09-fixture-5b96dcb646-z4nkw",
+      "uid": "9adf3be9-651d-46db-8947-24433d61b6c4",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://8a80ef55fc80e3d31a769a58c1763ef376720e2ce79e50ff757548424dd1d8cb"
+    },
+    {
+      "time": "2026-10-02T01:06:07.3427604Z",
+      "name": "pe010-at09-fixture-5b96dcb646-z4nkw",
+      "uid": "9adf3be9-651d-46db-8947-24433d61b6c4",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://8a80ef55fc80e3d31a769a58c1763ef376720e2ce79e50ff757548424dd1d8cb"
+    },
+    {
+      "time": "2026-10-02T01:06:07.9283021Z",
+      "name": "pe010-at09-fixture-5b96dcb646-z4nkw",
+      "uid": "9adf3be9-651d-46db-8947-24433d61b6c4",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://8a80ef55fc80e3d31a769a58c1763ef376720e2ce79e50ff757548424dd1d8cb"
+    },
+    {
+      "time": "2026-10-02T01:06:08.5148102Z",
+      "name": "pe010-at09-fixture-5b96dcb646-z4nkw",
+      "uid": "9adf3be9-651d-46db-8947-24433d61b6c4",
+      "phase": "Running",
+      "ready": false,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://8a80ef55fc80e3d31a769a58c1763ef376720e2ce79e50ff757548424dd1d8cb"
+    },
+    {
+      "time": "2026-10-02T01:06:09.0957189Z",
+      "name": "pe010-at09-fixture-5b96dcb646-z4nkw",
+      "uid": "9adf3be9-651d-46db-8947-24433d61b6c4",
+      "phase": "Running",
+      "ready": true,
+      "restarts": 0,
+      "exitCode": null,
+      "containerId": "containerd://8a80ef55fc80e3d31a769a58c1763ef376720e2ce79e50ff757548424dd1d8cb"
+    }
+  ],
+  "pass": true
+}

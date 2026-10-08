@@ -1,0 +1,9 @@
+{
+  "ports": [
+    18049,
+    18050
+  ],
+  "completed": false,
+  "utc": "2026-10-06T14:45:10.1737086Z",
+  "remainingListeners": []
+}

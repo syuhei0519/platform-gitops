@@ -1,0 +1,100 @@
+{
+  "jobs": [
+    {
+      "id": 16977512441,
+      "name": "release-record-store",
+      "status": "success",
+      "started_at": "2026-10-06T17:43:03.124Z",
+      "finished_at": "2026-10-06T17:43:29.224Z",
+      "duration": 26.099841
+    },
+    {
+      "id": 16977512440,
+      "name": "oci-image-policy-validation",
+      "status": "success",
+      "started_at": "2026-10-06T17:41:59.764Z",
+      "finished_at": "2026-10-06T17:42:58.351Z",
+      "duration": 58.587401
+    },
+    {
+      "id": 16977512439,
+      "name": "oci-isolated-runtime",
+      "status": "success",
+      "started_at": "2026-10-06T17:40:27.513Z",
+      "finished_at": "2026-10-06T17:41:57.939Z",
+      "duration": 90.425685
+    },
+    {
+      "id": 16977512438,
+      "name": "oci-format-compatibility",
+      "status": "success",
+      "started_at": "2026-10-06T17:39:29.326Z",
+      "finished_at": "2026-10-06T17:40:25.573Z",
+      "duration": 56.247057
+    },
+    {
+      "id": 16977512437,
+      "name": "container-build-oci",
+      "status": "success",
+      "started_at": "2026-10-06T17:35:30.084Z",
+      "finished_at": "2026-10-06T17:39:24.53Z",
+      "duration": 234.445972
+    },
+    {
+      "id": 16977512436,
+      "name": "source-scan",
+      "status": "success",
+      "started_at": "2026-10-06T17:34:35.45Z",
+      "finished_at": "2026-10-06T17:35:25.141Z",
+      "duration": 49.690778
+    },
+    {
+      "id": 16977512435,
+      "name": "backend-build",
+      "status": "success",
+      "started_at": "2026-10-06T17:33:38.014Z",
+      "finished_at": "2026-10-06T17:34:33.291Z",
+      "duration": 55.276645
+    },
+    {
+      "id": 16977512434,
+      "name": "unit-test",
+      "status": "success",
+      "started_at": "2026-10-06T17:32:42.568Z",
+      "finished_at": "2026-10-06T17:33:36.037Z",
+      "duration": 53.468384
+    },
+    {
+      "id": 16977512433,
+      "name": "format-and-vet",
+      "status": "success",
+      "started_at": "2026-10-06T17:31:47.864Z",
+      "finished_at": "2026-10-06T17:32:40.769Z",
+      "duration": 52.905009
+    },
+    {
+      "id": 16977512432,
+      "name": "manifest-helper-test",
+      "status": "success",
+      "started_at": "2026-10-06T17:31:19.976Z",
+      "finished_at": "2026-10-06T17:31:45.757Z",
+      "duration": 25.780262
+    },
+    {
+      "id": 16977512431,
+      "name": "security-policy-test",
+      "status": "success",
+      "started_at": "2026-10-06T17:29:59.008Z",
+      "finished_at": "2026-10-06T17:31:17.744Z",
+      "duration": 78.736729
+    }
+  ],
+  "registryPublishJobs": 0,
+  "actualLoadOverlapAccepted": false,
+  "utc": "2026-10-06T17:56:32.0521302Z",
+  "status": "success",
+  "terminal": true,
+  "source": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+  "manifestProposalJobs": 0,
+  "pipeline": 2918955787
+}

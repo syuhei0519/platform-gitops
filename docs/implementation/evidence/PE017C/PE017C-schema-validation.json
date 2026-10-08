@@ -1,0 +1,30 @@
+{
+  "validator": "jsonschema4.25.1/Draft2020-12",
+  "fixtureOnly": true,
+  "repositories": [
+    {
+      "repository": "frontend-app",
+      "metaschema": true,
+      "positiveCases": 2,
+      "negativeCases": 10,
+      "goDynamicBindingTests": "separate-Go-tests-passed",
+      "actualCI": false
+    },
+    {
+      "repository": "backend-app",
+      "metaschema": true,
+      "positiveCases": 2,
+      "negativeCases": 10,
+      "goDynamicBindingTests": "separate-Go-tests-passed",
+      "actualCI": false
+    },
+    {
+      "repository": "application-manifest",
+      "metaschema": true,
+      "positiveCases": 2,
+      "negativeCases": 10,
+      "goDynamicBindingTests": "separate-Go-tests-passed",
+      "actualCI": false
+    }
+  ]
+}

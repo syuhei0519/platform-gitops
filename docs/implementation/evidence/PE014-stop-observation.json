@@ -1,0 +1,18 @@
+{
+  "collectorSelfUp": [
+    {
+      "metric": {
+        "__name__": "up",
+        "instance": "otel-collector.observability.svc:8888",
+        "job": "otel-collector-self"
+      },
+      "value": [
+        1790971208.881,
+        "0"
+      ]
+    }
+  ],
+  "utc": "2026-10-02T20:00:08.9220806Z",
+  "interpretation": "Unavailable during stopped receiver, not exact SDK loss",
+  "selfCountersAvailable": false
+}

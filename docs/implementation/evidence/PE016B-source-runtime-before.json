@@ -1,0 +1,31 @@
+{
+  "utc": "2026-10-04T10:05:58.5054128Z",
+  "scope": "PE016B pre-main runtime baseline",
+  "pods": [
+    {
+      "pod": "backend-5ff5944f96-trdjg",
+      "restarts": 0,
+      "image": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app:a300338cefdca94b4a041d71b37faae8d71a8701@sha256:29c90d8c8024ef9e10821cb773eac6c2dfdda12d10d7a0dea508703bfb685793",
+      "uid": "55cfd1cb-2ac4-451f-8a9c-adcb55662cbf",
+      "service": "backend",
+      "imageId": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app@sha256:29c90d8c8024ef9e10821cb773eac6c2dfdda12d10d7a0dea508703bfb685793",
+      "ready": true
+    },
+    {
+      "pod": "frontend-5bdc8c5fbd-5lss6",
+      "restarts": 0,
+      "image": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app:ce6ec1d94cf1042a824b745f4a5f6367b1c0f845@sha256:68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78",
+      "uid": "6da97e91-4aca-4271-b313-4be4245090dc",
+      "service": "frontend",
+      "imageId": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app@sha256:68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78",
+      "ready": true
+    }
+  ],
+  "pvcs": [
+    {
+      "phase": "Bound",
+      "name": "postgresql-data",
+      "uid": "f7774170-a00e-4d90-9caa-e692f1e1555a"
+    }
+  ]
+}

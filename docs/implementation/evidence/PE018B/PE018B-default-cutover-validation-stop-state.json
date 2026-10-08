@@ -1,0 +1,102 @@
+{
+  "writerRunsOnFailure": true,
+  "writerRefusedMissingScan": true,
+  "utc": "2026-10-06T00:58:56.2079291Z",
+  "accepted": true,
+  "jobs": [
+    {
+      "id": 16954827689,
+      "name": "propose-oci-manifest-update",
+      "status": "skipped"
+    },
+    {
+      "id": 16954827688,
+      "name": "verify-oci-release",
+      "status": "skipped"
+    },
+    {
+      "id": 16954827687,
+      "name": "publish-oci",
+      "status": "skipped"
+    },
+    {
+      "id": 16954827686,
+      "name": "release-record-store",
+      "status": "failed"
+    },
+    {
+      "id": 16954827685,
+      "name": "oci-image-policy-validation",
+      "status": "skipped"
+    },
+    {
+      "id": 16954827684,
+      "name": "oci-isolated-runtime",
+      "status": "skipped"
+    },
+    {
+      "id": 16954827683,
+      "name": "oci-format-compatibility",
+      "status": "skipped"
+    },
+    {
+      "id": 16954827682,
+      "name": "container-build-oci",
+      "status": "skipped"
+    },
+    {
+      "id": 16954827681,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16954827680,
+      "name": "backend-build",
+      "status": "success"
+    },
+    {
+      "id": 16954827679,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16954827678,
+      "name": "format-and-vet",
+      "status": "success"
+    },
+    {
+      "id": 16954827677,
+      "name": "manifest-helper-test",
+      "status": "failed"
+    },
+    {
+      "id": 16954827676,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "source": "bcc4126097ab6224e46257560010fc4623a51414",
+  "pipeline": 2915792417,
+  "positiveArtifactAbsence": [
+    {
+      "path": "/projects/86247033/jobs/16954827686/artifacts/.release-store/public/stored.json",
+      "httpStatus": 404
+    },
+    {
+      "path": "/projects/86247033/jobs/16954827686/artifacts/.release-store/public/record.json",
+      "httpStatus": 404
+    },
+    {
+      "path": "/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/release-record-2915792417-16954827685.json",
+      "httpStatus": 404
+    },
+    {
+      "path": "/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/sbom-2915792417-16954827685.cdx.json",
+      "httpStatus": 404
+    }
+  ],
+  "technicalRegistryWriteDenyClaim": false,
+  "expectedValidationFailure": true,
+  "deliveryBlockedByFailedValidation": true,
+  "status": "failed"
+}

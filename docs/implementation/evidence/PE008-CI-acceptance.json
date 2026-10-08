@@ -1,0 +1,423 @@
+{
+  "boundary": "Technical registry/package write permitted; trusted-code operational restriction; registry cache disabled",
+  "secretsRecorded": false,
+  "dedup": [
+    {
+      "duplicatePushPipelineCount": 0,
+      "jobs": [
+        {
+          "id": 16887224200,
+          "name": "frontend-build",
+          "status": "success"
+        },
+        {
+          "id": 16887224199,
+          "name": "unit-test",
+          "status": "success"
+        },
+        {
+          "id": 16887224198,
+          "name": "typecheck",
+          "status": "success"
+        },
+        {
+          "id": 16887224197,
+          "name": "lint",
+          "status": "success"
+        },
+        {
+          "id": 16887224196,
+          "name": "manifest-helper-test",
+          "status": "success"
+        }
+      ],
+      "project": 86247025,
+      "sha": "da765d3eff3e678651b76ef89a3661ce132641dc",
+      "pipeline": {
+        "id": 2905484034,
+        "iid": 28,
+        "project_id": 86247025,
+        "sha": "da765d3eff3e678651b76ef89a3661ce132641dc",
+        "ref": "refs/merge-requests/7/head",
+        "status": "success",
+        "source": "merge_request_event",
+        "created_at": "2026-10-02T05:23:54.241Z",
+        "updated_at": "2026-10-02T05:27:00.481Z",
+        "web_url": "https://gitlab.com/syuhei-platform-engineering-lab/frontend-app/-/pipelines/2905484034",
+        "name": null
+      },
+      "mr": 7
+    },
+    {
+      "duplicatePushPipelineCount": 0,
+      "jobs": [
+        {
+          "id": 16887224767,
+          "name": "backend-build",
+          "status": "success"
+        },
+        {
+          "id": 16887224766,
+          "name": "unit-test",
+          "status": "success"
+        },
+        {
+          "id": 16887224765,
+          "name": "format-and-vet",
+          "status": "success"
+        },
+        {
+          "id": 16887224764,
+          "name": "manifest-helper-test",
+          "status": "success"
+        }
+      ],
+      "project": 86247033,
+      "sha": "50c08e7e21bc893a8355dfa9b9433f39e2b3b31d",
+      "pipeline": {
+        "id": 2905484079,
+        "iid": 32,
+        "project_id": 86247033,
+        "sha": "50c08e7e21bc893a8355dfa9b9433f39e2b3b31d",
+        "ref": "refs/merge-requests/7/head",
+        "status": "success",
+        "source": "merge_request_event",
+        "created_at": "2026-10-02T05:23:55.842Z",
+        "updated_at": "2026-10-02T05:29:28.743Z",
+        "web_url": "https://gitlab.com/syuhei-platform-engineering-lab/backend-app/-/pipelines/2905484079",
+        "name": null
+      },
+      "mr": 7
+    }
+  ],
+  "normal": [
+    {
+      "jobs": [
+        {
+          "name": "frontend-build",
+          "status": "success"
+        },
+        {
+          "name": "unit-test",
+          "status": "success"
+        },
+        {
+          "name": "typecheck",
+          "status": "success"
+        },
+        {
+          "name": "lint",
+          "status": "success"
+        },
+        {
+          "name": "manifest-helper-test",
+          "status": "success"
+        }
+      ],
+      "source": "merge_request_event",
+      "ref": "refs/merge-requests/6/head",
+      "status": "success",
+      "project": 86247025,
+      "sha": "49688a13595241917fcabe20f68a3eed5e07a035",
+      "pipeline": 2905247261
+    },
+    {
+      "jobs": [
+        {
+          "name": "backend-build",
+          "status": "success"
+        },
+        {
+          "name": "unit-test",
+          "status": "success"
+        },
+        {
+          "name": "format-and-vet",
+          "status": "success"
+        },
+        {
+          "name": "manifest-helper-test",
+          "status": "success"
+        }
+      ],
+      "source": "merge_request_event",
+      "ref": "refs/merge-requests/6/head",
+      "status": "success",
+      "project": 86247033,
+      "sha": "67feb84e8238b771960d47d775b2f2a423a68f0c",
+      "pipeline": 2905247365
+    },
+    {
+      "jobs": [
+        {
+          "name": "frontend-build",
+          "status": "success"
+        },
+        {
+          "name": "unit-test",
+          "status": "success"
+        },
+        {
+          "name": "typecheck",
+          "status": "success"
+        },
+        {
+          "name": "lint",
+          "status": "success"
+        },
+        {
+          "name": "manifest-helper-test",
+          "status": "success"
+        }
+      ],
+      "source": "push",
+      "ref": "codex/pe-008-standard-pipeline-fixture",
+      "status": "success",
+      "project": 86247025,
+      "sha": "df748c04524e33a16a0f9d1d121f7e1eabc03a8a",
+      "pipeline": 2905315136
+    },
+    {
+      "jobs": [
+        {
+          "name": "backend-build",
+          "status": "success"
+        },
+        {
+          "name": "unit-test",
+          "status": "success"
+        },
+        {
+          "name": "format-and-vet",
+          "status": "success"
+        },
+        {
+          "name": "manifest-helper-test",
+          "status": "success"
+        }
+      ],
+      "source": "push",
+      "ref": "codex/pe-008-standard-pipeline-fixture",
+      "status": "success",
+      "project": 86247033,
+      "sha": "a1254253edc745350cb94555552a735ed911c5fe",
+      "pipeline": 2905315179
+    }
+  ],
+  "permissions": [
+    {
+      "blobUploadStatus": 201,
+      "job": "16885612226",
+      "project": "86247025",
+      "proposalCredentialPresent": false,
+      "protected": "false",
+      "registryAuthStatus": 200,
+      "schema": "core-platform/at13-permissions/v1",
+      "sourceSha": "6ec0053dc2c3a5f7ba2d3ce23fe91ccefcd070c9",
+      "writes": [
+        {
+          "allowed": true,
+          "kind": "sha-tag",
+          "status": 201,
+          "target": "6ec0053dc2c3a5f7ba2d3ce23fe91ccefcd070c9"
+        },
+        {
+          "allowed": true,
+          "kind": "main-cache",
+          "status": 201,
+          "target": "at13-main-cache-16885612226"
+        },
+        {
+          "allowed": true,
+          "kind": "evidence-package",
+          "status": 201,
+          "target": "at13-permission-fixture/16885612226"
+        }
+      ]
+    },
+    {
+      "blobUploadStatus": 201,
+      "job": "16885612284",
+      "project": "86247033",
+      "proposalCredentialPresent": false,
+      "protected": "false",
+      "registryAuthStatus": 200,
+      "schema": "core-platform/at13-permissions/v1",
+      "sourceSha": "e43670a01e79b404081bbd1dae49f3240cdf1192",
+      "writes": [
+        {
+          "allowed": true,
+          "kind": "sha-tag",
+          "status": 201,
+          "target": "e43670a01e79b404081bbd1dae49f3240cdf1192"
+        },
+        {
+          "allowed": true,
+          "kind": "main-cache",
+          "status": 201,
+          "target": "at13-main-cache-16885612284"
+        },
+        {
+          "allowed": true,
+          "kind": "evidence-package",
+          "status": 201,
+          "target": "at13-permission-fixture/16885612284"
+        }
+      ]
+    }
+  ],
+  "negative": [
+    {
+      "tag": "at13-no-pipeline-20261002",
+      "jobs": [
+        {
+          "id": 16885888397,
+          "name": "propose-manifest-update",
+          "status": "skipped",
+          "failure_reason": null,
+          "allow_failure": false,
+          "retried": null
+        },
+        {
+          "id": 16885888396,
+          "name": "verify-image",
+          "status": "skipped",
+          "failure_reason": null,
+          "allow_failure": false,
+          "retried": null
+        },
+        {
+          "id": 16885888395,
+          "name": "publish-image",
+          "status": "skipped",
+          "failure_reason": null,
+          "allow_failure": false,
+          "retried": null
+        },
+        {
+          "id": 16885888394,
+          "name": "frontend-build",
+          "status": "success",
+          "failure_reason": null,
+          "allow_failure": false,
+          "retried": null
+        },
+        {
+          "id": 16885888393,
+          "name": "unit-test",
+          "status": "success",
+          "failure_reason": null,
+          "allow_failure": false,
+          "retried": null
+        },
+        {
+          "id": 16885888392,
+          "name": "typecheck",
+          "status": "success",
+          "failure_reason": null,
+          "allow_failure": false,
+          "retried": null
+        },
+        {
+          "id": 16885888391,
+          "name": "lint",
+          "status": "success",
+          "failure_reason": null,
+          "allow_failure": false,
+          "retried": null
+        },
+        {
+          "id": 16885888390,
+          "name": "manifest-helper-test",
+          "status": "failed",
+          "failure_reason": "script_failure",
+          "allow_failure": false,
+          "retried": null
+        }
+      ],
+      "noRetry": true,
+      "project": 86247025,
+      "expectedFailureFixture": true,
+      "ref": "main",
+      "tagPipelineCount": 0,
+      "pipeline": 2905266795,
+      "source": "6c2b429340f91caa8cac84a4b0476468b7316693",
+      "tagTriggerStatus": 400,
+      "failureJob": 16885888390,
+      "status": "failed",
+      "tagFiltered": true
+    },
+    {
+      "tag": "at13-no-pipeline-20261002",
+      "jobs": [
+        {
+          "id": 16885923608,
+          "name": "propose-manifest-update",
+          "status": "skipped",
+          "failure_reason": null,
+          "allow_failure": false,
+          "retried": null
+        },
+        {
+          "id": 16885923607,
+          "name": "verify-image",
+          "status": "skipped",
+          "failure_reason": null,
+          "allow_failure": false,
+          "retried": null
+        },
+        {
+          "id": 16885923606,
+          "name": "publish-image",
+          "status": "skipped",
+          "failure_reason": null,
+          "allow_failure": false,
+          "retried": null
+        },
+        {
+          "id": 16885923605,
+          "name": "backend-build",
+          "status": "success",
+          "failure_reason": null,
+          "allow_failure": false,
+          "retried": null
+        },
+        {
+          "id": 16885923604,
+          "name": "unit-test",
+          "status": "success",
+          "failure_reason": null,
+          "allow_failure": false,
+          "retried": null
+        },
+        {
+          "id": 16885923603,
+          "name": "format-and-vet",
+          "status": "success",
+          "failure_reason": null,
+          "allow_failure": false,
+          "retried": null
+        },
+        {
+          "id": 16885923602,
+          "name": "manifest-helper-test",
+          "status": "failed",
+          "failure_reason": "script_failure",
+          "allow_failure": false,
+          "retried": null
+        }
+      ],
+      "noRetry": true,
+      "project": 86247033,
+      "expectedFailureFixture": true,
+      "ref": "main",
+      "tagPipelineCount": 0,
+      "pipeline": 2905271941,
+      "source": "5a21bf5ebf4ea1ee0f54c53cce1bdd87814adbfd",
+      "tagTriggerStatus": 400,
+      "failureJob": 16885923602,
+      "status": "failed",
+      "tagFiltered": true
+    }
+  ]
+}

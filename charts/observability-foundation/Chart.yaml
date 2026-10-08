@@ -1,0 +1,5 @@
+apiVersion: v2
+name: observability-foundation
+description: Single owner of local Prometheus and account-scoped KSM permissions
+type: application
+version: 0.1.0

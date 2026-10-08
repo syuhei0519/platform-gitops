@@ -1,0 +1,51 @@
+[
+  {
+    "utc": "2026-10-01T16:13:40.3957418Z",
+    "method": "GET",
+    "path": "/",
+    "expected": 200,
+    "status": 200
+  },
+  {
+    "utc": "2026-10-01T16:13:40.4247232Z",
+    "method": "GET",
+    "path": "/api/accounts",
+    "expected": 200,
+    "status": 200
+  },
+  {
+    "utc": "2026-10-01T16:13:40.5118817Z",
+    "method": "POST",
+    "path": "/api/accounts",
+    "expected": 201,
+    "status": 201
+  },
+  {
+    "utc": "2026-10-01T16:13:40.5244772Z",
+    "method": "GET",
+    "path": "/api/accounts/1",
+    "expected": 200,
+    "status": 200
+  },
+  {
+    "utc": "2026-10-01T16:13:40.5391774Z",
+    "method": "PUT",
+    "path": "/api/accounts/1",
+    "expected": 200,
+    "status": 200
+  },
+  {
+    "utc": "2026-10-01T16:13:40.5504124Z",
+    "method": "DELETE",
+    "path": "/api/accounts/1",
+    "expected": 204,
+    "status": 204
+  },
+  {
+    "utc": "2026-10-01T16:13:40.5595009Z",
+    "method": "GET",
+    "path": "/api/accounts/1",
+    "expected": 404,
+    "status": 404
+  }
+]

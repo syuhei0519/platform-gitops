@@ -1,0 +1,29 @@
+{
+  "pipeline": 2908164863,
+  "successfulValidationJobs": 6,
+  "downstream": [
+    {
+      "name": "trusted-provenance-consumer",
+      "status": "skipped",
+      "id": 16906959775
+    },
+    {
+      "name": "trusted-render-producer",
+      "status": "skipped",
+      "id": 16906959774
+    }
+  ],
+  "failureReason": "scanner execution unavailable",
+  "utc": "2026-10-02T22:20:12.6579605Z",
+  "producerAfterPlay": "skipped",
+  "scanJob": 16906959773,
+  "source": "cccaa9b77aa428c59e0c3526171ededb52b2348c",
+  "ref": "main",
+  "manualProducerPlayRefusedHttp": 400,
+  "scanStatus": "failed",
+  "pipelineStatus": "failed",
+  "project": 86247034,
+  "case": "scanner-timeout",
+  "rawTraceRead": false,
+  "accepted": true
+}

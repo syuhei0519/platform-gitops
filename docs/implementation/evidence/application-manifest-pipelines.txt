@@ -1,0 +1,670 @@
+- banner [active]:
+  - link "Skip to main content":
+    - /url: "#content-body"
+    - generic: Skip to main content
+  - link "Homepage":
+    - /url: /
+    - generic: Homepage
+  - button "Search or go to… /":
+    - generic: Search or go to…
+    - generic: /
+  - button "Create new…":
+    - generic: Create new…
+  - link "0 Assigned work items":
+    - /url: /dashboard/issues?assignee_username=syuhei0519
+    - generic: "0"
+  - link "0 Merge requests":
+    - /url: /dashboard/merge_requests
+    - generic: "0"
+  - link "2 To-do items":
+    - /url: /dashboard/todos
+    - generic: "2"
+  - link "修平 藤岡 user’s menu":
+    - /url: /syuhei0519
+    - generic: 修平 藤岡 user’s menu
+- navigation "Primary navigation":
+  - heading "Primary navigation" [level=2]
+  - list:
+    - link "application-manifest":
+      - /url: /syuhei-platform-engineering-lab/application-manifest
+      - generic: A
+  - button "Pinned" [expanded]:
+  - button "Feature catalog":
+  - separator
+  - list:
+    - button "Manage":
+    - button "Plan":
+    - button "AI":
+    - button "Code":
+    - button "Build" [expanded]:
+    - button "Secure":
+    - button "Deploy":
+    - button "Operate":
+    - button "Monitor":
+    - button "Analyze":
+    - button "Observe":
+    - button "Settings":
+  - link "Upgrade subscription":
+    - /url: /groups/syuhei-platform-engineering-lab/-/billings
+  - button "Help":
+  - button "Expand sidebar":
+- navigation "Breadcrumb":
+  - list:
+    - link "Platform Engineering Lab":
+      - /url: /syuhei-platform-engineering-lab
+    - text: /
+    - link "application-manifest":
+      - /url: /syuhei-platform-engineering-lab/application-manifest
+    - text: /
+    - link "Pipelines":
+      - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines
+- main:
+  - tablist:
+    - tab "All 47" [selected]:
+      - generic: All
+      - generic: "47"
+    - tab "Finished":
+      - generic: Finished
+    - tab "Branches":
+      - generic: Branches
+    - tab "Tags":
+      - generic: Tags
+  - tabpanel "All 47"
+  - link "View analytics":
+    - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/charts
+    - generic: View analytics
+  - button "Clear runner caches":
+    - generic: Clear runner caches
+  - link "New pipeline":
+    - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/new
+    - generic: New pipeline
+  - textbox "Search":
+    - /placeholder: Filter pipelines
+  - button "Search":
+  - combobox "Show Pipeline ID":
+    - generic: Show Pipeline ID
+  - table:
+    - rowgroup:
+      - row "Status Pipeline Created by Stages Actions":
+        - columnheader "Status":
+          - generic: Status
+        - columnheader "Pipeline":
+          - generic: Pipeline
+        - columnheader "Created by":
+          - generic: Created by
+        - columnheader "Stages":
+          - generic: Stages
+        - columnheader "Actions":
+          - generic: Actions
+    - rowgroup:
+      - 'row "Passed 00:00:22 3 weeks ago #2835309843 Merge branch ''codex/rotate-db-password-restart'' into ''main'' main a0752235 修平 藤岡 latest branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:22 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835309843
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:22
+          - paragraph:
+            - time: 3 weeks ago
+        - cell "#2835309843 Merge branch 'codex/rotate-db-password-restart' into 'main' main a0752235 修平 藤岡 latest branch":
+          - link "#2835309843":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835309843
+          - link "Merge branch 'codex/rotate-db-password-restart' into 'main'":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/a07522355dc4aa259f47195e4d6e3673e9509c86
+          - link "main":
+            - /url: commits/main
+          - link "a0752235":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/a07522355dc4aa259f47195e4d6e3673e9509c86
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "latest":
+            - generic: latest
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:40 3 weeks ago #2835308693 chore(backend): restart after DB credential rotation 12 72678045 修平 藤岡 latest merge request avatar View Stage: provenance View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:40 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835308693
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:40
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2835308693 chore(backend): restart after DB credential rotation 12 72678045 修平 藤岡 latest merge request"':
+          - link "#2835308693":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835308693
+          - 'link "chore(backend): restart after DB credential rotation"':
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/7267804550560fe4a60297fba8735fa5b02fd558
+          - link "12":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/merge_requests/12
+          - link "72678045":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/7267804550560fe4a60297fba8735fa5b02fd558
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "latest":
+            - generic: latest
+          - button "merge request":
+            - generic: merge request
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: provenance View Stage: render View Stage: schema"':
+          - 'button "View Stage: provenance"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:19 3 weeks ago #2835304834 Merge branch ''codex/restore-current-frontend-after-rollback'' into ''main'' main 24b97ecb 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:19 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835304834
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:19
+          - paragraph:
+            - time: 3 weeks ago
+        - cell "#2835304834 Merge branch 'codex/restore-current-frontend-after-rollback' into 'main' main 24b97ecb 修平 藤岡 branch":
+          - link "#2835304834":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835304834
+          - link "Merge branch 'codex/restore-current-frontend-after-rollback' into 'main'":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/24b97ecba10f2289a31f3927efe173319d59fc8f
+          - link "main":
+            - /url: commits/main
+          - link "24b97ecb":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/24b97ecba10f2289a31f3927efe173319d59fc8f
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:40 3 weeks ago #2835303321 chore(frontend): restore current image after rollback test 11 d513e1f6 修平 藤岡 latest merge request avatar View Stage: provenance View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:40 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835303321
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:40
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2835303321 chore(frontend): restore current image after rollback test 11 d513e1f6 修平 藤岡 latest merge request"':
+          - link "#2835303321":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835303321
+          - 'link "chore(frontend): restore current image after rollback test"':
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/d513e1f658f0a053ffb2fb016cb59dba06917051
+          - link "11":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/merge_requests/11
+          - link "d513e1f6":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/d513e1f658f0a053ffb2fb016cb59dba06917051
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "latest":
+            - generic: latest
+          - button "merge request":
+            - generic: merge request
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: provenance View Stage: render View Stage: schema"':
+          - 'button "View Stage: provenance"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:19 3 weeks ago #2835299764 Merge branch ''rollback/local/frontend/fe3127f-20260910T002101Z'' into ''main'' main 92170773 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:19 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835299764
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:19
+          - paragraph:
+            - time: 3 weeks ago
+        - cell "#2835299764 Merge branch 'rollback/local/frontend/fe3127f-20260910T002101Z' into 'main' main 92170773 修平 藤岡 branch":
+          - link "#2835299764":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835299764
+          - link "Merge branch 'rollback/local/frontend/fe3127f-20260910T002101Z' into 'main'":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/92170773f59ca0289b8ecd792d7e0398e266c981
+          - link "main":
+            - /url: commits/main
+          - link "92170773":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/92170773f59ca0289b8ecd792d7e0398e266c981
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:37 3 weeks ago #2835298116 rollback(frontend): restore fe3127f image 10 edec8a43 修平 藤岡 latest merge request avatar View Stage: provenance View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:37 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835298116
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:37
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2835298116 rollback(frontend): restore fe3127f image 10 edec8a43 修平 藤岡 latest merge request"':
+          - link "#2835298116":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835298116
+          - 'link "rollback(frontend): restore fe3127f image"':
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/edec8a43f2a8bbf76af10609cead637bac1cdb08
+          - link "10":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/merge_requests/10
+          - link "edec8a43":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/edec8a43f2a8bbf76af10609cead637bac1cdb08
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "latest":
+            - generic: latest
+          - button "merge request":
+            - generic: merge request
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: provenance View Stage: render View Stage: schema"':
+          - 'button "View Stage: provenance"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:39 3 weeks ago #2835297790 rollback(frontend): restore fe3127f image 10 3b002ea3 修平 藤岡 merge request avatar View Stage: provenance View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:39 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835297790
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:39
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2835297790 rollback(frontend): restore fe3127f image 10 3b002ea3 修平 藤岡 merge request"':
+          - link "#2835297790":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835297790
+          - 'link "rollback(frontend): restore fe3127f image"':
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/3b002ea3528774ad327b23e0f8171452130d8f30
+          - link "10":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/merge_requests/10
+          - link "3b002ea3":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/3b002ea3528774ad327b23e0f8171452130d8f30
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "merge request":
+            - generic: merge request
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: provenance View Stage: render View Stage: schema"':
+          - 'button "View Stage: provenance"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:20 3 weeks ago #2835296039 rollback(frontend): restore fe3127f image rollback/local/frontend/fe3127f-20260910T002101Z 63bfb346 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:20 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835296039
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:20
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2835296039 rollback(frontend): restore fe3127f image rollback/local/frontend/fe3127f-20260910T002101Z 63bfb346 修平 藤岡 branch"':
+          - link "#2835296039":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2835296039
+          - 'link "rollback(frontend): restore fe3127f image"':
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/63bfb3469f5f99b39b30ae1502bc81e199d78a14
+          - link "rollback/local/frontend/fe3127f-20260910T002101Z":
+            - /url: commits/rollback/local/frontend/fe3127f-20260910T002101Z
+          - link "63bfb346":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/63bfb3469f5f99b39b30ae1502bc81e199d78a14
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:26 3 weeks ago #2833777740 Merge branch ''codex/remove-prune-acceptance'' into ''main'' main 9b6c54ed 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:26 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2833777740
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:26
+          - paragraph:
+            - time: 3 weeks ago
+        - cell "#2833777740 Merge branch 'codex/remove-prune-acceptance' into 'main' main 9b6c54ed 修平 藤岡 branch":
+          - link "#2833777740":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2833777740
+          - link "Merge branch 'codex/remove-prune-acceptance' into 'main'":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/9b6c54ed999892f147214c68dd1c273ab3a63721
+          - link "main":
+            - /url: commits/main
+          - link "9b6c54ed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/9b6c54ed999892f147214c68dd1c273ab3a63721
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:45 3 weeks ago #2833769116 test: remove Argo prune acceptance resource 9 47ab3344 修平 藤岡 latest merge request avatar View Stage: provenance View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:45 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2833769116
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:45
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833769116 test: remove Argo prune acceptance resource 9 47ab3344 修平 藤岡 latest merge request"':
+          - link "#2833769116":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2833769116
+          - 'link "test: remove Argo prune acceptance resource"':
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/47ab3344e7023de679da768bc6484a616fbe069d
+          - link "9":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/merge_requests/9
+          - link "47ab3344":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/47ab3344e7023de679da768bc6484a616fbe069d
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "latest":
+            - generic: latest
+          - button "merge request":
+            - generic: merge request
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: provenance View Stage: render View Stage: schema"':
+          - 'button "View Stage: provenance"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:22 3 weeks ago #2833768226 test: remove Argo prune acceptance resource codex/remove-prune-acceptance 47ab3344 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:22 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2833768226
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:22
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833768226 test: remove Argo prune acceptance resource codex/remove-prune-acceptance 47ab3344 修平 藤岡 branch"':
+          - link "#2833768226":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2833768226
+          - 'link "test: remove Argo prune acceptance resource"':
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/47ab3344e7023de679da768bc6484a616fbe069d
+          - link "codex/remove-prune-acceptance":
+            - /url: commits/codex/remove-prune-acceptance
+          - link "47ab3344":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/47ab3344e7023de679da768bc6484a616fbe069d
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:22 3 weeks ago #2833766565 Merge branch ''codex/add-prune-acceptance'' into ''main'' main a6baab3d 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:22 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2833766565
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:22
+          - paragraph:
+            - time: 3 weeks ago
+        - cell "#2833766565 Merge branch 'codex/add-prune-acceptance' into 'main' main a6baab3d 修平 藤岡 branch":
+          - link "#2833766565":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2833766565
+          - link "Merge branch 'codex/add-prune-acceptance' into 'main'":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/a6baab3d2f1866344379c4aa81a43ff6c5106831
+          - link "main":
+            - /url: commits/main
+          - link "a6baab3d":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/a6baab3d2f1866344379c4aa81a43ff6c5106831
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:49 3 weeks ago #2833759776 test: add Argo prune acceptance resource 8 5cb31742 修平 藤岡 latest merge request avatar View Stage: provenance View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:49 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2833759776
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:49
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833759776 test: add Argo prune acceptance resource 8 5cb31742 修平 藤岡 latest merge request"':
+          - link "#2833759776":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2833759776
+          - 'link "test: add Argo prune acceptance resource"':
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/5cb31742fc79be38a7e150186a298c8053f8062c
+          - link "8":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/merge_requests/8
+          - link "5cb31742":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/5cb31742fc79be38a7e150186a298c8053f8062c
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "latest":
+            - generic: latest
+          - button "merge request":
+            - generic: merge request
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: provenance View Stage: render View Stage: schema"':
+          - 'button "View Stage: provenance"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:20 3 weeks ago #2833758747 test: add Argo prune acceptance resource codex/add-prune-acceptance 5cb31742 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:20 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2833758747
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:20
+          - paragraph:
+            - time: 3 weeks ago
+        - 'cell "#2833758747 test: add Argo prune acceptance resource codex/add-prune-acceptance 5cb31742 修平 藤岡 branch"':
+          - link "#2833758747":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2833758747
+          - 'link "test: add Argo prune acceptance resource"':
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/5cb31742fc79be38a7e150186a298c8053f8062c
+          - link "codex/add-prune-acceptance":
+            - /url: commits/codex/add-prune-acceptance
+          - link "5cb31742":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/5cb31742fc79be38a7e150186a298c8053f8062c
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+      - 'row "Passed 00:00:23 3 weeks ago #2833748320 Merge branch ''codex/fix-frontend-upstream-config'' into ''main'' main 7df3c886 修平 藤岡 branch avatar View Stage: render View Stage: schema"':
+        - cell "Passed 00:00:23 3 weeks ago":
+          - link "Passed":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2833748320
+            - generic: Passed
+          - paragraph:
+            - text: 00:00:23
+          - paragraph:
+            - time: 3 weeks ago
+        - cell "#2833748320 Merge branch 'codex/fix-frontend-upstream-config' into 'main' main 7df3c886 修平 藤岡 branch":
+          - link "#2833748320":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/pipelines/2833748320
+          - link "Merge branch 'codex/fix-frontend-upstream-config' into 'main'":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/7df3c886e7dda3a832dbcbe85ab4101fad0fa4bd
+          - link "main":
+            - /url: commits/main
+          - link "7df3c886":
+            - /url: /syuhei-platform-engineering-lab/application-manifest/-/commit/7df3c886e7dda3a832dbcbe85ab4101fad0fa4bd
+          - link "修平 藤岡":
+            - /url: /syuhei0519
+            - img "修平 藤岡"
+          - button "branch":
+            - generic: branch
+        - cell "avatar":
+          - link "avatar":
+            - /url: /syuhei0519
+            - img "avatar"
+        - 'cell "View Stage: render View Stage: schema"':
+          - 'button "View Stage: render"':
+            - generic: "Status: Passed"
+          - 'button "View Stage: schema"':
+            - generic: "Status: Passed"
+        - cell:
+          - generic "Download artifacts":
+            - button "Download artifacts":
+              - generic: Download artifacts
+  - navigation "Pagination":
+    - button "Previous" [disabled]:
+      - text: Previous
+    - button "Next":
+      - text: Next
+- navigation "Duo controls":
+  - button "GitLab Duo Agent Platform":

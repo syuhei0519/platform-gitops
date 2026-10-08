@@ -1,0 +1,20 @@
+{
+  "diskFreeMinPercent": 20,
+  "queueCapacity": 32,
+  "recoverySec": 120,
+  "retryMaxElapsedSec": 30,
+  "faultDurationSec": 60,
+  "sourceBackend": "a300338cefdca94b4a041d71b37faae8d71a8701",
+  "pendingMaxSec": 60,
+  "durationSec": 900,
+  "scenario": "source Collector complete stop/recreate; phase1 CI concurrent; NR429 separate fixture pending",
+  "httpTimeoutSec": 5,
+  "utc": "2026-10-02T19:57:51.6271135Z",
+  "traceId": "97e603471b324e69a778bdd21bb1d8a0",
+  "sourcePlatform": "7ce833dcbddc4097dd36c046c5629124a27bbc1b",
+  "rate": 1,
+  "requests": 900,
+  "crudSuccessPercent": 99,
+  "costCeilingYen": 0,
+  "sharedSdkFlushSec": 5
+}

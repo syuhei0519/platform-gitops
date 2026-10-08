@@ -1,0 +1,11 @@
+# PE-014 観測障害とphase1容量実受入
+
+事前固定プロファイル: 15分・既知CRUD1要求/秒、HTTP timeout5秒、SDK共有flush5秒、停止60秒、復旧120秒以内、CRUD99%以上、unexpected OOM/evictionなし、Pending60秒超なし、ホスト/kind空き各20%以上。閾値の事後緩和をしない。phase2最終OCI/Trivy/SBOM CIの容量はPE019に残す。
+
+実Source kind-platform-labではPOST/GET/PUT/DELETEの900件が100%成功、約900秒。単一Collectorを停止し、Prometheus self up=0、SDK静的警告を確認した。停止中のCollector自己counterは取得不能であり、SDK破棄数をそのcounterから算出しない。replicas1とArgo再調停を復元し、54.44秒で実再受信。Collector Ready最大1。Go/Helm/schemaのprotected-main CI2907886612が負荷と重なり成功。新たなPod障害なし、最小空きホスト52.82%/kind93.38%。全pod資源・状態・CRUD・実job時刻の証跡を保存した。
+
+429・接続断は同じ固定Collector設定のqueue32/consumer1/timeout5/retry30秒とbatch/memory制限を使う隔離Docker internalネットワークで各60秒。公開fake keyだけを使い、実NRへは0件。fixtureのtransport endpointだけを内部HTTPへ変え、実運用のTLSやNRキーを変更しない。queue最大32、enqueue失敗、再試行後のsend_failed、最終Drop4eventを別々に実測し、復旧4.20秒、OOMなし。送信失敗を全spanの最終欠損数と同一視しない。mock再起動でcounterはresetするため、429期の実status snapshotは別証跡とする。
+
+fixture初回はinternal networkからホスト公開portへ到達できず、両container Running/内部HTTP200にもかかわらずharnessが未Readyと判定した。失敗を保存し、観測clientもinternal networkへ移して再試験した。Source停止試験のport-forwardもPending Pod選択の失敗を保存し、実Ready後に再接続した。いずれも閾値や製品設定を緩めていない。
+
+実Source Collector Recreateテンプレート更新と復元の別15分試験も完了。こちらは既存fixture id9へのGET900件/100%で、Ready最大1、Pod UID更新、復元6.93秒と実再受信/sent1608を確認した。全POST/GET/PUT/DELETEの継続・99%条件は前述の停止中を含む900件で実証し、GETだけを全CRUDの証拠にはしない。Argoの一時調停停止annotationと試験template annotationは撤去し、元のimage/設定を復元した。Secret/PAT/License Keyを含めない。Source DB/PVCと既存accountを保持し、負荷用作成データの削除はその試験が作成したIDだけに限定した。

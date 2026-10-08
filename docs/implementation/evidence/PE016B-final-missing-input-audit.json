@@ -1,0 +1,67 @@
+{
+  "proof": {
+    "schemaVersion": 1,
+    "scope": "PE016B artifact expiry/missing input fixture",
+    "sourceCommit": "cbfd32e960943131a10ada62f8ff36ceb2f61cc1",
+    "pipelineId": 2910636802,
+    "jobId": 16920393221,
+    "inputMissingRejected": true,
+    "partialLayoutAbsent": true,
+    "registryFallbackUsed": false,
+    "producerArtifactDeleted": false
+  },
+  "producerArtifactStillAvailable": true,
+  "jobs": [
+    {
+      "id": 16920393222,
+      "name": "oci-after-missing-input",
+      "status": "skipped"
+    },
+    {
+      "id": 16920393221,
+      "name": "oci-missing-input",
+      "status": "failed"
+    },
+    {
+      "id": 16920393220,
+      "name": "container-build-oci",
+      "status": "success"
+    },
+    {
+      "id": 16920393219,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16920393218,
+      "name": "backend-build",
+      "status": "success"
+    },
+    {
+      "id": 16920393217,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16920393216,
+      "name": "format-and-vet",
+      "status": "success"
+    },
+    {
+      "id": 16920393215,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16920393214,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ],
+  "accepted": true,
+  "status": "failed",
+  "pipeline": 2910636802,
+  "actualExpiryWaitClaim": false,
+  "producerBuildJob": 16920393220,
+  "source": "cbfd32e960943131a10ada62f8ff36ceb2f61cc1"
+}

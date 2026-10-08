@@ -1,0 +1,4 @@
+NAME                        UID                                    CREATED                STARTED                PHASE     IMAGEID
+backend-566d54cbbf-9d4db    0e064a18-faef-48ed-aaad-81983a2fa467   2026-10-01T16:11:09Z   2026-10-01T16:11:09Z   Running   registry.gitlab.com/syuhei-platform-engineering-lab/backend-app@sha256:017807ce6b6555fe47a2bf6eec1d4be7f424ce456a7988e7092dae24fca8a944
+frontend-6d66d7d879-g87sg   8a18ca36-f117-48f7-9ec4-c2b0608f0e9f   2026-10-01T16:11:15Z   2026-10-01T16:11:15Z   Running   registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app@sha256:cbd490891b1129167cc65366fd559a5a2405e54d1606ed4c2ce53b3328852cbd
+postgresql-0                03343f87-0d6a-449d-856a-2962bd26c74e   2026-10-01T16:10:32Z   2026-10-01T16:10:37Z   Running   docker.io/library/postgres@sha256:9b18b78397054fce88a9552e9d5a3ad5bb7fd258c5b3cc1c5028e46373d6ea8f

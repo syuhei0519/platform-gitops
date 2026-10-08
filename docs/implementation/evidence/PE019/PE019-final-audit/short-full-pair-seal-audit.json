@@ -1,0 +1,31 @@
+{
+  "predecessorParentsClosed": 18,
+  "sealedDirectories": [
+    {
+      "directory": "PE019-AUX4-120-normal",
+      "seal": "accepted-short-checksums.json",
+      "verifiedFileCount": 107,
+      "sha256": "f8643332ccadeddff61f05f9b09221319432096468c319cc12c11aad9336aa43"
+    },
+    {
+      "directory": "PE019-AUX4-120-safe-error",
+      "seal": "accepted-short-checksums.json",
+      "verifiedFileCount": 67,
+      "sha256": "a04e9aec066fab054f49e5b3f8d117e95fc364fe70fe3d491c3a8a408717433f"
+    },
+    {
+      "directory": "PE019-AT10-attempt5",
+      "seal": "accepted-full-checksums.json",
+      "verifiedFileCount": 486,
+      "sha256": "502a101eda9b35f1c5ad2633e5dc0e18b082cc4aeca62f666eb97a47013316be"
+    }
+  ],
+  "utc": "2026-10-06T18:48:53.9385794Z",
+  "actualFull900": true,
+  "allChecksumsMatched": true,
+  "actualAT14Pair": true,
+  "currentRuntimeHealthy12": true,
+  "PE019NotYetClosed": true,
+  "integrationAndHandoffPending": true,
+  "actualShortALL": true
+}

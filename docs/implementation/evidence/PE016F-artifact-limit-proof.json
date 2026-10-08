@@ -1,0 +1,17 @@
+{
+  "documentedSaaSCompressedArchiveMaximum": "1 GB",
+  "projectMaxArtifactsSizeOverride": null,
+  "actualMaximumBoundaryUploadTest": false,
+  "observedBuildArchiveBytes": 25609728,
+  "inheritedDefaultBasis": "Project override null plus current official SaaS limit documentation",
+  "projectOverrideFieldPresent": true,
+  "sourceSnapshotSHA256": "e61b4c6761bc88721c43266de524fc193419189caa4b4a2e37b6000a7818bc9c",
+  "observedUploadJob": 16909140730,
+  "utc": "2026-10-03T02:57:42.4001902Z",
+  "observedUploadedArtifactArchiveBytes": 25531953,
+  "primarySource": "https://github.com/gitlabhq/gitlabhq/blob/master/doc/user/gitlab_com/_index.md",
+  "project": 86247025,
+  "archiveInitialTargetBytes": 104857600,
+  "observedUploadSucceeded": true,
+  "adminApplicationSettingRead": false
+}

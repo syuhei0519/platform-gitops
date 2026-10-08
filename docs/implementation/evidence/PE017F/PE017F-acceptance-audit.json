@@ -1,0 +1,24 @@
+{
+  "implementationAcceptanceReady": true,
+  "evidenceMainIntegrationRequired": true,
+  "phase2RuntimeActivated": false,
+  "sbomGenerationAndParseFixturesAccepted": true,
+  "source": "d5226af3c1ca1a6eee6e6bcacf5d6629b200933f",
+  "unitAccepted": false,
+  "originalBuildJob": 16911641948,
+  "originalScanJobs": [
+    16911641951,
+    16911641952
+  ],
+  "utc": "2026-10-03T15:19:25.3293030Z",
+  "actualImmutableRecords": 2,
+  "sourceWriteDeniedHTTP": 403,
+  "backendAccepted": false,
+  "AT04DifferentActualDatabase": true,
+  "actualReaderPipeline": 2909363659,
+  "retentionOperatorReview": true,
+  "fullMainSBOMInventory": true,
+  "unit": "PE017F",
+  "scope": "Frontend opt-in OCI validation path only; final main evidence integration is the remaining PE017F gate",
+  "failedAdoptionRefused": true
+}

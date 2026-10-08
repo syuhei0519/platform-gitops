@@ -1,0 +1,64 @@
+{
+  "currentCRUD": "PE019-initial-crud.json",
+  "previousSecretProof": "PE019-secret-reinjection.json",
+  "context": "kind-core-platform-final-019",
+  "newDatabasePVCUID": "21a31208-789a-4c23-9f28-389407f1b689",
+  "all19Complete": false,
+  "differentDatabasePVC": true,
+  "rowsAfterOwnedCleanup": 0,
+  "services": [
+    {
+      "podUID": "af44e11e-125a-4cd8-ad47-2e73f273689f",
+      "imageID": "registry.gitlab.com/syuhei-platform-engineering-lab/backend-app@sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+      "source": "bcc4126097ab6224e46257560010fc4623a51414",
+      "pod": "backend-5d856f654-h99fw",
+      "service": "backend",
+      "manifest": "240f9465fe3e3d8b2fb2ba5af8120fd685bdb8d0",
+      "annotationsMatched": true,
+      "annotations": {
+        "source-commit": "bcc4126097ab6224e46257560010fc4623a51414",
+        "build-pipeline-id": "2915581900",
+        "scan-pipeline-id": "2915669295",
+        "scan-job-id": "16954022922",
+        "release-record-url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/release-record-2915669295-16954022922.json",
+        "release-record-sha256": "b8aaf11f006be6fde340719cff3bcb48abf86da25f541ee2c89b247813cfb8f3",
+        "source-project-id": "86247033",
+        "image-digest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+        "release-schema-version": "2",
+        "sbom-url": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/sbom-2915669295-16954022922.cdx.json",
+        "sbom-sha256": "e539cabd74b224a0c2d685f3d7d40de204cec3998e6201a1db7ec5eed715b44b",
+        "build-job-id": "16953548223"
+      }
+    },
+    {
+      "podUID": "c6f46227-3f78-4e06-8f28-da6a29e29165",
+      "imageID": "registry.gitlab.com/syuhei-platform-engineering-lab/frontend-app@sha256:68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78",
+      "source": "ce6ec1d94cf1042a824b745f4a5f6367b1c0f845",
+      "pod": "frontend-5bdc8c5fbd-h7l9t",
+      "service": "frontend",
+      "manifest": "240f9465fe3e3d8b2fb2ba5af8120fd685bdb8d0",
+      "annotationsMatched": true,
+      "annotations": {
+        "source-commit": "ce6ec1d94cf1042a824b745f4a5f6367b1c0f845",
+        "build-pipeline-id": "2910339772",
+        "scan-pipeline-id": "2910363180",
+        "scan-job-id": "16918980625",
+        "release-record-url": "https://gitlab.com/api/v4/projects/86247025/packages/generic/core-platform-frontend/sha256-68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78/release-record-2910363180-16918980625.json",
+        "release-record-sha256": "ab17a7862ac31365e277f4483b41ccdf3ad21d8a89f7029447d5958d2aada518",
+        "source-project-id": "86247025",
+        "image-digest": "sha256:68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78",
+        "release-schema-version": "2",
+        "sbom-url": "https://gitlab.com/api/v4/projects/86247025/packages/generic/core-platform-frontend/sha256-68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78/sbom-2910363180-16918980625.cdx.json",
+        "sbom-sha256": "6a57e4801537aedad95fd755dbb1749ee45467e4b504e8fd909a6fb863a48594",
+        "build-job-id": "16918864597"
+      }
+    }
+  ],
+  "initialRebuildAccepted": true,
+  "platform": "9c654586c7db8dff458d2934629abd6f96689649",
+  "newerFinalLoadAndRestoreAcceptancePending": true,
+  "schemaVersion": 1,
+  "originalSourcePVCUID": "f7774170-a00e-4d90-9caa-e692f1e1555a",
+  "manifest": "240f9465fe3e3d8b2fb2ba5af8120fd685bdb8d0",
+  "utc": "2026-10-06T12:52:05.3942864Z"
+}

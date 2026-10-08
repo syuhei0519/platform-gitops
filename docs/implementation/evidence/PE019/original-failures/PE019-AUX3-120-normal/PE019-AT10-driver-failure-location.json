@@ -1,0 +1,8 @@
+{
+  "scriptStack": "at <ScriptBlock>, C:\\work\\CorePlatform\\output\\core-platform-v1-phase1-phase2-20261002\\acceptance\\pe019-final-capacity.ps1: line 57",
+  "stage": "capacity-driver",
+  "id": "Frozen worker measurement failed",
+  "exitCode": 1,
+  "utc": "2026-10-06T17:35:48.0958714Z",
+  "type": "System.Management.Automation.RuntimeException"
+}

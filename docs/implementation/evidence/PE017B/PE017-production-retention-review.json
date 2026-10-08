@@ -1,0 +1,260 @@
+{
+  "runs": [
+    {
+      "pipeline": 2908988271,
+      "decision": "passed",
+      "job": 16911641951,
+      "recordSha256": "0296119f28d7aa6c6cc83fe292200aefe0ace68995e8c116b0c722301ce82d4d",
+      "packageId": 71324296,
+      "project": 86247025,
+      "scannedAt": "2026-10-03T09:31:48.864649905Z",
+      "digest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c"
+    },
+    {
+      "pipeline": 2908988271,
+      "decision": "failed",
+      "job": 16911641952,
+      "recordSha256": "4c5791eb3e76bbcd82e2d69a44654161a43be2e812818fcb512d1f8b2432bfaa",
+      "packageId": 71324296,
+      "project": 86247025,
+      "scannedAt": "2026-10-03T15:07:52.912327289Z",
+      "digest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c"
+    },
+    {
+      "pipeline": 2909588335,
+      "decision": "passed",
+      "job": 16914937008,
+      "recordSha256": "5775a492b53de891801a143244bd0d5db5f0f8fb25a4b4eb9fcff48c8ec2bb40",
+      "packageId": 71339037,
+      "project": 86247025,
+      "scannedAt": "2026-10-03T18:42:18.574638604Z",
+      "digest": "sha256:ce9caabe905b350e96f3fce4a92694f8e9a9486191a3b3fe072605f5aedc7d76"
+    },
+    {
+      "pipeline": 2909968445,
+      "decision": "passed",
+      "job": 16917039546,
+      "recordSha256": "1d85ff1c714cd8fecd28d003781564ecd342dce47368a6d25645d8394551fc7a",
+      "packageId": 71339037,
+      "project": 86247025,
+      "scannedAt": "2026-10-04T00:23:29.626291852Z",
+      "digest": "sha256:ce9caabe905b350e96f3fce4a92694f8e9a9486191a3b3fe072605f5aedc7d76"
+    },
+    {
+      "pipeline": 2910392838,
+      "decision": "passed",
+      "job": 16919122100,
+      "recordSha256": "4d266d61280dac399ff76374a727c6444709a458c9c17951680fc7ab1c8bc090",
+      "packageId": 71339037,
+      "project": 86247025,
+      "scannedAt": "2026-10-04T06:17:01.575245754Z",
+      "digest": "sha256:ce9caabe905b350e96f3fce4a92694f8e9a9486191a3b3fe072605f5aedc7d76"
+    },
+    {
+      "pipeline": 2909684081,
+      "decision": "passed",
+      "job": 16915473892,
+      "recordSha256": "71d994e29d166a07aae1899ccae200d65729d3d65e8a0dbdd27dc4210c889ff0",
+      "packageId": 71341764,
+      "project": 86247025,
+      "scannedAt": "2026-10-03T20:07:47.104756942Z",
+      "digest": "sha256:afbf2531f7dae6284362010c9d934dc86dbee9b3be889d56a46bfca2a5e7d3e9"
+    },
+    {
+      "pipeline": 2909756423,
+      "decision": "passed",
+      "job": 16915887544,
+      "recordSha256": "0196af86db840bedc8236aac2b91bbd7ea8907b99149a0037eb61e8cde0a208e",
+      "packageId": 71343215,
+      "project": 86247025,
+      "scannedAt": "2026-10-03T21:10:54.628050624Z",
+      "digest": "sha256:a09af8410dca1e43b35d70b433b8e995621b580f8b454e492dc565cca431e83a"
+    },
+    {
+      "pipeline": 2909878644,
+      "decision": "passed",
+      "job": 16916566311,
+      "recordSha256": "d645b4b381fe10f79222e8a6a4f5e87222f110eaf1eaa50ff169c7349675c675",
+      "packageId": 71345525,
+      "project": 86247025,
+      "scannedAt": "2026-10-03T23:03:43.482567612Z",
+      "digest": "sha256:3996ec59b7618e6aa935b13b60b0fc308d7f4cc754802a34b23625d76fd00337"
+    },
+    {
+      "pipeline": 2909933458,
+      "decision": "passed",
+      "job": 16916857286,
+      "recordSha256": "adf94237fd9ca3cfe76f27dbe9cb6e379720f971e2c219835d2853874a53bf85",
+      "packageId": 71346292,
+      "project": 86247025,
+      "scannedAt": "2026-10-03T23:55:28.951184595Z",
+      "digest": "sha256:7eb30991a0784a2ec9af4f01ee26f936ae4b6b0d33876dee1836564f0b106e32"
+    },
+    {
+      "pipeline": 2910097350,
+      "decision": "passed",
+      "job": 16917683877,
+      "recordSha256": "15300a15a2fc8be878f37af2338be5f1b35e3fef2bfd57b564cb3da3867d6531",
+      "packageId": 71348457,
+      "project": 86247025,
+      "scannedAt": "2026-10-04T02:08:52.232216103Z",
+      "digest": "sha256:89feb31193e2dea1375b4d1b3230bb55aad9fe6111bb8d4615435b59ad7144f0"
+    },
+    {
+      "pipeline": 2910275893,
+      "decision": "passed",
+      "job": 16918558108,
+      "recordSha256": "7108ae9d15c21ba4c7f64d350592b9a6a91c7d4635cdca5969b4422ee3dad878",
+      "packageId": 71351140,
+      "project": 86247025,
+      "scannedAt": "2026-10-04T04:34:42.625194549Z",
+      "digest": "sha256:d79a9948433a89cae4111a1c5a95e45a37869bb22ff3bdbe1709f9cdc9c15b3b"
+    },
+    {
+      "pipeline": 2910309383,
+      "decision": "passed",
+      "job": 16918718901,
+      "recordSha256": "d9b98303d03ddeaa4da00a14dfa080a4ab97502888f6fe43a676a01c7dcdbcdb",
+      "packageId": 71352003,
+      "project": 86247025,
+      "scannedAt": "2026-10-04T05:04:53.239222047Z",
+      "digest": "sha256:19453908a7ea2154814a0cbcd6c56caaa4bda89fb0d593fca5540f1b73a524fb"
+    },
+    {
+      "pipeline": 2910339772,
+      "decision": "passed",
+      "job": 16918864600,
+      "recordSha256": "c049f1daece26abaae441b7b41d3f558b41747443d19a4a7f27d4c537e405c13",
+      "packageId": 71352490,
+      "project": 86247025,
+      "scannedAt": "2026-10-04T05:30:44.70160452Z",
+      "digest": "sha256:68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78"
+    },
+    {
+      "pipeline": 2910363180,
+      "decision": "passed",
+      "job": 16918980625,
+      "recordSha256": "ab17a7862ac31365e277f4483b41ccdf3ad21d8a89f7029447d5958d2aada518",
+      "packageId": 71352490,
+      "project": 86247025,
+      "scannedAt": "2026-10-04T05:51:19.708187722Z",
+      "digest": "sha256:68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78"
+    },
+    {
+      "pipeline": 2911071988,
+      "decision": "passed",
+      "job": 16922783996,
+      "recordSha256": "cf4eb4b396fec5547ab5084fcb7f559bf7b874c53b77f9cbdf1dc1152916be09",
+      "packageId": 71368161,
+      "project": 86247033,
+      "scannedAt": "2026-10-04T16:30:54.013627316Z",
+      "digest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9"
+    },
+    {
+      "pipeline": 2911071988,
+      "decision": "failed",
+      "job": 16922783997,
+      "recordSha256": "b1cda5e887f8db6da692b93639490151ac13ad0fd478498d0700d5077913279b",
+      "packageId": 71368161,
+      "project": 86247033,
+      "scannedAt": "2026-10-04T20:41:26.578391534Z",
+      "digest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9"
+    }
+  ],
+  "allListedProductionVersionsRetained": true,
+  "eligibleCount": 0,
+  "scope": "Current actual inventory with no eligible deletion; no 90-day elapsed claim",
+  "excludedRetainedFixtures": [
+    {
+      "packageId": 71310231,
+      "status": "default",
+      "project": 86247025,
+      "reason": "reserved-nonrelease-fixture-retained-including-hidden-history"
+    },
+    {
+      "packageId": 71311177,
+      "status": "default",
+      "project": 86247033,
+      "reason": "reserved-nonrelease-fixture-retained-including-hidden-history"
+    }
+  ],
+  "plans": {
+    "backend": [
+      {
+        "packageId": 71368161,
+        "digest": "sha256:cc8f74f2d5f4a601fa4c2f9f9b7826c3056a77b43d1a51be7a1c720ab37508b9",
+        "keep": true,
+        "reason": "latest-ten"
+      }
+    ],
+    "frontend": [
+      {
+        "packageId": 71352490,
+        "digest": "sha256:68aa3ca3b850bea5b47004877067197c14c670a8cd34b57cf58acc33c03fda78",
+        "keep": true,
+        "reason": "running"
+      },
+      {
+        "packageId": 71352003,
+        "digest": "sha256:19453908a7ea2154814a0cbcd6c56caaa4bda89fb0d593fca5540f1b73a524fb",
+        "keep": true,
+        "reason": "latest-ten"
+      },
+      {
+        "packageId": 71351140,
+        "digest": "sha256:d79a9948433a89cae4111a1c5a95e45a37869bb22ff3bdbe1709f9cdc9c15b3b",
+        "keep": true,
+        "reason": "latest-ten"
+      },
+      {
+        "packageId": 71348457,
+        "digest": "sha256:89feb31193e2dea1375b4d1b3230bb55aad9fe6111bb8d4615435b59ad7144f0",
+        "keep": true,
+        "reason": "latest-ten"
+      },
+      {
+        "packageId": 71346292,
+        "digest": "sha256:7eb30991a0784a2ec9af4f01ee26f936ae4b6b0d33876dee1836564f0b106e32",
+        "keep": true,
+        "reason": "latest-ten"
+      },
+      {
+        "packageId": 71345525,
+        "digest": "sha256:3996ec59b7618e6aa935b13b60b0fc308d7f4cc754802a34b23625d76fd00337",
+        "keep": true,
+        "reason": "latest-ten"
+      },
+      {
+        "packageId": 71343215,
+        "digest": "sha256:a09af8410dca1e43b35d70b433b8e995621b580f8b454e492dc565cca431e83a",
+        "keep": true,
+        "reason": "latest-ten"
+      },
+      {
+        "packageId": 71341764,
+        "digest": "sha256:afbf2531f7dae6284362010c9d934dc86dbee9b3be889d56a46bfca2a5e7d3e9",
+        "keep": true,
+        "reason": "latest-ten"
+      },
+      {
+        "packageId": 71339037,
+        "digest": "sha256:ce9caabe905b350e96f3fce4a92694f8e9a9486191a3b3fe072605f5aedc7d76",
+        "keep": true,
+        "reason": "latest-ten"
+      },
+      {
+        "packageId": 71324296,
+        "digest": "sha256:aa6a94156767c2bef7ec84be55d7801907b9a744ae42b1c9bba3f6781609fb8c",
+        "keep": true,
+        "reason": "latest-ten"
+      }
+    ]
+  },
+  "automaticDeletionEnabled": false,
+  "operatorReviewCompleted": true,
+  "inventoryUtc": "2026-10-04T20:43:51.2840343Z",
+  "deleteRequested": false,
+  "utc": "2026-10-04T20:44:01.6307069Z",
+  "model": "latest-ten OR ninety-days OR running/explicit-rollback",
+  "planner": "frontend-app/tools/release-record/retention.go"
+}

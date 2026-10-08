@@ -1,0 +1,18 @@
+{
+  "source": "4b8652b2ac53cf19e2654d9228df965c09166591",
+  "utc": "2026-10-06T15:01:56.3369025Z",
+  "selection": {
+    "sourceProjectId": 86247033,
+    "service": "backend",
+    "scanJobId": 16971512567,
+    "imageDigest": "sha256:64e88a0c337c09811c2e0b11160a0d09edcb8b976823fd1ec95bcf255f56a487",
+    "sbomUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-64e88a0c337c09811c2e0b11160a0d09edcb8b976823fd1ec95bcf255f56a487/sbom-2918186353-16971512567.cdx.json",
+    "scanPipelineId": 2918186353,
+    "sbomSha256": "c2043b23a02f16b3f910882f9717eccbcce906e737519ef3ddfecad9c3950e82",
+    "recordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-64e88a0c337c09811c2e0b11160a0d09edcb8b976823fd1ec95bcf255f56a487/release-record-2918186353-16971512567.json",
+    "recordSha256": "bb32349c064dfc451768dbed0a39abef479be6196758432aa1b6e4e5757549a9",
+    "buildJobId": 16971512564,
+    "sourceCommit": "90de6cecbe4e140b4a5814a4c5018373b38b2359",
+    "buildPipelineId": 2918186353
+  }
+}

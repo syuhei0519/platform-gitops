@@ -1,0 +1,24 @@
+{
+  "allOwnedProcessesExited": true,
+  "utc": "2026-10-06T17:57:38.8215029Z",
+  "forwardPIDs": [
+    29344,
+    26276
+  ],
+  "driverResultSaved": true,
+  "driverExitCodeExpected": 1,
+  "workers": [
+    {
+      "hasExited": true,
+      "exitCode": 1,
+      "processId": 8824,
+      "forcedTermination": false
+    },
+    {
+      "hasExited": true,
+      "exitCode": 1,
+      "processId": 12424,
+      "forcedTermination": false
+    }
+  ]
+}

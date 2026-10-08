@@ -1,0 +1,72 @@
+{
+  "buildJob": 16920122339,
+  "failure": {
+    "schemaVersion": 1,
+    "scope": "PE016B sampled temporary disk",
+    "kind": "build",
+    "samples": 26,
+    "intervalSeconds": 2,
+    "maxWorkspaceKiB": 84748,
+    "workspaceLimitKiB": 2097152,
+    "maxBuildkitStoreKiB": 10528332,
+    "buildkitStoreLimitKiB": 10485760,
+    "buildkitStoreObserved": true,
+    "buildkitStoreAggregation": "sumConfiguredRoots",
+    "rootlessNamespaceUsed": true,
+    "minFilesystemFreePercent": 92.374024,
+    "measurementAvailable": true,
+    "withinBudget": false,
+    "continuousPeakClaim": false
+  },
+  "buildStatus": "failed",
+  "source": "5e120a0162786a60cc984c2d2731a26f2017f648",
+  "status": "failed",
+  "pipeline": 2910584571,
+  "jobs": [
+    {
+      "id": 16920122341,
+      "name": "oci-isolated-runtime",
+      "status": "skipped"
+    },
+    {
+      "id": 16920122340,
+      "name": "oci-format-compatibility",
+      "status": "skipped"
+    },
+    {
+      "id": 16920122339,
+      "name": "container-build-oci",
+      "status": "failed"
+    },
+    {
+      "id": 16920122338,
+      "name": "source-scan",
+      "status": "success"
+    },
+    {
+      "id": 16920122337,
+      "name": "backend-build",
+      "status": "success"
+    },
+    {
+      "id": 16920122336,
+      "name": "unit-test",
+      "status": "success"
+    },
+    {
+      "id": 16920122335,
+      "name": "format-and-vet",
+      "status": "success"
+    },
+    {
+      "id": 16920122334,
+      "name": "manifest-helper-test",
+      "status": "success"
+    },
+    {
+      "id": 16920122333,
+      "name": "security-policy-test",
+      "status": "success"
+    }
+  ]
+}

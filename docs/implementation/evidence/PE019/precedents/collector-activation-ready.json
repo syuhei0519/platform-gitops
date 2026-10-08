@@ -1,0 +1,373 @@
+{
+  "maxReady": 1.0,
+  "distinctPodUIDs": [
+    "bf9181a0-caa7-4423-9873-59d72453e706",
+    "7fe80b6f-c28e-4146-8590-6bc523e4cccc"
+  ],
+  "minReady": 0.0,
+  "intervalSeconds": 2,
+  "samples": [
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:17:42.2065122Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:17:44.3319272Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:17:46.4253222Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:17:48.5144373Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:17:50.6042976Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:17:52.7123455Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:17:54.8155495Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:17:56.9026935Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:17:59.0579813Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:18:01.1335164Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:18:03.2185224Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:18:05.3056819Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:18:07.3835890Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:18:09.4788837Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:18:11.5631067Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "bf9181a0-caa7-4423-9873-59d72453e706",
+          "phase": "Running",
+          "name": "otel-collector-56c6cb65df-vhbz9"
+        }
+      ]
+    },
+    {
+      "ready": 0,
+      "utc": "2026-10-02T14:18:13.6407626Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "7fe80b6f-c28e-4146-8590-6bc523e4cccc",
+          "phase": "Running",
+          "name": "otel-collector-5cf455786d-d8wfg"
+        }
+      ]
+    },
+    {
+      "ready": 0,
+      "utc": "2026-10-02T14:18:15.7318566Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "7fe80b6f-c28e-4146-8590-6bc523e4cccc",
+          "phase": "Running",
+          "name": "otel-collector-5cf455786d-d8wfg"
+        }
+      ]
+    },
+    {
+      "ready": 0,
+      "utc": "2026-10-02T14:18:17.8162586Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "7fe80b6f-c28e-4146-8590-6bc523e4cccc",
+          "phase": "Running",
+          "name": "otel-collector-5cf455786d-d8wfg"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:18:19.8914186Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "7fe80b6f-c28e-4146-8590-6bc523e4cccc",
+          "phase": "Running",
+          "name": "otel-collector-5cf455786d-d8wfg"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:18:21.9757251Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "7fe80b6f-c28e-4146-8590-6bc523e4cccc",
+          "phase": "Running",
+          "name": "otel-collector-5cf455786d-d8wfg"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:18:24.0548571Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "7fe80b6f-c28e-4146-8590-6bc523e4cccc",
+          "phase": "Running",
+          "name": "otel-collector-5cf455786d-d8wfg"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:18:26.1297919Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "7fe80b6f-c28e-4146-8590-6bc523e4cccc",
+          "phase": "Running",
+          "name": "otel-collector-5cf455786d-d8wfg"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:18:28.2043948Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "7fe80b6f-c28e-4146-8590-6bc523e4cccc",
+          "phase": "Running",
+          "name": "otel-collector-5cf455786d-d8wfg"
+        }
+      ]
+    },
+    {
+      "ready": 1,
+      "utc": "2026-10-02T14:18:30.2838868Z",
+      "pods": [
+        {
+          "deleting": false,
+          "imageIDs": [
+            "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"
+          ],
+          "uid": "7fe80b6f-c28e-4146-8590-6bc523e4cccc",
+          "phase": "Running",
+          "name": "otel-collector-5cf455786d-d8wfg"
+        }
+      ]
+    }
+  ],
+  "context": "kind-platform-lab",
+  "scope": "sampled observation plus fixed Recreate/replicas=1 contract"
+}

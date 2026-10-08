@@ -1,0 +1,14 @@
+{
+  "phase2Adoptable": false,
+  "project": 86247034,
+  "job": 16907884468,
+  "source": "46223f28d735d0f6bf39e0998d7c5285701091f1",
+  "rawTraceRead": false,
+  "readBothSourcePackages": true,
+  "utc": "2026-10-02T23:50:12.2239470Z",
+  "pipeline": 2908297735,
+  "capabilityAccepted": true,
+  "sourceScanSucceeded": true,
+  "allValidationSucceeded": true,
+  "bothNewFileWritesForbidden403": true
+}

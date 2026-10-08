@@ -1,0 +1,13 @@
+{
+  "newInstance": "ba62a768-0968-4b59-b03c-8c1979d8d34c",
+  "samePodUid": true,
+  "statusAfter": 200,
+  "podUid": "a1b578c0-f848-427a-b06a-67adedabcc4a",
+  "restartBefore": 0,
+  "restartAfter": 1,
+  "mainInstance": "2a438271-684c-4fde-8a6e-82a117012959",
+  "utc": "2026-10-02T15:45:42.0399835Z",
+  "scope": "owned canary container stop via crictl; no source backend or database mutation",
+  "oldInstance": "068ccdb5-e7ee-416b-b668-77c6e39ecef7",
+  "oldSeriesStillDistinct": true
+}

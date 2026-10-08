@@ -1,0 +1,121 @@
+{
+  "normalMainCi": [
+    {
+      "pipeline": 2908236037,
+      "jobs": [
+        {
+          "id": 16907475950,
+          "name": "propose-manifest-update",
+          "status": "success"
+        },
+        {
+          "id": 16907475949,
+          "name": "verify-image",
+          "status": "success"
+        },
+        {
+          "id": 16907475948,
+          "name": "publish-image",
+          "status": "success"
+        },
+        {
+          "id": 16907475947,
+          "name": "source-scan",
+          "status": "success"
+        },
+        {
+          "id": 16907475946,
+          "name": "frontend-build",
+          "status": "success"
+        },
+        {
+          "id": 16907475945,
+          "name": "unit-test",
+          "status": "success"
+        },
+        {
+          "id": 16907475944,
+          "name": "typecheck",
+          "status": "success"
+        },
+        {
+          "id": 16907475943,
+          "name": "lint",
+          "status": "success"
+        },
+        {
+          "id": 16907475942,
+          "name": "manifest-helper-test",
+          "status": "success"
+        },
+        {
+          "id": 16907475941,
+          "name": "security-policy-test",
+          "status": "success"
+        }
+      ],
+      "source": "40051c972fe88e8d6dbdb369caf7e978d99701e3",
+      "project": 86247025,
+      "service": "frontend",
+      "status": "success",
+      "runtimeSynced": false
+    },
+    {
+      "pipeline": 2908251571,
+      "jobs": [
+        {
+          "id": 16907569864,
+          "name": "propose-manifest-update",
+          "status": "success"
+        },
+        {
+          "id": 16907569863,
+          "name": "verify-image",
+          "status": "success"
+        },
+        {
+          "id": 16907569862,
+          "name": "publish-image",
+          "status": "success"
+        },
+        {
+          "id": 16907569861,
+          "name": "source-scan",
+          "status": "success"
+        },
+        {
+          "id": 16907569860,
+          "name": "backend-build",
+          "status": "success"
+        },
+        {
+          "id": 16907569859,
+          "name": "unit-test",
+          "status": "success"
+        },
+        {
+          "id": 16907569858,
+          "name": "format-and-vet",
+          "status": "success"
+        },
+        {
+          "id": 16907569857,
+          "name": "manifest-helper-test",
+          "status": "success"
+        },
+        {
+          "id": 16907569856,
+          "name": "security-policy-test",
+          "status": "success"
+        }
+      ],
+      "source": "5a255b329cab3b00e0c9e964700667e6cb083d89",
+      "project": 86247033,
+      "service": "backend",
+      "status": "success",
+      "runtimeSynced": false
+    }
+  ],
+  "rawTraceRead": false,
+  "utc": "2026-10-02T23:50:56.5190063Z"
+}

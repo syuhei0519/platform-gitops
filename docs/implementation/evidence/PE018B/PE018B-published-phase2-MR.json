@@ -1,0 +1,29 @@
+{
+  "url": "https://gitlab.com/syuhei-platform-engineering-lab/application-manifest/-/merge_requests/84",
+  "phase2Switched": false,
+  "release": {
+    "sbomUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/sbom-2915581900-16953548226.cdx.json",
+    "buildPipelineId": "2915581900",
+    "recordSha256": "05eee5d56bf573297d90f5f24d8d3194ffeca60c705dee737a3b5adf7d34c2d9",
+    "sourceProjectId": "86247033",
+    "buildJobId": "16953548223",
+    "scanJobId": "16953548226",
+    "sourceCommit": "bcc4126097ab6224e46257560010fc4623a51414",
+    "recordUrl": "https://gitlab.com/api/v4/projects/86247033/packages/generic/core-platform-backend/sha256-34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5/release-record-2915581900-16953548226.json",
+    "schemaVersion": "2",
+    "sbomSha256": "71f8a897bb5a08ab8820e58898837c16f49455488855cc5f6d145c039e671033",
+    "scanPipelineId": "2915581900"
+  },
+  "utc": "2026-10-05T23:38:16.6228446Z",
+  "sourcePolicy": "bcc4126097ab6224e46257560010fc4623a51414",
+  "branch": "update/local/backend/bcc4126097ab6224e46257560010fc4623a51414/run-2915581900-16953548226",
+  "rollbackReason": "",
+  "source": "ac08aba9a59d1599932c7d6f221fc7ce614ddabe",
+  "parent18Accepted": false,
+  "digest": "sha256:34b06b9d667a4a995b709278669cdccb3a115d649f9152309b2762edccfe2ef5",
+  "sourceCIProposalClaim": true,
+  "operatorCreatedProposal": false,
+  "project": 86247034,
+  "mr": 84,
+  "sourceCommit": "bcc4126097ab6224e46257560010fc4623a51414"
+}

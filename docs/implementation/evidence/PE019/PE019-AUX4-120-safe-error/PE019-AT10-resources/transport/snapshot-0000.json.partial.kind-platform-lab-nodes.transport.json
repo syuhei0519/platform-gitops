@@ -1,0 +1,15 @@
+{
+  "processId": 5816,
+  "rawValuesRecorded": false,
+  "endsWithJSONObject": true,
+  "stage": "kind-platform-lab-nodes",
+  "stdoutReaderCodePage": 65001,
+  "processExitCode": 0,
+  "hostConsoleCodePage": 932,
+  "startsWithJSONObject": true,
+  "hasExited": true,
+  "stdoutComplete": true,
+  "stderrCategory": "none",
+  "stdoutUTF8Bytes": 22260,
+  "emptyOutput": false
+}
