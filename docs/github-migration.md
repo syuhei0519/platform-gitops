@@ -2,7 +2,7 @@
 
 移行先: https://github.com/syuhei0519/platform-gitops
 起点: 2026-10-08に取得したGitLab origin/main。ローカルの元branchは保存しています。
-作業branch: `codex/github-actions-migration`。push/commit/公開は未実施です。
+GitHubへ旧履歴を含めずソースを移行済みです。GitHub用checkoutは `C:\work\CorePlatform-github` 配下です。
 
 `.github/workflows/ci.yml` が通常CIです。GitLab入口は `workflow: rules: when: never`
 とし、旧include/toolは回帰テスト・履歴資料用に保持しています。
@@ -16,7 +16,7 @@ Go 1.27.1 / Node 24.19.0等の既存バージョンを維持しています。
 文書専用差分はdocsチェックとsecret検査へ分岐し、不明な比較元・CIファイル変更・
 初回push・workflow_dispatchは通常CIへ倒します。非main branchはmainとの差分全体で判断します。
 branch protection/rulesetの必須checkは `ci-result` に設定してください。
-mainへの直接pushを制限し、workflow/ci/security/検証器の変更にはOwnerレビューを必須にします。
+mainへの直接pushを制限し、必須CIと最新mainへの追従をPRで確認します。syuhei0519の単独運用のためPRの必須承認数は0、EnvironmentはOwner承認です。
 各EnvironmentのDeployment branchesはmainのみ、Required reviewersはOwner、
 自己承認と管理者bypassの可否も運用に合わせて制限してください。
 
