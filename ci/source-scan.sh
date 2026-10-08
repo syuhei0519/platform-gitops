@@ -13,7 +13,7 @@ scanner_exit=0
 attempt=0
 while :; do
   attempt=$((attempt + 1))
-  if trivy image --download-db-only --cache-dir .cache/trivy --timeout 5m --quiet > .security/private/db.log 2>&1; then break; fi
+  if trivy image --download-db-only --db-repository ghcr.io/aquasecurity/trivy-db:2 --db-repository public.ecr.aws/aquasecurity/trivy-db:2 --cache-dir .cache/trivy --timeout 5m --quiet > .security/private/db.log 2>&1; then break; fi
   if [ "$attempt" -ge 2 ]; then
     printf '%s\n' '{"pass":false,"reason":"scanner DB retrieval unavailable"}' > .security/public/failure.json
     echo 'Security DB retrieval failed; no delivery permitted' >&2
