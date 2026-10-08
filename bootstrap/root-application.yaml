@@ -8,7 +8,7 @@ metadata:
 spec:
   project: lab-root
   source:
-    repoURL: https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git
+    repoURL: https://github.com/syuhei0519/platform-gitops.git
     targetRevision: main
     path: charts/root
     helm:

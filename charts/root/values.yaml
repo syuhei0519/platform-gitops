@@ -1,5 +1,5 @@
-platformRepository: https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git
-applicationRepository: https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git
+platformRepository: https://github.com/syuhei0519/platform-gitops.git
+applicationRepository: https://github.com/syuhei0519/application-manifest.git
 targetRevision: main
 workloadsEnabled: false
 observabilityEnabled: false

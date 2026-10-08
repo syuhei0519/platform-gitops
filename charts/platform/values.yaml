@@ -1,4 +1,4 @@
-platformRepository: https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git
+platformRepository: https://github.com/syuhei0519/platform-gitops.git
 targetRevision: main
 runnerChartRepository: https://charts.gitlab.io
 runnerChartVersion: 0.92.1

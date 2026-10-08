@@ -1,2 +1,2 @@
-applicationRepository: https://gitlab.com/syuhei-platform-engineering-lab/application-manifest.git
+applicationRepository: https://github.com/syuhei0519/application-manifest.git
 targetRevision: main

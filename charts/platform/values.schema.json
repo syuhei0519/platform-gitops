@@ -15,7 +15,7 @@
   ],
   "properties": {
     "platformRepository": {
-      "const": "https://gitlab.com/syuhei-platform-engineering-lab/platform-gitops.git"
+      "const": "https://github.com/syuhei0519/platform-gitops.git"
     },
     "targetRevision": {
       "const": "main"
