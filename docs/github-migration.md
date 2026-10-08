@@ -1,5 +1,19 @@
-# GitHub Actionsへの移行準備
+# GitHub Actionsの運用手順と移行記録
 
+## 2026-10-09の更新
+
+同名のPublic GitHubリポジトリへ、GitLabの旧コミット履歴を含めずソースを移行しました。
+初回のGitHub Actions CIは4件とも成功しています。mainのrulesetとEnvironmentを設定し、
+CLI認証はWindows資格情報マネージャーに暗号化保存した認証情報を使います。
+通常操作で1Passwordへアクセスせず、PATをファイルやGit URLへ保存しません。
+
+Trivy DBの取得先を公式GHCR優先に変更し、24時間以内の鮮度基準を維持しています。
+frontendのbrace-expansion/source-map-jsを更新し、npm auditの検出は0件になりました。
+release-record検証ツールのgolang.org/x/textはv0.41.0へ更新して既知脆弱性を修正します。
+以下の「移行前」「未実施」およびローカル検証結果は2026-10-08の準備時点の記録です。
+公開・切り替えの現在の結果はGitHub Actions、Release、manifest PRの実行記録で確認します。
+初回GHCR公開後にはpackageのPublic設定と匿名pullを確認し、manifest PRの独立検証を
+通してからArgo CDを切り替えます。Environment承認とPR mergeは運用者が明示的に行います。
 移行先: https://github.com/syuhei0519/platform-gitops
 起点: 2026-10-08に取得したGitLab origin/main。ローカルの元branchは保存しています。
 GitHubへ旧履歴を含めずソースを移行済みです。GitHub用checkoutは `C:\work\CorePlatform-github` 配下です。
