@@ -1,1 +1,44 @@
-{"$schema":"https://json-schema.org/draft-07/schema#","type":"object","additionalProperties":false,"required":["applicationRepository","targetRevision"],"properties":{"applicationRepository":{"const":"https://github.com/syuhei0519/application-manifest.git"},"targetRevision":{"const":"main"}}}
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "applicationRepository",
+    "targetRevision",
+    "orderEnabled",
+    "orderTargetRevision"
+  ],
+  "properties": {
+    "applicationRepository": {
+      "const": "https://github.com/syuhei0519/application-manifest.git"
+    },
+    "targetRevision": {
+      "const": "main"
+    },
+    "orderEnabled": {
+      "type": "boolean"
+    },
+    "orderTargetRevision": {
+      "type": "string",
+      "pattern": "^([0-9a-f]{40})?$"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "orderEnabled": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "orderTargetRevision": {
+            "pattern": "^[0-9a-f]{40}$"
+          }
+        }
+      }
+    }
+  ]
+}

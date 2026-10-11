@@ -3,6 +3,7 @@
 # 非成功終了は後続の検査を止める。成功してもcluster変更・merge権限を自動付与するものではない。
 set -eu
 mkdir -p .rendered
+sh ci/test-order-workloads.sh
 
 helm repo add gitlab https://charts.gitlab.io --force-update
 for chart in root platform workloads runner-foundation observability-foundation otel-collector grafana; do
@@ -61,5 +62,5 @@ grep -q 'gitlab-runner-helper-ocp:x86_64-v19.3.1@sha256:ebcce5b4e36899e72aa20554
 grep -q 'runnerChartVersion: 0.92.1' environments/local/platform.yaml
 grep -q 'moby/buildkit:v0.30.0-rootless@sha256:d76eb1caecac5733ef7553c1e90a1b21f1bb218cd1142d3553de0747b4a14ba9' bootstrap/versions.lock.yaml
 sh ci/validate-runner-pod-profile.sh .rendered/gitlab-runner.yaml
-sh ci/extract-kind.sh Application .rendered/root-enabled.yaml .rendered/platform-observability.yaml .rendered/workloads.yaml > .rendered/applications.yaml
+sh ci/extract-kind.sh Application .rendered/root-enabled.yaml .rendered/platform-observability.yaml .rendered/workloads.yaml .rendered/workloads-order-fixture.yaml > .rendered/applications.yaml
 sh ci/extract-kind.sh AppProject .rendered/root-enabled.yaml > .rendered/projects.yaml

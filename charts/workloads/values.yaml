@@ -1,2 +1,5 @@
 applicationRepository: https://github.com/syuhei0519/application-manifest.git
 targetRevision: main
+# P0: registration remains disabled until an adopted Manifest commit is approved.
+orderEnabled: false
+orderTargetRevision: ""

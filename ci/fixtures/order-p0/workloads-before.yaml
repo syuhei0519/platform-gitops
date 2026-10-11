@@ -1,0 +1,65 @@
+---
+# Source: workloads/templates/applications.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-local-postgresql
+  namespace: argocd
+  annotations: {argocd.argoproj.io/sync-wave: "-10", argocd.argoproj.io/sync-options: Prune=confirm}
+spec:
+  project: lab-account
+  source:
+    repoURL: https://github.com/syuhei0519/application-manifest.git
+    targetRevision: main
+    path: charts/postgresql
+    helm:
+      releaseName: postgresql
+      valueFiles: [../../environments/local/postgresql.yaml]
+  destination: {server: https://kubernetes.default.svc, namespace: account}
+  syncPolicy:
+    automated: {prune: true, selfHeal: true, allowEmpty: false}
+    syncOptions: [PruneLast=true, FailOnSharedResource=true]
+
+---
+# Source: workloads/templates/applications.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-local-backend
+  namespace: argocd
+  annotations: {argocd.argoproj.io/sync-wave: "0", argocd.argoproj.io/sync-options: Prune=confirm}
+spec:
+  project: lab-account
+  source:
+    repoURL: https://github.com/syuhei0519/application-manifest.git
+    targetRevision: main
+    path: charts/backend
+    helm:
+      releaseName: backend
+      valueFiles: [../../environments/local/backend.yaml]
+  destination: {server: https://kubernetes.default.svc, namespace: account}
+  syncPolicy:
+    automated: {prune: true, selfHeal: true, allowEmpty: false}
+    syncOptions: [PruneLast=true, FailOnSharedResource=true]
+
+---
+# Source: workloads/templates/applications.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-local-frontend
+  namespace: argocd
+  annotations: {argocd.argoproj.io/sync-wave: "10", argocd.argoproj.io/sync-options: Prune=confirm}
+spec:
+  project: lab-account
+  source:
+    repoURL: https://github.com/syuhei0519/application-manifest.git
+    targetRevision: main
+    path: charts/frontend
+    helm:
+      releaseName: frontend
+      valueFiles: [../../environments/local/frontend.yaml]
+  destination: {server: https://kubernetes.default.svc, namespace: account}
+  syncPolicy:
+    automated: {prune: true, selfHeal: true, allowEmpty: false}
+    syncOptions: [PruneLast=true, FailOnSharedResource=true]
