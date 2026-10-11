@@ -41,11 +41,42 @@ go run . -context <approved-context> -revision <account-main-full-SHA> \
   -order-enabled -order-revision <adopted-order-manifest-full-SHA> -timeout 10m
 ```
 
-Orderの2leafは専用SHAのsource.targetRevision / status.sync.revision / operation syncResult.revision、
-Synced/Healthy、operation Succeededをすべて要求する。DB StatefulSet / Order Deploymentの
-Synced/Healthyなresource観測と、同revisionの `order-migration` Sync hook成功も確認する。
-欠落・途中・失敗・未知状態は成功にしない。既存leafもoperation phaseが不明なら待機する。
-毎周回、先行leafを再確認し、後段待機中のDB劣化を見逃さない。読取失敗・不足は有限待機後に非0終了する。
+Orderの2leafは `metadata.name/namespace`、`spec.project=lab-account`、配備先
+`server=https://kubernetes.default.svc` / `namespace=account` と、以下の期待sourceを要求する。
+
+- repoURL: `https://github.com/syuhei0519/application-manifest.git`
+- targetRevision: 指定したOrder専用40桁SHA
+- path: `charts/order-postgresql` または `charts/order`
+- Helm releaseName: `order-postgresql` または `order`
+- Helm valueFiles: 各 `../../environments/local/<releaseName>.yaml` の1件のみ
+
+現在のspecだけでなく、`status.sync.comparedTo.source/destination` と
+`status.operationState.syncResult.source` もこの期待値と照合する。同じSHAでもHelmの
+parameters / fileParameters / values / valuesObject、releaseName、valueFiles、namespace、
+version、kubeVersion、apiVersions、skip系の設定を変更した観測は受理しない。
+未指定と既知の空/false値だけは同等として扱う（valuesObjectの空objectも含む）。
+未知source/Helm/destination項目、複数source、sourceHydrator、ignoreDifferencesは拒否する。
+比較・operationのsourceが欠落しているときはspecから補完せず待機する。
+
+これは固定版Argo CD v3.5.2の [Application型](https://github.com/argoproj/argo-cd/blob/v3.5.2/pkg/apis/application/v1alpha1/types.go)
+にあるComparedToとSyncOperationResultを使う。存在しないobservedGenerationや
+operationのproject/destinationフィールドは要求しない。projectは現在specの固定値検査、
+destinationは現在specと比較結果、実効sourceは現在spec・比較結果・operation結果の3者で検査する。
+過去operation実行時のproject/destinationの証明や、全leafの原子的なスナップショットではない。
+取得後の変更、Argo controller自身の誤報、repo外の可変依存はこの読取CLIだけでは証明できない。
+実際の配備先・imageID・APIはT6/T7で別に実測する。
+
+専用SHAのstatus.sync.revision / operation syncResult.revision、Synced/Healthy、
+operation Succeeded、DB StatefulSet / Order DeploymentのSynced/Healthyなresource観測、
+同revisionの `order-migration` Sync hook成功も必須。metadata.deletionTimestampが
+null/未指定以外ならreadyより先に拒否し、finalizer待ちも有限timeout後に非0終了する。
+finalizerがあるだけで削除中でなければ拒否しない。
+
+既存3leafは従来のrevision / phase / hook条件を維持し、Order専用のspec・比較設定検査を
+要求しない。唯一の追加安全化は既存leafもdeletionTimestampを拒否することであり、
+従来成功していた削除中Applicationは待機になる。未知phase拒否はP0初回実装から継続する。
+欠落・途中・失敗・未知状態は成功にしない。毎周回、先行leafを再確認し、
+後段待機中のDB劣化を見逃さない。読取失敗・不足は有限待機後に非0終了する。
 `-order-revision` だけの指定は無視せず引数エラーにする。有効化済みなのに無効のCLIを使う誤りは、
 このCLIだけでは検出できないため、運用者がvaluesと引数を照合する。
 

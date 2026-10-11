@@ -2,6 +2,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
 	"os"
@@ -10,6 +11,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 )
 
 const accountFixtureSHA = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
@@ -53,9 +55,15 @@ func observation(leaf leafExpectation) map[string]any {
 	if leaf.hook != "" {
 		hooks = append(hooks, map[string]any{"kind": "Job", "name": leaf.hook, "namespace": "account", "hookType": "Sync", "hookPhase": "Succeeded"})
 	}
-	return map[string]any{"spec": map[string]any{"source": map[string]any{"targetRevision": leaf.revision}}, "status": map[string]any{
-		"sync": map[string]any{"status": "Synced", "revision": leaf.revision}, "health": map[string]any{"status": "Healthy"},
-		"operationState": map[string]any{"phase": "Succeeded", "syncResult": map[string]any{"revision": leaf.revision, "resources": hooks}},
+	source := func() map[string]any {
+		return map[string]any{"repoURL": "https://github.com/syuhei0519/application-manifest.git", "targetRevision": leaf.revision, "path": "charts/" + leaf.resourceName, "helm": map[string]any{"releaseName": leaf.resourceName, "valueFiles": []any{"../../environments/local/" + leaf.resourceName + ".yaml"}}}
+	}
+	destination := func() map[string]any {
+		return map[string]any{"server": "https://kubernetes.default.svc", "namespace": "account"}
+	}
+	return map[string]any{"metadata": map[string]any{"name": leaf.name, "namespace": "argocd"}, "spec": map[string]any{"project": "lab-account", "source": source(), "destination": destination()}, "status": map[string]any{
+		"sync": map[string]any{"status": "Synced", "revision": leaf.revision, "comparedTo": map[string]any{"source": source(), "destination": destination()}}, "health": map[string]any{"status": "Healthy"},
+		"operationState": map[string]any{"phase": "Succeeded", "syncResult": map[string]any{"revision": leaf.revision, "source": source(), "resources": hooks}},
 		"resources":      []any{map[string]any{"kind": leaf.resourceKind, "name": leaf.resourceName, "namespace": "account", "status": "Synced", "health": map[string]any{"status": "Healthy"}}}}}
 }
 func change(obj map[string]any, path string, value any) {
@@ -161,7 +169,7 @@ func TestObserverProcess(t *testing.T) {
 }
 func TestObserverCLI(t *testing.T) {
 	leaves, _ := expectedLeaves(accountFixtureSHA, true, orderFixtureSHA)
-	for _, scenario := range []string{"disabled", "enabled", "missing-db", "missing-order", "failed-hook", "progressing-db", "missing-revision", "wrong-source", "invalid-options", "regressed-db"} {
+	for _, scenario := range []string{"disabled", "enabled", "missing-db", "missing-order", "failed-hook", "progressing-db", "missing-revision", "wrong-source", "invalid-options", "regressed-db", "deleting-db", "deleting-order", "deleting-account", "stale-comparison", "stale-operation"} {
 		t.Run(scenario, func(t *testing.T) {
 			dir := t.TempDir()
 			for _, leaf := range leaves {
@@ -180,6 +188,16 @@ func TestObserverCLI(t *testing.T) {
 				}
 				if scenario == "wrong-source" && leaf.name == leaves[3].name {
 					change(obj, "spec.source.targetRevision", "main")
+				}
+				if scenario == "deleting-db" && leaf.name == leaves[3].name || scenario == "deleting-order" && leaf.name == leaves[4].name || scenario == "deleting-account" && leaf.name == leaves[0].name {
+					change(obj, "metadata.deletionTimestamp", "2026-10-11T00:00:00Z")
+					change(obj, "metadata.finalizers", []any{"resources-finalizer.argocd.argoproj.io"})
+				}
+				if scenario == "stale-comparison" && leaf.name == leaves[3].name {
+					change(obj, "status.sync.comparedTo.source.helm.parameters", []any{map[string]any{"name": "enabled", "value": "false"}})
+				}
+				if scenario == "stale-operation" && leaf.name == leaves[4].name {
+					change(obj, "status.operationState.syncResult.source.helm.values", "enabled: false")
 				}
 				data, _ := json.Marshal(obj)
 				if err := os.WriteFile(filepath.Join(dir, leaf.name), data, 0600); err != nil {
@@ -209,9 +227,18 @@ func TestObserverCLI(t *testing.T) {
 			if scenario == "invalid-options" {
 				args = append(args, "-order-revision", "main")
 			}
-			cmd := exec.Command(os.Args[0], args...)
+			processCtx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+			defer cancel()
+			started := time.Now()
+			cmd := exec.CommandContext(processCtx, os.Args[0], args...)
 			cmd.Env = append(os.Environ(), "ORDER_OBSERVER_TEST_PROCESS=1", "OBSERVER_FIXTURES="+dir)
 			output, err := cmd.CombinedOutput()
+			if processCtx.Err() != nil {
+				t.Fatalf("observer did not respect finite timeout: %s", output)
+			}
+			if strings.HasPrefix(scenario, "deleting-") && time.Since(started) > 4*time.Second {
+				t.Fatalf("deleting Application exceeded finite wait: %s", output)
+			}
 			success := scenario == "enabled" || scenario == "disabled"
 			if success && err != nil || !success && err == nil {
 				t.Fatalf("unexpected result %v: %s", err, output)

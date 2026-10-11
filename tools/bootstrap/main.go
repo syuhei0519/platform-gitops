@@ -16,12 +16,25 @@ import (
 
 type app struct {
 	Operation json.RawMessage `json:"operation"`
-	Spec      struct {
-		Source struct{ TargetRevision string }
+	Metadata  struct {
+		Name, Namespace   string
+		DeletionTimestamp json.RawMessage `json:"deletionTimestamp"`
+	} `json:"metadata"`
+	Spec struct {
+		Project                    string
+		Source, Destination        map[string]any
+		Sources, IgnoreDifferences []json.RawMessage
+		SourceHydrator             json.RawMessage
 	} `json:"spec"`
 	Status struct {
-		Sync      struct{ Status, Revision string } `json:"sync"`
-		Health    struct{ Status string }           `json:"health"`
+		Sync struct {
+			Status, Revision string
+			ComparedTo       struct {
+				Source, Destination        map[string]any
+				Sources, IgnoreDifferences []json.RawMessage
+			}
+		} `json:"sync"`
+		Health    struct{ Status string } `json:"health"`
 		Resources []struct {
 			Kind, Name, Namespace, Status string
 			Health                        struct{ Status string }
@@ -29,8 +42,10 @@ type app struct {
 		OperationState struct {
 			Phase      string
 			SyncResult struct {
-				Revision  string
-				Resources []struct{ Kind, Name, Namespace, HookType, HookPhase string }
+				Revision           string
+				Source             map[string]any
+				Sources, Revisions []json.RawMessage
+				Resources          []struct{ Kind, Name, Namespace, HookType, HookPhase string }
 			}
 		} `json:"operationState"`
 	} `json:"status"`
@@ -41,6 +56,9 @@ func leafReady(data []byte, revision, hook string) error {
 	var a app
 	if err := json.Unmarshal(data, &a); err != nil {
 		return fmt.Errorf("invalid Application JSON: %w", err)
+	}
+	if len(a.Metadata.DeletionTimestamp) > 0 && string(a.Metadata.DeletionTimestamp) != "null" {
+		return fmt.Errorf("Application is deleting")
 	}
 	if len(a.Operation) > 0 && string(a.Operation) != "null" {
 		return fmt.Errorf("sync operation pending")
@@ -107,8 +125,8 @@ func (leaf leafExpectation) ready(data []byte) error {
 	if err := json.Unmarshal(data, &a); err != nil {
 		return err
 	}
-	if a.Spec.Source.TargetRevision != leaf.revision || a.Status.OperationState.SyncResult.Revision != leaf.revision {
-		return fmt.Errorf("Order source/operation revision does not match the fixed Manifest commit")
+	if err := leaf.orderConfigurationReady(a); err != nil {
+		return err
 	}
 	// Require the observed child workload too; a parent's health or wave alone is insufficient.
 	for _, r := range a.Status.Resources {
