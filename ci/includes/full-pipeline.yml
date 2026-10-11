@@ -30,7 +30,7 @@ render-and-policy:
     - sh ci/validate.sh
     - mkdir -p .security/public
     - .security/scan-gate -check-render-only .rendered -out .security/public/pre-render.json
-    - PE_OBSERVABILITY_RENDER_DIR=.rendered .build/bootstrap-test -test.run 'TestObservabilityContract|TestCollectorContract|TestGrafanaProvisioningBoundary' -test.v
+    - PE_OBSERVABILITY_RENDER_DIR=.rendered .build/bootstrap-test -test.run 'TestObservabilityContract|TestCollectorContract|TestGrafanaProvisioningBoundary|TestOrderWorkloadsContract' -test.v
   artifacts:
     expire_in: 7 days
     paths: [.rendered/]

@@ -1,1 +1,3 @@
 applicationRepository: https://github.com/syuhei0519/application-manifest.git
+orderEnabled: false
+orderTargetRevision: ""
