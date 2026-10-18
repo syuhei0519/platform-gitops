@@ -33,8 +33,8 @@
     ]
   },
   "role": "implementation",
-  "task_id": "ISTIO-PREP-IMPLEMENTATION-A1",
-  "attempt": 1,
+  "task_id": "ISTIO-PREP-IMPLEMENTATION-A2",
+  "attempt": 2,
   "upstream": [
     {
       "role": "research-design",
@@ -43,38 +43,46 @@
       "handoff_locator": "https://github.com/syuhei0519/platform-gitops/blob/2d1d87c4662d3e95f5686eea3e4d05618749cf95/docs/artifacts/istio-research-20261018/handoff.json",
       "revision": "sha256:5869bce34714f3eb09df1feef4155fbbc283f27352b8878dfbf520c9894c2b5d",
       "relationship": "dependency"
+    },
+    {
+      "role": "implementation",
+      "task_id": "ISTIO-PREP-IMPLEMENTATION-A1",
+      "attempt": 1,
+      "handoff_locator": "https://github.com/syuhei0519/platform-gitops/blob/f96fd32dbd1e899d91c26ef7e75e2837eb6de3dc/learning/istio/handoff.json",
+      "revision": "sha256:a6e6da11471609c44688c7e78257b8829fdfa55c81589d4f56ee857556df6082",
+      "relationship": "retry_of"
     }
   ],
   "system_status": "completed",
   "status": "completed",
-  "summary": "公開用edited_derivative。Issue85の準備実装と担当offline検証が完了。独立Test/Review、同じ最終headの必須CI、統合とManager最終判定は別工程。cluster操作・runtime成功を含まない。",
+  "summary": "公開用edited_derivative。累積Implementation attempt 2でR1の信頼済み既存Helm配布元・全bytes一致を検証し、O1の資源合計を40へ訂正。binary pin・render・アプリ設定を維持し、attempt 1と旧System pinを保存した。独立Review再判定と同じ最新headのCIはManagerの別ゲート。クラスタ操作なし。",
   "artifacts": [
     {
       "id": "LOCK",
       "kind": "document",
       "locator": "versions.lock.json",
-      "revision": "sha256:8dd39cf08140370ae5a0a814cbfbd3c3914f7d96f8c818cca7e08527903721a4",
+      "revision": "sha256:44a9ff59bb37b34074fdacbaea9b2e9bd13d59d9621019d4903ffdf4bdac6aba",
       "summary": "取得chart/CLI/image bytesと固定version"
     },
     {
       "id": "README",
       "kind": "document",
       "locator": "README.md",
-      "revision": "sha256:956aebca327f93f63935e0b0fb5ee67c552b977dda4622254eea6cab7b194fc2",
+      "revision": "sha256:d3ec5ba0ee576ddf279a0ba95ccdd567035626911fdc179c837a0320da7f39c2",
       "summary": "方式/namespace/経路と再現手順"
     },
     {
       "id": "ACCEPTANCE",
       "kind": "document",
       "locator": "acceptance.md",
-      "revision": "sha256:a70ea6f27e666d9d9e1af6a9f2207af5e225d1bfa29a269c99672bd81a9f0842",
+      "revision": "sha256:44168afb196c0483029238adeaf9650988204105e92108d39b7402a72f4493f6",
       "summary": "疎通/比率/復帰と権限境界"
     },
     {
       "id": "TEST",
       "kind": "test-report",
       "locator": "evidence/test-report.json",
-      "revision": "sha256:463b90ed6aef799388829ac2e861f90a42527b2e57f605e18b9cb175ace04b98",
+      "revision": "sha256:a1132163454479ba7ad1227a38206a6878e19aea9f7164e23ab1a4403d68c642",
       "summary": "実装者のoffline検証結果派生版"
     },
     {
@@ -82,7 +90,7 @@
       "kind": "document",
       "locator": "evidence/resource-inventory.json",
       "revision": "sha256:3570e3318c664b3614238827c6fef0e38b99ccd0df084c241bc3ed249985e163",
-      "summary": "生成42資源とRBAC/webhook全rules"
+      "summary": "生成40資源とRBAC/webhook全rules。inventory bytesは未変更。"
     },
     {
       "id": "PODSPEC",
@@ -94,22 +102,43 @@
     {
       "id": "CODE",
       "kind": "commit",
-      "locator": "https://github.com/syuhei0519/platform-gitops/commit/865bcf5dc47ff8258b7ef16c4b5e32d7aace6bd7",
-      "revision": "865bcf5dc47ff8258b7ef16c4b5e32d7aace6bd7",
-      "summary": "learning/istio/のみの実装・render・限定検証。後続handoff追加commitでも同じ実装bytesを保持。"
+      "locator": "https://github.com/syuhei0519/platform-gitops/commit/d614489c863594d47b9cbf43b5d9fb8daaedd71b",
+      "revision": "d614489c863594d47b9cbf43b5d9fb8daaedd71b",
+      "summary": "R1/O1の限定修正候補。binary pin・6 rendered YAML・アプリ/chart/valuesは旧headと同一。"
+    },
+    {
+      "id": "PROVENANCE",
+      "kind": "document",
+      "locator": "evidence/helm-provenance.json",
+      "revision": "sha256:92769d9fa841ece6ee15f1d2c318367406ed385887eaf921acae1ba913f5a6db",
+      "summary": "R1: 既存repo信頼済み第三者配布元・size/hash・展開binary全bytes一致"
+    },
+    {
+      "id": "PRESERVATION",
+      "kind": "document",
+      "locator": "evidence/attempt-2-preservation.json",
+      "revision": "sha256:9e8bc4fe95e9ec9e093e263d4f4aecd12f3309b80a8aa196ba3652ea4d7da401",
+      "summary": "attempt 1の設定/Handoff/実測と旧System pinを固定参照で保存"
+    },
+    {
+      "id": "ATTEMPT2",
+      "kind": "test-report",
+      "locator": "evidence/attempt-2-validation.json",
+      "revision": "sha256:72f4627e619b7233a2a474b48e5ff15f798714d0a617e48e35add6b566446d0e",
+      "summary": "attempt 2の限定実測。再render/full-suiteなし"
     }
   ],
   "evidence": [
     {
       "id": "E-STATIC",
-      "claim": "実装者のoffline静的検証は合格。独立Test/Reviewではない。",
+      "claim": "attempt 1の自己静的検証を保持。同一binary/renderのためattempt 2では再実行しない。独立Reviewを代替しない。",
       "artifact_ids": [
         "CODE",
         "TEST",
         "LOCK"
       ],
       "locator": "evidence/test-report.json",
-      "observation": "Codex Cloudでpinned Helm4.2.4/istioctl1.31.2を使用。5 renderのbytes再一致、stable/split/plainのoffline analyze Warning閾値、正3負17 fixture、4 invalid Helm入力拒否、3注入PodSpec、計数unit5件と固定fixture image内5件が合格。全コマンドexit0。実cluster/比率/Admissionは未実施。"
+      "observation": "旧head f96fd32dbd1e899d91c26ef7e75e2837eb6de3dc の正3/負17、4 invalid Helm入力、3注入PodSpec、5 accounting unitと固定image内同5件、offline analyzeの結果を保持。attempt 2で使用binary全bytesと6 renderedファイルの不変を検証した。実cluster/実比率/Admissionは未実施。"
     },
     {
       "id": "E-BOUNDARY",
@@ -129,8 +158,20 @@
         "CODE",
         "README"
       ],
-      "locator": "https://github.com/syuhei0519/platform-gitops/commit/865bcf5dc47ff8258b7ef16c4b5e32d7aace6bd7",
-      "observation": "base482ba450983ac2929f8176374d0d6ca50a69cac6との差分114ファイルはlearning/istio/内のみ。root/bootstrap/既存versions.lock/monitoring/CI変更なし。main push/merge/cluster適用/ラベル/権限/Secrets操作/API課金なし。"
+      "locator": "https://github.com/syuhei0519/platform-gitops/commit/d614489c863594d47b9cbf43b5d9fb8daaedd71b",
+      "observation": "attempt 2候補はlearning/istio/内の由来証跡/説明/合計数訂正のみ。root/bootstrap/既存versions.lock/monitoring/CI/アプリ/chart/values/render変更なし。main push/merge/cluster操作/権限変更/API課金なし。"
+    },
+    {
+      "id": "E-R1",
+      "claim": "既存repo信頼済み配布物のsource URL/size/hashと使用Helm全bytes一致を検証した。",
+      "artifact_ids": [
+        "PROVENANCE",
+        "PRESERVATION",
+        "ATTEMPT2",
+        "LOCK"
+      ],
+      "locator": "evidence/helm-provenance.json",
+      "observation": "base482ba450のCI固定alpine/helm digestをtrust anchorとし、registry index4669 bytes/SHA76c375ee…→amd64 manifest861 bytes/SHAf92964e7…→config digest→既存cache各layer diffIDを照合。usr/bin/helmは64274594 bytes/SHA92e19131…で使用binaryと全bytes一致。公式archiveの直接認証は主張せず、許可された信頼済み既存install由来を採用。HTTP拒否回避なし。6 renderのbytes不変、inventory40を確認。新System2015dcfce9d5ae3d4a6c5a30f7bcb98df3f8fd05を採用し旧pin/attempt1を保存。"
     }
   ],
   "ac_mapping": [
@@ -141,11 +182,14 @@
       "artifact_ids": [
         "LOCK",
         "README",
-        "CODE"
+        "CODE",
+        "PROVENANCE",
+        "ATTEMPT2"
       ],
       "evidence_ids": [
         "E-STATIC",
-        "E-SCOPE"
+        "E-SCOPE",
+        "E-R1"
       ]
     },
     {
@@ -155,24 +199,30 @@
       "artifact_ids": [
         "LOCK",
         "README",
-        "CODE"
+        "CODE",
+        "PROVENANCE",
+        "ATTEMPT2"
       ],
       "evidence_ids": [
         "E-STATIC",
-        "E-SCOPE"
+        "E-SCOPE",
+        "E-R1"
       ]
     },
     {
       "ac_id": "AC-3",
       "disposition": "covered",
-      "scope": "Implementation: 自己静的検証と独立Test/Review向け候補の準備を完了。独立Test/Reviewと最終head CIは未判定で製品AC-3合格を主張しない。",
+      "scope": "Implementation: R1を既存信頼済み配布物の全bytes比較で修正し、旧静的結果を同一binary/renderに対して保持。旧head Reviewはrequest_changes、新候補の独立Review再判定/最新head必須CIは別途。製品AC最終合格を主張しない。",
       "artifact_ids": [
         "TEST",
-        "CODE"
+        "CODE",
+        "PROVENANCE",
+        "ATTEMPT2"
       ],
       "evidence_ids": [
         "E-STATIC",
-        "E-SCOPE"
+        "E-SCOPE",
+        "E-R1"
       ]
     },
     {
