@@ -1,0 +1,167 @@
+{
+  "schema_version": "2.0",
+  "issue": {
+    "id": "syuhei0519/platform-gitops#85",
+    "source": "https://github.com/syuhei0519/platform-gitops/issues/85",
+    "title": "[Istio準備] 専用1経路の導入・90:10設定と復帰手順を用意する",
+    "acceptance_criteria": [
+      {
+        "id": "AC-1",
+        "verbatim": "対象namespace・通信経路・導入方式・バージョンを固定する。",
+        "source": "https://github.com/syuhei0519/platform-gitops/issues/85"
+      },
+      {
+        "id": "AC-2",
+        "verbatim": "導入設定と対象サービスのv1/v2への90:10振り分け設定をGitに用意する。",
+        "source": "https://github.com/syuhei0519/platform-gitops/issues/85"
+      },
+      {
+        "id": "AC-3",
+        "verbatim": "静的検証と独立レビューが通る。",
+        "source": "https://github.com/syuhei0519/platform-gitops/issues/85"
+      },
+      {
+        "id": "AC-4",
+        "verbatim": "導入前後の疎通・実際の要求比率・元へ戻す方法を確認手順にする。",
+        "source": "https://github.com/syuhei0519/platform-gitops/issues/85"
+      },
+      {
+        "id": "AC-5",
+        "verbatim": "クラスタへ適用する権限や影響範囲を明示する。",
+        "source": "https://github.com/syuhei0519/platform-gitops/issues/85"
+      }
+    ]
+  },
+  "role": "research-design",
+  "task_id": "ISTIO-PREP-RESEARCH",
+  "attempt": 1,
+  "upstream": [],
+  "system_status": "completed",
+  "status": "completed",
+  "summary": "公開用edited_derivative。比較・推奨・根拠・具体設定surface・必要テストと既存Issue適合を確定したResearch工程の成果。原本との比較はProducer証言のみ。Git実装、独立Test/Review、製品準備完了、cluster導入成功の判定を含まない。",
+  "artifacts": [
+    {
+      "id": "DESIGN",
+      "kind": "document",
+      "locator": "design.md",
+      "revision": "sha256:e3abcdcba266c2f6038e079c5f1d66e63ac0c06caeb363bb4c9798457f4826fa",
+      "summary": "単一DB非接続経路、sidecar1.31.2、90:10/復帰・静的検証・実施権限・小Issue案"
+    },
+    {
+      "id": "SOURCES",
+      "kind": "document",
+      "locator": "sources.json",
+      "revision": "sha256:5f5e7c689238b9dbab018cbcf476ec04788b11db59b33dc8f533a5c2ec941f2a",
+      "summary": "固定公式出典、基準commit、既存Issueの取得本文hashとIssue85 source。内部環境・routing注記を除外した派生版。"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E-DESIGN",
+      "claim": "委任ACに必要な最小設計を固定した",
+      "artifact_ids": [
+        "DESIGN",
+        "SOURCES"
+      ],
+      "locator": "design.md",
+      "observation": "Istio公式対応表/1.31.2 chartと既存3repo/mesh Issueを読み比較。専用namespace内client→v1/v2を選定、DB/既存連携に非依存。設計範囲の根拠でありruntime観測ではない。"
+    },
+    {
+      "id": "E-TESTPLAN",
+      "claim": "静的検証・独立Reviewと安全な実測/復帰手順を確定した",
+      "artifact_ids": [
+        "DESIGN"
+      ],
+      "locator": "design.md",
+      "observation": "正負fixture、offline analyze、100:0→90:10→100:0、2000要求/8～12%、v2除去後のVS/DR解除とnamespace opt-outを明記。実装のrender・Test・独立Review・cluster実測はいずれも未実施。"
+    },
+    {
+      "id": "E-BOUNDARY",
+      "claim": "現時点の禁止と将来の権限・影響範囲を明示した",
+      "artifact_ids": [
+        "DESIGN",
+        "SOURCES"
+      ],
+      "locator": "design.md",
+      "observation": "新規CRD/RBAC/webhookはcluster影響あり、discoverySelectorsは権限隔離ではない。現在はread/design/Library保存のみ。Git/cluster/権限変更は実施せず、private実target/task IDやworkspace/logを共有bytesに含めない。"
+    }
+  ],
+  "ac_mapping": [
+    {
+      "ac_id": "AC-1",
+      "disposition": "covered",
+      "scope": "Research: namespace/経路/方式/版を設計で固定。実cluster identityの一致は未検証。",
+      "artifact_ids": [
+        "DESIGN",
+        "SOURCES"
+      ],
+      "evidence_ids": [
+        "E-DESIGN"
+      ]
+    },
+    {
+      "ac_id": "AC-2",
+      "disposition": "covered",
+      "scope": "Research: Git配置先と具体values/VS/DR/fixture surfaceを確定。Gitへの用意は後続Implementation、未実施。",
+      "artifact_ids": [
+        "DESIGN"
+      ],
+      "evidence_ids": [
+        "E-DESIGN"
+      ]
+    },
+    {
+      "ac_id": "AC-3",
+      "disposition": "covered",
+      "scope": "Research: 必要な正負静的検証・独立Review観点を確定。製品の静的検証合格/独立Review合格を主張しない。",
+      "artifact_ids": [
+        "DESIGN"
+      ],
+      "evidence_ids": [
+        "E-TESTPLAN"
+      ]
+    },
+    {
+      "ac_id": "AC-4",
+      "disposition": "covered",
+      "scope": "Research: before/after/実比率/復帰を手順化。製品ゴールは準備で実行成功を追加しない。",
+      "artifact_ids": [
+        "DESIGN"
+      ],
+      "evidence_ids": [
+        "E-TESTPLAN"
+      ]
+    },
+    {
+      "ac_id": "AC-5",
+      "disposition": "covered",
+      "scope": "Research: cluster applyの権限・影響・現時点未許可を明記。権限の付与や変更は行わない。",
+      "artifact_ids": [
+        "DESIGN",
+        "SOURCES"
+      ],
+      "evidence_ids": [
+        "E-BOUNDARY"
+      ]
+    }
+  ],
+  "block_reasons": [],
+  "failure_reasons": [],
+  "knowledge_candidates": [],
+  "publication": "public_safe",
+  "assignment": {
+    "scope": "独立Research/Designとして、3並行作業の③Istio準備の最小設計を確定する。読み取り・設計のみ。実装に必要な比較・推奨・根拠・具体設定surface・必要テストと小Issue案を返す。",
+    "ac_ids": [
+      "AC-1",
+      "AC-2",
+      "AC-3",
+      "AC-4",
+      "AC-5"
+    ],
+    "completion_criteria": [
+      "委任AC原文5文を保全し、対象namespace・経路・方式・版と具体設定を選定する。",
+      "既存API/DBの副作用と進行中連携依存を避け、必要な静的検証・独立Review・将来確認/復帰・権限を説明する。",
+      "既存mesh Issueとの適合を示し、Gitを書かず、私的実ID、実target、workspaceパス、運用logを含めない正本Handoffと最小JSON textbundleを元bytes/size/hashでLibrary配送する。"
+    ]
+  }
+}

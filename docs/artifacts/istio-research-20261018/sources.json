@@ -1,0 +1,213 @@
+{
+  "read_date": "2026-10-18",
+  "scope": "Researchのみ。取得した固定資料と委任与件からの設計判断。実cluster観測なし。",
+  "system": {
+    "revision": "ead1cc4023c083c7b1bf703d8b371a0957997ed5",
+    "handoff_schema": "https://github.com/syuhei0519/ai-development-system/blob/ead1cc4023c083c7b1bf703d8b371a0957997ed5/contracts/handoff.schema.json",
+    "delivery_contract": "https://github.com/syuhei0519/ai-development-system/blob/ead1cc4023c083c7b1bf703d8b371a0957997ed5/contracts/artifact-delivery.md"
+  },
+  "baseline": {
+    "backend-app": "e030275abbf52ecd27b7152ce597b3d89be3f830",
+    "application-manifest": "a5b49532b2b39ad818419834a30c5113c2c90900",
+    "platform-gitops": "482ba450983ac2929f8176374d0d6ca50a69cac6"
+  },
+  "code_evidence": [
+    "backend-app/cmd/server/main.go: DB pool/telemetry初期化",
+    "backend-app/cmd/{order-server,payment-server,notification-server}/main.go: Open/CheckTarget・独立migration",
+    "application-manifest/learning/chart/templates/api.yaml: 1 API/ServiceとDB依存contract",
+    "application-manifest/learning/README.md: 独立手動配備・固定render/image配送",
+    "platform-gitops/README.md,bootstrap/namespaces.yaml: Namespace所有境界/PSA",
+    "platform-gitops/.github/workflows/ci.yml: Helm4.2.4・既存CI境界"
+  ],
+  "issue_scope_limit": "既存Issue本文は適合比較のみ。委任ACを補完/変更しない。Issueは可変なので取得本文hashと更新時刻を記録。公開repoのcode SHA/Issue URLは私的task/実環境IDではない。",
+  "official": [
+    {
+      "id": "support",
+      "url": "https://github.com/istio/istio.io/blob/a03df1cfd4fda35a88a37b7a6486141c1c153bea/content/en/docs/releases/supported-releases/index.md",
+      "revision": "a03df1cfd4fda35a88a37b7a6486141c1c153bea",
+      "git_blob": "62872ff9fa5ba41b9f7c9d8c22e1f5e56adfa05f",
+      "size_bytes": 5369,
+      "sha256": "37090fcc97f03f61d517635179612afd70c8def5bf1e9a26b9d200f7c97da69b"
+    },
+    {
+      "id": "supportData",
+      "url": "https://github.com/istio/istio.io/blob/a03df1cfd4fda35a88a37b7a6486141c1c153bea/data/compatibility/supportStatus.yml",
+      "revision": "a03df1cfd4fda35a88a37b7a6486141c1c153bea",
+      "git_blob": "ea3e3aac620c6c33a0c48ff821d18f7d8839bef8",
+      "size_bytes": 4243,
+      "sha256": "387518cd8557e1737b9b5d46686de816fdbad99edbcef5eae694e264517b24ed"
+    },
+    {
+      "id": "mode",
+      "url": "https://github.com/istio/istio.io/blob/a03df1cfd4fda35a88a37b7a6486141c1c153bea/content/en/docs/overview/dataplane-modes/index.md",
+      "revision": "a03df1cfd4fda35a88a37b7a6486141c1c153bea",
+      "git_blob": "77088cddd5a79bb88f480661b0336620a3bcfab7",
+      "size_bytes": 11453,
+      "sha256": "235306c985942d8ed94dcc109ef28747f3c400bd900aeac4984e107393089cc5"
+    },
+    {
+      "id": "helm",
+      "url": "https://github.com/istio/istio.io/blob/a03df1cfd4fda35a88a37b7a6486141c1c153bea/content/en/docs/setup/install/helm/index.md",
+      "revision": "a03df1cfd4fda35a88a37b7a6486141c1c153bea",
+      "git_blob": "ddce5e40c86a1c0fe0c3e48b8859a37a3c5fb619",
+      "size_bytes": 11649,
+      "sha256": "50e3774729154f427a92775e7e69b0bd519013512f82bcc4f94a74c06944b006"
+    },
+    {
+      "id": "analyze",
+      "url": "https://github.com/istio/istio.io/blob/a03df1cfd4fda35a88a37b7a6486141c1c153bea/content/en/docs/ops/diagnostic-tools/istioctl-analyze/index.md",
+      "revision": "a03df1cfd4fda35a88a37b7a6486141c1c153bea",
+      "git_blob": "ad1976ab7417e5a9d5b0f963307fe760475eaced",
+      "size_bytes": 11323,
+      "sha256": "0fe86b19a729d1683afd4383ae9f2e78a678515063dfb4d8fae3412b6cf6ee65"
+    },
+    {
+      "id": "scoping",
+      "url": "https://github.com/istio/istio.io/blob/a03df1cfd4fda35a88a37b7a6486141c1c153bea/content/en/docs/ops/configuration/mesh/configuration-scoping/index.md",
+      "revision": "a03df1cfd4fda35a88a37b7a6486141c1c153bea",
+      "git_blob": "91b6e98774acdbf248670389ac56feef26978482",
+      "size_bytes": 7079,
+      "sha256": "8da19296725e7578c2f773dd07f3f7dedc0b09afe41a637746f2fd9001b130f9"
+    },
+    {
+      "id": "traffic",
+      "url": "https://github.com/istio/istio.io/blob/a03df1cfd4fda35a88a37b7a6486141c1c153bea/content/en/docs/tasks/traffic-management/traffic-shifting/index.md",
+      "revision": "a03df1cfd4fda35a88a37b7a6486141c1c153bea",
+      "git_blob": "cf09505fe16c726697082285d9c7c0fb93e8b2b9",
+      "size_bytes": 7106,
+      "sha256": "9723192b60d7feaac3b3fe0df0f290c28189dc4e4fa850e925b8bf2190de89b9"
+    },
+    {
+      "id": "manifests/charts/base/values.yaml",
+      "url": "https://github.com/istio/istio/blob/e2f3a7949a358af7dd901a6f9ccd6ecdd7270271/manifests/charts/base/values.yaml",
+      "revision": "e2f3a7949a358af7dd901a6f9ccd6ecdd7270271",
+      "git_blob": "29e7b91bb9492ae11f59a2298ba6ef858efc0662",
+      "size_bytes": 2773,
+      "sha256": "f92dd6226e623b340ead3a2762548a1d629a9fe2ae11a457205193aa10cb6ac6"
+    },
+    {
+      "id": "manifests/charts/istio-control/istio-discovery/values.yaml",
+      "url": "https://github.com/istio/istio/blob/e2f3a7949a358af7dd901a6f9ccd6ecdd7270271/manifests/charts/istio-control/istio-discovery/values.yaml",
+      "revision": "e2f3a7949a358af7dd901a6f9ccd6ecdd7270271",
+      "git_blob": "8c15eaea19d1f105c83fe9a6f6eb26779299ae3b",
+      "size_bytes": 24442,
+      "sha256": "d6b9d64100f695973a1b87a2cedfce597669807d77fd14d00149d56538dd43a1"
+    },
+    {
+      "id": "manifests/charts/istio-control/istio-discovery/templates/mutatingwebhook.yaml",
+      "url": "https://github.com/istio/istio/blob/e2f3a7949a358af7dd901a6f9ccd6ecdd7270271/manifests/charts/istio-control/istio-discovery/templates/mutatingwebhook.yaml",
+      "revision": "e2f3a7949a358af7dd901a6f9ccd6ecdd7270271",
+      "git_blob": "4ce6c7765d7d4e438a4cc7566248d97c48a10c35",
+      "size_bytes": 5660,
+      "sha256": "e3525a95aeda3407918c6596c88a665068f234563a5a94ccc637936f8a5b67b2"
+    },
+    {
+      "id": "manifests/charts/istio-control/istio-discovery/templates/clusterrole.yaml",
+      "url": "https://github.com/istio/istio/blob/e2f3a7949a358af7dd901a6f9ccd6ecdd7270271/manifests/charts/istio-control/istio-discovery/templates/clusterrole.yaml",
+      "revision": "e2f3a7949a358af7dd901a6f9ccd6ecdd7270271",
+      "git_blob": "86e136c26db576abaf34a876f0693b47869f9ab3",
+      "size_bytes": 8390,
+      "sha256": "c91c84d3879a746108fe26ef981314112ee33a941ffc26bc3a35549c388f1a4e"
+    },
+    {
+      "id": "manifests/charts/istio-control/istio-discovery/templates/role.yaml",
+      "url": "https://github.com/istio/istio/blob/e2f3a7949a358af7dd901a6f9ccd6ecdd7270271/manifests/charts/istio-control/istio-discovery/templates/role.yaml",
+      "revision": "e2f3a7949a358af7dd901a6f9ccd6ecdd7270271",
+      "git_blob": "007310ddae9d6f9f5d82a4449f259bc7ec217133",
+      "size_bytes": 1432,
+      "sha256": "4d9c032c303ca58a771f72bbf91de4addbc693ba62d1f9ba58df9ea3e1a916b0"
+    },
+    {
+      "id": "manifests/charts/istio-control/istio-discovery/templates/configmap.yaml",
+      "url": "https://github.com/istio/istio/blob/e2f3a7949a358af7dd901a6f9ccd6ecdd7270271/manifests/charts/istio-control/istio-discovery/templates/configmap.yaml",
+      "revision": "e2f3a7949a358af7dd901a6f9ccd6ecdd7270271",
+      "git_blob": "28680d1b5f81ba07b10972a028f98e7aa8db2972",
+      "size_bytes": 5166,
+      "sha256": "f39226cdf9174f6e55f33ed9319f3c6b54a0766bfbf5007d0c1c4f8566d3e075"
+    },
+    {
+      "id": "pilot/pkg/serviceregistry/kube/controller/namespacecontroller.go",
+      "url": "https://github.com/istio/istio/blob/e2f3a7949a358af7dd901a6f9ccd6ecdd7270271/pilot/pkg/serviceregistry/kube/controller/namespacecontroller.go",
+      "revision": "e2f3a7949a358af7dd901a6f9ccd6ecdd7270271",
+      "git_blob": "b2a2edf79c65e2d5518c5019821802a3b4186a89",
+      "size_bytes": 6986,
+      "sha256": "7468a316068cf18b304edb187339ffb46a44b543ad084113ee09ae670281231a"
+    }
+  ],
+  "issues": [
+    {
+      "url": "https://github.com/syuhei0519/platform-gitops/issues/8",
+      "title": "IstioをPlatformへ導入する",
+      "updated_at": "2026-10-17T17:12:06Z",
+      "size_bytes": 6101,
+      "sha256": "595c673d7579bc5b03e1f4476445dd09312f1685130c4942047e5af3456a6fab"
+    },
+    {
+      "url": "https://github.com/syuhei0519/application-manifest/issues/10",
+      "title": "VirtualService / DestinationRuleによるTraffic Routingを実装する",
+      "updated_at": "2026-10-17T17:13:24Z",
+      "size_bytes": 2849,
+      "sha256": "2ed724025fe574ea085f7299087861331da61dbf439ad07886cb611396a4d76c"
+    },
+    {
+      "url": "https://github.com/syuhei0519/application-manifest/issues/27",
+      "title": "Revision別Istio Routing Manifestを実装する",
+      "updated_at": "2026-10-17T17:12:40Z",
+      "size_bytes": 2930,
+      "sha256": "022a628c348920ef87f7916fdefa778bafd86bd74153a44e38b19cbbe149595c"
+    },
+    {
+      "url": "https://github.com/syuhei0519/application-manifest/issues/28",
+      "title": "Istio Weight変更と経路復帰を実測する",
+      "updated_at": "2026-10-17T17:12:37Z",
+      "size_bytes": 3071,
+      "sha256": "3e2000e60d0d76e8652fa5737addbab9f2ca6a8e08b0a392da3cfd68edcbcaf1"
+    },
+    {
+      "url": "https://github.com/syuhei0519/application-manifest/issues/14",
+      "title": "Argo RolloutsとIstio Traffic Routingを統合する",
+      "updated_at": "2026-10-17T17:13:04Z",
+      "size_bytes": 2730,
+      "sha256": "7e712c25f54dbcf8d39c928331a85040db474680454696521d00549e5a5b52d0"
+    },
+    {
+      "url": "https://github.com/syuhei0519/platform-gitops/issues/83",
+      "title": "[学習監視] Accountの指標をPrometheus・Grafanaで可視化する",
+      "updated_at": "2026-10-18T04:05:56Z",
+      "size_bytes": 3159,
+      "sha256": "d89acf98c567c631466f3cf85e9feee6b05b1388aa5f2a5f30a3bd99f9790a6e"
+    },
+    {
+      "url": "https://github.com/syuhei0519/backend-app/issues/50",
+      "title": "[Order→Payment] 1経路の同期呼び出しと再送・タイムアウトを実装する",
+      "updated_at": null,
+      "provenance": "GitHub issue search returned full body; timestamp not supplied",
+      "size_bytes": 3421,
+      "sha256": "2ea9541072ab570fe131b3c869ef7e779f69d56d9e462905b6619f06b07c2e8f"
+    }
+  ],
+  "derivation": {
+    "representation": "edited_derivative",
+    "source_alias": "istio-research-original",
+    "original_comparison": "producer_attested",
+    "independent_original_comparison": "not_claimed",
+    "edits": [
+      "Removed environment/instruction inventory and internal routing/model/effort notes.",
+      "Added the public Issue 85 source and clarified supported versus tested-but-not-supported table fields.",
+      "Updated Handoff source references and derivative artifact hashes."
+    ],
+    "public_safety_review": "Producer inspected the edited content and checked private-ID, path, credential and internal-log patterns. This is not independent technical Review.",
+    "publication_approval": "Explicit user approval covers only the artifact branch and directory named for this delivery; private approval transcript is retained separately.",
+    "consumer_use": {
+      "status": "pending_separate_manager_authorization",
+      "scope": "syuhei0519/platform-gitops#85 preparation implementation only",
+      "purpose": "implementation",
+      "authority_granted": false
+    }
+  },
+  "issue85": {
+    "url": "https://github.com/syuhei0519/platform-gitops/issues/85",
+    "acceptance_criteria_source": "https://github.com/syuhei0519/platform-gitops/issues/85",
+    "scope": "Preparation only; no cluster operations or product/runtime completion claim."
+  }
+}
