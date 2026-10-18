@@ -70,7 +70,8 @@ def verify(text):
         assert c['securityContext'] == {'allowPrivilegeEscalation': False,
                                        'readOnlyRootFilesystem': True,
                                        'capabilities': {'drop': ['ALL']}}
-        assert c['resources']['limits']['memory'] == '256Mi'
+        assert c['resources']['requests']['memory'] == ('128Mi' if c['name'] == 'grafana' else '64Mi')
+        assert c['resources']['limits']['memory'] == ('512Mi' if c['name'] == 'grafana' else '256Mi')
         assert all(p in c for p in ('startupProbe', 'readinessProbe', 'livenessProbe'))
     configs = {o['metadata']['name']: o['data'] for o in objects if o['kind'] == 'ConfigMap'}
     collector = yaml.safe_load(configs['otel-collector-config']['config.yaml'])
