@@ -1,0 +1,10 @@
+# Future baseline plan. Applying this file does NOT remove an existing revision label.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-learning-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: learning-istio-demo

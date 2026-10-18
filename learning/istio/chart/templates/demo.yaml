@@ -1,0 +1,81 @@
+{{- if ne .Release.Namespace "learning-istio-demo" }}
+{{- fail "only the planned learning-istio-demo namespace is allowed" }}
+{{- end }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mesh-demo
+  namespace: {{ .Release.Namespace }}
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mesh-demo-code
+  namespace: {{ .Release.Namespace }}
+data:
+  demo.py: |
+{{ .Files.Get "files/demo.py" | indent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mesh-demo
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: ClusterIP
+  selector: {app: mesh-demo}
+  ports:
+    - {name: http, port: 8080, targetPort: http, appProtocol: http}
+{{- range $name := list "v1" "v2" "client" }}
+{{- if or (ne $name "v2") (eq $.Values.phase "mesh") }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mesh-demo-{{ $name }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: {{ if eq $name "client" }}mesh-demo-client{{ else }}mesh-demo{{ end }}, version: {{ $name }}}
+  template:
+    metadata:
+      labels: {app: {{ if eq $name "client" }}mesh-demo-client{{ else }}mesh-demo{{ end }}, version: {{ $name }}}
+    spec:
+      serviceAccountName: mesh-demo
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: fixture
+          image: {{ $.Values.image }}
+          imagePullPolicy: IfNotPresent
+          command: [python3, -B, /fixture/demo.py]
+          args: [{{ if eq $name "client" }}idle{{ else }}serve, {{ $name }}{{ end }}]
+          resources:
+            requests: {cpu: 25m, memory: 32Mi}
+            limits: {cpu: 200m, memory: 64Mi}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          volumeMounts:
+            - {name: code, mountPath: /fixture, readOnly: true}
+          {{- if ne $name "client" }}
+          ports:
+            - {name: http, containerPort: 8080}
+          readinessProbe:
+            httpGet: {path: /livez, port: http}
+          livenessProbe:
+            httpGet: {path: /livez, port: http}
+          {{- end }}
+      volumes:
+        - name: code
+          configMap: {name: mesh-demo-code, defaultMode: 0444}
+{{- end }}
+{{- end }}

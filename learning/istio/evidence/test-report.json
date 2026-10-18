@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "issue": "syuhei0519/platform-gitops#85",
+  "representation": "edited_derivative",
+  "venue": "Codex Cloud, offline preparation",
+  "checks": [
+    {
+      "name": "offline-render-inject-analyze",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "name": "byte-identical-render",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "name": "limited-contracts",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "name": "accounting-unit",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "name": "pinned-image-accounting",
+      "exit_code": 0,
+      "result": "passed"
+    }
+  ],
+  "observations": {
+    "renders": 5,
+    "byte_identical": true,
+    "offline_analyses": [
+      "stable",
+      "split",
+      "plain"
+    ],
+    "analysis_failure_threshold": "Warning",
+    "contract_fixtures": {
+      "positive": 3,
+      "negative": 17
+    },
+    "invalid_helm_inputs_rejected": 4,
+    "injected_podspecs": 3,
+    "accounting_unit_tests": 5,
+    "fixture_image_tests": 5,
+    "resource_inventory_count": 42
+  },
+  "limitations": [
+    "Independent Test/Review and same-head required CI are separate pending gates.",
+    "No cluster access, apply, namespace label, RBAC, Secrets, or permission changes performed.",
+    "No mesh runtime, actual request ratio, Admission, or deployment UID verification.",
+    "Initial nonroot Docker bind-mount test could not read private host checkout; default-UID image accounting rerun passed. Host file permissions were not changed. ConfigMap mode and deployment UID are declarative only.",
+    "Helm preinstalled binary bytes/version/commit pinned; official download host HTTP403, archive provenance unverified.",
+    "Istio chart host HTTP403; unaltered charts obtained from pinned official release distribution.",
+    "git diff --check reports whitespace in byte-preserved upstream charts and generated Helm/istioctl YAML; authored files pass the scoped whitespace check."
+  ],
+  "source_identity": {
+    "base_commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+    "istio": "1.31.2",
+    "helm": "4.2.4",
+    "planned_kubernetes": "1.36.4"
+  },
+  "results_are_runtime_evidence": false
+}

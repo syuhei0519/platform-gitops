@@ -1,0 +1,6 @@
+apiVersion: v2
+name: istio-learning-demo
+description: Dedicated DB-free client and two /version fixtures; offline preparation
+type: application
+version: 0.1.0
+appVersion: "1"

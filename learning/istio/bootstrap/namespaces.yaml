@@ -1,0 +1,12 @@
+# Future mesh namespace plan only; no actual target or authorization.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-learning-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: learning-istio-demo
+  labels:
+    istio.io/rev: learning-1-31-2
