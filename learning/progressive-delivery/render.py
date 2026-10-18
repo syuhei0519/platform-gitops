@@ -96,8 +96,8 @@ def render(namespace, control, owner, cache):
                 'application.resourceTrackingMethod': 'annotation',
                 'resource.customizations.health.argoproj.io_Rollout': (ROOT / 'health.lua').read_text(),
                 'resource.inclusions': yaml.safe_dump([
-                    dict(apiGroups=['argoproj.io'], kinds=['Rollout'], clusters=['*']),
-                    dict(apiGroups=[''], kinds=['Service', 'Pod'], clusters=['*']),
+                    dict(apiGroups=['argoproj.io'], kinds=['Rollout', 'AnalysisTemplate', 'AnalysisRun'], clusters=['*']),
+                    dict(apiGroups=[''], kinds=['Service', 'Pod', 'ConfigMap'], clusters=['*']),
                     dict(apiGroups=['apps'], kinds=['ReplicaSet', 'Deployment'], clusters=['*'])]),
             }
         control_objects.append(obj)
@@ -108,6 +108,12 @@ def render(namespace, control, owner, cache):
         binding('argocd-learning', control, 'argocd-application-controller', control)]
     target = [object_('Role', 'argocd-learning', namespace, rules=[
         rule('argoproj.io', 'rollouts', 'get list watch create update patch delete'),
+        rule('argoproj.io', 'analysistemplates', 'get list watch create update patch delete'),
+        rule('argoproj.io', 'analysisruns', 'get list watch'),
+        rule('', 'configmaps', 'get list watch create'),
+        rule('', 'configmaps', 'update patch delete', 'learning-account-analysis-provider'),
+        rule('apps', 'deployments', 'create'),
+        rule('apps', 'deployments', 'update patch delete', 'learning-account-analysis-provider'),
         rule('', 'services', 'get list watch create update patch delete'),
         rule('', 'pods', 'get list watch'),
         rule('apps', 'replicasets deployments', 'get list watch'),
@@ -116,7 +122,9 @@ def render(namespace, control, owner, cache):
         object_('ServiceAccount', 'learning-rollouts', namespace),
         object_('Role', 'learning-rollouts', namespace, rules=[
             rule('argoproj.io', 'rollouts rollouts/status rollouts/finalizers', 'get list watch update patch'),
-            rule('argoproj.io', 'analysisruns experiments analysistemplates', 'get list watch'),
+            rule('argoproj.io', 'experiments analysistemplates', 'get list watch'),
+            rule('argoproj.io', 'analysisruns', 'get list watch create update patch delete'),
+            rule('argoproj.io', 'analysisruns/status analysisruns/finalizers', 'update patch'),
             rule('apps', 'replicasets', 'get list watch create update patch delete'),
             rule('apps', 'deployments', 'get list watch'),
             rule('', 'services', 'get list watch'),
@@ -129,7 +137,7 @@ def render(namespace, control, owner, cache):
             rule('batch', 'jobs', 'get list watch'),
             rule('networking.k8s.io', 'ingresses', 'get list watch')]),
         binding('learning-rollouts', namespace, 'learning-rollouts', namespace)]
-    # Namespace-scoped controller; no workloadRef, AnalysisRun execution or traffic provider.
+    # Namespace-scoped controller; inline web analysis only, no workloadRef or Job execution.
     dep = next(copy.deepcopy(x) for x in ro if x['kind'] == 'Deployment' and x['metadata']['name'] == 'argo-rollouts')
     dep['metadata']['name'] = 'learning-rollouts'
     dep['metadata']['namespace'] = namespace

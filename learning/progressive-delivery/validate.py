@@ -55,6 +55,36 @@ def main():
     assert secret_rule['resourceNames'] == ['argo-rollouts-notification-secret']
     assert set(secret_rule['verbs']) == {'get','list','watch'}
     assert not any('*' in r['resources'] or '*' in r['verbs'] for o in all_objects if o['kind']=='Role' for r in o['rules'])
+    # Evaluate effective Role rules, including resourceNames boundaries on provider writes.
+    argo = next(o for o in outputs['target.yaml'] if o['kind']=='Role' and o['metadata']['name']=='argocd-learning')
+    def permits(role, group, resource, verb, name=''):
+        return any(group in r['apiGroups'] and resource in r['resources'] and verb in r['verbs'] and
+                   ('resourceNames' not in r or name in r['resourceNames']) for r in role['rules'])
+    for verb in ('get','list','watch','create','update','patch','delete'):
+        assert permits(role,'argoproj.io','analysisruns',verb)
+        assert permits(argo,'argoproj.io','analysistemplates',verb)
+    for resource in ('analysisruns/status','analysisruns/finalizers'):
+        assert permits(role,'argoproj.io',resource,'update')
+        assert permits(role,'argoproj.io',resource,'patch')
+    for verb in ('get','list','watch'):
+        assert permits(argo,'argoproj.io','analysisruns',verb)
+    for group,resource in (('','configmaps'),('apps','deployments')):
+        for verb in ('get','list','watch','create','update','patch','delete'):
+            assert permits(argo,group,resource,verb,'learning-account-analysis-provider')
+        for verb in ('update','patch','delete'):
+            assert not permits(argo,group,resource,verb,'learning-account')
+            assert not permits(argo,group,resource,verb,'unrelated')
+    for sa_role in (role,argo):
+        for group,resource in (('argoproj.io','clusteranalysistemplates'),('batch','jobs'),('','secrets'),('','persistentvolumeclaims')):
+            for verb in ('create','update','patch','delete'):
+                assert not permits(sa_role,group,resource,verb)
+    for verb in ('create','update','patch','delete'):
+        assert not permits(argo,'argoproj.io','analysisruns',verb)
+        assert not permits(role,'argoproj.io','analysistemplates',verb)
+    inclusions = yaml.safe_load(next(o for o in outputs['control.yaml'] if o['metadata']['name']=='argocd-cm')['data']['resource.inclusions'])
+    assert inclusions == [dict(apiGroups=['argoproj.io'],kinds=['Rollout','AnalysisTemplate','AnalysisRun'],clusters=['*']),
+                          dict(apiGroups=[''],kinds=['Service','Pod','ConfigMap'],clusters=['*']),
+                          dict(apiGroups=['apps'],kinds=['ReplicaSet','Deployment'],clusters=['*'])]
     crd = next(o for o in outputs['crds.yaml'] if o['metadata']['name']=='rollouts.argoproj.io')
     schema = next(v['schema']['openAPIV3Schema'] for v in crd['spec']['versions'] if v['name']=='v1alpha1')
     Draft7Validator(schema).validate(outputs['sample.yaml'][0])
@@ -72,6 +102,25 @@ def main():
         try: application('learning-fixture','learning-control','a'*40,dict(values,**change))
         except ValueError: pass
         else: raise AssertionError('invalid Application input accepted')
+    for case in ('success','failure','inconclusive','missing','timeout'):
+        analysis_values = dict(values,revision='candidate',analysis=dict(enabled=True,case=case))
+        analysis_project, analysis_app = application('learning-fixture','learning-control','a'*40,analysis_values)
+        assert analysis_app['spec']['source']['helm']['valuesObject']['analysis'] == analysis_values['analysis']
+        assert analysis_app['spec']['source']['helm']['valueFiles'] == ['../profiles/candidate.yaml']
+        assert analysis_project['spec']['namespaceResourceWhitelist'] == project['spec']['namespaceResourceWhitelist'] + [
+            dict(group='argoproj.io',kind='AnalysisTemplate'), dict(group='',kind='ConfigMap'),dict(group='apps',kind='Deployment')]
+        assert 'automated' not in analysis_app['spec']['syncPolicy'] and not analysis_app['metadata'].get('finalizers')
+        assert analysis_app['spec']['ignoreDifferences'] == app['spec']['ignoreDifferences']
+        for kind,obj in [('Application',analysis_app),('AppProject',analysis_project)]:
+            crd = next(o for o in outputs['crds.yaml'] if o['spec']['names']['kind']==kind)
+            Draft7Validator(crd['spec']['versions'][0]['schema']['openAPIV3Schema']).validate(obj)
+    for change in ({'analysis':{'enabled':True,'case':'unknown'}}, {'analysis':{'enabled':'true','case':'success'}},
+                   {'analysis':{'enabled':True,'case':'success','url':'http://other'}}, {'analysis':False},
+                   {'analysis':{'enabled':True,'case':'success'},'revision':'failed'}):
+        try: application('learning-fixture','learning-control','a'*40,dict(values,**change))
+        except ValueError: pass
+        else: raise AssertionError('invalid analysis input accepted')
+    outputs['analysis-application.yaml'] = [analysis_project,analysis_app]
     cm = next(o for o in outputs['control.yaml'] if o['metadata']['name']=='argocd-cm')
     assert cm['metadata']['labels']['app.kubernetes.io/part-of'] == 'argocd'
     lua = LuaRuntime()
@@ -89,6 +138,7 @@ def main():
         args.output.mkdir(parents=True,exist_ok=False)
         for name, docs in outputs.items():
             (args.output/name).write_text(yaml.safe_dump_all(docs,sort_keys=False))
+    print('PASS inline analysis permissions: Run management/status/finalizers; template CRUD and Run read; provider name bounds; Job/Secret/PVC/cluster-template writes denied; 5 opt-in Applications and input negatives.')
     print('PASS fixed upstream checksums; 6 CRDs; sample schema; bounded RBAC; no cluster roles/webhooks; manual Application and AppProject schema; namespace/value negatives; 8 executed Lua health cases. No runtime acceptance.')
 
 
