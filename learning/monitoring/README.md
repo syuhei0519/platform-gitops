@@ -28,7 +28,7 @@ observability foundationから独立させる。backendコードは変更しな�
 
 [application-manifestのAccount opt-in](https://github.com/syuhei0519/application-manifest/tree/main/learning)
 で`telemetry.enabled: true`とする。既定はfalse、他サービスのtrueはschema/templateで拒否する。
-同じhelperを使うmigration Jobにも4入力が付くが、migrationはSDKを起動しない。
+4入力はAccount API専用helperに限定し、完了済みmigration JobのPodTemplateは変更しない。
 既存DB/Secret/PVC/image参照は変更しない。
 
 既存SDKは送信時に40桁buildCommit、environment=local、`POD_NAMESPACE=account`、
@@ -88,9 +88,14 @@ namespaceそのものはchartに含まれず、既存か承認された事前作
 `get/create/patch`、pods/events/replicasetsの`get/list/watch`、pods/portforwardの`create`、
 所有資源cleanupの`delete`とAccount deploymentの既存`get/patch/watch`権限を確認する。
 必要権限がなければRBACを追加せず返す。初回はinventoryの同名資源が全て不在であることを確認する。
+監視opt-in側のinventoryは実Account namespaceの`apps/v1 Deployment learning-account`だけ。
+適用/復旧ともJob、DB/StatefulSet、PVC、Secret、ConfigMap、Serviceを含めず、migrationを削除・再実行しない。
 
 1. 非秘密valuesファイルに承認済み`owner`/`accountNamespace`を記録し、固定chartからrenderする。
-   render/values/dashboard/Account opt-in renderのSHA256とimage digestを固定して配送し、ローカルで全bytes照合する。
+   render/values/dashboardのSHA256とimage digestを固定して配送し、ローカルで全bytes照合する。
+   Account側は既存の固定済み完全values（opt-in off、source/image/DB等を保持）から
+   application-manifestで次を実行し、Deployment-onlyの3ファイルを固定bytesで配送する。
+   全chart renderやServiceを含むAPI template全体を適用ファイルにしない。
 
    ```sh
    helm template learning-monitoring learning/monitoring/chart \
@@ -98,16 +103,29 @@ namespaceそのものはchartに含まれず、既存か承認された事前作
    sha256sum monitoring-render.yaml monitoring-values.yaml
    ```
 
+   ```sh
+   # application-manifest checkoutで実行。新規directoryを指定する。
+   python3 learning/validate.py --account-telemetry-only \
+     --account-values existing-account-values.yaml --namespace "$ACCOUNT_NAMESPACE" \
+     --output account-telemetry-delivery
+   ```
+
+   `account-api-before.yaml`（復旧用）、`account-api-telemetry.yaml`（適用用）、`inventory.json`を
+   取得し、inventoryのnamespace/name/owner、両YAMLのsize/SHA256、各1 Deploymentのみを照合する。
+   実AccountとbeforeのPodTemplate不一致は停止。合成fixtureを実対象の適用に流用しない。
+
 2. 対象確認・live承認後のみ、固定renderを適用し、3 Deployment Ready、3 Service、
    実imageID、ConfigMap checksum、所有ラベルを確認する。
-   その後application-manifestの固定Account opt-in renderを適用し、Accountだけのrolloutを確認する。
-   DB/Secret/PVC/他サービスは変更しない。
+   その後`account-api-telemetry.yaml`だけを適用し、Accountだけのrolloutを確認する。
+   完了済みJob/DB/PVC/Secret/他サービスは適用対象に含めない。
 
    ```sh
    kubectl --context "$KUBE_CONTEXT" apply -f monitoring-render.yaml
    kubectl --context "$KUBE_CONTEXT" -n observability rollout status deploy/otel-collector --timeout=300s
    kubectl --context "$KUBE_CONTEXT" -n observability rollout status deploy/learning-prometheus --timeout=300s
    kubectl --context "$KUBE_CONTEXT" -n observability rollout status deploy/learning-grafana --timeout=300s
+   kubectl --context "$KUBE_CONTEXT" apply -f account-telemetry-delivery/account-api-telemetry.yaml
+   kubectl --context "$KUBE_CONTEXT" -n "$ACCOUNT_NAMESPACE" rollout status deploy/learning-account --timeout=300s
    ```
 
 3. 別terminalで各loopback port-forwardを起動し、終了時の停止責任を持つ。
@@ -151,7 +169,9 @@ namespaceそのものはchartに含まれず、既存か承認された事前作
    AccountやDBを停止する操作に置換しない。Order/Payment/Notificationはread-only Ready確認だけ。
 
 7. 時刻付きの非秘密結果、render/config/image identity、UI/API照合、停止/復旧/cleanupを保存する。
-   Accountの追加envは保存済みの承認済みPodTemplateへ復旧し、所有監視inventoryのみ保持または削除する。
+   Accountは保存済みの`account-api-before.yaml`だけをapplyして承認済みPodTemplateへ復旧し、
+   Account rolloutを確認する。全chart renderで復旧せず、Jobの削除・再実行はしない。
+   所有監視inventoryのみ保持または削除する。
    namespace自体、既存DB/PVC/Secret/他サービス/clusterを削除しない。
    kubeconfig/raw認証情報/Account本文/内部実行IDを公開物に含めない。
    Managerへ固定bytes/Handoffを配送し、5ACの実測と両repoの統合完了はManagerが判定する。
