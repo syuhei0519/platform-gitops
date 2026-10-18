@@ -74,11 +74,19 @@ jobs:
           chmod +x .build/helm
           PATH="$PWD/.build:$PATH" .build/monitoring-venv/bin/python learning/monitoring/validate.py --output .rendered/learning-monitoring
           sh learning/monitoring/check-tools.sh .rendered/learning-monitoring
+      - name: Checkout fixed Account chart for Application integration regression
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: syuhei0519/application-manifest
+          ref: a817e00f42a659d1dcd8a9766ad2727cc4beee18
+          path: .build/metrics-manifest
+          persist-credentials: false
       - name: Learning progressive delivery static checks
         run: |
           python3 -m venv .build/progressive-venv
           .build/progressive-venv/bin/python -m pip install PyYAML==6.0.3 jsonschema==4.26.0 lupa==2.6
           .build/progressive-venv/bin/python learning/progressive-delivery/validate.py --output .rendered/learning-progressive-delivery
+          PATH="$PWD/.build:$PATH" .build/progressive-venv/bin/python learning/progressive-delivery/test_application.py --manifest-repo .build/metrics-manifest
           docker run --rm -v "$PWD:/work:ro" -w /work ghcr.io/yannh/kubeconform:v0.7.0-alpine@sha256:8f0eeaaa96ba27ba1500b0e4b1c215acc358d159c62a7ecae58d7a03403287b0 -strict -summary -kubernetes-version 1.36.0 .rendered/learning-progressive-delivery/control.yaml .rendered/learning-progressive-delivery/target.yaml
       - name: Kubernetes schema checks
         run: |

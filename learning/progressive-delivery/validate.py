@@ -103,7 +103,7 @@ def main():
     for case in ('success','failure','inconclusive','missing','timeout'):
         analysis_values = dict(values,revision='candidate',analysis=dict(enabled=True,case=case))
         analysis_project, analysis_app = application('learning-fixture','learning-control','a'*40,analysis_values)
-        assert analysis_app['spec']['source']['helm']['valuesObject']['analysis'] == analysis_values['analysis']
+        assert analysis_app['spec']['source']['helm']['valuesObject']['analysis'] == dict(analysis_values['analysis'], mode='fixed')
         assert analysis_app['spec']['source']['helm']['valueFiles'] == ['../profiles/candidate.yaml']
         assert analysis_project['spec']['namespaceResourceWhitelist'] == project['spec']['namespaceResourceWhitelist'] + [
             dict(group='argoproj.io',kind='AnalysisTemplate')]
@@ -114,7 +114,9 @@ def main():
             Draft7Validator(crd['spec']['versions'][0]['schema']['openAPIV3Schema']).validate(obj)
     for change in ({'analysis':{'enabled':True,'case':'unknown'}}, {'analysis':{'enabled':'true','case':'success'}},
                    {'analysis':{'enabled':True,'case':'success','url':'http://other'}}, {'analysis':False},
-                   {'analysis':{'enabled':True,'case':'success'},'revision':'failed'}):
+                   {'analysis':{'enabled':True,'case':'success'},'revision':'failed'},
+                   {'analysis':{'enabled':True,'case':'success','mode':'unknown'}},
+                   {'analysis':{'enabled':False,'case':'success','mode':'metrics'}}):
         try: application('learning-fixture','learning-control','a'*40,dict(values,**change))
         except ValueError: pass
         else: raise AssertionError('invalid analysis input accepted')

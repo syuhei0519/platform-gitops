@@ -5,7 +5,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "monitoring.labels" . | nindent 4 }}
-automountServiceAccountToken: false
+automountServiceAccountToken: true
 ---
 apiVersion: v1
 kind: Service
@@ -41,7 +41,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/collector-config.yaml") . | sha256sum }}
     spec:
       serviceAccountName: otel-collector
-      automountServiceAccountToken: false
+      automountServiceAccountToken: true
       terminationGracePeriodSeconds: 30
       securityContext: {runAsNonRoot: true, runAsUser: 10001, runAsGroup: 10001, fsGroup: 10001, seccompProfile: {type: RuntimeDefault}}
       containers:

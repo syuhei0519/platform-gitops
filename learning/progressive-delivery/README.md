@@ -171,3 +171,29 @@ Cloudではapply、実SAの認可、image到達性、controller生成Run、次st
 
 初回提案commitではproviderのArgo管理とDeployment/ConfigMap権限を含めていましたが、Managerの権限ゲートで
 承認範囲を超えるため不採用となりました。追加commitで独立fixture化し、今回の権限追加をAnalysisTemplate/Runに限定しました。
+
+## Issue15のmetrics Application結線（P1修正）
+
+完全なAccount valuesの `analysis: {enabled: true, mode: metrics, case: success}` と
+`revision: good` / `candidate` をgeneratorへ渡す。最上位 `mode` は引き続き `rollout`。
+`mode` 省略は従来の `fixed` として受け付け、analysis省略は明示disabled/fixedへ正規化する。
+不明mode、disabledとmetricsの組合せ、failed readinessとanalysisの併用は拒否する。
+
+既存の `application.py` コマンドで、metrics用valueFiles、valuesObjectのenabled/mode/case、
+AppProjectのAnalysisTemplate許可を同時生成する。revisionだけはprofileから渡す。
+AppProject/Applicationの両方をlocal Test担当が確認してapplyし、pruneなしで手動syncする。
+**valueFilesだけのpatchは行わない**。優先される古いvaluesObjectや旧AppProjectが残ると、
+metricsが無効化されたりAnalysisTemplateが拒否されたりする。
+復帰先・実験caseの変更も完全valuesから両資源を再生成し、古い保存Applicationを再投入しない。
+新たなRole権限、ArgoのConfigMap/Deployment create、AnalysisRunのsync許可は不要。
+
+生成Applicationの実Helm引数を使う回帰確認:
+
+```sh
+python3 learning/progressive-delivery/test_application.py --manifest-repo ../application-manifest
+```
+
+実chartで手動・従来fixed・明示fixed・metricsのgood/candidateを10通り描画し、
+provider/準備pauseと、生成資源kindがAppProject許可の集合と一致することを確認する。
+CIはmanifest `a817e00f42a659d1dcd8a9766ad2727cc4beee18` のchartを固定checkoutして同じ検査を実行する。
+queryのreset条件とCollector権限はこの修正では変更していない。
