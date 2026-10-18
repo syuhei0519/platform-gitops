@@ -1,6 +1,6 @@
 # Core Platform v1 — PE019最終受入
 
-4リポジトリ共通の受入正本。結果の索引は[PE019-acceptance.json](implementation/PE019-acceptance.json)。文書のみの統合commitと、実際に試験した以下の版を区別する。統合後はcharts/environments/bootstrapのGit object一致を確認する。
+4リポジトリ共通の受入正本。結果の索引は[PE019-acceptance.json](https://github.com/syuhei0519/platform-gitops/blob/b2e8758ce933a56bddf2931b167f2f5892e65358/docs/implementation/PE019-acceptance.json)。文書のみの統合commitと、実際に試験した以下の版を区別する。統合後はcharts/environments/bootstrapのGit object一致を確認する。
 
 | リポジトリ | 実受入した保護main |
 |---|---|
@@ -20,7 +20,7 @@
 
 ## AT全件の対応
 
-下表の前段証跡は[実入力同値](implementation/evidence/PE019/PE019-final-audit/critical-input-reuse.json)と[前段hash監査](implementation/evidence/PE019/PE019-final-audit/precedent-checksums.json)を通して再利用する。過去NR traceを現在版の保存証明にしない。bcc→90の差は予算計測2スクリプト、manifest240→667の差はbackend選択release値。変更部分は今回の実120/900・現Pod結合・AT14で確認した。
+下表の前段証跡は[実入力同値](https://github.com/syuhei0519/platform-gitops/blob/b2e8758ce933a56bddf2931b167f2f5892e65358/docs/implementation/evidence/PE019/PE019-final-audit/critical-input-reuse.json)と[前段hash監査](https://github.com/syuhei0519/platform-gitops/blob/b2e8758ce933a56bddf2931b167f2f5892e65358/docs/implementation/evidence/PE019/PE019-final-audit/precedent-checksums.json)を通して再利用する。過去NR traceを現在版の保存証明にしない。bcc→90の差は予算計測2スクリプト、manifest240→667の差はbackend選択release値。変更部分は今回の実120/900・現Pod結合・AT14で確認した。
 
 | AT | 合格根拠・結果 |
 |---|---|
@@ -54,7 +54,7 @@
 
 ## 図と現在構成
 
-凍結8図の責任分担/経路/namespace/RBAC/Sync順/観測/供給網を照合し、[図のhash・ラベル・edge・差分](implementation/evidence/PE019/PE019-final-audit/diagram-contract-audit.json)に保存した。最終試験用kind名と隔離restore PVCは実施範囲の差分。Phase2は両サービス実装済み。Kong/Istio/Rollouts/Backstage/Crossplaneは将来計画であり実装済みとはしない。
+凍結8図の責任分担/経路/namespace/RBAC/Sync順/観測/供給網を照合し、[図のhash・ラベル・edge・差分](https://github.com/syuhei0519/platform-gitops/blob/b2e8758ce933a56bddf2931b167f2f5892e65358/docs/implementation/evidence/PE019/PE019-final-audit/diagram-contract-audit.json)に保存した。最終試験用kind名と隔離restore PVCは実施範囲の差分。Phase2は両サービス実装済み。Kong/Istio/Rollouts/Backstage/Crossplaneは将来計画であり実装済みとはしない。
 
 実12 Apps Healthy/Synced、backend UIDf3fb9a1f-ddaa-41e0-9723-73eb46e3cf08、frontend UIDc6f46227-3f78-4e06-8f28-da6a29e29165、PVC21a31208-789a-4c23-9f28-389407f1b689。元Lab PVCf777/schema1を保持。
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+bash ci/shared-tools.sh
 mkdir -p .security .build
 sh ci/test-docs-check.sh
 for module in tools/*/go.mod; do

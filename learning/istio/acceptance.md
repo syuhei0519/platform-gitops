@@ -18,12 +18,16 @@ initは各100m/128Miで、通常containerとのmaxやpod overhead等を含む実
 
 ## plain → stable → 90:10 → stable → plain
 
-1. **before / plain**: `bootstrap/plain.yaml` と `rendered/plain.yaml` の所有計画だけを、別承認後に適用します。
+[README の再現手順](README.md#再現)で `/tmp/istio-render` に生成した YAML を使います。
+以下の生成 YAML のファイル名はこのディレクトリを基準にします。inventory も必要な場合は、
+`learning/istio` で `python validate.py --rendered /tmp/istio-render --helm "$HELM" --write-inventory` を実行します。
+
+1. **before / plain**: `bootstrap/plain.yaml` と `/tmp/istio-render/plain.yaml` の所有計画だけを、別承認後に適用します。
    client/v1の2 Podにproxyがないこと、ServiceのEndpointSliceがv1のみであることを確認。
    clientからDNS経由でGET /versionが200/v1になることを確認します。
    非参加4 APIも、別途認可済みprobe経路で既存 `/livez` / `/readyz` GETを一度確認します。認可済み経路が不明なら推測せず後続担当へ確認。
    code/config/image、開始時刻、HTTP結果をprivate記録します。DB書込みは行いません。
-2. **foundation**: `rendered/base.yaml` → 全15 CRDのEstablished確認 → `rendered/istiod.yaml` の順に適用します。
+2. **foundation**: `/tmp/istio-render/base.yaml` → 全15 CRDのEstablished確認 → `/tmp/istio-render/istiod.yaml` の順に適用します。
    istiod ready、revision webhook/Service、CA配布を確認。非参加Podが新規injectされていないことも確認します。
    cluster共有のdefault validator/CRDも含むためnamespace限定の操作ではありません。
 3. **mesh stable**: 参加namespaceだけに計画revisionを付け、client/v1を再作成。legacy/ambient labelを併記しません。
@@ -60,10 +64,10 @@ stable/plainは200件すべてv1、v2/失敗/未知本文0。splitは2000件す�
 
 ## 必要権限と生成inventory
 
-`evidence/resource-inventory.json` はbase+istiod+namespace+stableの**計画40リソース**です。
+`/tmp/istio-render/resource-inventory.json` はbase+istiod+namespace+stableの**計画40リソース**です。
 15 CRD、2 ClusterRole/2 ClusterRoleBinding、2 ValidatingWebhookConfiguration、1 MutatingWebhookConfiguration、2 Namespaceを含みます。
 namespacedは2 SA、1 Role/1 RoleBinding、4 ConfigMap、2 Service、4 Deployment（istiod+fixture3）、VS/DR各1です。
-`evidence/podspec-inventory.json` は3 Podのoffline注入結果であり、実Admission通過を証明しません。
+`/tmp/istio-render/podspec-inventory.json` は3 Podのoffline注入結果であり、実Admission通過を証明しません。
 
 | 将来の担当 | 必要な既存権限と影響 |
 | --- | --- |
@@ -93,6 +97,6 @@ namespace/CA/Secretも独立した所有・削除範囲承認が必要です。�
 4. 導入前後の疎通・実際の要求比率・元へ戻す方法を確認手順にする。
 5. クラスタへ適用する権限や影響範囲を明示する。
 
-Implementationの静的検証は `evidence/test-report.json`、独立Test/ReviewはManager別担当です。
+過去のImplementation静的検証は [履歴索引](evidence/README.md) から参照できます。独立Test/ReviewはManager別担当です。
 同じ固定候補でschema・正負fixture・analyze・注入権限・復帰順序・公開安全性・所有境界と必須CIを確認してください。
 AC-3の独立合格とIssue全体の最終判定は未実施です。今回runtime成功は求めず、将来操作は別承認です。

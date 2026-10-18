@@ -1,6 +1,6 @@
 # PE016B 単一OCI検証とbackend中間main配信の実受入
 
-PE018F完了後にbackendへ検証専用OCI経路を移植し、backend !12をmain `df0f40786a878c03c79000be027c5bbed59d7257`へ統合した。検証ソース`cbfd32e960943131a10ada62f8ff36ceb2f61cc1`と最終ソース`5eaf29673faca533431bee961512fd57295cf62b`は区別して保存し、差分が受入説明書のみであること、最終own CI2910645588全6success、直前の保護main/source、candidate/actual tree一致を確認した。対応する公開proofのLF SHA256一覧は[受入索引](PE016B-acceptance.json)に保存した。
+PE018F完了後にbackendへ検証専用OCI経路を移植し、backend !12をmain `df0f40786a878c03c79000be027c5bbed59d7257`へ統合した。検証ソース`cbfd32e960943131a10ada62f8ff36ceb2f61cc1`と最終ソース`5eaf29673faca533431bee961512fd57295cf62b`は区別して保存し、差分が受入説明書のみであること、最終own CI2910645588全6success、直前の保護main/source、candidate/actual tree一致を確認した。対応する公開proofのLF SHA256一覧は[受入索引](https://github.com/syuhei0519/platform-gitops/blob/b2e8758ce933a56bddf2931b167f2f5892e65358/docs/implementation/PE016B-acceptance.json)に保存した。
 
 ## 実OCIと隔離実行
 

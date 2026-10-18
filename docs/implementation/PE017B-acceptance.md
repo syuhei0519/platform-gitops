@@ -32,4 +32,4 @@ backend専用read_api Reporterをhidden/masked/protected/release-evidenceへ設�
 
 ## 証跡索引と範囲
 
-[PE017B-acceptance.json](PE017B-acceptance.json)の44件は、保存したUTF-8/LF bytesのSHA256で索引化している。採取時点のunitAccepted=false等は部分工程の限定状態で、最終判定は実受入audit・この証跡MRの実main統合・Issue17のC/F/B確認で行う。Cの固定URL/認証/redirect/checksum/同値冪等・別値拒否・単一writer/保持fixtureは既受入の契約を維持する。次はPE018B全面切替→PE019最終同版AT01〜14/設計8基準監査。
+[PE017B-acceptance.json](https://github.com/syuhei0519/platform-gitops/blob/b2e8758ce933a56bddf2931b167f2f5892e65358/docs/implementation/PE017B-acceptance.json)の44件は、保存したUTF-8/LF bytesのSHA256で索引化している。採取時点のunitAccepted=false等は部分工程の限定状態で、最終判定は実受入audit・この証跡MRの実main統合・Issue17のC/F/B確認で行う。Cの固定URL/認証/redirect/checksum/同値冪等・別値拒否・単一writer/保持fixtureは既受入の契約を維持する。次はPE018B全面切替→PE019最終同版AT01〜14/設計8基準監査。
