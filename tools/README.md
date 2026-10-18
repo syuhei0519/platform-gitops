@@ -1,14 +1,10 @@
 # 共有 CI ツール
 
-正本は [backend-app/tools](https://github.com/syuhei0519/backend-app/tree/6e354326159c01984e4c857895a31d052ed7f91e/tools)。
-固定 commit: `6e354326159c01984e4c857895a31d052ed7f91e`。
+`.github/workflows/ci.yml` は backend-app の共通 Action を固定 commit で読み込み、
+必要な module 名を `modules` で宣言する。取得処理のコピーと別の取得用 SHA は置かない。
+GitHub Actions が固定した Action のコードを使い、既存ディレクトリへの混在を拒否する。
 
-repo root で `bash ci/shared-tools.sh` を実行すると必要な Go module を `tools/` に取得する。
-生成したディレクトリは Git 対象外。再取得時はそのディレクトリだけを削除する。
-CI は取得失敗・既存ディレクトリとの混在を拒否し、通常の Go 依存固定と security checks を維持する。
-`bash ci/github/test.sh` は取得・共有回帰テスト・repo 固有テストをまとめて実行する。
+ローカルでは [backend-app の手順](https://github.com/syuhei0519/backend-app/blob/main/tools/README.md) に従い、
+workflow と同じ commit を checkout して `ci/materialize-tools.sh` で配置してから `bash ci/github/test.sh` を実行する。
 
-共有元 PR の commit 公開後に consumer CI を開始し、共有元を先にマージする。
-共有元の commit を保持しない squash / rebase merge を使った場合は consumer pin をマージ後 SHA に更新する。
-GitLab の API / registry 互換関数は過去テスト用。旧 trusted-consumer の Git tree snapshot は旧 commit で再現する。
-新しい GitHub の required checks と trusted manifest verification は維持する。
+Renovate の設定は [固定参照の更新](../docs/shared-tools-updates.md) を参照する。

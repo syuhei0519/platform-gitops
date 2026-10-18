@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# CI/運用検証の入口。.gitlab-ci.ymlが指定する固定入力と検証器を使用する。
+# CI/運用検証の入口。.github/workflows/ci.yml が指定する固定入力と検証器を使用する。
 # 非成功終了は後続の検査を止める。成功してもcluster変更・merge権限を自動付与するものではない。
 set -eu
 rendered=${1:-.rendered/gitlab-runner.yaml}

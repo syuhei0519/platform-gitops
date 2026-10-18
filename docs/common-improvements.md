@@ -30,5 +30,5 @@ Git history、失敗、実装時点の未実施を上書きしていない。
 CI artifact には期限があるため、対象 commit・コマンド・結論を Markdown に残す。
 実際の fixture / schema / lock / vendor と、生成された運用証跡を区別して整理できる。
 旧 Handoff / Delivery schema と CLI は明示的な過去契約の回帰用に残すが、新規タスクの必須記録にはしない。
-独立 Review は未実施で Manager が別途担当する。マージ・Secrets/Ruleset 変更・環境配備は行っていない。
-既存 Issue / PR の本文更新と139 Issueの整理は Manager の担当。
+別の担当者によるレビュー は未実施で 担当者 が別途担当する。マージ・Secrets/Ruleset 変更・環境配備は行っていない。
+既存 Issue / PR の本文更新と139 Issueの整理は 担当者 の担当。

@@ -11,3 +11,6 @@ kind、Argo CD、App of Apps、GitLab Runner foundationを所有するリポジ�
 Core Platform v1の設計正本・責任境界・稼働基準は [docs/bootstrap.md](docs/bootstrap.md) と [PE-001基準記録](docs/implementation/PE-001-baseline.md) を参照してください。固定版台帳は `bootstrap/versions.lock.yaml` です。
 
 最終版の新規構築・観測・障害試験は [再構築と最終受入](docs/operations/final-rebuild.md) に従います。受入完了は実測索引と親Issueの状態を照合して判定します。
+
+`charts/runner-foundation` と `charts.gitlab.io` の Runner は GitLab Runner の権限境界を学ぶために残しています。
+アプリの CI は GitHub Actions で実行し、Runner 構成の保持は GitLab CI の再有効化を意味しません。

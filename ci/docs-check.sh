@@ -1,6 +1,6 @@
 #!/bin/sh
 # 文書専用CIから呼ぶ。比較差分の許可パスを再確認し、競合マーカーとsecretを検査する。
-# 入力はcheckoutとGitLabの比較元情報。通常CI・依存更新・イメージ公開・配備は行わない。
+# 入力はcheckoutとGitHub Actionsで確定したDOCS_BASE。通常CI・依存更新・イメージ公開・配備は行わない。
 # 失敗は非0で停止。検出内容を含み得るTrivy出力は非公開一時領域で扱い、終了時に削除する。
 set -eu
 umask 077
@@ -10,19 +10,7 @@ trap 'rm -rf "$work"' EXIT
 trap 'exit 1' HUP INT TERM
 mkdir "$work/input"
 git rev-parse --verify HEAD > /dev/null 2>&1 || fail
-case "${CI_PIPELINE_SOURCE:-}" in
-  merge_request_event) base=${CI_MERGE_REQUEST_DIFF_BASE_SHA:-} ;;
-  push)
-    if [ "${CI_COMMIT_BRANCH:-}" = "${CI_DEFAULT_BRANCH:-}" ]; then
-      base=${CI_COMMIT_BEFORE_SHA:-}
-    else
-      # includeのcompare_toと同じmainを読む。pipeline作成後にmainが進んだ場合も未知パスは失敗させる。
-      [ -n "${CI_DEFAULT_BRANCH:-}" ] || fail
-      git fetch --no-tags --depth=1 origin "refs/heads/$CI_DEFAULT_BRANCH" > "$work/fetch.log" 2>&1 || fail
-      base=$(git rev-parse FETCH_HEAD) || fail
-    fi ;;
-  *) fail ;;
-esac
+base=${DOCS_BASE:-}
 # 値をGitのoptionや任意refとして扱わない。MR/pushの比較元は40桁commit SHAだけ許可する。
 [ "${#base}" -eq 40 ] || fail
 case "$base" in *[!0-9a-f]*|0000000000000000000000000000000000000000) fail ;; esac
