@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: learning-prometheus-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "monitoring.labels" . | nindent 4 }}
+data:
+  prometheus.yml: |
+    {{- include "monitoring.prometheusConfig" . | nindent 4 }}
