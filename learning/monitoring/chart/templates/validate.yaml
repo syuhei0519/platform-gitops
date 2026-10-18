@@ -1,0 +1,6 @@
+{{- if ne .Release.Namespace "observability" }}
+{{- fail "fixed SDK endpoint requires namespace observability; check collisions before apply" }}
+{{- end }}
+{{- if ne .Release.Name "learning-monitoring" }}
+{{- fail "release name must be learning-monitoring" }}
+{{- end }}
