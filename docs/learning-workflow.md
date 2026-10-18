@@ -13,14 +13,14 @@ image digest、依存固定、署名・真正性検査、security check の失�
 ## 既存 Issue / PR の変換ルール
 
 原文の履歴・失敗・未確認点は消さず、現在の結論と最終確認へのリンクを追記する。
-Manager 判定、固定 bytes、配送 receipt、attempt 予算は通常の Issue / PR では必須にしない。
+担当者 判定、固定 bytes、配送 receipt、attempt 予算は通常の Issue / PR では必須にしない。
 139 Issue の一括更新は行わない。実装前の Issue は未実施のままにする。
 
-代表例: backend #50 と PR #51 は、premerge の未実施記録を保持して
+代表例: backend #50 と PR #51 は、マージ前 の未実施記録を保持して
 「マージ後の最終確認」へリンクする。2026-10-18 07:31:25 UTC のローカル kind で
 Order→Payment の成功201/再送200、拒否201/再送200、実 Payment GET との一致を確認済み。
 [最終確認コメント](https://github.com/syuhei0519/backend-app/issues/50#issuecomment-6247220637)。
-これは今回のタスクで再実行した試験ではない。既存 Issue / PR 本文の更新は Manager が担当する。
+これは今回のタスクで再実行した試験ではない。既存 Issue / PR 本文の更新は 担当者 が担当する。
 
 ## 過去の生成報告
 

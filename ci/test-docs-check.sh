@@ -36,7 +36,7 @@ printf '# Before\n' > README.md
 git add README.md
 git commit -qm before
 base=$(git rev-parse HEAD)
-export CI_PIPELINE_SOURCE=merge_request_event CI_MERGE_REQUEST_DIFF_BASE_SHA="$base"
+export DOCS_BASE="$base"
 run_case() {
   expected=$1
   status=0
@@ -81,16 +81,16 @@ git add README.md
 git commit -qm symlink
 run_case fail
 git reset -q --hard "$base"
-export CI_PIPELINE_SOURCE=api
+unset DOCS_BASE
 run_case fail
-export CI_PIPELINE_SOURCE=push CI_COMMIT_BRANCH=main CI_DEFAULT_BRANCH=main CI_COMMIT_BEFORE_SHA="$base"
+export DOCS_BASE="$base"
 printf '# Main push\n' > README.md
 git commit -qam push
 run_case pass
-export CI_COMMIT_BEFORE_SHA=0000000000000000000000000000000000000000
+export DOCS_BASE=0000000000000000000000000000000000000000
 run_case fail
-# branch pushは直前commitではなくdefault branchとの差分全体。mainに追随するfetchも実Gitで確認する。
-export CI_COMMIT_BRANCH=docs CI_COMMIT_BEFORE_SHA="$base"
+# 比較元からの全差分を検査し、途中のコード変更も拒否する。
+export DOCS_BASE="$base"
 git update-ref refs/heads/main "$base"
 git remote add origin .
 run_case pass

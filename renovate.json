@@ -1,0 +1,17 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "enabled": false,
+  "enabledManagers": [
+    "github-actions"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "syuhei0519/backend-app"
+      ],
+      "groupName": "shared-ci-tools",
+      "pinDigests": true,
+      "automerge": false
+    }
+  ]
+}
