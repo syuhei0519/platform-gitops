@@ -168,7 +168,8 @@ def main():
                 {'expr': expr, 'eval_time': '10m', 'exp_samples':
                  [{'labels': '{}', 'value': expected[key]}] if key in expected else []}
                 for key, expr in sli.items()]
-        (args.output / 'sli-query-tests.yaml').write_text(yaml.safe_dump(fixtures, sort_keys=False))
+        # JSON is valid YAML for promtool, without aliases rejected by scan-gate.
+        (args.output / 'sli-query-tests.yaml').write_text(json.dumps(fixtures, indent=2) + '\n')
     print('PASS monitoring: schema/strict lint/Kubernetes 1.36.4 render, 12-resource boundary, configs, dashboard/query binding, 10 rejections')
     print('Synthetic render only; no Kubernetes or live acceptance claimed')
 
