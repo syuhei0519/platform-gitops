@@ -1,0 +1,31 @@
+revision: learning-1-31-2
+replicaCount: 1
+autoscaleEnabled: false
+resources:
+  requests: {cpu: 500m, memory: 512Mi}
+  limits: {cpu: 1000m, memory: 1024Mi}
+cni:
+  enabled: false
+env:
+  PILOT_ENABLE_GATEWAY_API_DEPLOYMENT_CONTROLLER: "false"
+sidecarInjectorWebhook:
+  enableNamespacesByDefault: false
+meshConfig:
+  rootNamespace: istio-learning-system
+  discoverySelectors:
+    - matchLabels:
+        kubernetes.io/metadata.name: learning-istio-demo
+    - matchLabels:
+        kubernetes.io/metadata.name: istio-learning-system
+global:
+  hub: docker.io/istio
+  tag: 1.31.2
+  istioNamespace: istio-learning-system
+  proxy:
+    resources:
+      requests: {cpu: 100m, memory: 128Mi}
+      limits: {cpu: 500m, memory: 256Mi}
+    image: docker.io/istio/proxyv2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1
+  proxy_init:
+    image: docker.io/istio/proxyv2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1
+image: docker.io/istio/pilot@sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330

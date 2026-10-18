@@ -1,0 +1,161 @@
+[
+  {
+    "name": "stable-100-0",
+    "mode": "stable",
+    "valid": true
+  },
+  {
+    "name": "split-90-10",
+    "mode": "split",
+    "valid": true
+  },
+  {
+    "name": "plain-v1-only",
+    "mode": "plain",
+    "valid": true
+  },
+  {
+    "name": "undefined-subset",
+    "mode": "split",
+    "kind": "VirtualService",
+    "path": "spec.http.0.route.1.destination.subset",
+    "value": "v3",
+    "valid": false
+  },
+  {
+    "name": "invalid-host",
+    "mode": "split",
+    "kind": "VirtualService",
+    "path": "spec.hosts.0",
+    "value": "other.example",
+    "valid": false
+  },
+  {
+    "name": "invalid-dr-host",
+    "mode": "split",
+    "kind": "DestinationRule",
+    "path": "spec.host",
+    "value": "other.example",
+    "valid": false
+  },
+  {
+    "name": "destination-port",
+    "mode": "split",
+    "kind": "VirtualService",
+    "path": "spec.http.0.route.1.destination.port.number",
+    "value": 80,
+    "valid": false
+  },
+  {
+    "name": "service-port",
+    "mode": "split",
+    "kind": "Service",
+    "path": "spec.ports.0.port",
+    "value": 80,
+    "valid": false
+  },
+  {
+    "name": "pod-port",
+    "mode": "split",
+    "kind": "Deployment",
+    "name_filter": "mesh-demo-v1",
+    "path": "spec.template.spec.containers.0.ports.0.containerPort",
+    "value": 9090,
+    "valid": false
+  },
+  {
+    "name": "namespace-escape",
+    "mode": "split",
+    "kind": "Service",
+    "path": "metadata.namespace",
+    "value": "default",
+    "valid": false
+  },
+  {
+    "name": "service-selector",
+    "mode": "split",
+    "kind": "Service",
+    "path": "spec.selector.app",
+    "value": "mesh-demo-client",
+    "valid": false
+  },
+  {
+    "name": "deployment-selector",
+    "mode": "split",
+    "kind": "Deployment",
+    "name_filter": "mesh-demo-v2",
+    "path": "spec.selector.matchLabels.version",
+    "value": "v1",
+    "valid": false
+  },
+  {
+    "name": "subset-selector",
+    "mode": "split",
+    "kind": "DestinationRule",
+    "path": "spec.subsets.1.labels.version",
+    "value": "v1",
+    "valid": false
+  },
+  {
+    "name": "weight-sum",
+    "mode": "split",
+    "kind": "VirtualService",
+    "path": "spec.http.0.route.1.weight",
+    "value": 20,
+    "valid": false
+  },
+  {
+    "name": "negative-weight",
+    "mode": "split",
+    "kind": "VirtualService",
+    "path": "spec.http.0.route.1.weight",
+    "value": -10,
+    "valid": false
+  },
+  {
+    "name": "weight-string-schema",
+    "mode": "split",
+    "kind": "VirtualService",
+    "path": "spec.http.0.route.1.weight",
+    "value": "10",
+    "valid": false
+  },
+  {
+    "name": "unknown-crd-field",
+    "mode": "split",
+    "kind": "VirtualService",
+    "path": "spec.typo",
+    "value": true,
+    "valid": false
+  },
+  {
+    "name": "placeholder-image",
+    "mode": "split",
+    "kind": "Deployment",
+    "name_filter": "mesh-demo-v1",
+    "path": "spec.template.spec.containers.0.image",
+    "value": "fixture:latest",
+    "valid": false
+  },
+  {
+    "name": "conflicting-injection-label",
+    "mode": "split",
+    "kind": "Namespace",
+    "name_filter": "learning-istio-demo",
+    "path": "metadata.labels.istio-injection",
+    "value": "enabled",
+    "valid": false
+  },
+  {
+    "name": "ambient-conflict",
+    "mode": "split",
+    "kind": "Namespace",
+    "name_filter": "learning-istio-demo",
+    "path": "metadata.labels",
+    "value": {
+      "istio.io/rev": "learning-1-31-2",
+      "istio.io/dataplane-mode": "ambient"
+    },
+    "valid": false
+  }
+]

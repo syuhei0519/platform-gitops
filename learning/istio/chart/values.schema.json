@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["mode", "phase", "image"],
+  "properties": {
+    "mode": {"enum": ["stable", "split"]},
+    "phase": {"enum": ["mesh", "plain"]},
+    "image": {"const": "docker.io/library/python@sha256:9bbb8720ae0a24a6ca8dd678bfdf57818fe70caf54c52a53ec01d8db43405056"}
+  },
+  "allOf": [{"if": {"properties": {"phase": {"const": "plain"}}}, "then": {"properties": {"mode": {"const": "stable"}}}}]
+}

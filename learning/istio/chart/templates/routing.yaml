@@ -1,0 +1,42 @@
+{{- if eq .Values.phase "mesh" }}
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: mesh-demo
+  namespace: {{ .Release.Namespace }}
+spec:
+  host: mesh-demo.learning-istio-demo.svc.cluster.local
+  exportTo: ["."]
+  subsets:
+    - name: v1
+      labels: {version: v1}
+    - name: v2
+      labels: {version: v2}
+---
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: mesh-demo
+  namespace: {{ .Release.Namespace }}
+spec:
+  hosts: [mesh-demo.learning-istio-demo.svc.cluster.local]
+  exportTo: ["."]
+  gateways: [mesh]
+  http:
+    - name: demo-only
+      match:
+        - method: {exact: GET}
+          uri: {exact: /version}
+      retries: {attempts: 0}
+      route:
+        - destination:
+            host: mesh-demo.learning-istio-demo.svc.cluster.local
+            subset: v1
+            port: {number: 8080}
+          weight: {{ if eq .Values.mode "split" }}90{{ else }}100{{ end }}
+        - destination:
+            host: mesh-demo.learning-istio-demo.svc.cluster.local
+            subset: v2
+            port: {number: 8080}
+          weight: {{ if eq .Values.mode "split" }}10{{ else }}0{{ end }}
+{{- end }}
