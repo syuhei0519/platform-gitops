@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "document_type": "artifact_delivery",
+  "artifacts": [
+    {
+      "reference": {
+        "repository": "syuhei0519/platform-gitops",
+        "commit": "366e34619c3371f543fa8d5ad896eb15b836173a",
+        "path": "docs/artifacts/monitoring-research-20261018/README.md",
+        "size": 2157,
+        "sha256": "399efc1e6ef37b0b5e6da9f95495783cf380aaf65f09bf1b6bcd9838e8f574eb"
+      },
+      "representation": "edited_derivative",
+      "format": "text",
+      "public_classification": "public_safe",
+      "source_alias": "monitoring-research-public-README.md"
+    },
+    {
+      "reference": {
+        "repository": "syuhei0519/platform-gitops",
+        "commit": "366e34619c3371f543fa8d5ad896eb15b836173a",
+        "path": "docs/artifacts/monitoring-research-20261018/design.md",
+        "size": 21179,
+        "sha256": "732b33670fed0a4696f20f0529b2fb21a5642dcd09986355ab5e3767965fa475"
+      },
+      "representation": "edited_derivative",
+      "format": "text",
+      "public_classification": "public_safe",
+      "source_alias": "monitoring-research-public-design.md"
+    },
+    {
+      "reference": {
+        "repository": "syuhei0519/platform-gitops",
+        "commit": "366e34619c3371f543fa8d5ad896eb15b836173a",
+        "path": "docs/artifacts/monitoring-research-20261018/handoff.json",
+        "size": 7501,
+        "sha256": "1eb3bdbdd878a27c700452e72d955606fd5f1e1809a16801b06380b2be14efc8"
+      },
+      "representation": "edited_derivative",
+      "format": "handoff-v2",
+      "public_classification": "public_safe",
+      "source_alias": "monitoring-research-public-handoff.json"
+    },
+    {
+      "reference": {
+        "repository": "syuhei0519/platform-gitops",
+        "commit": "366e34619c3371f543fa8d5ad896eb15b836173a",
+        "path": "docs/artifacts/monitoring-research-20261018/issue5-body.md",
+        "size": 5179,
+        "sha256": "c03e260db64d4c2c33183ed5e33e056b0fa476816564a195cc93c75827a40527"
+      },
+      "representation": "edited_derivative",
+      "format": "text",
+      "public_classification": "public_safe",
+      "source_alias": "monitoring-research-public-issue5-body.md"
+    },
+    {
+      "reference": {
+        "repository": "syuhei0519/platform-gitops",
+        "commit": "366e34619c3371f543fa8d5ad896eb15b836173a",
+        "path": "docs/artifacts/monitoring-research-20261018/sources.json",
+        "size": 21523,
+        "sha256": "d922cb73e5f7ebb11a5a47b65300ef4fcc811f7206e87e0f147bc39fa9a7021e"
+      },
+      "representation": "edited_derivative",
+      "format": "json",
+      "public_classification": "public_safe",
+      "source_alias": "monitoring-research-public-sources.json"
+    }
+  ]
+}
