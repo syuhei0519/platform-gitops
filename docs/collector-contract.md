@@ -22,4 +22,4 @@ New Relic Account8572010のNRQL結果にsynthetic parent/childの2spanが保存�
 
 Free planは100GB/月、Billingに支払カード・請求記録なし。Usage Summaryは0GB表示だが月全体の集計取得警告があり、正確な残量は未確定。追加費用0円を維持するため有料upgrade/カード登録/有料機能追加を行わず、試験は少量syntheticに限定する。継続送信前には使用量の取得状態を再確認する。受信成功だけで保存を合格にせず実検索を証拠とする。
 
-[証跡索引とSHA256](implementation/PE011-acceptance.json)の原本は作業出力のevidenceに保存。AT-06のfixture部分を合格、実API結合はPE-012/013、AT-07障害ケースはPE-014に残す。停止時はnewRelicEnabled=falseへGitで戻して同期すれば外部trace転送を止められる。Secretはoperator所有でGitOps pruneの対象にしない。
+[証跡索引とSHA256](https://github.com/syuhei0519/platform-gitops/blob/b2e8758ce933a56bddf2931b167f2f5892e65358/docs/implementation/PE011-acceptance.json)の原本は作業出力のevidenceに保存。AT-06のfixture部分を合格、実API結合はPE-012/013、AT-07障害ケースはPE-014に残す。停止時はnewRelicEnabled=falseへGitで戻して同期すれば外部trace転送を止められる。Secretはoperator所有でGitOps pruneの対象にしない。

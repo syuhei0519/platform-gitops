@@ -8,4 +8,4 @@
 
 AT-13の未保護CI_JOB_TOKENで使い捨て40桁SHAタグ、main-cache fixtureタグ、Generic Packageに実書込みを試行し、両projectとも全201だった。提案bot用の保護資格情報は未保護fixtureへ配布されていない。GitLab Freeでrulesは認可境界ではなく、Registry/Packageへの技術的拒否を成立したとは扱わない。保護Runner cache分離ci_separated_caches=trueをRegistry cache権限と混同しない。同projectの信頼済みコードだけを実行し、外部MRは禁止、Registry cacheは無効を維持する。未保護コードを信頼できない用途ではこの経路を有効化しない。資格情報は証跡へ含めない。mainは直接push禁止、提案botはDeveloperでmerge不可、管理PATはCIへ渡さない。
 
-[証跡](evidence/PE008-CI-acceptance.json)は通常branch/MR、main期待失敗、tag、MR重複抑止、権限fixtureを含む。これはPhase 0のPE-008/AT-13受入。Phase 2のscan/SBOM/OCI供給網切替と最終AT-13再確認はPE-015〜019へ残し、実装済みとは記載しない。
+[証跡](https://github.com/syuhei0519/platform-gitops/blob/b2e8758ce933a56bddf2931b167f2f5892e65358/docs/implementation/evidence/PE008-CI-acceptance.json)は通常branch/MR、main期待失敗、tag、MR重複抑止、権限fixtureを含む。これはPhase 0のPE-008/AT-13受入。Phase 2のscan/SBOM/OCI供給網切替と最終AT-13再確認はPE-015〜019へ残し、実装済みとは記載しない。

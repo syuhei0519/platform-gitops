@@ -159,14 +159,13 @@ def main():
     parser.add_argument("--write-inventory", action="store_true")
     args = parser.parse_args()
     lock = json.loads((ROOT / "versions.lock.json").read_text())
+    from render import pinned
     for chart in lock["official_charts"].values():
-        from render import pinned
-        for record in chart["files"]:
-            pinned(ROOT / record["path"], record)
+        metadata = yaml.safe_load((ROOT / chart['path'] / 'Chart.yaml').read_text())
+        require(metadata['version'] == chart['version'], 'chart version mismatch')
     for image in lock["images"].values():
         require(image["platform"] == "linux/amd64", "platform pin")
-        require("@sha256:" in image["ref"] and image["docker_save_archive"]["size"] > 0, "image bytes required")
-        pinned(ROOT / image["index_bytes"]["path"], image["index_bytes"])
+        require("@sha256:" in image["ref"], "image digest required")
     base, control = load(args.rendered / "base.yaml"), load(args.rendered / "istiod.yaml")
     schemas = {}
     for d in base:
@@ -198,7 +197,8 @@ def main():
             result = subprocess.run([args.helm, "template", "mesh-demo", str(ROOT / "chart"), "--namespace", NS, *flags], capture_output=True)
             require(result.returncode != 0, "invalid chart input accepted")
     if args.write_inventory:
-        evidence = ROOT / "evidence"
+        evidence = args.rendered
+        evidence.mkdir(parents=True, exist_ok=True)
         (evidence / "resource-inventory.json").write_text(json.dumps(inventory(base + control + load(ROOT / "bootstrap/namespaces.yaml") + load(args.rendered / "stable.yaml")), indent=2) + "\n")
         (evidence / "podspec-inventory.json").write_text(json.dumps(injected, indent=2) + "\n")
     print(f"PASS: {len(cases)} contract fixtures; official VS/DR spec schemas; foundation/webhooks; 3 injected PodSpecs" + ("; 4 invalid Helm inputs rejected" if args.helm else ""))

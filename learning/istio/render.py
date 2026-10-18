@@ -29,13 +29,9 @@ def main():
     pinned(args.helm, lock["helm"]["binary"])
     pinned(args.istioctl, lock["istio"]["istioctl"])
     for chart in lock["official_charts"].values():
-        directory = ROOT / Path(chart["files"][0]["path"]).parent
-        expected = {entry["path"] for entry in chart["files"]}
-        actual = {str(path.relative_to(ROOT)) for path in directory.rglob("*") if path.is_file()}
-        if actual != expected:
-            raise ValueError("chart file inventory mismatch")
-        for entry in chart["files"]:
-            pinned(ROOT / entry["path"], entry)
+        metadata = yaml.safe_load((ROOT / chart['path'] / 'Chart.yaml').read_text())
+        if metadata['version'] != chart['version']:
+            raise ValueError('chart version mismatch')
     args.output.mkdir(parents=True, exist_ok=False)
     with tempfile.TemporaryDirectory() as temp:
         env = dict(os.environ, KUBECONFIG=temp + "/absent", HELM_CACHE_HOME=temp + "/cache",

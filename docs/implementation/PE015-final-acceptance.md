@@ -12,4 +12,4 @@ AT11の実dev-only inventory、privileged拒否、未発行の合成Secret検出
 
 FS報告にはdev依存を含む。runtime image由来SBOMとは対象が異なり、PE016/017/018のOCI・image scan・SBOM・切替はこの受入では完成していない。両appの旧deliveryは後続のfrontend完全切替→backend展開DAGで撤去する。SourceLabのDB/PVC/data、New Relicの有料設定を変更していない。
 
-公開証跡索引とLF正規化SHA256は [PE015-final-acceptance.json](PE015-final-acceptance.json)。Aの既存10証跡は [PE015A-acceptance.md](PE015A-acceptance.md) とその索引を参照する。
+公開証跡索引とLF正規化SHA256は [PE015-final-acceptance.json](https://github.com/syuhei0519/platform-gitops/blob/b2e8758ce933a56bddf2931b167f2f5892e65358/docs/implementation/PE015-final-acceptance.json)。Aの既存10証跡は [PE015A-acceptance.md](PE015A-acceptance.md) とその索引を参照する。

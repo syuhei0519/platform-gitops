@@ -8,4 +8,4 @@ MR33で元のenvironment YAML設定とService portをGitで復元し、両Applic
 
 chartが環境ConfigMapと再配置を所有し、frontend image内Nginx設定は単独起動用既定。React bundleの既定APIは/apiなので試験の/api-pe005とは区別し、復帰後/api CRUDを確認した。Secret値はrender入力/ConfigMap checksumへ含めず、Secret環境変数更新はPE-006BのrestartNonceで扱う。固定main CIの全7設定キー/Service-only/Secret参照静的検証と実runtimeを区別する。
 
-[実証跡](evidence/PE005-config-runtime.json)に変更前後UID/checksum/image/RS、HTTP CRUD、debug/INFO動作、Service-only不変、Git復元を保存。MR28/32/33は各own CIと固定main producer/consumer成功、直前鮮度、誤SHA409、成立tree一致を検証してmain統合した。DB/PVC/dataは削除していない。
+[実証跡](https://github.com/syuhei0519/platform-gitops/blob/b2e8758ce933a56bddf2931b167f2f5892e65358/docs/implementation/evidence/PE005-config-runtime.json)に変更前後UID/checksum/image/RS、HTTP CRUD、debug/INFO動作、Service-only不変、Git復元を保存。MR28/32/33は各own CIと固定main producer/consumer成功、直前鮮度、誤SHA409、成立tree一致を検証してmain統合した。DB/PVC/dataは削除していない。

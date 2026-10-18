@@ -1,4 +1,4 @@
-module core-platform/bootstrap
+module github.com/syuhei0519/platform-gitops/tools/bootstrap
 
 go 1.27.0
 
