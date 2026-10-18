@@ -28,10 +28,15 @@ def application(namespace, control, commit, values):
     if values['telemetry'] != {'enabled': True}:
         raise ValueError('preserve the enabled Account telemetry contract')
     analysis = values.get('analysis', {'enabled': False, 'case': 'success'})
-    if (not isinstance(analysis, dict) or set(analysis) != {'enabled', 'case'} or
+    if (not isinstance(analysis, dict) or set(analysis) - {'mode'} != {'enabled', 'case'} or
             type(analysis['enabled']) is not bool or analysis['case'] not in
             ('success', 'failure', 'inconclusive', 'missing', 'timeout')):
-        raise ValueError('only the fixed Account analysis cases are accepted')
+        raise ValueError('only the bounded Account analysis cases are accepted')
+    analysis = dict(analysis, mode=analysis.get('mode', 'fixed'))
+    if analysis['mode'] not in ('fixed', 'metrics'):
+        raise ValueError('analysis mode must be fixed or metrics')
+    if analysis['mode'] == 'metrics' and not analysis['enabled']:
+        raise ValueError('metrics mode requires enabled analysis')
     if analysis['enabled'] and values['revision'] == 'failed':
         raise ValueError('analysis requires a Ready revision; failed readiness is a separate test')
     allowed = [dict(group='argoproj.io', kind='Rollout'), dict(group='', kind='Service')]
@@ -45,8 +50,8 @@ def application(namespace, control, commit, values):
     app = dict(apiVersion='argoproj.io/v1alpha1', kind='Application',
                metadata=dict(name='learning-account', namespace=control),
                spec=dict(project='learning-account', source=dict(repoURL=REPO, targetRevision=commit, path='learning/canary/chart',
-                         helm=dict(releaseName='learning-account', valueFiles=['../profiles/' + values['revision'] + '.yaml'],
-                                   valuesObject={k:v for k,v in values.items() if k != 'revision'})),
+                         helm=dict(releaseName='learning-account', valueFiles=['../profiles/' + ('metrics-' if analysis['mode'] == 'metrics' else '') + values['revision'] + '.yaml'],
+                                   valuesObject=dict({k:v for k,v in values.items() if k not in ('revision', 'analysis')}, analysis=analysis))),
                          destination=dict(server='https://kubernetes.default.svc', namespace=namespace),
                          syncPolicy=dict(syncOptions=['RespectIgnoreDifferences=true']),
                          ignoreDifferences=[dict(group='', kind='Service', name=name, namespace=namespace,
