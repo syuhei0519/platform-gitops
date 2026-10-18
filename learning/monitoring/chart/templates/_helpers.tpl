@@ -27,6 +27,31 @@ processors:
       - key: k8s.namespace.name
         value: {{ .Values.accountNamespace | quote }}
         action: upsert
+  # Associate only the SDK's Pod UID; never fall back to source IP.
+  k8sattributes/account:
+    auth_type: serviceAccount
+    passthrough: false
+    filter:
+      namespace: {{ .Values.accountNamespace | quote }}
+    pod_association:
+      - sources: [{from: resource_attribute, name: k8s.pod.uid}]
+    extract:
+      metadata: [k8s.pod.uid]
+      labels:
+        - {tag_name: rollout_revision, key: rollouts-pod-template-hash, from: pod}
+        - {tag_name: learning_service, key: learning.local/service, from: pod}
+  transform/revision:
+    error_mode: propagate
+    metric_statements:
+      - context: datapoint
+        conditions:
+          - 'metric.name == "pe_http_server_requests" or metric.name == "pe_http_server_request_duration" or metric.name == "pe_go_goroutines"'
+        statements:
+          # Override sender datapoint identity; unmatched Pods get no revision.
+          - 'delete_key(attributes, "rollout_revision")'
+          - 'delete_key(attributes, "learning_service")'
+          - 'set(attributes["rollout_revision"], resource.attributes["rollout_revision"]) where resource.attributes["rollout_revision"] != nil'
+          - 'set(attributes["learning_service"], resource.attributes["learning_service"]) where resource.attributes["learning_service"] != nil'
   batch:
     timeout: 5s
     send_batch_size: 512
@@ -48,7 +73,7 @@ service:
   pipelines:
     metrics:
       receivers: [otlp]
-      processors: [memory_limiter, filter/account, resource/real_namespace, batch]
+      processors: [memory_limiter, filter/account, resource/real_namespace, k8sattributes/account, transform/revision, batch]
       exporters: [prometheus]
     # The existing SDK sends traces too. Discard them without storage/export.
     traces:

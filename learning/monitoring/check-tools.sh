@@ -11,5 +11,7 @@ docker run --rm --network none --user "$(id -u):$(id -g)" --entrypoint /bin/prom
   -v "$fixture_dir:/work:ro" -w /work "$prometheus" test rules query-tests.yaml
 docker run --rm --network none --user "$(id -u):$(id -g)" --entrypoint /bin/promtool \
   -v "$config_dir:/work:ro" -w /work "$prometheus" test rules sli-query-tests.yaml
+docker run --rm --network none --user "$(id -u):$(id -g)" --entrypoint /bin/promtool \
+  -v "$config_dir:/work:ro" -w /work "$prometheus" test rules revision-query-tests.yaml
 docker run --rm --network none --user "$(id -u):$(id -g)" \
   -v "$config_dir:/config:ro" "$collector" validate --config=/config/config.yaml

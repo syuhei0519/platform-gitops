@@ -2,7 +2,8 @@
 
 単一Account instanceの業務HTTPを既存Prometheus/Grafanaで比較する。
 学習用の短いrolling **5分窓**、**20要求以上**を評価可能とする。本番SLAや統計的保証ではない。
-全サービスSLO、長時間/限界負荷、alert、SLO gate、自動Canary判定は対象外。
+全サービスSLO、長時間/限界負荷、alertは対象外。従来dashboardの単一instance SLIは保持し、
+Issue15の明示revision gateを下記へ追加する。
 
 ## 分母・分子・目標
 
@@ -79,5 +80,21 @@ sh learning/monitoring/check-tools.sh .rendered/learning-monitoring
 一時promtool fixtureを生成する。固定Prometheusのpromtoolで正常、4xx、5xx、全失敗、slow、
 idle（histogram全体/250ms bucket欠測の2負例を含む）、初回なし、少数sample、
 up/heartbeat欠測・stale、histogram欠測、counter resetを実計算する。
-既存10 RED fixture・Helm strict lint/render・12資源境界・Collector config検証も同時に維持する。
+既存10 RED fixture・Helm strict lint/render・14資源/Pod-only RBAC境界・Collector config検証も同時に維持する。
 Cloud結果はlive計測の代わりにしない。実適用は後続の承認済みローカル担当が行う。
+
+## Issue 15のrevision gate
+
+従来dashboardのSLI式は変更していない。`revision_queries.py` が生成する `revision-queries.json` は
+manifestの明示metrics profile用で、service.versionではなくPod label由来のRollout hashを使う。
+selectorはjob=account-backend、実account_namespace、learning_service=account、latest/stable hash。
+canary1/stable9のheartbeatとHTTP instance被覆、2点以上、SDK90秒/up60秒の鮮度、5分のcounter/histogram整合を要求する。
++Inf=count、250ms bucket<=countも検証する。minimum20・可用性99%・250ms以内95%は上記の学習SLIを継承する。
+両revisionのrequests/availability/latencyを同じ窓で記録し、stableにも同じ条件を適用する。
+欠測/低sample/整合違反は空結果、非有限値やprovider失敗はAnalysis非成功。無条件の0埋めは行わない。
+個々のstatus class消失や窓全体の完全性を保証せず、現在時点のinstance被覆と鮮度を確認する。
+
+`revision_fixtures.py` が正確なqueryを使うpromtool入力を生成し、既存check-toolsで26ケースを検査する。
+正常、error、latency、少数/無通信、heartbeat欠測/古さ、stable9中のHTTP1欠測、histogram/count不一致、
+bucket欠測/範囲外、1点、up0、別namespace/service/hash、NaN、counter reset、余分なinstanceを含む。
+Cloud fixtureは実Pod label抽出・同時2hash exportの証明ではない。local Testはmanifest METRICS.mdに従う。

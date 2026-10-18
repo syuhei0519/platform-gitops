@@ -15,8 +15,9 @@ Accountの学習SLI（#5）は[SLI.md](SLI.md)に追加した。全サービス�
 - 手動適用のみ。namespaceは固定の`observability`。同名のCollector等があれば停止し、既存資源を上書きしない。
 - `owner` と実Account namespace（専用`learning-*`）が必須。imageはvaluesの3つのdigestに固定。
   ローカルtargetのarchitecture、load可能性と実imageIDは後続Testで照合する。
-- 3 Deployment/Service/ConfigMap/ServiceAccountの計12資源。全てownerラベル付き、token自動mountなし。
-  RBAC/CRD/Secret/PVC/Ingress/外部exporter/Kubernetes discoveryを追加しない。
+- 3 Deployment/Service/ConfigMap/ServiceAccountと、対象app namespaceのRole/Bindingの計14資源。
+  Collectorだけtokenをmountし、対象namespaceのpods get/list/watchを使う。Pod UIDによるmetadata関連付け専用で、
+  Node/Secret/ReplicaSet/他namespace権限は追加しない。CRD/PVC/Ingress/外部exporter/Prometheus discoveryも追加しない。
 - Prometheusは24h/256MBまでのemptyDir、GrafanaもemptyDir。再起動で履歴/DBは消える。
   ConfigMapから設定とdashboardは復元される。保持時間の保証や永続化はACに含めない。
 - 新規Grafanaは匿名Viewer・basic/login/signup/admin初期生成無効のローカル学習用設定。
@@ -60,7 +61,7 @@ Collectorは`send_timestamps=true`、`metric_expiration=90s`、Prometheusは30�
 | 収集正常/通信あり（3） | SDK新鮮、要求rate>0 | normalのみはerror=0、400混在で4xx率上昇 |
 
 鮮度は`up`とSDK gaugeの`timestamp()`を併用する。CollectorのキャッシュをSDK稼働と誤認しない。
-単一Account instanceが前提。複数instanceの一部欠測の完全検出は対象外。
+既存dashboardは単一Account instanceが前提。Issue15のrevision gateは別queryでcanary1/stable9の被覆を確認する。
 大きな時計ずれは失敗として扱う。Prometheusへの接続障害はGrafanaのError/No dataであり通信ゼロに変換しない。
 rateはinstanceごとに計算してからsumする。増分は外挿推定値でcurl回数との厳密一致ではない。
 p95はbucket推定で単位は秒。全クエリはdashboard内へ展開し、recording ruleに依存しない。
@@ -72,7 +73,7 @@ python3 learning/monitoring/validate.py --output .rendered/learning-monitoring
 sh learning/monitoring/check-tools.sh .rendered/learning-monitoring
 ```
 
-schema/strict lint/1.36.4 render、12資源境界、設定/provisioning/JSONと正確なdashboard式のfixture対応を検査。
+schema/strict lint/1.36.4 render、14資源と限定RBAC境界、設定/provisioning/JSONと正確なdashboard式のfixture対応を検査。
 `check-tools.sh`はvaluesと同じ固定Prometheusのpromtoolでconfigと10シナリオを検証し、
 固定Collectorでconfig validateのみを行う。normal/4xx/idle/missing/stale/heartbeatなし/upなし/
 初回系列なし/2点未満/counter resetを含む。NoDataを一律0にする変換は入れない。
@@ -178,3 +179,16 @@ namespaceそのものはchartに含まれず、既存か承認された事前作
    namespace自体、既存DB/PVC/Secret/他サービス/clusterを削除しない。
    kubeconfig/raw認証情報/Account本文/内部実行IDを公開物に含めない。
    Managerへ固定bytes/Handoffを配送し、5ACの実測と両repoの統合完了はManagerが判定する。
+
+## Issue 15: revision metadataと進行判定
+
+同じimageのservice.versionはRollout hashを分離しない。Pod UIDを `k8sattributes/account` で照合し、
+Pod label `rollouts-pod-template-hash` / `learning.local/service` をresourceに抽出する。
+HTTP counter/histogramとgoroutines heartbeatだけへ `rollout_revision` / `learning_service` をコピーし、
+全resource属性を全時系列へ展開しない。名前空間補正はmetadata関連付けより前に行う。
+
+[SLI.md](SLI.md) のrevision節と、manifestの [METRICS.md](https://github.com/syuhei0519/application-manifest/blob/feat/account-metrics-analysis/learning/canary/METRICS.md) がlocal手順。
+Role/Bindingは対象app namespaceの `learning-collector-pods`、subjectは `observability/otel-collector`。
+承認済みTest担当が監視renderを別applyし、ArgoへConfigMap/Deployment createは追加しない。
+片付ける場合はこの2資源だけも所有対象として確認し、既存Roleやnamespaceを削除しない。
+Cloudはsource/config/query検証のみで、2hashの実Pod関連付け/exportはlocal未確認。

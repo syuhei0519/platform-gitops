@@ -36,16 +36,16 @@ def render(values, directory, namespace='observability', release='learning-monit
 def verify(text):
     objects = list(yaml.safe_load_all(text))
     assert Counter(o['kind'] for o in objects) == {
-        'Deployment': 3, 'Service': 3, 'ServiceAccount': 3, 'ConfigMap': 3}
+        'Deployment': 3, 'Service': 3, 'ServiceAccount': 3, 'ConfigMap': 3, 'Role': 1, 'RoleBinding': 1}
     by_name = {(o['kind'], o['metadata']['name']): o for o in objects}
     for obj in objects:
-        assert obj['metadata']['namespace'] == 'observability'
+        assert obj['metadata']['namespace'] == ('learning-fixture' if obj['kind'] in ('Role', 'RoleBinding') else 'observability')
         assert obj['metadata']['labels'] == {
             'app.kubernetes.io/part-of': 'learning-monitoring',
             'learning.local/owner': 'synthetic-fixture'}
         kind = obj['kind']
         if kind == 'ServiceAccount':
-            assert obj['automountServiceAccountToken'] is False
+            assert obj['automountServiceAccountToken'] is (obj['metadata']['name'] == 'otel-collector')
         if kind == 'Service':
             assert obj['spec']['type'] == 'ClusterIP'
             deploy = by_name['Deployment', obj['metadata']['name']]
@@ -58,7 +58,7 @@ def verify(text):
         assert all(template['metadata']['labels'][k] == v
                    for k, v in obj['spec']['selector']['matchLabels'].items())
         spec = template['spec']
-        assert spec['automountServiceAccountToken'] is False
+        assert spec['automountServiceAccountToken'] is (obj['metadata']['name'] == 'otel-collector')
         assert spec['serviceAccountName'] == obj['metadata']['name']
         assert spec['securityContext']['runAsNonRoot'] is True
         assert not any(spec.get(k) for k in ('hostNetwork', 'hostPID', 'hostIPC'))
@@ -83,8 +83,27 @@ def verify(text):
     assert collector['processors']['resource/real_namespace']['attributes'] == [
         {'key': 'k8s.namespace.name', 'value': 'learning-fixture', 'action': 'upsert'}]
     assert collector['service']['pipelines']['metrics']['processors'] == [
-        'memory_limiter', 'filter/account', 'resource/real_namespace', 'batch']
+        'memory_limiter', 'filter/account', 'resource/real_namespace', 'k8sattributes/account', 'transform/revision', 'batch']
     assert collector['service']['pipelines']['traces']['exporters'] == ['nop']
+    role = by_name['Role', 'learning-collector-pods']
+    assert role['rules'] == [dict(apiGroups=[''], resources=['pods'], verbs=['get', 'list', 'watch'])]
+    binding = by_name['RoleBinding', 'learning-collector-pods']
+    assert binding['roleRef'] == dict(apiGroup='rbac.authorization.k8s.io', kind='Role', name='learning-collector-pods')
+    assert binding['subjects'] == [dict(kind='ServiceAccount', name='otel-collector', namespace='observability')]
+    metadata = collector['processors']['k8sattributes/account']
+    assert metadata['filter'] == dict(namespace='learning-fixture')
+    assert metadata['pod_association'] == [{'sources': [{'from': 'resource_attribute', 'name': 'k8s.pod.uid'}]}]
+    assert metadata['extract']['metadata'] == ['k8s.pod.uid']
+    assert metadata['extract']['labels'] == [
+        dict(tag_name='rollout_revision', key='rollouts-pod-template-hash', **{'from':'pod'}),
+        dict(tag_name='learning_service', key='learning.local/service', **{'from':'pod'})]
+    transform = collector['processors']['transform/revision']
+    assert transform['error_mode'] == 'propagate'
+    statements = transform['metric_statements']
+    assert len(statements) == 1 and statements[0]['context'] == 'datapoint'
+    assert statements[0]['conditions'] == ['metric.name == "pe_http_server_requests" or metric.name == "pe_http_server_request_duration" or metric.name == "pe_go_goroutines"']
+    assert len(statements[0]['statements']) == 4
+
     prom = yaml.safe_load(configs['learning-prometheus-config']['prometheus.yml'])
     assert [x['job_name'] for x in prom['scrape_configs']] == ['otel-application', 'prometheus']
     app = prom['scrape_configs'][0]
@@ -129,6 +148,8 @@ def main():
     parser.add_argument('--output', type=Path, help='write synthetic render/configs for promtool/schema checks')
     args = parser.parse_args()
     assert list(VALIDATOR.iter_errors(DEFAULTS)), 'unconfigured defaults must fail'
+    from revision_queries import queries
+    assert json.loads((ROOT / 'revision-queries.json').read_text()) == queries()
     values = copy.deepcopy(DEFAULTS)
     values.update(owner='synthetic-fixture', accountNamespace='learning-fixture')
     VALIDATOR.validate(values)
@@ -171,7 +192,10 @@ def main():
                 for key, expr in sli.items()]
         # JSON is valid YAML for promtool, without aliases rejected by scan-gate.
         (args.output / 'sli-query-tests.yaml').write_text(json.dumps(fixtures, indent=2) + '\n')
-    print('PASS monitoring: schema/strict lint/Kubernetes 1.36.4 render, 12-resource boundary, configs, dashboard/query binding, 10 rejections')
+    from revision_fixtures import fixtures as revision_fixtures
+    if args.output:
+        (args.output / 'revision-query-tests.yaml').write_text(json.dumps(revision_fixtures(), indent=2) + '\n')
+    print('PASS monitoring: schema/strict lint/Kubernetes 1.36.4 render, 14-resource / Pod-only RBAC boundary, configs, dashboard/query binding, 10 rejections')
     print('Synthetic render only; no Kubernetes or live acceptance claimed')
 
 
