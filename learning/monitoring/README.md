@@ -23,6 +23,9 @@ Accountの学習SLI（#5）は[SLI.md](SLI.md)に追加した。全サービス�
   read-only provision、更新確認・分析送信・plugin自動導入・外部snapshot無効。
   この設定コードへの承認はlive適用の承認ではない。匿名Viewer構成のlive適用は別途Manager承認が必要。
   ClusterIPと`127.0.0.1` port-forwardだけを使用する。
+- Grafanaはrequests 128Mi / limit 512Mi。13パネルの画面受入時に旧limit 256MiでOOMKilled/137となったため増量した。
+  監視3 Podのメモリ合計はrequests 256Mi / limits 1024Mi、CPU合計はrequests 150m / limits 1500m。
+  512Miでの画面読込みと未完了のmixed試験はローカル担当が再開し、再発有無を確認する。Cloud render成功を実機成功とは扱わない。
 
 ## Accountのnamespace互換と起動条件
 
