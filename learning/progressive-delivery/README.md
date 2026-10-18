@@ -109,15 +109,15 @@ CRD削除は全namespaceの他利用なし確認と個別承認が必要です�
 参考: [公式namespace限定Rollouts導入](https://argo-rollouts.readthedocs.io/en/stable/installation/)、
 [公式Argo CD導入/Core](https://argo-cd.readthedocs.io/en/stable/operator-manual/installation/)。
 
-## 現在のCloudブロッカー
+## 共有guardの確認
 
 旧固定共有Action `ba8b3d211ac3e497900abd6c6f44f45388e3801c` の `scan-gate` は、
 公式CRD内の `hostNetwork`/`hostPID`/`hostIPC` のschema宣言も実Pod設定として拒否します。
 `-check-render-only <render.pyの出力directory>` で `LOCAL-HOST-NAMESPACE` 12件を再現しました。
 入力CRDは上記の固定公式bytesであり、実Podのhost namespace使用はありません。
 新renderを既存 `.rendered` security経路へ含めています。今回Action参照を、schema宣言と実Pod設定を
-区別する共有guard commit `fa921cd2aace14f9052b79aa6dc6f37cb07dd274` へ更新しました。
-ただし元commit bundleの正規配送が失敗し、GitもこのSHAを未提供のため、同じrenderでの新guard成功は未確認です。
-再生成・guard除外・弱体化は行っていません。元commit配送後に同SHAでscan-gateをbuildし、
-`-check-render-only <render.pyの出力directory>` とrequired CIを再確認してください。
-配送、guard再確認、独立Review前にmerge/ローカル導入へ進めません。
+区別する公開済み共有guard commit `96e5509757fbfb4bdc7e8b47876cdcc8c288142c` へ更新しました。
+公開commitのtreeは元 `fa921cd2aace14f9052b79aa6dc6f37cb07dd274` と同一です。
+同commitのscan-gateをbuildし、`-check-render-only <render.pyの出力directory>` で
+同じ6 CRDsを含むfixture renderが成功、finding 0件を確認しました。guardのGoテストも成功しています。
+再生成・guard除外・弱体化は行っていません。required CIと独立Review、実cluster受入は別途確認が必要です。
