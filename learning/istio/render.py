@@ -55,6 +55,10 @@ def main():
         for mode in ["stable", "split", "plain"]:
             (args.output / (mode + ".yaml")).write_bytes(helm("chart", "learning-istio-demo",
                 mode="split" if mode == "split" else "stable", phase="plain" if mode == "plain" else "mesh"))
+        # Issue8 reuses stable + phase=plain: client/v1 only, namespace auto-injection.
+        (args.output / "issue8.yaml").write_bytes((args.output / "plain.yaml").read_bytes())
+        (args.output / "namespaces.yaml").write_bytes((ROOT / "bootstrap/namespaces.yaml").read_bytes())
+        (args.output / "plain-namespaces.yaml").write_bytes((ROOT / "bootstrap/plain.yaml").read_bytes())
         for resource in yaml.safe_load_all((args.output / "istiod.yaml").read_text()):
             if resource and resource["kind"] == "ConfigMap":
                 data, name = resource["data"], resource["metadata"]["name"]
@@ -64,15 +68,16 @@ def main():
                 if name == "istio-learning-1-31-2":
                     Path(temp + "/mesh.yaml").write_text(data["mesh"])
         # All three configs are explicit local files; no webhook or kube lookup.
-        run([args.istioctl, "kube-inject", "-f", str(args.output / "stable.yaml"),
-             "--injectConfigFile", temp + "/config.yaml", "--valuesFile", temp + "/values.json",
-             "--meshConfigFile", temp + "/mesh.yaml", "-i", "istio-learning-system", "-r", "learning-1-31-2",
-             "-o", str(args.output / "injected.yaml")])
-        for mode in ["stable", "split", "plain"]:
+        for source, target in [("stable.yaml", "injected.yaml"), ("issue8.yaml", "issue8-injected.yaml")]:
+            run([args.istioctl, "kube-inject", "-f", str(args.output / source),
+                 "--injectConfigFile", temp + "/config.yaml", "--valuesFile", temp + "/values.json",
+                 "--meshConfigFile", temp + "/mesh.yaml", "-i", "istio-learning-system", "-r", "learning-1-31-2",
+                 "-o", str(args.output / target)])
+        for mode in ["stable", "split", "plain", "issue8"]:
             ns = "bootstrap/plain.yaml" if mode == "plain" else "bootstrap/namespaces.yaml"
             run([args.istioctl, "analyze", "--use-kube=false", "--failure-threshold", "Warning",
                  str(ROOT / ns), str(args.output / (mode + ".yaml"))])
-    print("PASS: pinned tools/charts, 5 renders, offline injection, 3 offline analyses")
+    print("PASS: pinned tools/charts, 6 renders, 2 offline injections, 4 offline analyses")
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Limited Issue85 contract + pinned Istio CRD spec schema. No cluster access."""
+"""Issue8 opt-in and existing Issue85 contracts + pinned Istio CRD spec schema. No cluster access."""
 import argparse
 import copy
+from collections import Counter
 import hashlib
 import json
 from pathlib import Path
@@ -39,12 +40,13 @@ def strict_schema(schema):
 
 
 def contract(docs, mode, schemas, lock):
+    routing = mode not in ["plain", "issue8"]
     by = {(d["kind"], d["metadata"]["name"]): d for d in docs}
     require(len(by) == len(docs), "duplicate resource")
     expected = {("Namespace", CONTROL), ("Namespace", NS), ("Service", "mesh-demo"),
                 ("ServiceAccount", "mesh-demo"), ("ConfigMap", "mesh-demo-code"),
                 ("Deployment", "mesh-demo-client"), ("Deployment", "mesh-demo-v1")}
-    if mode != "plain":
+    if routing:
         expected |= {("Deployment", "mesh-demo-v2"), ("VirtualService", "mesh-demo"), ("DestinationRule", "mesh-demo")}
     require(set(by) == expected, "unexpected/missing resources")
     for d in docs:
@@ -60,7 +62,7 @@ def contract(docs, mode, schemas, lock):
     svc = by[("Service", "mesh-demo")]["spec"]
     require(svc["type"] == "ClusterIP" and svc["selector"] == {"app": "mesh-demo"}, "service selector/type")
     require(svc["ports"] == [{"name": "http", "port": 8080, "targetPort": "http", "appProtocol": "http"}], "service port")
-    for name in (["client", "v1"] if mode == "plain" else ["client", "v1", "v2"]):
+    for name in (["client", "v1"] if not routing else ["client", "v1", "v2"]):
         s = by[("Deployment", "mesh-demo-" + name)]["spec"]
         labels = {"app": "mesh-demo-client" if name == "client" else "mesh-demo", "version": name}
         require(s["replicas"] == 1 and s["strategy"] == {"type": "Recreate"}, "replicas/strategy")
@@ -77,7 +79,7 @@ def contract(docs, mode, schemas, lock):
             require(c["ports"] == [{"name": "http", "containerPort": 8080}], "pod port")
     require(by[("ServiceAccount", "mesh-demo")]["automountServiceAccountToken"] is False, "SA token")
     require(by[("ConfigMap", "mesh-demo-code")]["data"] == {"demo.py": (ROOT / "chart/files/demo.py").read_text()}, "fixture source drift")
-    if mode != "plain":
+    if routing:
         dr = by[("DestinationRule", "mesh-demo")]["spec"]
         vs = by[("VirtualService", "mesh-demo")]["spec"]
         require(dr == {"host": HOST, "exportTo": ["."], "subsets": [
@@ -95,9 +97,9 @@ def contract(docs, mode, schemas, lock):
         require(sum(t["weight"] for t in route["route"]) == 100, "weight sum")
 
 
-def injection(docs, lock):
+def injection(docs, lock, count=3):
     deployments = [d for d in docs if d["kind"] == "Deployment"]
-    require(len(deployments) == 3, "three injected pods")
+    require(len(deployments) == count, "injected pod count")
     observations = []
     for d in deployments:
         pod = d["spec"]["template"]["spec"]
@@ -127,6 +129,15 @@ def foundation(base, control, lock):
     pilot, = [d for d in control if d["kind"] == "Deployment"]
     require(pilot["spec"]["replicas"] == 1, "pilot replicas")
     require(pilot["spec"]["template"]["spec"]["containers"][0]["image"] == lock["images"]["pilot"]["ref"], "pilot pin")
+    require(not any("reader" in d["metadata"]["name"] for d in base + control), "reader RBAC forbidden")
+    require(Counter(d["kind"] for d in base + control) == Counter({
+        "CustomResourceDefinition": 15, "ClusterRole": 1, "ClusterRoleBinding": 1,
+        "ValidatingWebhookConfiguration": 2, "MutatingWebhookConfiguration": 1,
+        "ServiceAccount": 1, "Role": 1, "RoleBinding": 1, "ConfigMap": 3,
+        "Service": 1, "Deployment": 1}), "foundation resource boundary")
+    require(pilot["spec"]["template"]["spec"]["containers"][0]["resources"] == {
+        "requests": {"cpu": "500m", "memory": "512Mi"},
+        "limits": {"cpu": "1000m", "memory": "1024Mi"}}, "pilot budget")
     injector, = [d for d in control if d["kind"] == "MutatingWebhookConfiguration"]
     require(len(injector["webhooks"]) == 2, "revision-only webhook pairs")
     for webhook in injector["webhooks"]:
@@ -190,6 +201,13 @@ def main():
         except (ValueError, KeyError, jsonschema.ValidationError):
             valid = False
         require(valid == case["valid"], "fixture failed: " + case["name"])
+    issue8 = load(args.rendered / "namespaces.yaml") + load(args.rendered / "issue8.yaml")
+    contract(issue8, "issue8", schemas, lock)
+    require(load(args.rendered / "issue8.yaml") == load(args.rendered / "plain.yaml"), "Issue8 reuses plain fixture")
+    require(load(args.rendered / "namespaces.yaml") == load(ROOT / "bootstrap/namespaces.yaml"), "namespace source drift")
+    require(load(args.rendered / "plain-namespaces.yaml") == load(ROOT / "bootstrap/plain.yaml"), "plain namespace source drift")
+    require(len(base + control + issue8) == 35, "Issue8 35 resource boundary")
+    issue8_injected = injection(load(args.rendered / "issue8-injected.yaml"), lock, count=2)
     injected = injection(load(args.rendered / "injected.yaml"), lock)
     if args.helm:
         pinned(args.helm, lock["helm"]["binary"])
@@ -200,8 +218,10 @@ def main():
         evidence = args.rendered
         evidence.mkdir(parents=True, exist_ok=True)
         (evidence / "resource-inventory.json").write_text(json.dumps(inventory(base + control + load(ROOT / "bootstrap/namespaces.yaml") + load(args.rendered / "stable.yaml")), indent=2) + "\n")
+        (evidence / "issue8-resource-inventory.json").write_text(json.dumps(inventory(base + control + issue8), indent=2) + "\n")
+        (evidence / "issue8-podspec-inventory.json").write_text(json.dumps(issue8_injected, indent=2) + "\n")
         (evidence / "podspec-inventory.json").write_text(json.dumps(injected, indent=2) + "\n")
-    print(f"PASS: {len(cases)} contract fixtures; official VS/DR spec schemas; foundation/webhooks; 3 injected PodSpecs" + ("; 4 invalid Helm inputs rejected" if args.helm else ""))
+    print(f"PASS: {len(cases)} contract fixtures; official VS/DR spec schemas; foundation/webhooks; Issue8 35 resources + 2 injected PodSpecs; legacy 3 injected PodSpecs" + ("; 4 invalid Helm inputs rejected" if args.helm else ""))
 
 
 if __name__ == "__main__":

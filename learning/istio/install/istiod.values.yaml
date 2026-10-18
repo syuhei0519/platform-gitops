@@ -18,6 +18,7 @@ meshConfig:
     - matchLabels:
         kubernetes.io/metadata.name: istio-learning-system
 global:
+  enableReaderRBAC: false
   hub: docker.io/istio
   tag: 1.31.2
   istioNamespace: istio-learning-system

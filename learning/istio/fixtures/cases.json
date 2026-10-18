@@ -157,5 +157,40 @@
       "istio.io/dataplane-mode": "ambient"
     },
     "valid": false
+  },
+  {
+    "name": "issue8-client-v1-only",
+    "mode": "issue8",
+    "valid": true
+  },
+  {
+    "name": "issue8-missing-fixture",
+    "mode": "issue8",
+    "kind": "Deployment",
+    "name_filter": "mesh-demo-client",
+    "path": "spec.template.spec.containers",
+    "value": [],
+    "valid": false
+  },
+  {
+    "name": "issue8-app-token",
+    "mode": "issue8",
+    "kind": "Deployment",
+    "name_filter": "mesh-demo-v1",
+    "path": "spec.template.spec.automountServiceAccountToken",
+    "value": true,
+    "valid": false
+  },
+  {
+    "name": "issue8-ambient-conflict",
+    "mode": "issue8",
+    "kind": "Namespace",
+    "name_filter": "learning-istio-demo",
+    "path": "metadata.labels",
+    "value": {
+      "istio.io/rev": "learning-1-31-2",
+      "istio.io/dataplane-mode": "ambient"
+    },
+    "valid": false
   }
 ]
