@@ -85,6 +85,28 @@ tests:
   expected:
     state: 2
     requests: 0
+- name: idle missing histogram remains incomplete
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+0x20
+  expected:
+    state: 1
+    requests: 0
+- name: idle missing threshold bucket remains incomplete
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+0x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+0x20
+  expected:
+    state: 1
+    requests: 0
 - name: no HTTP series preparing
   interval: 30s
   input_series:

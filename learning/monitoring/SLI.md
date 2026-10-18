@@ -39,11 +39,12 @@ up=1、gaugeの年齢0以上90秒未満を要求する。Collectorに残るcache
 | --- | --- | --- |
 | 0 | up不明/0、heartbeatなし/古い/未来時刻 | N/A、健全と判定しない |
 | 1 | HTTP初回系列なし/2点未満、histogram count/bucketなし、count不一致 | 準備中/不完全、N/A |
-| 2 | 新鮮で要求増分0 | 通信なし、比率/budgetはN/A |
+| 2 | 新鮮で要求増分0、histogram整合 | 通信なし、比率/budgetはN/A |
 | 3 | 新鮮で要求増分0超20未満、histogram整合 | 少数sample、比率/budgetはN/A |
 | 4 | 新鮮・要求20以上・histogram整合 | 数値を評価、目標未達もそのまま表示 |
 
 histogram countとHTTP countの増分を0.001未満の差で照合し、threshold bucketの存在を要求する。
+要求増分0でもこの整合条件を要求し、histogram全体または250ms bucketが欠測なら状態1とする。
 rate/increaseは外挿推定のため、k6要求数との厳密一致や整数性を仮定しない。
 短いrunでも低sampleなら延長・増負荷で無理に合格させず、判定保留を記録する。
 Prometheus接続障害はGrafana Error/No data。単一instance前提であり、複数instanceの一部欠測の
@@ -76,6 +77,7 @@ sh learning/monitoring/check-tools.sh .rendered/learning-monitoring
 
 `validate.py` はSLI式とdashboardの完全一致を確認し、`sli-fixtures.yaml` の数値期待値から
 一時promtool fixtureを生成する。固定Prometheusのpromtoolで正常、4xx、5xx、全失敗、slow、
-idle、初回なし、少数sample、up/heartbeat欠測・stale、histogram欠測、counter resetを実計算する。
+idle（histogram全体/250ms bucket欠測の2負例を含む）、初回なし、少数sample、
+up/heartbeat欠測・stale、histogram欠測、counter resetを実計算する。
 既存10 RED fixture・Helm strict lint/render・12資源境界・Collector config検証も同時に維持する。
 Cloud結果はlive計測の代わりにしない。実適用は後続の承認済みローカル担当が行う。
