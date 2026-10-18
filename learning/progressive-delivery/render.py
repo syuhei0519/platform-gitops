@@ -97,7 +97,7 @@ def render(namespace, control, owner, cache):
                 'resource.customizations.health.argoproj.io_Rollout': (ROOT / 'health.lua').read_text(),
                 'resource.inclusions': yaml.safe_dump([
                     dict(apiGroups=['argoproj.io'], kinds=['Rollout', 'AnalysisTemplate', 'AnalysisRun'], clusters=['*']),
-                    dict(apiGroups=[''], kinds=['Service', 'Pod', 'ConfigMap'], clusters=['*']),
+                    dict(apiGroups=[''], kinds=['Service', 'Pod'], clusters=['*']),
                     dict(apiGroups=['apps'], kinds=['ReplicaSet', 'Deployment'], clusters=['*'])]),
             }
         control_objects.append(obj)
@@ -110,10 +110,6 @@ def render(namespace, control, owner, cache):
         rule('argoproj.io', 'rollouts', 'get list watch create update patch delete'),
         rule('argoproj.io', 'analysistemplates', 'get list watch create update patch delete'),
         rule('argoproj.io', 'analysisruns', 'get list watch'),
-        rule('', 'configmaps', 'get list watch create'),
-        rule('', 'configmaps', 'update patch delete', 'learning-account-analysis-provider'),
-        rule('apps', 'deployments', 'create'),
-        rule('apps', 'deployments', 'update patch delete', 'learning-account-analysis-provider'),
         rule('', 'services', 'get list watch create update patch delete'),
         rule('', 'pods', 'get list watch'),
         rule('apps', 'replicasets deployments', 'get list watch'),

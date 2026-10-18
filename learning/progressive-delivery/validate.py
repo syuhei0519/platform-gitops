@@ -55,7 +55,7 @@ def main():
     assert secret_rule['resourceNames'] == ['argo-rollouts-notification-secret']
     assert set(secret_rule['verbs']) == {'get','list','watch'}
     assert not any('*' in r['resources'] or '*' in r['verbs'] for o in all_objects if o['kind']=='Role' for r in o['rules'])
-    # Evaluate effective Role rules, including resourceNames boundaries on provider writes.
+    # Evaluate effective Role rules; provider lifecycle belongs to local Test, never Argo.
     argo = next(o for o in outputs['target.yaml'] if o['kind']=='Role' and o['metadata']['name']=='argocd-learning')
     def permits(role, group, resource, verb, name=''):
         return any(group in r['apiGroups'] and resource in r['resources'] and verb in r['verbs'] and
@@ -69,11 +69,9 @@ def main():
     for verb in ('get','list','watch'):
         assert permits(argo,'argoproj.io','analysisruns',verb)
     for group,resource in (('','configmaps'),('apps','deployments')):
-        for verb in ('get','list','watch','create','update','patch','delete'):
-            assert permits(argo,group,resource,verb,'learning-account-analysis-provider')
-        for verb in ('update','patch','delete'):
-            assert not permits(argo,group,resource,verb,'learning-account')
-            assert not permits(argo,group,resource,verb,'unrelated')
+        for verb in ('create','update','patch','delete'):
+            for name in ('learning-account-analysis-provider','learning-account','unrelated'):
+                assert not permits(argo,group,resource,verb,name)
     for sa_role in (role,argo):
         for group,resource in (('argoproj.io','clusteranalysistemplates'),('batch','jobs'),('','secrets'),('','persistentvolumeclaims')):
             for verb in ('create','update','patch','delete'):
@@ -83,7 +81,7 @@ def main():
         assert not permits(role,'argoproj.io','analysistemplates',verb)
     inclusions = yaml.safe_load(next(o for o in outputs['control.yaml'] if o['metadata']['name']=='argocd-cm')['data']['resource.inclusions'])
     assert inclusions == [dict(apiGroups=['argoproj.io'],kinds=['Rollout','AnalysisTemplate','AnalysisRun'],clusters=['*']),
-                          dict(apiGroups=[''],kinds=['Service','Pod','ConfigMap'],clusters=['*']),
+                          dict(apiGroups=[''],kinds=['Service','Pod'],clusters=['*']),
                           dict(apiGroups=['apps'],kinds=['ReplicaSet','Deployment'],clusters=['*'])]
     crd = next(o for o in outputs['crds.yaml'] if o['metadata']['name']=='rollouts.argoproj.io')
     schema = next(v['schema']['openAPIV3Schema'] for v in crd['spec']['versions'] if v['name']=='v1alpha1')
@@ -108,7 +106,7 @@ def main():
         assert analysis_app['spec']['source']['helm']['valuesObject']['analysis'] == analysis_values['analysis']
         assert analysis_app['spec']['source']['helm']['valueFiles'] == ['../profiles/candidate.yaml']
         assert analysis_project['spec']['namespaceResourceWhitelist'] == project['spec']['namespaceResourceWhitelist'] + [
-            dict(group='argoproj.io',kind='AnalysisTemplate'), dict(group='',kind='ConfigMap'),dict(group='apps',kind='Deployment')]
+            dict(group='argoproj.io',kind='AnalysisTemplate')]
         assert 'automated' not in analysis_app['spec']['syncPolicy'] and not analysis_app['metadata'].get('finalizers')
         assert analysis_app['spec']['ignoreDifferences'] == app['spec']['ignoreDifferences']
         for kind,obj in [('Application',analysis_app),('AppProject',analysis_project)]:
@@ -138,7 +136,7 @@ def main():
         args.output.mkdir(parents=True,exist_ok=False)
         for name, docs in outputs.items():
             (args.output/name).write_text(yaml.safe_dump_all(docs,sort_keys=False))
-    print('PASS inline analysis permissions: Run management/status/finalizers; template CRUD and Run read; provider name bounds; Job/Secret/PVC/cluster-template writes denied; 5 opt-in Applications and input negatives.')
+    print('PASS inline analysis permissions: Run management/status/finalizers; template CRUD and Run read; provider Deployment/ConfigMap writes denied; Job/Secret/PVC/cluster-template writes denied; 5 opt-in Applications and input negatives.')
     print('PASS fixed upstream checksums; 6 CRDs; sample schema; bounded RBAC; no cluster roles/webhooks; manual Application and AppProject schema; namespace/value negatives; 8 executed Lua health cases. No runtime acceptance.')
 
 

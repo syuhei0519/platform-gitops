@@ -36,8 +36,7 @@ def application(namespace, control, commit, values):
         raise ValueError('analysis requires a Ready revision; failed readiness is a separate test')
     allowed = [dict(group='argoproj.io', kind='Rollout'), dict(group='', kind='Service')]
     if analysis['enabled']:
-        allowed += [dict(group='argoproj.io', kind='AnalysisTemplate'), dict(group='', kind='ConfigMap'),
-                    dict(group='apps', kind='Deployment')]
+        allowed += [dict(group='argoproj.io', kind='AnalysisTemplate')]
     project = dict(apiVersion='argoproj.io/v1alpha1', kind='AppProject',
                    metadata=dict(name='learning-account', namespace=control),
                    spec=dict(sourceRepos=[REPO], destinations=[dict(server='https://kubernetes.default.svc', namespace=namespace)],
