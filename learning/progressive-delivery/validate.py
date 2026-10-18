@@ -50,6 +50,7 @@ def main():
                     assert c['securityContext']['allowPrivilegeEscalation'] is False
                     assert c['securityContext']['readOnlyRootFilesystem'] is True
     role = next(o for o in outputs['target.yaml'] if o['kind']=='Role' and o['metadata']['name']=='learning-rollouts')
+    assert any(r['resources']==['leases'] and set(r['verbs'])=={'create','get','update'} for r in role['rules'])
     secret_rule = next(r for r in role['rules'] if 'secrets' in r['resources'])
     assert secret_rule['resourceNames'] == ['argo-rollouts-notification-secret']
     assert set(secret_rule['verbs']) == {'get','list','watch'}

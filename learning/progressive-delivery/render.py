@@ -125,6 +125,7 @@ def render(namespace, control, owner, cache):
             rule('', 'events', 'create update patch'),
             rule('', 'configmaps', 'get list watch', 'argo-rollouts-config argo-rollouts-notification-configmap'),
             rule('', 'secrets', 'get list watch', 'argo-rollouts-notification-secret'),
+            rule('coordination.k8s.io', 'leases', 'create get update'),
             rule('batch', 'jobs', 'get list watch'),
             rule('networking.k8s.io', 'ingresses', 'get list watch')]),
         binding('learning-rollouts', namespace, 'learning-rollouts', namespace)]
@@ -137,7 +138,7 @@ def render(namespace, control, owner, cache):
     container = pod['containers'][0]
     container['image'] = ROLLOUTS_IMAGE
     container['imagePullPolicy'] = 'IfNotPresent'
-    container['args'] = ['--namespaced', '--namespace', namespace]
+    container['args'] = ['--namespaced', '--namespace', namespace, '--leader-elect=true']
     container['resources'] = dict(requests=dict(cpu='50m', memory='64Mi', **{'ephemeral-storage':'32Mi'}),
                                   limits=dict(cpu='500m', memory='256Mi', **{'ephemeral-storage':'256Mi'}))
     target.append(dep)

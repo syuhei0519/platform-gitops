@@ -40,7 +40,7 @@ ignoreDifferences + RespectIgnoreDifferencesで保護し、手動再同期でCon
 | `crds.yaml` | cluster全体にApplication/AppProject/Rollout/Experiment/AnalysisRun/AnalysisTemplateの6 CRDs。後ろ3種はController informer用で実行対象ではない | 他利用がないことを再確認してから6 CRDsのみ。削除は全namespaceの同kindを消すため別承認 |
 | control namespace | 新規専用namespace。既存argocdや他環境を流用しない | 所有リソースを個別解除後、この新規namespaceだけ |
 | `control.yaml` | SA 2個、Role/Binding、Core controller 1・repo-server 1・Redis 1、ConfigMaps/ClusterIP Services。secret作成Job・API server・cluster role・webhookなし | この出力内の所有資源のみ |
-| `target.yaml` | 既存学習namespaceへSA/Role/Binding、namespaced Rollouts controller 1。RS生成/scale、stable/canary Serviceのhash patch、Pod metadata/Event更新 | この出力の資源だけ。namespace自体は消さない |
+| `target.yaml` | 既存学習namespaceへSA/Role/Binding、namespaced Rollouts controller 1。RS生成/scale、stable/canary Serviceのhash patch、Pod metadata/Event更新、対象namespace内のleader-election Lease作成/更新 | この出力の資源だけ。namespace自体は消さない |
 | 同Role | Argo CDは対象namespaceのRollout/Serviceを書込み、Pod/RS/Deploymentを読取り。Deploymentはread-only。AppProjectが実syncをRollout/Serviceに制限 | 同Role/Bindingのみ。DB/Job/PVC/Secretのwrite権限はない |
 | 通知用read | RolloutsのSecret readは固定名`argo-rollouts-notification-secret`のみ。watchは公式controllerがname fieldSelectorを付ける。Account DB Secretは読めない | Role/Bindingのみ。通知Secretは作成しない |
 | 登録前提（render対象外） | ownerが別承認後にCoreの空settings Secret `argocd-secret`と、in-cluster登録Secret `learning-in-cluster`を供給。登録はname=in-cluster/server=https://kubernetes.default.svc/namespaces=対象namespace/clusterResources=false/config={}、label argocd.argoproj.io/secret-type=cluster。settings Secretはlabel app.kubernetes.io/part-of=argocd。tokenを含めず標準Pod SA credentialを使う | この2 Secretだけ。既存Secretへ上書きしない |
