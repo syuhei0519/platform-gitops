@@ -60,7 +60,7 @@ stable/plainは200件すべてv1、v2/失敗/未知本文0。splitは2000件す�
 
 ## 必要権限と生成inventory
 
-`evidence/resource-inventory.json` はbase+istiod+namespace+stableの**計画42リソース**です。
+`evidence/resource-inventory.json` はbase+istiod+namespace+stableの**計画40リソース**です。
 15 CRD、2 ClusterRole/2 ClusterRoleBinding、2 ValidatingWebhookConfiguration、1 MutatingWebhookConfiguration、2 Namespaceを含みます。
 namespacedは2 SA、1 Role/1 RoleBinding、4 ConfigMap、2 Service、4 Deployment（istiod+fixture3）、VS/DR各1です。
 `evidence/podspec-inventory.json` は3 Podのoffline注入結果であり、実Admission通過を証明しません。

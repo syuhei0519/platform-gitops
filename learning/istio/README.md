@@ -20,7 +20,12 @@ clientはidleで起動し、将来の明示操作で固定要求窓を実行し�
 
 `versions.lock.json` は公式Istio release archiveとCLI、同archiveから抽出した未変更chart全ファイル、Helm実行binary、取得imageのplatform manifest/config digest・docker-save archive実測hash/sizeを固定します。
 公式chart配布ホストはHTTP403だったため、取得できた公式release archive中のchartを `vendor/` に保持しました。chartホストのtgzを取得したという主張はしません。
-Helmは環境に存在した4.2.4 binary（clean / commit 3900f434…）を使用しbytesを固定しました。get.helm.shのarchiveはHTTP403で未取得、そのarchiveの由来/hash照合は未検証です。
+Helm 4.2.4は、既存repoがCIに固定済みの第三者配布 `alpine/helm@sha256:76c375ee…` に由来します。
+R1対応ではregistry index→linux/amd64 manifest→config digest→既存imageの各layer diffIDを検証し、`usr/bin/helm` の全bytesが使用binaryと一致することを確認しました。
+配布source URL・size/hash・展開比較は `evidence/helm-provenance.json`、registryの元bytesは隣接する `helm-distribution-*.json` に保持します。
+これは信頼済み既存インストール由来の証跡です。Helm公式publisherの配布imageや署名検証済みarchiveとは呼びません。get.helm.shのarchiveは以前のHTTP403により未取得のままで、拒否を迂回していません。
+binary pinは64,274,594 bytes / SHA256 `92e191314f44aac173711bb0247c38c727f3ddf65ad16a01c0861d509a63a9e1` から変わらず、renderは再生成していません。
+attempt 1の設定・Handoff・実測は `evidence/attempt-2-preservation.json` の固定commit/size/hashで保存し、attemptをリセットしません。
 image archiveは非公開保持の観測bytesです。docker-save再実行で同hashになる保証はなく、再取得identityはregistry digestで確認してください。
 imageの実cluster load / 実imageIDは未検証です。未知architectureに流用しません。
 

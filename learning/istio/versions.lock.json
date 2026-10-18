@@ -20,7 +20,12 @@
       "size": 64274594,
       "sha256": "92e191314f44aac173711bb0247c38c727f3ddf65ad16a01c0861d509a63a9e1"
     },
-    "origin": "preinstalled official release binary; get.helm.sh archive unavailable (HTTP403), archive identity unverified"
+    "origin": "Verified byte-identical to the pre-existing repository-pinned alpine/helm distribution (third party). Direct official upstream archive authentication is not claimed.",
+    "provenance": {
+      "path": "evidence/helm-provenance.json",
+      "size": 4659,
+      "sha256": "92769d9fa841ece6ee15f1d2c318367406ed385887eaf921acae1ba913f5a6db"
+    }
   },
   "kubernetes": {
     "planned": "1.36.4",

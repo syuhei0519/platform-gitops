@@ -47,14 +47,14 @@
     "injected_podspecs": 3,
     "accounting_unit_tests": 5,
     "fixture_image_tests": 5,
-    "resource_inventory_count": 42
+    "resource_inventory_count": 40
   },
   "limitations": [
     "Independent Test/Review and same-head required CI are separate pending gates.",
     "No cluster access, apply, namespace label, RBAC, Secrets, or permission changes performed.",
     "No mesh runtime, actual request ratio, Admission, or deployment UID verification.",
     "Initial nonroot Docker bind-mount test could not read private host checkout; default-UID image accounting rerun passed. Host file permissions were not changed. ConfigMap mode and deployment UID are declarative only.",
-    "Helm preinstalled binary bytes/version/commit pinned; official download host HTTP403, archive provenance unverified.",
+    "Helm binary is byte-identical to the pre-existing repository-pinned third-party alpine/helm distribution; direct official archive authentication is not claimed. See helm-provenance.json.",
     "Istio chart host HTTP403; unaltered charts obtained from pinned official release distribution.",
     "git diff --check reports whitespace in byte-preserved upstream charts and generated Helm/istioctl YAML; authored files pass the scoped whitespace check."
   ],
@@ -64,5 +64,15 @@
     "helm": "4.2.4",
     "planned_kubernetes": "1.36.4"
   },
-  "results_are_runtime_evidence": false
+  "results_are_runtime_evidence": false,
+  "attempt_2_update": {
+    "findings": [
+      "R1",
+      "O1"
+    ],
+    "new_execution": "provenance byte comparison and inventory recount only",
+    "render_changed": false,
+    "previous_test_results_reused_from_commit": "f96fd32dbd1e899d91c26ef7e75e2837eb6de3dc",
+    "independent_review_status": "pending on corrected candidate"
+  }
 }
