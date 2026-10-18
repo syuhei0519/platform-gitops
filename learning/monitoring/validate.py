@@ -111,11 +111,13 @@ def verify(text):
     dashboard = json.loads(grafana['account-overview.json'])
     assert dashboard['uid'] == 'learning-account-overview' and dashboard['editable'] is False
     assert 'learning-fixture' in dashboard['description']
-    assert len(dashboard['panels']) == 6
-    queries = {p['targets'][0]['expr'] for p in dashboard['panels']}
+    assert len(dashboard['panels']) == 13
+    queries = {p['targets'][0]['expr'] for p in dashboard['panels'][:6]}
     fixtures = yaml.safe_load((ROOT / 'query-tests.yaml').read_text())
     tested = {e['expr'] for t in fixtures['tests'] for e in t['promql_expr_test']}
     assert queries == tested, 'promtool fixtures must test the exact dashboard expressions'
+    sli = json.loads((ROOT / 'sli-queries.json').read_text())
+    assert {p['targets'][0]['expr'] for p in dashboard['panels'][6:]} == set(sli.values())
     assert all(p['fieldConfig']['defaults']['noValue'] == 'N/A' for p in dashboard['panels'])
     assert 'or vector(0)' not in dashboard['panels'][1]['targets'][0]['expr'].split(' and on() ')[0]
     return configs
@@ -156,6 +158,18 @@ def main():
         for data in configs.values():
             for name, content in data.items():
                 (args.output / name).write_text(content)
+        # Materialize exact dashboard expressions from compact numeric fixtures.
+        sli = json.loads((ROOT / 'sli-queries.json').read_text())
+        fixtures = yaml.safe_load((ROOT / 'sli-fixtures.yaml').read_text())
+        for case in fixtures['tests']:
+            expected = case.pop('expected')
+            assert set(expected) <= set(sli)
+            case['promql_expr_test'] = [
+                {'expr': expr, 'eval_time': '10m', 'exp_samples':
+                 [{'labels': '{}', 'value': expected[key]}] if key in expected else []}
+                for key, expr in sli.items()]
+        # JSON is valid YAML for promtool, without aliases rejected by scan-gate.
+        (args.output / 'sli-query-tests.yaml').write_text(json.dumps(fixtures, indent=2) + '\n')
     print('PASS monitoring: schema/strict lint/Kubernetes 1.36.4 render, 12-resource boundary, configs, dashboard/query binding, 10 rejections')
     print('Synthetic render only; no Kubernetes or live acceptance claimed')
 
