@@ -1,0 +1,405 @@
+{
+  "representation": "edited_derivative public reference inventory; private workspace metadata and operational verification snapshot omitted",
+  "source_bytes_policy": "Published references retain the original 39 fixed public Git commit/path/size/SHA-256 entries unchanged. Source bodies are retrieved from those fixed Git references; this payload is a public reference inventory, not a copy of the private original source manifest. The public issue #5 body snapshot is retained separately.",
+  "observed_at": "2026-10-18T04:03:10.572296+00:00",
+  "agreed_system_pin": "ead1cc4023c083c7b1bf703d8b371a0957997ed5",
+  "main_observations": [
+    {
+      "repository": "syuhei0519/ai-development-system",
+      "main_sha": "ead1cc4023c083c7b1bf703d8b371a0957997ed5",
+      "methods": [
+        "GitHub GET branches/main",
+        "git ls-remote refs/heads/main"
+      ],
+      "checkout_head_matches": true
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "main_sha": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "methods": [
+        "GitHub GET branches/main",
+        "git ls-remote refs/heads/main"
+      ],
+      "checkout_head_matches": true
+    },
+    {
+      "repository": "syuhei0519/application-manifest",
+      "main_sha": "a5b49532b2b39ad818419834a30c5113c2c90900",
+      "methods": [
+        "GitHub GET branches/main",
+        "git ls-remote refs/heads/main"
+      ],
+      "checkout_head_matches": true
+    },
+    {
+      "repository": "syuhei0519/backend-app",
+      "main_sha": "e030275abbf52ecd27b7152ce597b3d89be3f830",
+      "methods": [
+        "GitHub GET branches/main",
+        "git ls-remote refs/heads/main"
+      ],
+      "checkout_head_matches": true
+    }
+  ],
+  "references": [
+    {
+      "repository": "syuhei0519/ai-development-system",
+      "commit": "ead1cc4023c083c7b1bf703d8b371a0957997ed5",
+      "path": "agents/research-design.md",
+      "git_blob_sha1": "e02d626652966b5efc35283694d46428e5dae938",
+      "size": 6600,
+      "sha256": "54ff10edf298f1136487c32e706fe9beb49b78adad734e563bae4d26eb36bcbe",
+      "read_reference": "https://github.com/syuhei0519/ai-development-system/blob/ead1cc4023c083c7b1bf703d8b371a0957997ed5/agents/research-design.md"
+    },
+    {
+      "repository": "syuhei0519/ai-development-system",
+      "commit": "ead1cc4023c083c7b1bf703d8b371a0957997ed5",
+      "path": "workflows/single-issue.md",
+      "git_blob_sha1": "b57498b1aa99c99764b11418a47bad1f533072ed",
+      "size": 24381,
+      "sha256": "ee229a3c0d70dbc0c1cac7d232fd3ec4388238c528eafcf8cf1369bae49a1ab4",
+      "read_reference": "https://github.com/syuhei0519/ai-development-system/blob/ead1cc4023c083c7b1bf703d8b371a0957997ed5/workflows/single-issue.md"
+    },
+    {
+      "repository": "syuhei0519/ai-development-system",
+      "commit": "ead1cc4023c083c7b1bf703d8b371a0957997ed5",
+      "path": "contracts/README.md",
+      "git_blob_sha1": "0534ec2e6cf8fb1588b9c07a5b6ad0dd15bc1b15",
+      "size": 13961,
+      "sha256": "92da406fc403ed7cad327d163e768a259f5445283e3298a3e6703f867ccabe89",
+      "read_reference": "https://github.com/syuhei0519/ai-development-system/blob/ead1cc4023c083c7b1bf703d8b371a0957997ed5/contracts/README.md"
+    },
+    {
+      "repository": "syuhei0519/ai-development-system",
+      "commit": "ead1cc4023c083c7b1bf703d8b371a0957997ed5",
+      "path": "contracts/handoff.schema.json",
+      "git_blob_sha1": "2282039541de477c9b842f5c0e7e9c2fc83d6993",
+      "size": 15093,
+      "sha256": "3df669f230c3f1d65ddaaa9e7de5f713f70b9e8440512403f6ea309eb70b3ae1",
+      "read_reference": "https://github.com/syuhei0519/ai-development-system/blob/ead1cc4023c083c7b1bf703d8b371a0957997ed5/contracts/handoff.schema.json"
+    },
+    {
+      "repository": "syuhei0519/ai-development-system",
+      "commit": "ead1cc4023c083c7b1bf703d8b371a0957997ed5",
+      "path": "contracts/artifact-delivery.md",
+      "git_blob_sha1": "a92dfc639a5c3c5f502e0c789f8283663d5aa36e",
+      "size": 19987,
+      "sha256": "b9540b7527b50ae7732b0901da1c124ff1ec81c3209e66fa7d10ea2ff24f4175",
+      "read_reference": "https://github.com/syuhei0519/ai-development-system/blob/ead1cc4023c083c7b1bf703d8b371a0957997ed5/contracts/artifact-delivery.md"
+    },
+    {
+      "repository": "syuhei0519/ai-development-system",
+      "commit": "ead1cc4023c083c7b1bf703d8b371a0957997ed5",
+      "path": "contracts/readiness.md",
+      "git_blob_sha1": "844ec3bcfaa266ad28dec726f5b3c4ee34f79d2a",
+      "size": 18773,
+      "sha256": "1217a04f59c8bf6807fe6efd851d6bfb9c6e6f016464fad9d52f4ca870813146",
+      "read_reference": "https://github.com/syuhei0519/ai-development-system/blob/ead1cc4023c083c7b1bf703d8b371a0957997ed5/contracts/readiness.md"
+    },
+    {
+      "repository": "syuhei0519/ai-development-system",
+      "commit": "ead1cc4023c083c7b1bf703d8b371a0957997ed5",
+      "path": "workflows/workflow-model-routing.md",
+      "git_blob_sha1": "c2b4aaea34077a6e007cfe6a06b6bcef03dbd6df",
+      "size": 9880,
+      "sha256": "f90a0ed465fda07b29a1aebd9918fbe3c5258ce18239ee0bcfc25bfef331942e",
+      "read_reference": "https://github.com/syuhei0519/ai-development-system/blob/ead1cc4023c083c7b1bf703d8b371a0957997ed5/workflows/workflow-model-routing.md"
+    },
+    {
+      "repository": "syuhei0519/ai-development-system",
+      "commit": "ead1cc4023c083c7b1bf703d8b371a0957997ed5",
+      "path": "config/workflow-model-routing.yaml",
+      "git_blob_sha1": "924fa0b57c3b9cf229fdc052bbfd22790940d4cc",
+      "size": 1406,
+      "sha256": "1b984cc961897de1eb403145971835ab17ac4a3ee706e131b38eeb56fb232012",
+      "read_reference": "https://github.com/syuhei0519/ai-development-system/blob/ead1cc4023c083c7b1bf703d8b371a0957997ed5/config/workflow-model-routing.yaml"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "observability/dashboards/application-overview.json",
+      "git_blob_sha1": "dd94182aea9d8443ec1ae48a0a38d13b869aa52a",
+      "size": 13242,
+      "sha256": "6cb4269499c7a9fac6939b34b72f135b86a681825d64d951f8cf462702616b61",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/observability/dashboards/application-overview.json"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "charts/grafana/files/application-overview.json",
+      "git_blob_sha1": "dd94182aea9d8443ec1ae48a0a38d13b869aa52a",
+      "size": 13242,
+      "sha256": "6cb4269499c7a9fac6939b34b72f135b86a681825d64d951f8cf462702616b61",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/charts/grafana/files/application-overview.json"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "charts/grafana/values.yaml",
+      "git_blob_sha1": "d23e2b3241f4ee56198a96d758c72499ecfd082d",
+      "size": 2304,
+      "sha256": "3dfacc79fbc6750ff8160ee710033aaed1f4966b2c32affde91416a346761934",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/charts/grafana/values.yaml"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "charts/grafana/templates/dashboards.yaml",
+      "git_blob_sha1": "1e96049c05ce7a87ca00b5f2e266744bae510db3",
+      "size": 420,
+      "sha256": "9cca4ddf0d25a8a0821d3290c75476e332d3e8ea5ce0cd4c135be5448ba1c9fb",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/charts/grafana/templates/dashboards.yaml"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "charts/grafana/Chart.yaml",
+      "git_blob_sha1": "598c27c20d7a5301f628193d54e59eea72d90e35",
+      "size": 247,
+      "sha256": "09550620c7b878c0981711274a25bdaceb7961c4dc77ed38dc706673d3712b9d",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/charts/grafana/Chart.yaml"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "environments/local/prometheus.yaml",
+      "git_blob_sha1": "0b1f0ff2276e90273f865bcaa25f62ef0dc47875",
+      "size": 5304,
+      "sha256": "d341be0d3aebd000bb2714901c8cf04cff850d05b2ff1d15d33c831857df1e3b",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/environments/local/prometheus.yaml"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "environments/local/otel-collector.yaml",
+      "git_blob_sha1": "2100f8fb984fc40cb7c20c6844541ced38a5c777",
+      "size": 462,
+      "sha256": "cc899abd89d20fa6ecaea723408e54abf90c7922b8ef64c2c97f455e1df0b090",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/environments/local/otel-collector.yaml"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "charts/otel-collector/values.yaml",
+      "git_blob_sha1": "87ee9f2f83122e21d4affc5900df804d6fa318b4",
+      "size": 840,
+      "sha256": "d49e604fe4593ed0fb3098259e3367026752c93924f0a35c9f0937181135913f",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/charts/otel-collector/values.yaml"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "charts/otel-collector/templates/configmap.yaml",
+      "git_blob_sha1": "d084423a6686b02d443a99a5768ef9859908909c",
+      "size": 4805,
+      "sha256": "cd20ec69d47f904691764e58fef186e7e72805aa849f44e16f509c882efbc970",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/charts/otel-collector/templates/configmap.yaml"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "charts/otel-collector/templates/service.yaml",
+      "git_blob_sha1": "73ac00b9592cc930b883aae200e63dabd1863472",
+      "size": 566,
+      "sha256": "ddd7084e05c0da7af21fbadf028e2c862eb4686227597d4dcf7a7d2a5b576e44",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/charts/otel-collector/templates/service.yaml"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "charts/otel-collector/templates/deployment.yaml",
+      "git_blob_sha1": "e91e9ace387542d7aa7eb3594fb3cb202b161caa",
+      "size": 2281,
+      "sha256": "4ed252fd96c6923adb3fe64a70cb0c19ce7948d4c1651c05630d4033667c228d",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/charts/otel-collector/templates/deployment.yaml"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "charts/observability-foundation/templates/rbac.yaml",
+      "git_blob_sha1": "1fe989d51ca98ce91eda340963463dec4f367f7e",
+      "size": 2072,
+      "sha256": "547bb93e76306f6420679c3af2ecd76c23850295ca31d2d615e9b2650840aff6",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/charts/observability-foundation/templates/rbac.yaml"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "charts/platform/values.yaml",
+      "git_blob_sha1": "cfd72e07ddcae9f076b86e4ed79c46f1adb2729b",
+      "size": 297,
+      "sha256": "c33a296ba0edede06f2087c8ee265f983d6929888a2cc1d406afa3bab7da7fc0",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/charts/platform/values.yaml"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "charts/platform/templates/observability-applications.yaml",
+      "git_blob_sha1": "8eafc23308f35bdf2ad24a0f56e7a3f9fca828dd",
+      "size": 3415,
+      "sha256": "00fead436080db018d7cadeacf28d6635fb1bd6d830e8a915fd9d06faedacfb2",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/charts/platform/templates/observability-applications.yaml"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "docs/collector-contract.md",
+      "git_blob_sha1": "43ca81ffae94cb77a8dca3e2a51459ea89d9f637",
+      "size": 4808,
+      "sha256": "b881eb85801e80cfe82e3cff16c4238a9bb8b203ab55a772a5c2248fccdecf66",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/docs/collector-contract.md"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "docs/grafana-contract.md",
+      "git_blob_sha1": "4c5232e550db79ce1d98709f807f0c883ae224d7",
+      "size": 3673,
+      "sha256": "2be7437e1863e24220fffd11823e9a1d86467e4f5b0c553b510cc1a001eb3940",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/docs/grafana-contract.md"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": "ci/github/test.sh",
+      "git_blob_sha1": "353b23729889694110e161b82786f2c9ae2f5505",
+      "size": 1451,
+      "sha256": "f28acbf6b4cf88b406f936d6f40d50084ea85eddb3010dbb82987118c8be18c5",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/ci/github/test.sh"
+    },
+    {
+      "repository": "syuhei0519/platform-gitops",
+      "commit": "482ba450983ac2929f8176374d0d6ca50a69cac6",
+      "path": ".github/workflows/ci.yml",
+      "git_blob_sha1": "958ba41194ee5d06bbbd31f1c0bf35bf8302cce7",
+      "size": 4762,
+      "sha256": "996404ab8df03ae66113256b1426a7a8827dcc4fa054bfc23034262ffda94701",
+      "read_reference": "https://github.com/syuhei0519/platform-gitops/blob/482ba450983ac2929f8176374d0d6ca50a69cac6/.github/workflows/ci.yml"
+    },
+    {
+      "repository": "syuhei0519/application-manifest",
+      "commit": "a5b49532b2b39ad818419834a30c5113c2c90900",
+      "path": "learning/chart/values.yaml",
+      "git_blob_sha1": "3f2233a7234a1958675241cfbd76fb69ad56ed7e",
+      "size": 679,
+      "sha256": "64a32f091f9123b8dc0c7e4b238f95ebf16cc32e32ad86e9b20704f72ca218b2",
+      "read_reference": "https://github.com/syuhei0519/application-manifest/blob/a5b49532b2b39ad818419834a30c5113c2c90900/learning/chart/values.yaml"
+    },
+    {
+      "repository": "syuhei0519/application-manifest",
+      "commit": "a5b49532b2b39ad818419834a30c5113c2c90900",
+      "path": "learning/chart/values.schema.json",
+      "git_blob_sha1": "8cbf5f1895baec68f57319d14566f5af68333009",
+      "size": 1970,
+      "sha256": "f8126e537fa0f0735ee8af86d3265c57edbb63297a98af543dc71c34e09eb29e",
+      "read_reference": "https://github.com/syuhei0519/application-manifest/blob/a5b49532b2b39ad818419834a30c5113c2c90900/learning/chart/values.schema.json"
+    },
+    {
+      "repository": "syuhei0519/application-manifest",
+      "commit": "a5b49532b2b39ad818419834a30c5113c2c90900",
+      "path": "learning/chart/templates/_helpers.tpl",
+      "git_blob_sha1": "67b599d11fb8ad8812aab13a50d534860b3acf23",
+      "size": 1491,
+      "sha256": "d5fce9b75fc6cf3a157d6118002d9ee7ae90cec766a406682fbe1f76ed86234d",
+      "read_reference": "https://github.com/syuhei0519/application-manifest/blob/a5b49532b2b39ad818419834a30c5113c2c90900/learning/chart/templates/_helpers.tpl"
+    },
+    {
+      "repository": "syuhei0519/application-manifest",
+      "commit": "a5b49532b2b39ad818419834a30c5113c2c90900",
+      "path": "learning/chart/templates/api.yaml",
+      "git_blob_sha1": "a4eca6672e88bc6786ada137920c8345ee1f0b2a",
+      "size": 2168,
+      "sha256": "b5767b707c1a891c95cda4bae2b0798295556e8bb9c8498b39a2bc19c5782d5a",
+      "read_reference": "https://github.com/syuhei0519/application-manifest/blob/a5b49532b2b39ad818419834a30c5113c2c90900/learning/chart/templates/api.yaml"
+    },
+    {
+      "repository": "syuhei0519/application-manifest",
+      "commit": "a5b49532b2b39ad818419834a30c5113c2c90900",
+      "path": "learning/README.md",
+      "git_blob_sha1": "fab0e31a9aabc19e50bbee506298a5abfd62ed78",
+      "size": 13337,
+      "sha256": "afbcd7c082de040050b3d0900951a8b4854d41a762a85c8d9e8ff88847b5ff16",
+      "read_reference": "https://github.com/syuhei0519/application-manifest/blob/a5b49532b2b39ad818419834a30c5113c2c90900/learning/README.md"
+    },
+    {
+      "repository": "syuhei0519/backend-app",
+      "commit": "e030275abbf52ecd27b7152ce597b3d89be3f830",
+      "path": "internal/telemetry/telemetry.go",
+      "git_blob_sha1": "71d4620da2f567bfc035bff77bc52bf16693a3db",
+      "size": 9310,
+      "sha256": "58c69328a5c29d804ab0d146b1d35b3e0e2d65d1b1e1284089dd95843c421c0b",
+      "read_reference": "https://github.com/syuhei0519/backend-app/blob/e030275abbf52ecd27b7152ce597b3d89be3f830/internal/telemetry/telemetry.go"
+    },
+    {
+      "repository": "syuhei0519/backend-app",
+      "commit": "e030275abbf52ecd27b7152ce597b3d89be3f830",
+      "path": "internal/httpapi/observation.go",
+      "git_blob_sha1": "860488b5246704a32b58db6f68d6c17bdd7093a7",
+      "size": 3560,
+      "sha256": "9eb898887b6ad445787a33bbfd307da3cc0002e256216fbab68c71051ad82287",
+      "read_reference": "https://github.com/syuhei0519/backend-app/blob/e030275abbf52ecd27b7152ce597b3d89be3f830/internal/httpapi/observation.go"
+    },
+    {
+      "repository": "syuhei0519/backend-app",
+      "commit": "e030275abbf52ecd27b7152ce597b3d89be3f830",
+      "path": "internal/httpapi/server.go",
+      "git_blob_sha1": "5a6403f02921b5dd29ba1b7484de438e65f5ef44",
+      "size": 7332,
+      "sha256": "588f5e45fbaf691ee2b6008a437e78ec6e5e315d9d642a825cbb15e33752389d",
+      "read_reference": "https://github.com/syuhei0519/backend-app/blob/e030275abbf52ecd27b7152ce597b3d89be3f830/internal/httpapi/server.go"
+    },
+    {
+      "repository": "syuhei0519/backend-app",
+      "commit": "e030275abbf52ecd27b7152ce597b3d89be3f830",
+      "path": "Dockerfile",
+      "git_blob_sha1": "6a7def40a31339da38cd22be01991106bcc2aaa5",
+      "size": 1672,
+      "sha256": "dc34d001b4451e4059c89b28861187a87e98875138370b0c2b1dd318c26e19d6",
+      "read_reference": "https://github.com/syuhei0519/backend-app/blob/e030275abbf52ecd27b7152ce597b3d89be3f830/Dockerfile"
+    },
+    {
+      "repository": "syuhei0519/backend-app",
+      "commit": "e030275abbf52ecd27b7152ce597b3d89be3f830",
+      "path": "cmd/server/main.go",
+      "git_blob_sha1": "129f3d0aa87901ec03369b633f33c52e7d817494",
+      "size": 4669,
+      "sha256": "7836f9e629bded448ff6466848293c7206f2b982f5b596943cec0128aff1c5be",
+      "read_reference": "https://github.com/syuhei0519/backend-app/blob/e030275abbf52ecd27b7152ce597b3d89be3f830/cmd/server/main.go"
+    },
+    {
+      "repository": "syuhei0519/backend-app",
+      "commit": "e030275abbf52ecd27b7152ce597b3d89be3f830",
+      "path": "docs/telemetry-contract.md",
+      "git_blob_sha1": "bbbbd93e20fff5b1c88eb78b2e43d433cdfc2461",
+      "size": 4121,
+      "sha256": "794522adffa1d72c643f1d5b415c52b77699d6fdf7d2769b2bdf56ec346e8f99",
+      "read_reference": "https://github.com/syuhei0519/backend-app/blob/e030275abbf52ecd27b7152ce597b3d89be3f830/docs/telemetry-contract.md"
+    },
+    {
+      "repository": "open-telemetry/opentelemetry-collector-contrib",
+      "commit": "3f8455d8038a985398861171e5310bc9b4e988b2",
+      "path": "exporter/prometheusexporter/README.md",
+      "size": 9202,
+      "sha256": "2c7fb860a00b8966ff70aceef21de7165a78cf3f46435b6d090a0da09d426188",
+      "read_reference": "https://raw.githubusercontent.com/open-telemetry/opentelemetry-collector-contrib/3f8455d8038a985398861171e5310bc9b4e988b2/exporter/prometheusexporter/README.md"
+    },
+    {
+      "repository": "grafana/grafana",
+      "commit": "6193dc03311b631b9727b560d24369e683dc396e",
+      "path": "conf/defaults.ini",
+      "size": 112985,
+      "sha256": "a15a22e349abca640437318e393a518d4ad4274e93f55095417e1eca2d654c93",
+      "read_reference": "https://raw.githubusercontent.com/grafana/grafana/6193dc03311b631b9727b560d24369e683dc396e/conf/defaults.ini"
+    }
+  ],
+  "issue_snapshot": {
+    "url": "https://github.com/syuhei0519/platform-gitops/issues/5",
+    "updated_at": "2026-10-12T17:03:15Z",
+    "body_file": "issue5-body.md",
+    "snapshot_sha256": "c03e260db64d4c2c33183ed5e33e056b0fa476816564a195cc93c75827a40527"
+  },
+  "limitations": [
+    "No product AC runtime observation is claimed. Fixed source references do not prove the state of any Kubernetes cluster.",
+    "Consumer use is limited to platform-gitops Issue83 implementation and requires separately supplied Manager authorization."
+  ]
+}

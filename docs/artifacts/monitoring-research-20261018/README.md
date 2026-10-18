@@ -1,0 +1,13 @@
+# Account監視設計の公開派生版
+
+このdirectoryの設計・canonical Handoff v2・AC・公開出典は、保持された非公開原本から作成したedited_derivativeです。原本のprivate_onlyを変更したものではなく、原本と同じbytes/hashとは主張しません。現在の関連Issueは https://github.com/syuhei0519/platform-gitops/issues/83 です。
+
+公開前にProducerが原本と比較しました。5件のAC原文、設計上の推奨・変更ファイル・必要権限・最小テスト・Readiness/cleanup境界、39件の固定公開Git参照を保持しています。内部workspaceパスの説明を一般化し、Handoffの識別子は公開aliasへ変更しました。AC出典と関連Issueは公開Issue83へ対応付けました。実タスクID、非公開アカウント情報、秘密、内部ログは公開対象に含めません。
+
+sources.jsonは公開Git参照inventoryとして作成した別payloadです。非公開原本のworkspace metadataとverification snapshotは省き、公開出典のcommit/path/size/SHA-256は変更していません。公開Issue5の本文snapshotはissue5-body.mdに保持しています。原本ZIP、textbundle、非公開比較対応表や原本digestはこのdirectoryへ収録していません。
+
+Producer比較は独立Reviewではありません。Research/Design工程のcompleted/coveredは製品AC合格、CI成功、独立Test/Review、Deployment/Merge Readyを示しません。実装・クラスタ変更・PR作成はこの成果物公開に含みません。
+
+公開安全性確認、公開操作の承認、公開後の取得確認、Consumer利用承認は別の記録です。今回のConsumer利用scopeはIssue83の実装のみ。公開された事実やreceiptから権限は発生しません。Managerが別経路で固定したauthorization pinと全bytes検査を後続Consumerへ渡してください。
+
+含まれるpayload: design.md、sources.json、issue5-body.md、handoff.json、このREADME.md。外側delivery manifestとpublication receiptは公開commit確定後に別recordで作成し、循環hashを作りません。

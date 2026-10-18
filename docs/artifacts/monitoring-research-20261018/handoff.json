@@ -1,0 +1,183 @@
+{
+  "schema_version": "2.0",
+  "issue": {
+    "id": "syuhei0519/platform-gitops#83",
+    "source": "https://github.com/syuhei0519/platform-gitops/issues/83",
+    "title": "[学習監視] Accountの指標をPrometheus・Grafanaで可視化する",
+    "acceptance_criteria": [
+      {
+        "id": "AC1",
+        "verbatim": "Prometheus・Grafanaがローカルkindで動く。",
+        "source": "https://github.com/syuhei0519/platform-gitops/issues/83"
+      },
+      {
+        "id": "AC2",
+        "verbatim": "Accountの要求数・エラー率・応答時間をダッシュボード1枚で確認できる。",
+        "source": "https://github.com/syuhei0519/platform-gitops/issues/83"
+      },
+      {
+        "id": "AC3",
+        "verbatim": "正常要求とエラー要求を流し表示の違いを確認できる。",
+        "source": "https://github.com/syuhei0519/platform-gitops/issues/83"
+      },
+      {
+        "id": "AC4",
+        "verbatim": "通信がない状態と収集できていない状態を区別できる。",
+        "source": "https://github.com/syuhei0519/platform-gitops/issues/83"
+      },
+      {
+        "id": "AC5",
+        "verbatim": "設定・ダッシュボード・確認手順がGitに残る。",
+        "source": "https://github.com/syuhei0519/platform-gitops/issues/83"
+      }
+    ]
+  },
+  "role": "research-design",
+  "task_id": "public-monitoring-research-20261018",
+  "attempt": 1,
+  "upstream": [],
+  "system_status": "completed",
+  "status": "completed",
+  "summary": "Research/Design工程完了。backend変更なし、Account限定OTLP→Collector→Prometheus→Grafanaの独立学習chartとmanifest opt-inを推奨。既存namespace起動制約の互換入力とCollectorでの実namespace補正を明示。製品AC実測・実装・Issue/PR作成・cluster変更は実施していない。公開用edited_derivative。task_idは公開aliasで実行基盤の識別子ではない。原本は別途保持し、製品ACの達成は主張しない。",
+  "assignment": {
+    "scope": "①監視の短いResearch/Designのみ。5ACに対する最小案、具体的ファイル、既存Issue適合/小Issue案、必要権限、最小テスト、実装可能性、固定bytes配送を設計する。コード/Issue/PR/cluster変更、API課金、Secrets/権限変更禁止。",
+    "ac_ids": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5"
+    ],
+    "completion_criteria": [
+      "System固定規約・関連main/AGENTS/skills・既存Account metrics/監視設定/Issueを読取り、根拠を固定する。",
+      "未決事項の列挙で止めずbackend変更なしの最小推奨案と具体的変更ファイル・権限・テスト・Readinessを確定する。",
+      "Managerが取得可能な固定bytesとHandoff v2で担当ACの設計責務・未検証範囲を返す。"
+    ]
+  },
+  "artifacts": [
+    {
+      "id": "design",
+      "kind": "document",
+      "locator": "design.md",
+      "revision": "sha256:732b33670fed0a4696f20f0529b2fb21a5642dcd09986355ab5e3767965fa475",
+      "summary": "最小推奨案、具体的ファイル、権限、最小テスト、Readiness条件。製品ACは未実測。"
+    },
+    {
+      "id": "sources",
+      "kind": "other",
+      "locator": "sources.json",
+      "revision": "sha256:d922cb73e5f7ebb11a5a47b65300ef4fcc811f7206e87e0f147bc39fa9a7021e",
+      "summary": "固定Git読取参照・全blob bytesのsize/SHA-256・実測main SHA。"
+    },
+    {
+      "id": "issue5",
+      "kind": "document",
+      "locator": "issue5-body.md",
+      "revision": "sha256:c03e260db64d4c2c33183ed5e33e056b0fa476816564a195cc93c75827a40527",
+      "summary": "既存platform-gitops#5の取得した本文snapshot。"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E1",
+      "claim": "既存Account SDKとmonitoring資産を再利用できるが、学習manifestへのOTLP配線とnamespace互換処理が必要。",
+      "artifact_ids": [
+        "design",
+        "sources"
+      ],
+      "locator": "design.md#根拠と既存Issue適合",
+      "observation": "PlatformEngineering Cloudで固定commitのGit blob全文を読取。製品コード/設定を変更していない。既存dashboard正本とchart同梱版はcmpで一致。SDKにmetrics HTTP endpointなし、POD_NAMESPACE=accountと許容endpointの起動検査あり。実Account imageID/cluster挙動は未確認。"
+    },
+    {
+      "id": "E2",
+      "claim": "5担当ACすべてについて最小構成、検証、Readiness/cleanupの設計を完了。",
+      "artifact_ids": [
+        "design",
+        "sources"
+      ],
+      "locator": "design.md#最小テストと担当AC",
+      "observation": "収集の鮮度はsend_timestampsとSDK周期gaugeで判定、normal/400/idle/missingを設計。Cloud静的/fixture、ローカルkind実測を分離。製品テストは実施しておらず全AC未実測。新規RBAC/CRD/Secretは不要という採用案、既存foundation案の必要権限は別途抽出。"
+    },
+    {
+      "id": "E3",
+      "claim": "#5を今回の導入完了として扱わず、小さな関連子Issueを提案する。",
+      "artifact_ids": [
+        "design",
+        "issue5"
+      ],
+      "locator": "https://github.com/syuhei0519/platform-gitops/issues/5",
+      "observation": "GitHub read-only取得で#5のSLI/SLO目標/評価窓/error budgetとpaused履歴を確認。area:observability検索の#4/#5/#17/#46に今回AC一致なし。新Issue/依存/Project操作は未実施。"
+    }
+  ],
+  "ac_mapping": [
+    {
+      "ac_id": "AC1",
+      "disposition": "covered",
+      "scope": "Research/Design工程のみ完了。設計・担当最小検証・許可/復旧境界をdesign.mdに定義。製品ACの実装/実測合格ではない。",
+      "artifact_ids": [
+        "design",
+        "sources"
+      ],
+      "evidence_ids": [
+        "E1",
+        "E2"
+      ]
+    },
+    {
+      "ac_id": "AC2",
+      "disposition": "covered",
+      "scope": "Research/Design工程のみ完了。設計・担当最小検証・許可/復旧境界をdesign.mdに定義。製品ACの実装/実測合格ではない。",
+      "artifact_ids": [
+        "design",
+        "sources"
+      ],
+      "evidence_ids": [
+        "E1",
+        "E2"
+      ]
+    },
+    {
+      "ac_id": "AC3",
+      "disposition": "covered",
+      "scope": "Research/Design工程のみ完了。設計・担当最小検証・許可/復旧境界をdesign.mdに定義。製品ACの実装/実測合格ではない。",
+      "artifact_ids": [
+        "design",
+        "sources"
+      ],
+      "evidence_ids": [
+        "E1",
+        "E2"
+      ]
+    },
+    {
+      "ac_id": "AC4",
+      "disposition": "covered",
+      "scope": "Research/Design工程のみ完了。設計・担当最小検証・許可/復旧境界をdesign.mdに定義。製品ACの実装/実測合格ではない。",
+      "artifact_ids": [
+        "design",
+        "sources"
+      ],
+      "evidence_ids": [
+        "E1",
+        "E2"
+      ]
+    },
+    {
+      "ac_id": "AC5",
+      "disposition": "covered",
+      "scope": "Research/Design工程のみ完了。設計・担当最小検証・許可/復旧境界をdesign.mdに定義。製品ACの実装/実測合格ではない。",
+      "artifact_ids": [
+        "design",
+        "sources"
+      ],
+      "evidence_ids": [
+        "E1",
+        "E2"
+      ]
+    }
+  ],
+  "block_reasons": [],
+  "failure_reasons": [],
+  "knowledge_candidates": [],
+  "publication": "public_safe"
+}
