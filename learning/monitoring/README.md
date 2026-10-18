@@ -8,7 +8,7 @@ observability foundationから独立させる。backendコードは変更しな�
 このディレクトリの検証はCloudの静的検証とPromQL fixturesであり、kindでの5AC実測は未検証。
 独立Test/Reviewと両repoの統合・最終判定は別工程で行う。関連:
 [platform-gitops#83](https://github.com/syuhei0519/platform-gitops/issues/83)。
-#5の詳細SLO、全サービス、logs/traces集約、通知は扱わない。
+Accountの学習SLI（#5）は[SLI.md](SLI.md)に追加した。全サービス、logs/traces集約、通知は扱わない。
 
 ## 境界と前提
 
@@ -157,7 +157,7 @@ namespaceそのものはchartに含まれず、既存か承認された事前作
    ```
 
    SDK10秒+batch5秒+scrape30秒の余裕を取り、正常200・エラー400を確認。
-   同一UTC評価時刻でdashboardの6式をPrometheus `/api/v1/query`にも送り、UI/API値を照合する。
+   同一UTC評価時刻でdashboardの既存RED 6式をPrometheus `/api/v1/query`にも送り、UI/API値を照合する。
    要求数推定増加、4xx率増加、p95有限/秒、収集状態3を記録する。
 
 5. 負荷を止め5m窓+最大90秒まで有限pollで待ち、進捗を返す。

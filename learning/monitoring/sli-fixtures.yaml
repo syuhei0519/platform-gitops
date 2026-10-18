@@ -1,0 +1,302 @@
+rule_files: []
+evaluation_interval: 30s
+fuzzy_compare: true
+tests:
+- name: normal all good fast
+  interval: 30s
+  input_series:
+  - &id001
+    series: up{job="otel-application"}
+    values: 1+0x20
+  - &id002
+    series: pe_go_goroutines{job="account-backend"}
+    values: 8+0x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+30x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+    values: 0+0x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+30x20
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+    values: 0+30x20
+  expected:
+    state: 4
+    requests: 300
+    availability: 1
+    error_ratio: 0
+    latency: 1
+    availability_budget_remaining: 1.0
+    latency_budget_remaining: 1.0
+- name: 5xx and slow burn budgets
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+29x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+    values: 0+1x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+30x20
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+    values: 0+27x20
+  expected:
+    state: 4
+    requests: 300
+    availability: 0.9666666666666667
+    error_ratio: 0.033333333333333326
+    latency: 0.9
+    availability_budget_remaining: -2.3333333333333326
+    latency_budget_remaining: -0.9999999999999996
+- name: all errors remain visible
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+0x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+    values: 0+30x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+30x20
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+    values: 0+30x20
+  expected:
+    state: 4
+    requests: 300
+    availability: 0
+    error_ratio: 1
+    latency: 1
+    availability_budget_remaining: -99.0
+    latency_budget_remaining: 1.0
+- name: idle not healthy
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+0x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+    values: 0+0x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+0x20
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+    values: 0+0x20
+  expected:
+    state: 2
+    requests: 0
+- name: no HTTP series preparing
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  expected:
+    state: 1
+- name: low samples withheld
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+1x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+    values: 0+0x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+1x20
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+    values: 0+1x20
+  expected:
+    state: 3
+    requests: 10
+- name: collector down no SLI
+  interval: 30s
+  input_series:
+  - series: up{job="otel-application"}
+    values: 0+0x20
+  - *id002
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+29x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+    values: 0+1x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+30x20
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+    values: 0+27x20
+  expected:
+    state: 0
+- name: missing heartbeat no SLI
+  interval: 30s
+  input_series:
+  - *id001
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+29x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+    values: 0+1x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+30x20
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+    values: 0+27x20
+  expected:
+    state: 0
+- name: stale heartbeat no SLI
+  interval: 30s
+  input_series:
+  - *id001
+  - series: pe_go_goroutines{job="account-backend"}
+    values: 8+0x15 _ _ _ _ _
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+29x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+    values: 0+1x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+30x20
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+    values: 0+27x20
+  expected:
+    state: 0
+- name: absent up no SLI
+  interval: 30s
+  input_series:
+  - *id002
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+29x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+    values: 0+1x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+30x20
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+    values: 0+27x20
+  expected:
+    state: 0
+- name: missing histogram no SLI
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+29x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+    values: 0+1x20
+  expected:
+    state: 1
+    requests: 300
+- name: missing threshold bucket no SLI
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+29x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+    values: 0+1x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+30x20
+  expected:
+    state: 1
+    requests: 300
+- name: 4xx intentionally included
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+29x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="4xx"}
+    values: 0+1x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+30x20
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+    values: 0+27x20
+  expected:
+    state: 4
+    requests: 300
+    availability: 0.9666666666666667
+    error_ratio: 0.033333333333333326
+    latency: 0.9
+    availability_budget_remaining: -2.3333333333333326
+    latency_budget_remaining: -0.9999999999999996
+- name: counter reset retains healthy ratio
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+30x10 0+30x9
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+30x10 0+30x9
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+    values: 0+30x10 0+30x9
+  expected:
+    state: 4
+    requests: 270
+    availability: 1
+    error_ratio: 0
+    latency: 1
+    availability_budget_remaining: 1.0
+    latency_budget_remaining: 1.0
+- name: exactly twenty samples eligible
+  interval: 30s
+  input_series:
+  - series: up{job="otel-application"}
+    values: 1+0x20
+  - series: pe_go_goroutines{job="account-backend"}
+    values: 8+0x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+2x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+    values: 0+0x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+2x20
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+    values: 0+2x20
+  expected:
+    state: 4
+    requests: 20
+    availability: 1
+    error_ratio: 0
+    latency: 1
+    availability_budget_remaining: 1.0
+    latency_budget_remaining: 1.0
+- name: histogram count mismatch withheld
+  interval: 30s
+  input_series:
+  - series: up{job="otel-application"}
+    values: 1+0x20
+  - series: pe_go_goroutines{job="account-backend"}
+    values: 8+0x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+30x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+    values: 0+0x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+29x20
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+    values: 0+30x20
+  expected:
+    state: 1
+    requests: 300
+- name: multiple instances sum after increase
+  interval: 30s
+  input_series:
+  - series: up{job="otel-application"}
+    values: 1+0x20
+  - series: pe_go_goroutines{job="account-backend"}
+    values: 8+0x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+    values: 0+30x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+    values: 0+0x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+    values: 0+60x20
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+    values: 0+60x20
+  - series: pe_http_server_requests_total{job="account-backend",instance="two",status_class="2xx"}
+    values: 0+30x20
+  expected:
+    state: 4
+    requests: 600
+    availability: 1
+    error_ratio: 0
+    latency: 1
+    availability_budget_remaining: 1.0
+    latency_budget_remaining: 1.0

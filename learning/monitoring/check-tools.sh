@@ -9,5 +9,7 @@ docker run --rm --network none --user "$(id -u):$(id -g)" --entrypoint /bin/prom
   -v "$config_dir:/config:ro" "$prometheus" check config /config/prometheus.yml
 docker run --rm --network none --user "$(id -u):$(id -g)" --entrypoint /bin/promtool \
   -v "$fixture_dir:/work:ro" -w /work "$prometheus" test rules query-tests.yaml
+docker run --rm --network none --user "$(id -u):$(id -g)" --entrypoint /bin/promtool \
+  -v "$config_dir:/work:ro" -w /work "$prometheus" test rules sli-query-tests.yaml
 docker run --rm --network none --user "$(id -u):$(id -g)" \
   -v "$config_dir:/config:ro" "$collector" validate --config=/config/config.yaml
