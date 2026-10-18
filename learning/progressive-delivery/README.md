@@ -32,6 +32,9 @@ python3 learning/progressive-delivery/application.py \
 ApplicationのallowlistはこのrepoのRollout/Serviceのみ、destinationは当該namespaceだけ。
 自動sync/selfHeal/prune、削除finalizerはありません。stable/canary Serviceのhash selectorだけを
 ignoreDifferences + RespectIgnoreDifferencesで保護し、手動再同期でControllerの割当を壊さないようにします。
+直接のoperation patchにも `sync.syncOptions: [RespectIgnoreDifferences=true]` を指定します。
+manifest側runbookの通り、次のprofile変更/同期/解除前にoperationが空・phase終端であることを確認します。
+通常syncはSucceededを要求し、意図したfailed試験のFailed/Errorは記録してから復帰します。
 
 ## 実環境への個別承認が必要な一覧（まだ適用していない）
 
@@ -50,6 +53,12 @@ ignoreDifferences + RespectIgnoreDifferencesで保護し、手動再同期でCon
 
 この一覧は承認済み/導入済みの証明ではありません。SecretやRBAC/CRDをCloudから適用しません。
 Redis Secretの供給が未承認ならCore起動だけを保留し、render/Reviewは進められます。
+`argocd-secret` の空オブジェクトと `learning-in-cluster` の上記非秘密設定は、それぞれの個別承認後に
+通常のlocal bootstrapで作成できます。CloudでのSecret生成/適用や、3 Secretの前提解消を意味しません。
+Redis authはユーザーの安全な最終操作として、承認済みの秘密ファイルをローカルで用意し、shell traceを無効にして
+`c create secret generic argocd-redis --from-file=auth="$REDIS_AUTH_FILE"` を実行します。
+ファイルはユーザー管理のprivate領域に置き、値やSecret YAMLをチャット/ログへ出しません。
+既存Secretがあれば上書きせず停止します。実装担当は認証情報を生成・入力・取得しません。
 RBACはサービス間の完全なsecurity isolationを保証するものではありません。Controllerは対象namespace内のRSを管理できるため、
 対象namespace/既存所有ラベルを再確認します。cluster-adminや既存AppProjectの権限緩和は不要です。
 
@@ -102,11 +111,13 @@ CRD削除は全namespaceの他利用なし確認と個別承認が必要です�
 
 ## 現在のCloudブロッカー
 
-固定共有Action `ba8b3d211ac3e497900abd6c6f44f45388e3801c` の `scan-gate` は、
+旧固定共有Action `ba8b3d211ac3e497900abd6c6f44f45388e3801c` の `scan-gate` は、
 公式CRD内の `hostNetwork`/`hostPID`/`hostIPC` のschema宣言も実Pod設定として拒否します。
 `-check-render-only <render.pyの出力directory>` で `LOCAL-HOST-NAMESPACE` 12件を再現しました。
 入力CRDは上記の固定公式bytesであり、実Podのhost namespace使用はありません。
-新renderを既存 `.rendered` security経路へ含めているため、現状はplatform CIの同guardも失敗する見込みです。
-除外やguard弱体化はしていません。共有toolはLane A所有外のbackendにあるため、Managerが所有者調整し、
-schema宣言と実設定を区別しつつ未知PodSpecの拒否を維持する修正を別途Reviewする必要があります。
-この解消と独立Review前にmerge/ローカル導入へ進めません。
+新renderを既存 `.rendered` security経路へ含めています。今回Action参照を、schema宣言と実Pod設定を
+区別する共有guard commit `fa921cd2aace14f9052b79aa6dc6f37cb07dd274` へ更新しました。
+ただし元commit bundleの正規配送が失敗し、GitもこのSHAを未提供のため、同じrenderでの新guard成功は未確認です。
+再生成・guard除外・弱体化は行っていません。元commit配送後に同SHAでscan-gateをbuildし、
+`-check-render-only <render.pyの出力directory>` とrequired CIを再確認してください。
+配送、guard再確認、独立Review前にmerge/ローカル導入へ進めません。

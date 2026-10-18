@@ -57,7 +57,7 @@ jobs:
         with:
           go-version: '1.27.1'
           cache: false
-      - uses: syuhei0519/backend-app/.github/actions/shared-tools@ba8b3d211ac3e497900abd6c6f44f45388e3801c # main
+      - uses: syuhei0519/backend-app/.github/actions/shared-tools@fa921cd2aace14f9052b79aa6dc6f37cb07dd274 # CRD schema / Pod settings guard
         with:
           modules: scan-gate
       - name: Policy and boundary tests
