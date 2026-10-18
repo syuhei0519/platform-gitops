@@ -2,7 +2,7 @@
 # Materialize immutable shared Go modules; generated source is never committed here.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-revision=6f53affcdcad6f270eee2f205915d22fe0145e9c
+revision=6e354326159c01984e4c857895a31d052ed7f91e
 shared=$(mktemp -d)
 trap 'rm -rf "$shared"' EXIT
 # Fetch exactly the reviewed source commit. A fetch failure must fail CI.

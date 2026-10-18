@@ -1,7 +1,7 @@
 # 共有 CI ツール
 
-正本は [backend-app/tools](https://github.com/syuhei0519/backend-app/tree/6f53affcdcad6f270eee2f205915d22fe0145e9c/tools)。
-固定 commit: `6f53affcdcad6f270eee2f205915d22fe0145e9c`。
+正本は [backend-app/tools](https://github.com/syuhei0519/backend-app/tree/6e354326159c01984e4c857895a31d052ed7f91e/tools)。
+固定 commit: `6e354326159c01984e4c857895a31d052ed7f91e`。
 
 repo root で `bash ci/shared-tools.sh` を実行すると必要な Go module を `tools/` に取得する。
 生成したディレクトリは Git 対象外。再取得時はそのディレクトリだけを削除する。
