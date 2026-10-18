@@ -75,7 +75,7 @@ def main():
     assert cm['metadata']['labels']['app.kubernetes.io/part-of'] == 'argocd'
     lua = LuaRuntime()
     health = cm['data']['resource.customizations.health.argoproj.io_Rollout']
-    cases = [({},'Progressing'), ({'phase':'Progressing'},'Progressing'),
+    cases = [({},'Progressing'), ({'phase':'Progressing'},'Progressing'), ({'phase':'Paused'},'Suspended'),
              ({'phase':'Paused','pauseConditions':[{'reason':'CanaryPauseStep'}]},'Suspended'),
              ({'phase':'Healthy','observedGeneration':'2'},'Healthy'),
              ({'phase':'Degraded'},'Degraded'), ({'abort':True},'Degraded'),
@@ -88,7 +88,7 @@ def main():
         args.output.mkdir(parents=True,exist_ok=False)
         for name, docs in outputs.items():
             (args.output/name).write_text(yaml.safe_dump_all(docs,sort_keys=False))
-    print('PASS fixed upstream checksums; 6 CRDs; sample schema; bounded RBAC; no cluster roles/webhooks; manual Application and AppProject schema; namespace/value negatives; 7 executed Lua health cases. No runtime acceptance.')
+    print('PASS fixed upstream checksums; 6 CRDs; sample schema; bounded RBAC; no cluster roles/webhooks; manual Application and AppProject schema; namespace/value negatives; 8 executed Lua health cases. No runtime acceptance.')
 
 
 if __name__ == '__main__':

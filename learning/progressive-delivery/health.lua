@@ -9,7 +9,8 @@ end
 if status.abort == true or status.phase == "Degraded" then
   return {status = "Degraded", message = status.message or "Rollout aborted or degraded"}
 end
-if status.pauseConditions ~= nil and #status.pauseConditions > 0 then
+if (obj.spec ~= nil and obj.spec.paused == true) or status.phase == "Paused" or
+   (status.pauseConditions ~= nil and #status.pauseConditions > 0) then
   return {status = "Suspended", message = "Manual promotion required"}
 end
 if status.phase == "Healthy" then
