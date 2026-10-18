@@ -15,7 +15,7 @@ def application(namespace, control, commit, values):
         raise ValueError('distinct learning-* namespaces required')
     if not re.fullmatch('[a-f0-9]{40}', commit):
         raise ValueError('fixed Manifest commit required; branch names are not accepted')
-    if set(values) != {'owner', 'imageConfigID', 'sourceCommit', 'mode', 'revision', 'telemetry'}:
+    if set(values) - {'analysis'} != {'owner', 'imageConfigID', 'sourceCommit', 'mode', 'revision', 'telemetry'}:
         raise ValueError('only Account API values accepted; no DB/Secret/migration inputs')
     if values['mode'] != 'rollout' or values['revision'] not in ('good', 'candidate', 'failed'):
         raise ValueError('Rollout mode required; Deployment restoration is explicit local work')
@@ -27,10 +27,20 @@ def application(namespace, control, commit, values):
         raise ValueError('valid owner required')
     if values['telemetry'] != {'enabled': True}:
         raise ValueError('preserve the enabled Account telemetry contract')
+    analysis = values.get('analysis', {'enabled': False, 'case': 'success'})
+    if (not isinstance(analysis, dict) or set(analysis) != {'enabled', 'case'} or
+            type(analysis['enabled']) is not bool or analysis['case'] not in
+            ('success', 'failure', 'inconclusive', 'missing', 'timeout')):
+        raise ValueError('only the fixed Account analysis cases are accepted')
+    if analysis['enabled'] and values['revision'] == 'failed':
+        raise ValueError('analysis requires a Ready revision; failed readiness is a separate test')
+    allowed = [dict(group='argoproj.io', kind='Rollout'), dict(group='', kind='Service')]
+    if analysis['enabled']:
+        allowed += [dict(group='argoproj.io', kind='AnalysisTemplate')]
     project = dict(apiVersion='argoproj.io/v1alpha1', kind='AppProject',
                    metadata=dict(name='learning-account', namespace=control),
                    spec=dict(sourceRepos=[REPO], destinations=[dict(server='https://kubernetes.default.svc', namespace=namespace)],
-                             clusterResourceWhitelist=[], namespaceResourceWhitelist=[dict(group='argoproj.io', kind='Rollout'), dict(group='', kind='Service')],
+                             clusterResourceWhitelist=[], namespaceResourceWhitelist=allowed,
                              orphanedResources=dict(warn=False)))
     app = dict(apiVersion='argoproj.io/v1alpha1', kind='Application',
                metadata=dict(name='learning-account', namespace=control),

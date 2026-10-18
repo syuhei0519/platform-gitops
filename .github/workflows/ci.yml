@@ -97,6 +97,12 @@ jobs:
           path: .security/public/
           include-hidden-files: true
           retention-days: 30
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: progressive-analysis-render-${{ github.run_attempt }}
+          path: .rendered/learning-progressive-delivery/
+          retention-days: 30
   ci-result:
     if: always()
     needs: [classify, docs, validate]

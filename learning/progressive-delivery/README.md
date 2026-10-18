@@ -2,7 +2,8 @@
 
 1環境・Account 1サービスの手動同期用Argo CD Coreとnamespace限定Argo Rolloutsです。
 既存bootstrap/root/AppProject/Production登録/監視chartを変更しません。
-Argo CD API server/UI/Dex/ApplicationSet/Preview、Mesh、AnalysisRun実行・自動metric判定は含みません。
+Argo CD API server/UI/Dex/ApplicationSet/Preview、Meshは含みません。
+manifest Issue #11の明示opt-in時だけ、Accountの固定HTTP結果によるinline AnalysisRunを許可します。
 Application操作はkubectlで行い、新しいArgo API tokenは不要です。
 
 ## 固定版と描画
@@ -29,7 +30,8 @@ python3 learning/progressive-delivery/application.py \
 
 `MANIFEST_COMMIT`はReview済みAccount chartを含む40桁SHA。Account valuesはmanifest側runbookを参照し、
 既存のimage/source/owner/telemetry有効値を照合します。fixtureは架空imageなので実配備に使いません。
-ApplicationのallowlistはこのrepoのRollout/Serviceのみ、destinationは当該namespaceだけ。
+既定のApplication allowlistはこのrepoのRollout/Serviceのみ、destinationは当該namespaceだけ。
+analysis enabled時の追加allowlistと権限は末尾を参照してください。
 自動sync/selfHeal/prune、削除finalizerはありません。stable/canary Serviceのhash selectorだけを
 ignoreDifferences + RespectIgnoreDifferencesで保護し、手動再同期でControllerの割当を壊さないようにします。
 直接のoperation patchにも `sync.syncOptions: [RespectIgnoreDifferences=true]` を指定します。
@@ -40,11 +42,11 @@ manifest側runbookの通り、次のprofile変更/同期/解除前にoperation�
 
 | 出力/対象 | 追加・変更内容と影響 | 解除範囲 |
 | --- | --- | --- |
-| `crds.yaml` | cluster全体にApplication/AppProject/Rollout/Experiment/AnalysisRun/AnalysisTemplateの6 CRDs。後ろ3種はController informer用で実行対象ではない | 他利用がないことを再確認してから6 CRDsのみ。削除は全namespaceの同kindを消すため別承認 |
+| `crds.yaml` | cluster全体にApplication/AppProject/Rollout/Experiment/AnalysisRun/AnalysisTemplateの6 CRDs。Experimentはinformer用。AnalysisRun/AnalysisTemplateはIssue #11 opt-inで実行対象 | 他利用がないことを再確認してから6 CRDsのみ。削除は全namespaceの同kindを消すため別承認 |
 | control namespace | 新規専用namespace。既存argocdや他環境を流用しない | 所有リソースを個別解除後、この新規namespaceだけ |
 | `control.yaml` | SA 2個、Role/Binding、Core controller 1・repo-server 1・Redis 1、ConfigMaps/ClusterIP Services。secret作成Job・API server・cluster role・webhookなし | この出力内の所有資源のみ |
 | `target.yaml` | 既存学習namespaceへSA/Role/Binding、namespaced Rollouts controller 1。RS生成/scale、stable/canary Serviceのhash patch、Pod metadata/Event更新、対象namespace内のleader-election Lease作成/更新 | この出力の資源だけ。namespace自体は消さない |
-| 同Role | Argo CDは対象namespaceのRollout/Serviceを書込み、Pod/RS/Deploymentを読取り。Deploymentはread-only。AppProjectが実syncをRollout/Serviceに制限 | 同Role/Bindingのみ。DB/Job/PVC/Secretのwrite権限はない |
+| 同Role | Argo CDは対象namespaceのRollout/Serviceを書込み、Pod/RS/Deploymentを読取り。Issue #11の追加Template/Run権限は末尾参照。既定AppProjectはRollout/Serviceに制限 | 同Role/Bindingのみ。DB/Job/PVC/Secretのwrite権限はない |
 | 通知用read | RolloutsのSecret readは固定名`argo-rollouts-notification-secret`のみ。watchは公式controllerがname fieldSelectorを付ける。Account DB Secretは読めない | Role/Bindingのみ。通知Secretは作成しない |
 | 登録前提（render対象外） | ownerが別承認後にCoreの空settings Secret `argocd-secret`と、in-cluster登録Secret `learning-in-cluster`を供給。登録はname=in-cluster/server=https://kubernetes.default.svc/namespaces=対象namespace/clusterResources=false/config={}、label argocd.argoproj.io/secret-type=cluster。settings Secretはlabel app.kubernetes.io/part-of=argocd。tokenを含めず標準Pod SA credentialを使う | この2 Secretだけ。既存Secretへ上書きしない |
 | Redis前提 | ownerが別承認のprivate手段で新control namespaceに`argocd-redis`/key `auth`を用意。scriptはpassword生成/Secret値取得をしない。controllerはcontrol namespaceのsettings/repository/cluster Secretを読む | 承認した新Redis Secretだけ。アプリSecretとは別 |
@@ -121,3 +123,51 @@ CRD削除は全namespaceの他利用なし確認と個別承認が必要です�
 同commitのscan-gateをbuildし、`-check-render-only <render.pyの出力directory>` で
 同じ6 CRDsを含むfixture renderが成功、finding 0件を確認しました。guardのGoテストも成功しています。
 再生成・guard除外・弱体化は行っていません。required CIと独立Review、実cluster受入は別途確認が必要です。
+
+## manifest Issue #11: inline web analysisの追加境界（未適用）
+
+`application.py` は任意の `analysis: {enabled: true, case: success}` を受け付けます。
+caseはsuccess/failure/inconclusive/missing/timeoutだけ。URL/image/service/namespaceの上書きは入力に含めません。
+既定は従来の手動Canary。enabled時だけAppProjectへAnalysisTemplateを追加します。
+AnalysisRunはRollout controllerが生成するため、Argo CDからsyncするallowlistへは追加しません。
+Applicationの固定commit、手動sync/pruneなし、Service hash差分保護とfinalizerなしは維持します。
+`revision=failed`とのanalysis併用はreadiness障害との混同を避けるため拒否します。
+
+実際に追加するRole権限（既存対象namespaceのみ）:
+
+| SA | resource | 今回追加するverb / 制限 |
+| --- | --- | --- |
+| learning-rollouts | argoproj.io/analysisruns | create/update/patch/delete。get/list/watchは既存 |
+| learning-rollouts | analysisruns/status, analysisruns/finalizers | update/patch |
+| argocd-application-controller | argoproj.io/analysistemplates | get/list/watch/create/update/patch/delete |
+| argocd-application-controller | argoproj.io/analysisruns | get/list/watchのみ |
+
+`argocd-cm resource.inclusions` の追加はAnalysisTemplate/AnalysisRunだけです。
+provider用ConfigMap/Deployment/Serviceはmanifest `learning/canary/fixture` の独立fixtureとして、
+local Test担当が事前apply・Ready確認・片付けを行います。Applicationが管理するchart出力には含めません。
+ArgoのDeployment/ConfigMapへのcreate/update/patch/delete、AppProjectの同kind allowlist、
+ConfigMap inclusionは追加しません。既存Deployment inclusion/readは従来どおりです。
+cluster role/ClusterAnalysisTemplate/Job provider、DB Secret/PVC/Jobへのwriteも追加しません。
+RolloutsによるAnalysisTemplate参照は既存get/list/watchを使います。
+fixtureは1 Pod、requests25m/32Mi、limits200m/64Miで、追加CRD/controller/Secret/Argo API tokenはありません。
+
+Cloudでの担当検証:
+
+```bash
+python3 learning/progressive-delivery/validate.py --output /tmp/progressive-analysis-fixture
+```
+
+固定upstream checksum/6 CRDs、5case Application/AppProject schema、Roleの実効許可と拒否、8 Lua healthケースを照合します。
+provider固定名も含め、ArgoのDeployment/ConfigMap write拒否を検証します。
+同じrenderを既存共有scan-gateへ渡し、guard除外やrequired check名の変更は行いません。
+CIの架空image/namespace renderはartifactに保存します。
+
+local Test担当は承認済みの対象context/namespace/owner・追加権限を照合後、固定commitから再renderして
+既存Roleの差分、resource inclusions、opt-in AppProject/Applicationを適用します。CRD再作成/Secret変更は不要です。
+独立provider fixtureはmanifest README末尾の手順で事前配置し、Ready後だけAccountを更新します。
+初回goodのstep省略は受入成功に数えず、更新の新hash/Runと五caseのRollout statusを記録します。
+Failed/Errorはabort、Inconclusiveはpauseを観測し、負例の手動promoteは禁止です。
+Cloudではapply、実SAの認可、image到達性、controller生成Run、次step進行/停止は未実測です。
+
+初回提案commitではproviderのArgo管理とDeployment/ConfigMap権限を含めていましたが、Managerの権限ゲートで
+承認範囲を超えるため不採用となりました。追加commitで独立fixture化し、今回の権限追加をAnalysisTemplate/Runに限定しました。
