@@ -53,17 +53,31 @@ def proposal(control, owner, cache):
             rule('argoproj.io','rollouts','get list watch create update patch delete'),
             rule('','services','get list watch create update patch delete'),
             rule('networking.istio.io','virtualservices destinationrules','get list watch create update patch delete'),
-            rule('apps','replicasets','get list watch'),rule('','pods events','get list watch')]),
+            rule('apps','replicasets deployments','get list watch'),
+            rule('argoproj.io','analysistemplates analysisruns','get list watch'),
+            rule('','pods events','get list watch')]),
         base.binding('mesh-argocd',NS,'argocd-application-controller',control)]
     for obj in docs:
         obj['metadata'].setdefault('labels',{})['learning.local/owner'] = owner
     return docs
 
 
+def registration_scope(applications, current_namespaces):
+    """A shared cache cannot list a kind in only one of its registered namespaces."""
+    if applications.get('kind') not in ('List','ApplicationList') or applications.get('items') != []:
+        raise ValueError('demo-only registration requires ZERO existing Core Applications')
+    namespaces=current_namespaces.split(',')
+    if not namespaces or any(not re.fullmatch(r'learning-[a-z0-9]([-a-z0-9]*[a-z0-9])?',n) for n in namespaces):
+        raise ValueError('explicit current learning namespaces required for private restoration')
+    return NS
+
+
 def inclusions_patch(config, control):
     """Only append a cache inclusion; retain health/config and all prior inclusions."""
     if config['kind']!='ConfigMap' or config['metadata']['name']!='argocd-cm' or config['metadata']['namespace']!=control:
         raise ValueError('Core ConfigMap boundary')
+    if config['data'].get('resource.respectRBAC','') != '':
+        raise ValueError('fixed demo scenario requires default-disabled respectRBAC; do not change existing settings')
     entries = yaml.safe_load(config['data']['resource.inclusions'])
     if not isinstance(entries,list): raise ValueError('explicit existing inclusions required')
     entry = dict(apiGroups=['networking.istio.io'], kinds=['VirtualService','DestinationRule'],
@@ -80,11 +94,15 @@ if __name__=='__main__':
     p.add_argument('--owner',required=True)
     p.add_argument('--cache',type=Path,required=True)
     p.add_argument('--output',type=Path,required=True)
+    p.add_argument('--applications',type=Path,required=True,help='fresh private Core Application list; must be empty')
+    p.add_argument('--registered-namespaces',required=True,help='current non-secret comma-separated registration value; save privately for restoration')
     p.add_argument('--core-config',type=Path,required=True,help='private saved argocd-cm YAML; not a Secret')
     a=p.parse_args()
     a.cache.mkdir(parents=True,exist_ok=True)
+    scope=registration_scope(yaml.safe_load(a.applications.read_text()),a.registered_namespaces)
     docs=proposal(a.control_namespace,a.owner,a.cache)
     patch=inclusions_patch(yaml.safe_load(a.core_config.read_text()),a.control_namespace)
     a.output.mkdir(parents=True,exist_ok=False)
+    (a.output/'registration-namespaces.txt').write_text(scope+'\n')
     (a.output/'demo-access.yaml').write_text(yaml.safe_dump_all(docs,sort_keys=False))
     (a.output/'core-inclusions-patch.json').write_text(json.dumps(patch,indent=2)+'\n')

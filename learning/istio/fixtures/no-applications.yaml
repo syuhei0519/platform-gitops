@@ -1,0 +1,4 @@
+# Synthetic Cloud input only. Never apply.
+apiVersion: v1
+kind: List
+items: []

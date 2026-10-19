@@ -47,8 +47,19 @@ class Access(unittest.TestCase):
     def test_core_minimum_and_denials(self):
         for group,resource in [('argoproj.io','rollouts'),('','services'),('networking.istio.io','virtualservices'),('networking.istio.io','destinationrules')]:
             self.assertTrue(self.allowed('mesh-argocd',group,resource,'create'))
-        for group,resource in [('','secrets'),('','configmaps'),('','persistentvolumeclaims'),('apps','deployments'),('batch','jobs')]:
+        for group,resource in [('','secrets'),('','configmaps'),('','persistentvolumeclaims'),('batch','jobs')]:
             for verb in ['get','create','patch','delete']:
+                self.assertFalse(self.allowed('mesh-argocd',group,resource,verb))
+
+    def test_registration_gate_and_read_inclusions(self):
+        self.assertEqual(access.registration_scope({'kind':'ApplicationList','items':[]},'learning-services-20261018'),access.NS)
+        for items in [[{'metadata':{'name':'account'}}],None]:
+            with self.assertRaises(ValueError):
+                access.registration_scope({'kind':'ApplicationList','items':items},'learning-services-20261018')
+        for group,resource in [('apps','deployments'),('argoproj.io','analysistemplates'),('argoproj.io','analysisruns')]:
+            for verb in ['get','list','watch']:
+                self.assertTrue(self.allowed('mesh-argocd',group,resource,verb))
+            for verb in ['create','update','patch','delete']:
                 self.assertFalse(self.allowed('mesh-argocd',group,resource,verb))
 
     def test_patch_preserves_existing_health_and_cache(self):
@@ -61,6 +72,9 @@ class Access(unittest.TestCase):
         entries=yaml.safe_load(patch[1]['value'])
         self.assertEqual(entries[0],yaml.safe_load(cm['data']['resource.inclusions'])[0])
         self.assertEqual(entries[1]['kinds'],['VirtualService','DestinationRule'])
+        cm['data']['resource.respectRBAC']='normal'
+        with self.assertRaises(ValueError): access.inclusions_patch(cm,'learning-core-test')
+        cm['data'].pop('resource.respectRBAC')
         cm['metadata']['namespace']='default'
         with self.assertRaises(ValueError): access.inclusions_patch(cm,'learning-core-test')
 
