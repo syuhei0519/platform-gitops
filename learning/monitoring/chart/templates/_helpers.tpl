@@ -86,6 +86,13 @@ global:
   scrape_interval: 30s
   scrape_timeout: 10s
   evaluation_interval: 30s
+{{- if .Values.alerting.enabled }}
+rule_files: [/etc/prometheus/account-alerts.yaml]
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: [learning-alertmanager.{{ .Values.alerting.namespace }}.svc.cluster.local:9093]
+{{- end }}
 scrape_configs:
   - job_name: otel-application
     honor_labels: true

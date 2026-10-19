@@ -192,3 +192,8 @@ Role/Bindingは対象app namespaceの `learning-collector-pods`、subjectは `ob
 承認済みTest担当が監視renderを別applyし、ArgoへConfigMap/Deployment createは追加しない。
 片付ける場合はこの2資源だけも所有対象として確認し、既存Roleやnamespaceを削除しない。
 Cloudはsource/config/query検証のみで、2hashの実Pod関連付け/exportはlocal未確認。
+
+## 可用性 burn rate 通知（#17）
+
+既存SLI契約を使うopt-inの通知差分は [alerting/README.md](alerting/README.md) を参照。
+専用namespaceの使い捨てAlertmanager/受信器を使い、追加RBAC/Secret・外部通知はない。
