@@ -27,6 +27,11 @@ resolved は「条件が消えた」通知であり、欠測への遷移でも�
 5分窓の全収集欠落や複数instanceの一部欠測を保証しない既存契約の制限も継承する。
 これは短窓の学習用消費速度で、30日 SLO の累積予算ではない。
 
+通知の `service=backend` はmetric/routingの識別子で、Kubernetes Service名ではない。
+`service_url` は既存入力 `accountNamespace` と、明示values
+`alerting.accountServiceName`（既定 `learning-account`）、`alerting.accountServicePort`（既定 `8080`）から組み立てる。
+例：`http://learning-account.learning-services-20261018.svc.cluster.local:8080`。
+実Serviceの名前/portを読み取りで照合し、異なる場合はこの2入力だけを上書きする。
 通知には対象 `service=backend` / `account_namespace`、Service DNS の `service_url`、
 `query` / `state_query`、Prometheus の `generatorURL`、この `runbook_url` を含む。
 Service DNS はクラスタ内参照用。外部端末では下記 loopback port-forward で query を確認する。
@@ -71,7 +76,8 @@ namespace作成権限がない場合は管理者に専用namespaceを用意し�
 1. 固定commitをcheckoutし、既存READMEの所有者・context・Account source/image・衝突確認を実施する。
    `learning-slo-alerts` と2つの資源名に他所有者の資源があれば上書きしない。
    既存監視リリースがこのchart由来でない場合も適用を止める。
-   非秘密valuesは既存owner/accountNamespaceを維持し、`alerting.enabled: true` のみ追加する。
+   非秘密valuesは既存owner/accountNamespaceを維持し、`alerting.enabled: true` と
+   実Serviceに一致する `alerting.accountServiceName: learning-account` / `alerting.accountServicePort: 8080` を明記する。
    固定imageを対象kind nodeへ事前loadする。通常のAccount/Collectorを再起動しない。
 2. `helm template learning-monitoring learning/monitoring/chart --namespace observability -f monitoring-values.yaml`
    でrenderし、専用namespaceの6資源、既存PrometheusのConfigMap/Deploymentだけを差分適用する。

@@ -10,5 +10,8 @@ images:
 alerting:
   enabled: false
   namespace: learning-slo-alerts
+  # Kubernetes Service identity, independent of metric label service=backend.
+  accountServiceName: learning-account
+  accountServicePort: 8080
   alertmanagerImage: quay.io/prometheus/alertmanager:v0.32.0@sha256:58e117eabccebbff04e6643a3432d6315a2cc3a8c24ab5849bc628886bf08857
   receiverImage: docker.io/library/python:3.14.0-slim@sha256:0aecac02dc3d4c5dbb024b753af084cafe41f5416e02193f1ce345d671ec966e

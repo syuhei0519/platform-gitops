@@ -82,7 +82,7 @@ def run(config):
             fired = wait_for(lambda: next((e for e in events() if e['status'] == 'firing'), None), 160, 'firing notification received')
             alert = fired['alerts'][0]
             assert alert['labels']['service'] == 'backend' and alert['labels']['account_namespace'] == 'learning-fixture'
-            assert alert['annotations']['service_url'] == 'http://backend.learning-fixture.svc.cluster.local:8080'
+            assert alert['annotations']['service_url'] == f"http://{VALUES['alerting']['accountServiceName']}.learning-fixture.svc.cluster.local:{VALUES['alerting']['accountServicePort']}"
             assert alert['annotations']['query'] == 'account:availability_burn_rate:5m'
             assert alert['annotations']['runbook_url'].endswith('/learning/monitoring/alerting/README.md')
             assert '/graph?' in alert['generatorURL']

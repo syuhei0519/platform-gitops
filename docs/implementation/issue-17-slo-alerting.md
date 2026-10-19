@@ -1,5 +1,7 @@
 # Handoff
 
+以下はPR95の初回実装履歴。マージ後のService参照不具合と修正は末尾の追記を参照。
+
 ## 目的
 
 - 対象: `syuhei0519/platform-gitops` Issue #17（SLO Alerting）、担当B。
@@ -67,3 +69,44 @@ CI artifact期限後も上記コマンドで再生成できる。内部ログ・
 - Alertmanager未導入というruntime側の読み取りpreflightと整合する最小構成。専用2PodでRBAC/Secret追加は不要。
 - 実kindの適用・少量実測・通知/回復・必要権限は `learning/monitoring/alerting/README.md` に従ってruntime担当が検証する。namespace作成、専用6資源管理、既存Prometheus2資源更新、read/port-forward権限が必要。権限追加が必要なら実行せず報告。
 - 独立Reviewは未実施。Managerが独立Reviewと現在CIを確認してマージを判断する。Draft PR公開は成功済みで、公開承認による停止はない。
+
+
+### 2026-10-19 追記: 実Account Service参照の修正（Refs #17）
+
+目的・固定入力:
+
+- PR95は独立Review/CI成功後にmain `cfc7c80499cfca832c003f223b85ea7d14aec41a` へマージ済みというManager報告を受領。
+- local Testは適用前に、通知URLの `backend.learning-services-20261018` と実Service `learning-account` の不一致を発見。適用/負荷/forwardは0、全Pod正常のまま停止。runtime受入は未完了。
+- この固定mainから `fix/17-account-service-reference` を作成。実装固定SHA `cd3b4812d7270d1fe964bdf1768b8164399b4cab`（後続は本Handoff追記のみ）。
+- 公開先は新しい [日本語Draft PR #96](https://github.com/syuhei0519/platform-gitops/pull/96)。PR本文はRefs #17を使用し、自動closeを指定しない。
+
+やったこと:
+
+- `chart/values.yaml` / `values.schema.json`: `alerting.accountServiceName`（既定 `learning-account`）と `accountServicePort`（既定8080）を追加。namespaceは既存 `accountNamespace` を使う。
+- `alerting/rules.py` / `chart/files/account-alerts.yaml` / `chart/templates/prometheus-config.yaml`: 通知 `service_url` を実Service名/namespace/portから生成する。metric/routing label `service=backend` は保持。
+- `alerting/validate.py`: 既定の正しいFQDN、別名/別namespace/別port、label独立、式/閾値不変、無効入力5件の拒否を回帰検査。元の誤参照ではこの検査が失敗する。
+- `alerting/integration.py`: payloadのURL期待値のみ新valuesへ追従。長時間integration全体は今回ローカルで再実行しない。
+- `alerting/README.md`: metric identityとService identity、実Service入力/事前照合を説明。通知runbook URLを更新文書の固定commit `d66d216f6bce200ec0981673a216cb3ce0a17d90` へ更新。
+- 本Handoffは過去履歴を消さず追記。Collector/query/threshold/RBAC/Alertmanager routing/CIは変更なし。
+
+観察結果:
+
+| コマンド・確認 | 結果 |
+| --- | --- |
+| 固定mainのHelm renderからservice_urlを読み、実Service `learning-account` のFQDNを期待 | 修正前FAIL: 実値は `http://backend.learning-fixture.svc.cluster.local:8080`。不具合を再現 |
+| `python3 learning/monitoring/alerting/validate.py .rendered/service-reference-fix` | 修正後PASS: Service名/namespace/portの独立入力、metric/routing label保持、無効入力拒否、20資源/既存境界保持 |
+| `python3 learning/monitoring/validate.py --output .rendered/monitoring-service-reference-fix` | PASS: 既定14資源、values schema/strict Helm lint/render、従来query一致 |
+| 固定promtool `test rules alert-tests.yaml`（上記生成dirをmount） | PASS: 既存22ケースを新annotationで検査 |
+| 固定shared scan-gate `-check-render-only .rendered/service-reference-fix -out .rendered/service-reference-fix/structural-check.json` | PASS |
+| `python3 -m py_compile learning/monitoring/alerting/rules.py learning/monitoring/alerting/validate.py learning/monitoring/alerting/integration.py` / `git diff --check` | PASS |
+| 固定mainの `chart/files/account-alerts.yaml` と新ruleをYAMLとして比較 | `service_url` / `runbook_url` annotationを除いて完全一致。Collector/query/threshold/RBAC/routingのGit差分なし |
+
+以前の「Service/query/runbook参照PASS」は合成payload内の旧期待値を確認した結果であり、実Kubernetes Serviceの存在を照合した結果ではなかった。成功履歴は残すが、実Service参照のruntime受入が未完了であることを明示する。
+PR95の2回補正後の追加不具合1件として報告し、今回明示依頼された参照修正だけを行った。
+
+学び・次の担当:
+
+- 実参照は `http://<alerting.accountServiceName>.<accountNamespace>.svc.cluster.local:<alerting.accountServicePort>`。metric `service=backend` とKubernetes名を同一視しない。
+- runtime担当は既存Account namespaceと読み取り確認済み `learning-account:8080` をvaluesへ明記してから差分適用を再開する。必要権限は従来runbookの範囲のまま、新規RBAC/Secretなし。
+- 今回は参照のみであるため、承認された方針どおり長時間integrationの重複実行、実kind操作、負荷、port-forwardは行っていない。実到達・通知/回復のruntime検証は別担当。
+- 今回の独立Reviewは未実施。Managerが現在CIと独立Reviewを確認してマージする。公開は成功し、承認待ち/拒否によるblockerはない。

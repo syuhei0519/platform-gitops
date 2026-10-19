@@ -45,7 +45,9 @@
         "enabled",
         "namespace",
         "alertmanagerImage",
-        "receiverImage"
+        "receiverImage",
+        "accountServiceName",
+        "accountServicePort"
       ],
       "properties": {
         "enabled": {
@@ -59,6 +61,16 @@
         },
         "receiverImage": {
           "const": "docker.io/library/python:3.14.0-slim@sha256:0aecac02dc3d4c5dbb024b753af084cafe41f5416e02193f1ce345d671ec966e"
+        },
+        "accountServiceName": {
+          "type": "string",
+          "maxLength": 63,
+          "pattern": "^[a-z]([-a-z0-9]*[a-z0-9])?$"
+        },
+        "accountServicePort": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
         }
       }
     }

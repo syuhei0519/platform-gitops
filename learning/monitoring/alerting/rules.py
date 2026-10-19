@@ -5,7 +5,7 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-RUNBOOK = 'https://github.com/syuhei0519/platform-gitops/blob/96053d7e3d6f31fb66eccf216ba8a37ed46799c2/learning/monitoring/alerting/README.md'
+RUNBOOK = 'https://github.com/syuhei0519/platform-gitops/blob/d66d216f6bce200ec0981673a216cb3ce0a17d90/learning/monitoring/alerting/README.md'
 
 
 def rules():
@@ -18,7 +18,7 @@ def rules():
          'labels': {'severity': 'warning', 'service': 'backend', 'account_namespace': '__ACCOUNT_NAMESPACE__'},
          'annotations': {
              'summary': 'Account availability budget burn exceeds 2x for 2m',
-             'service_url': 'http://backend.__ACCOUNT_NAMESPACE__.svc.cluster.local:8080',
+             'service_url': 'http://__ACCOUNT_SERVICE_NAME__.__ACCOUNT_NAMESPACE__.svc.cluster.local:__ACCOUNT_SERVICE_PORT__',
              'query': 'account:availability_burn_rate:5m',
              'state_query': 'account:sli_state:5m',
              'runbook_url': RUNBOOK,
