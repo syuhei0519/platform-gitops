@@ -1,0 +1,18 @@
+# Synthetic Cloud input only. Never apply this ConfigMap.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: learning-core-test
+  resourceVersion: '1'
+data:
+  resource.inclusions: |
+    - apiGroups: [argoproj.io]
+      kinds: [Rollout, AnalysisTemplate, AnalysisRun]
+      clusters: ['*']
+    - apiGroups: ['']
+      kinds: [Service, Pod]
+      clusters: ['*']
+    - apiGroups: [apps]
+      kinds: [ReplicaSet, Deployment]
+      clusters: ['*']
