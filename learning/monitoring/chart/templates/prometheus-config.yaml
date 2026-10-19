@@ -10,5 +10,5 @@ data:
     {{- include "monitoring.prometheusConfig" . | nindent 4 }}
 {{- if .Values.alerting.enabled }}
   account-alerts.yaml: |
-    {{- .Files.Get "files/account-alerts.yaml" | replace "__ACCOUNT_NAMESPACE__" .Values.accountNamespace | nindent 4 }}
+    {{- .Files.Get "files/account-alerts.yaml" | replace "__ACCOUNT_NAMESPACE__" .Values.accountNamespace | replace "__ACCOUNT_SERVICE_NAME__" .Values.alerting.accountServiceName | replace "__ACCOUNT_SERVICE_PORT__" (toString .Values.alerting.accountServicePort) | nindent 4 }}
 {{- end }}

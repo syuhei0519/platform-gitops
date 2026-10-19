@@ -46,6 +46,31 @@ def prepare(output):
     fixtures = yaml.safe_load((ROOT / 'sli-fixtures.yaml').read_text())
     alert = yaml.safe_load((output / 'account-alerts.yaml').read_text())['groups'][0]['rules'][-1]
     labels = dict(alert['labels'])
+    # Metric routing identity is not the Kubernetes Service identity.
+    assert alert['labels']['service'] == 'backend'
+    assert alert['annotations']['service_url'] == 'http://learning-account.learning-fixture.svc.cluster.local:8080'
+    changed = copy.deepcopy(values)
+    changed['accountNamespace'] = 'learning-other'
+    changed['alerting'].update(accountServiceName='alternate-account', accountServicePort=18080)
+    changed_objects = list(yaml.safe_load_all(monitoring.render(changed, output)))
+    changed_cm = next(o for o in changed_objects if o['kind'] == 'ConfigMap' and o['metadata']['name'] == 'learning-prometheus-config')
+    changed_rules = yaml.safe_load(changed_cm['data']['account-alerts.yaml'])['groups'][0]['rules']
+    changed_alert = changed_rules[-1]
+    assert changed_alert['annotations']['service_url'] == 'http://alternate-account.learning-other.svc.cluster.local:18080'
+    assert changed_alert['labels']['service'] == 'backend'
+    assert changed_alert['labels']['account_namespace'] == 'learning-other'
+    assert changed_rules[:2] == yaml.safe_load((output / 'account-alerts.yaml').read_text())['groups'][0]['rules'][:2]
+    assert (changed_alert['expr'], changed_alert['for']) == (alert['expr'], alert['for'])
+    routing = yaml.safe_load(configs['learning-alertmanager']['alertmanager.yml'])
+    assert 'service="backend"' in routing['route']['routes'][0]['matchers']
+    for key, invalid in [('accountServiceName', ''), ('accountServiceName', 'http://bad'),
+                         ('accountServicePort', 0), ('accountServicePort', 65536), ('accountServicePort', '8080')]:
+        bad = copy.deepcopy(values)
+        bad['alerting'][key] = invalid
+        assert list(monitoring.VALIDATOR.iter_errors(bad))
+        monitoring.render(bad, output, ok=False)
+    (output / 'values.yaml').write_text(yaml.safe_dump(values))
+    print('PASS Service reference: Kubernetes name/namespace/port independent of metric service=backend; invalid inputs rejected')
     tests = []
     for source in fixtures['tests']:
         case = copy.deepcopy(source)
