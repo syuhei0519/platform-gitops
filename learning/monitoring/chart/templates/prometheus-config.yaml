@@ -8,3 +8,7 @@ metadata:
 data:
   prometheus.yml: |
     {{- include "monitoring.prometheusConfig" . | nindent 4 }}
+{{- if .Values.alerting.enabled }}
+  account-alerts.yaml: |
+    {{- .Files.Get "files/account-alerts.yaml" | replace "__ACCOUNT_NAMESPACE__" .Values.accountNamespace | nindent 4 }}
+{{- end }}
