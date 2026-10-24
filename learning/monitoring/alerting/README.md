@@ -1,5 +1,11 @@
 # Account 可用性 burn rate 通知（#17）
 
+> Historical learning record. Its manual deployment route is retired for the existing kind.
+> Use the [Git/PR → Argo deployment contract](https://github.com/syuhei0519/platform-gitops/blob/main/learning/existing-kind/DEPLOYMENT.md).
+> The [original commands at fixed SHA](https://github.com/syuhei0519/platform-gitops/blob/cffb519cc26b08a41eb5c90d58698426ffc66789/learning/monitoring/alerting/README.md)
+> remain available as historical evidence, not as a current execution procedure.
+
+
 既存 `learning/monitoring/SLI.md` と `sli-queries.json` を変更せず再利用する。
 共通 Prometheus chart の Alertmanager は無効で、学習 chart にも未導入だった。
 そのため opt-in の専用 Alertmanager 1 Pod と、メモリ内に直近100通知だけ保持する
@@ -94,7 +100,6 @@ namespace作成権限がない場合は管理者に専用namespaceを用意し�
             (o['kind'], o['metadata']['name']) in [('ConfigMap', 'learning-prometheus-config'), ('Deployment', 'learning-prometheus')]]
    Path('monitoring-alerting-delta.yaml').write_text(yaml.safe_dump_all(delta, sort_keys=False))
    PY_DELTA
-   kubectl --context "$KUBE_CONTEXT" apply -f monitoring-alerting-delta.yaml
    ```
 
    未適用のnamespaceは担当者の承認済みownerラベルで作成する。
