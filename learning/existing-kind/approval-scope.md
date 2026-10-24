@@ -1,3 +1,5 @@
+> Superseded by [execution-approval.md](execution-approval.md). This first-batch record is historical and is not a separate execution approval request. The proposed Retain patches below are no longer selected.
+
 # Decisions required before live migration
 
 Status: proposed, **not authorized by this document and not applied**.

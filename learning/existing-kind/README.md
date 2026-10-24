@@ -86,7 +86,7 @@ new protected foundation Application after the explicit access decision.
 
 ## Required access/security decisions
 
-See [approval-scope.md](approval-scope.md). Existing permissions cannot perform
+See [execution-approval.md](execution-approval.md). Existing permissions cannot perform
 the requested migration. No RBAC, registration, credential, webhook or security
 setting in this proposal has been applied. Do not reuse old SAST token approval.
 
@@ -130,3 +130,12 @@ setting in this proposal has been applied. Do not reuse old SAST token approval.
 | All changed code | only affected targeted checks, required CI and independent review at final SHA | pending |
 
 No broad suite, CodeQL/Sonar rescan or historical capability rebuild was run.
+
+## Updated data condition and implementation progress
+
+The user clarified that disposable learning data need not survive migration if
+recreation is actually proven. We selected in-place adoption because it needs no
+old-PVC deletion or Retain mutation. Destructive recreation is an optional future
+path requiring exact data/identity and initialization evidence. Credentials, CA
+and Sonar remain separate. The offline renderer and captured public parent
+declarations prepare the next stage; no reconstruction or live sync has run.

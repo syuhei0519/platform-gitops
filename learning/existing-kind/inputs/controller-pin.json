@@ -1,0 +1,9 @@
+{
+  "image": "learning.local/account-rollouts@sha256:966adba896524519bd1653b31ade97b624dd5cbf83623f7cdeb5c5708aaa69e0",
+  "manifest_digest": "sha256:966adba896524519bd1653b31ade97b624dd5cbf83623f7cdeb5c5708aaa69e0",
+  "config_digest": "sha256:3dda423ac07eb889ec8d69eacaacf60b8d4c0857de8909ff047dd74ad8cbaf9d",
+  "archive_sha256": "1ccc0c8fe1160833782d9613daa2ce44354fcc52f631e3b4dd69e0c63d258894",
+  "binary_sha256": "51c6505758ba09230478c65319b2e0696f9bad3b0e16802238823a7f361920db",
+  "source_sha": "66a1d4e1133b555c16d5a6f32add98e7152b2961",
+  "config_user": "999"
+}

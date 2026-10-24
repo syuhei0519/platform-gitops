@@ -1,0 +1,344 @@
+[
+  {
+    "name": "analysisruns.argoproj.io",
+    "uid": "e00c8e49-e5f0-4153-a44c-705f02c4b587",
+    "specSHA256": "f075138b513c1513cee1378a4b234c45f21681e68a8b60b3a28035cb8f557a6f",
+    "versions": [
+      {
+        "name": "v1alpha1",
+        "served": true,
+        "storage": true
+      }
+    ]
+  },
+  {
+    "name": "analysistemplates.argoproj.io",
+    "uid": "c4fba03f-6f82-425c-aa55-8fd18d5244d2",
+    "specSHA256": "300335630a8439d6cbb3ba232d98de3d46825f7131dbfbea87f9f892e0818e11",
+    "versions": [
+      {
+        "name": "v1alpha1",
+        "served": true,
+        "storage": true
+      }
+    ]
+  },
+  {
+    "name": "applications.argoproj.io",
+    "uid": "45bb41e6-7856-4837-9843-f76bd33296d1",
+    "specSHA256": "cde6a14514684b27eccb01f2dceb4b6cfdd311b7e29fc7c69d7881de0d206617",
+    "versions": [
+      {
+        "name": "v1alpha1",
+        "served": true,
+        "storage": true
+      }
+    ]
+  },
+  {
+    "name": "appprojects.argoproj.io",
+    "uid": "38ce4093-f9e0-49a9-9c3d-2ea44bc1fc66",
+    "specSHA256": "fd92304b48f3677058f471525b4b8d22c4d47219c5dfc5ea72171db485aee3e4",
+    "versions": [
+      {
+        "name": "v1alpha1",
+        "served": true,
+        "storage": true
+      }
+    ]
+  },
+  {
+    "name": "authorizationpolicies.security.istio.io",
+    "uid": "3d125299-01b6-47b1-b53e-9c1ba8d3a3ce",
+    "specSHA256": "c1c9ff09f0728b0e39bc924ea3384a3c6f16fe0f8a406dd1d01f5cc0657dd1ac",
+    "versions": [
+      {
+        "name": "v1",
+        "served": true,
+        "storage": true
+      },
+      {
+        "name": "v1beta1",
+        "served": true,
+        "storage": false
+      }
+    ]
+  },
+  {
+    "name": "destinationrules.networking.istio.io",
+    "uid": "9b96aa8d-afd8-4684-b1db-d6f8baa2924a",
+    "specSHA256": "73332b6b37c5816276607f88a1603cda1ac0b8d04b34e8dcaa373bfa201911b4",
+    "versions": [
+      {
+        "name": "v1",
+        "served": true,
+        "storage": true
+      },
+      {
+        "name": "v1alpha3",
+        "served": true,
+        "storage": false
+      },
+      {
+        "name": "v1beta1",
+        "served": true,
+        "storage": false
+      }
+    ]
+  },
+  {
+    "name": "envoyfilters.networking.istio.io",
+    "uid": "f33c38ce-dda6-49cb-9c85-bedef65bbb86",
+    "specSHA256": "399362f894dbeaf46a32b33b70d44f7f48b8281c3961610ab0e64eb65d8c81f9",
+    "versions": [
+      {
+        "name": "v1alpha3",
+        "served": true,
+        "storage": true
+      }
+    ]
+  },
+  {
+    "name": "experiments.argoproj.io",
+    "uid": "20bc45e1-43b4-4691-b08b-32a8d2d24134",
+    "specSHA256": "8078b94f11b377fafbae057c1eeaf3eb1003a7e8239e79ad01a48308ec5c32ef",
+    "versions": [
+      {
+        "name": "v1alpha1",
+        "served": true,
+        "storage": true
+      }
+    ]
+  },
+  {
+    "name": "gateways.networking.istio.io",
+    "uid": "d10e3baf-3150-4645-9528-b20cad2f9b18",
+    "specSHA256": "59fabb2714f6df125deac3ae7dac9083df01a716795526f2fde60fa6d83ddb5d",
+    "versions": [
+      {
+        "name": "v1",
+        "served": true,
+        "storage": true
+      },
+      {
+        "name": "v1alpha3",
+        "served": true,
+        "storage": false
+      },
+      {
+        "name": "v1beta1",
+        "served": true,
+        "storage": false
+      }
+    ]
+  },
+  {
+    "name": "peerauthentications.security.istio.io",
+    "uid": "1294ba85-0b4d-44a3-9dd2-318ef2537304",
+    "specSHA256": "4dc847cbc3d5e68fed96473a6d472f0f8c02d4f3f94414ba5b045fd094cd5c92",
+    "versions": [
+      {
+        "name": "v1",
+        "served": true,
+        "storage": true
+      },
+      {
+        "name": "v1beta1",
+        "served": true,
+        "storage": false
+      }
+    ]
+  },
+  {
+    "name": "proxyconfigs.networking.istio.io",
+    "uid": "1be6c84f-0c9b-4de3-90f3-529a4e20fba7",
+    "specSHA256": "37d89aca1393358b19dc652f0b36a4272e71c42d11ad1735f1feed24578f7abf",
+    "versions": [
+      {
+        "name": "v1beta1",
+        "served": true,
+        "storage": true
+      }
+    ]
+  },
+  {
+    "name": "requestauthentications.security.istio.io",
+    "uid": "96947152-8096-44ce-8038-d4e478e26527",
+    "specSHA256": "1cf8aaf8f64129ad4479f947ade076dd88770d8a7270ed369b83eeeedacaeca7",
+    "versions": [
+      {
+        "name": "v1",
+        "served": true,
+        "storage": true
+      },
+      {
+        "name": "v1beta1",
+        "served": true,
+        "storage": false
+      }
+    ]
+  },
+  {
+    "name": "rollouts.argoproj.io",
+    "uid": "34a7996c-1861-4c4e-926d-6a89dccb7315",
+    "specSHA256": "52549c66cfcce4f5f977e2531caf5539a50479712f0060815d2be842d9002b79",
+    "versions": [
+      {
+        "name": "v1alpha1",
+        "served": true,
+        "storage": true
+      }
+    ]
+  },
+  {
+    "name": "serviceentries.networking.istio.io",
+    "uid": "44ec7081-bdf8-4c07-8be6-34541131808f",
+    "specSHA256": "57d0fb579da1ef415d9e487d806940e94c7e885d5e5951702a2b62e7341d60b5",
+    "versions": [
+      {
+        "name": "v1",
+        "served": true,
+        "storage": true
+      },
+      {
+        "name": "v1alpha3",
+        "served": true,
+        "storage": false
+      },
+      {
+        "name": "v1beta1",
+        "served": true,
+        "storage": false
+      }
+    ]
+  },
+  {
+    "name": "sidecars.networking.istio.io",
+    "uid": "f92b2ca2-4550-43b8-ae8c-4ae58e3070f8",
+    "specSHA256": "f14fd9f8ffc5128b8d89ac933612c871e47a1dd70af9817a6471b4cd8012d66a",
+    "versions": [
+      {
+        "name": "v1",
+        "served": true,
+        "storage": true
+      },
+      {
+        "name": "v1alpha3",
+        "served": true,
+        "storage": false
+      },
+      {
+        "name": "v1beta1",
+        "served": true,
+        "storage": false
+      }
+    ]
+  },
+  {
+    "name": "telemetries.telemetry.istio.io",
+    "uid": "a8fb39ee-a759-4a0b-8506-d669b7c22f0f",
+    "specSHA256": "655de48ee181b8c7e582420e46acec10931b35d7bb25b6a0e09576ac5c0c7b62",
+    "versions": [
+      {
+        "name": "v1",
+        "served": true,
+        "storage": false
+      },
+      {
+        "name": "v1alpha1",
+        "served": true,
+        "storage": true
+      }
+    ]
+  },
+  {
+    "name": "trafficextensions.extensions.istio.io",
+    "uid": "3bb46e2f-1cb4-495c-aeb4-c38d77a80452",
+    "specSHA256": "52992f63d2905317c266c5b22ebae06ba4f412bc33f59a7b9d663f223604aef8",
+    "versions": [
+      {
+        "name": "v1alpha1",
+        "served": true,
+        "storage": true
+      }
+    ]
+  },
+  {
+    "name": "virtualservices.networking.istio.io",
+    "uid": "fb4613e3-f59f-41b4-ba62-efe25a920f6a",
+    "specSHA256": "3067c09b14f87dc2d8998fd7ada8155cf4102350296b1484a6212db087f896bb",
+    "versions": [
+      {
+        "name": "v1",
+        "served": true,
+        "storage": true
+      },
+      {
+        "name": "v1alpha3",
+        "served": true,
+        "storage": false
+      },
+      {
+        "name": "v1beta1",
+        "served": true,
+        "storage": false
+      }
+    ]
+  },
+  {
+    "name": "wasmplugins.extensions.istio.io",
+    "uid": "160e378c-3705-4fde-a962-669f75b9b6eb",
+    "specSHA256": "b263349d1ed44c89db41fff550bb8465495b5464798cea1a844ef5f1d5f73728",
+    "versions": [
+      {
+        "name": "v1alpha1",
+        "served": true,
+        "storage": true
+      }
+    ]
+  },
+  {
+    "name": "workloadentries.networking.istio.io",
+    "uid": "ec457928-872b-4653-9df4-7a0178ea9a9d",
+    "specSHA256": "a53fc0bd5876bc85ec124ad2510e929567f3b350166e731e7dbf420362e2e0e3",
+    "versions": [
+      {
+        "name": "v1",
+        "served": true,
+        "storage": true
+      },
+      {
+        "name": "v1alpha3",
+        "served": true,
+        "storage": false
+      },
+      {
+        "name": "v1beta1",
+        "served": true,
+        "storage": false
+      }
+    ]
+  },
+  {
+    "name": "workloadgroups.networking.istio.io",
+    "uid": "0bba86b3-6880-4720-bb13-66d31c26d413",
+    "specSHA256": "d375104cde1448f5b6192e57f3e313678eafe6a00d6797b784ad7f9f6cd7ed47",
+    "versions": [
+      {
+        "name": "v1",
+        "served": true,
+        "storage": true
+      },
+      {
+        "name": "v1alpha3",
+        "served": true,
+        "storage": false
+      },
+      {
+        "name": "v1beta1",
+        "served": true,
+        "storage": false
+      }
+    ]
+  }
+]

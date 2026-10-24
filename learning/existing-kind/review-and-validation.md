@@ -23,3 +23,21 @@ No actual migration, API/data acceptance or final PLAT-199 pass is claimed.
 * No full suite, repeated Sonar/cache regression, SAST rebuild or live write was
   performed. Required CI, exact rendered/live immutable-field comparison, alias
   TLS/cache behavior and API/DB data acceptance remain pending.
+
+## Follow-up preparation
+
+The original fixed SHA c930c61 passed both push CI 40116893189 and PR CI
+40116919773 (validate/ci-result success). These results cover that SHA only.
+
+The new offline renderer uses the same repository-locked Helm 4.2.4 binary
+checksum and vendored Istio chart. check_proposal.py passed for the proposed
+bounded authority, namespace-restricted fail-closed webhooks, unchanged Rollouts
+Deployment identity and persistent Account DB. This is an offline check, not
+evidence of live readiness or permission sufficiency.
+
+Corrected ownership source: mesh-demo fixture declarations belong to
+platform-gitops/learning/istio/chart. Excluded controller-generated istio-ca-crl
+from adoption and classified it as generated state. Also excluded argocd-cm from
+the captured Core parents because the composed declaration has a single separate
+owner. Final adoption capture has 53 non-Secret parents and 21 CRDs, not generated
+Pods/status. Review of the new renderer/proposal is pending.

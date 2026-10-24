@@ -52,10 +52,10 @@
       "namespace": "istio-learning-system",
       "name": "istio-ca-crl",
       "uid": "143fd56e-bd50-494d-bcd3-432ce8e316ac",
-      "proposedOwner": "Istio controller remnants",
-      "category": "controller-state-review",
-      "source": "platform-gitops/learning/istio",
-      "state": "do-not-adopt-generated-leader-state-as-config"
+      "proposedOwner": "Istio public CRL controller",
+      "category": "generated",
+      "source": "Istio CA/controller parent; never commit live CRL data",
+      "state": "preserve-generated-state"
     },
     {
       "apiVersion": "v1",
@@ -217,10 +217,10 @@
       "namespace": "learning-istio-demo",
       "name": "istio-ca-crl",
       "uid": "e312b815-e8df-4e99-acd4-7140787a1c06",
-      "proposedOwner": "lab-learning-mesh-fixture",
-      "category": "workload-adoption",
-      "source": "application-manifest/learning/istio",
-      "state": "plain-fixture-no-injection-change"
+      "proposedOwner": "Istio public CRL controller",
+      "category": "generated",
+      "source": "Istio CA/controller parent; never commit live CRL data",
+      "state": "preserve-generated-state"
     },
     {
       "apiVersion": "v1",
@@ -241,7 +241,7 @@
       "uid": "f4011853-8b49-49b8-98bc-4bc41748c0e2",
       "proposedOwner": "lab-learning-mesh-fixture",
       "category": "workload-adoption",
-      "source": "application-manifest/learning/istio",
+      "source": "platform-gitops/learning/istio/chart",
       "state": "plain-fixture-no-injection-change"
     },
     {
@@ -2206,7 +2206,7 @@
       "uid": "ffaf12b2-0ad7-42ba-96d7-841a502ab6c3",
       "proposedOwner": "lab-learning-mesh-fixture",
       "category": "workload-adoption",
-      "source": "application-manifest/learning/istio",
+      "source": "platform-gitops/learning/istio/chart",
       "state": "plain-fixture-no-injection-change"
     },
     {
@@ -2382,7 +2382,7 @@
       "uid": "3dbdb8cd-7370-48af-b246-c0bd319af9ed",
       "proposedOwner": "lab-learning-mesh-fixture",
       "category": "workload-adoption",
-      "source": "application-manifest/learning/istio",
+      "source": "platform-gitops/learning/istio/chart",
       "state": "plain-fixture-no-injection-change"
     },
     {
@@ -3325,7 +3325,7 @@
       "uid": "6ef6c374-f1b3-4e36-ab31-5c86356c7842",
       "proposedOwner": "lab-learning-mesh-fixture",
       "category": "workload-adoption",
-      "source": "application-manifest/learning/istio",
+      "source": "platform-gitops/learning/istio/chart",
       "state": "plain-fixture-no-injection-change"
     },
     {
@@ -3336,7 +3336,7 @@
       "uid": "6a64647c-45a1-4fea-b212-1ddee3c8c341",
       "proposedOwner": "lab-learning-mesh-fixture",
       "category": "workload-adoption",
-      "source": "application-manifest/learning/istio",
+      "source": "platform-gitops/learning/istio/chart",
       "state": "plain-fixture-no-injection-change"
     },
     {

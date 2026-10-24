@@ -1,0 +1,38 @@
+{
+  "namespaces.yaml": {
+    "sha256": "1ec3ef684da2008159e4a84aea29a31d9c6e213a6b33732c90b6bf4873078601",
+    "bytes": 1964
+  },
+  "argocd-access.yaml": {
+    "sha256": "cdc18be8274309559b5bf0e2412f372622b050bda8da79ec0c1db8ee83dea777",
+    "bytes": 12776
+  },
+  "istiod.yaml": {
+    "sha256": "9a77764f3a163fdcd2ce139302fa4c8e52fb3e0d7f7e201a523b6dfa78b03d97",
+    "bytes": 156003
+  },
+  "istiod-values.yaml": {
+    "sha256": "8c3edaf306e6ee0e4144da5f99b292822379dd842b53c7893e4c86bf076b4f29",
+    "bytes": 1240
+  },
+  "rollouts.yaml": {
+    "sha256": "1ff36fd566d6add4ee8419ff0115dbf88197fbe705a1a00f2ac7651174bfc3f2",
+    "bytes": 5184
+  },
+  "backstage-access.yaml": {
+    "sha256": "237448dbe6dc6e6ca577105e8101799ca97027332b2158c102ee2fd07ff926b4",
+    "bytes": 1837
+  },
+  "account-database.yaml": {
+    "sha256": "55f3359d770a24a501c300ae52c99438ee18ddfbb8cac0eceba41fd0955b1c38",
+    "bytes": 4077
+  },
+  "existing-pv-decision.json": {
+    "sha256": "9b3f7a80ec7045a1b01949ce37653ef636bf87d96aaa939da7437906b09fc340",
+    "bytes": 3204
+  },
+  "argocd-config.yaml": {
+    "sha256": "b58f7bf11d80490154227b41b8f252cfa5611634ffe76dc3784f14116fb046af",
+    "bytes": 3615
+  }
+}
