@@ -113,6 +113,9 @@ def build(helm,manifest):
             # CA state stays only in control namespace, never old DB namespaces.
             for r in d['rules']:
                 if 'secrets' in r['resources']:r['verbs']=[v for v in r['verbs'] if v!='delete']
+            # Analysis is disabled; do not keep the chart's broad report-CM
+            # deletion authority. Namespace CA distribution gets named writes.
+            d['rules']=[r for r in d['rules'] if 'configmaps' not in r['resources']]
         clean.append(d)
     pilot_rules=[rule('','pods nodes services namespaces endpoints','get list watch'),
       rule('discovery.k8s.io','endpointslices','get list watch'),rule('apiextensions.k8s.io','customresourcedefinitions','get list watch'),
@@ -127,7 +130,8 @@ def build(helm,manifest):
         pilot_rules.append(rule(group,kinds,'get list watch'))
     clean += [obj('ClusterRole','learning-istiod-discovery',rules=pilot_rules),bind('learning-istiod-discovery',None,istio_sa,True)]
     for ns in [APP,ISTIO]:
-        clean += [obj('Role','learning-istiod-public-ca',ns,rules=[rule('','configmaps','create get list watch update delete')]),bind('learning-istiod-public-ca',ns,istio_sa)]
+        clean += [obj('Role','learning-istiod-public-ca',ns,rules=[rule('','configmaps','create get list watch'),
+          rule('','configmaps','update patch delete',['istio-ca-root-cert','istio-ca-crl'])]),bind('learning-istiod-public-ca',ns,istio_sa)]
     outputs['istiod.yaml']=clean
     outputs['istiod-values.yaml']=[base_values]
     # Reuse the current Deployment/SA, preserving namespace/name/selector and

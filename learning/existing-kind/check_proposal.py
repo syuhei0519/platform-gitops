@@ -28,7 +28,7 @@ def main():
             s=w['namespaceSelector']
             if d['kind']=='MutatingWebhookConfiguration' and s.get('matchLabels',{}).get('kubernetes.io/metadata.name')!=APP:
                 raise ValueError('injection escapes Account')
-            if d['kind']=='ValidatingWebhookConfiguration' and not any(e.get('key')=='kubernetes.io/metadata.name' and set(e.get('values',[]))=={APP,ISTIO} for e in s.get('matchExpressions',[])):
+            if d['kind']=='ValidatingWebhookConfiguration' and not any(e.get('key')=='kubernetes.io/metadata.name' and e.get('operator')=='In' and set(e.get('values',[]))=={APP,ISTIO} for e in s.get('matchExpressions',[])):
                 raise ValueError('validation escapes reviewed namespaces')
     for d in istio:
         if d['kind']=='ClusterRole' and any('secrets' in r['resources'] for r in d['rules']):raise ValueError('cluster Secret grant')

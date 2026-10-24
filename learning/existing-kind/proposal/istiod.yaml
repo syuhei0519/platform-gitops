@@ -1641,12 +1641,6 @@ rules:
   - list
   - update
 - apiGroups:
-  - ''
-  resources:
-  - configmaps
-  verbs:
-  - delete
-- apiGroups:
   - coordination.k8s.io
   resources:
   - leases
@@ -2219,8 +2213,17 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - ''
+  resources:
+  - configmaps
+  verbs:
   - update
+  - patch
   - delete
+  resourceNames:
+  - istio-ca-root-cert
+  - istio-ca-crl
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -2251,8 +2254,17 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - ''
+  resources:
+  - configmaps
+  verbs:
   - update
+  - patch
   - delete
+  resourceNames:
+  - istio-ca-root-cert
+  - istio-ca-crl
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

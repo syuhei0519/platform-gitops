@@ -8,8 +8,8 @@
     "bytes": 12776
   },
   "istiod.yaml": {
-    "sha256": "9a77764f3a163fdcd2ce139302fa4c8e52fb3e0d7f7e201a523b6dfa78b03d97",
-    "bytes": 156003
+    "sha256": "6b7714d7549b87086dabb4737018e8b88b43643e1fe1c4069cac57fe71199c67",
+    "bytes": 156183
   },
   "istiod-values.yaml": {
     "sha256": "8c3edaf306e6ee0e4144da5f99b292822379dd842b53c7893e4c86bf076b4f29",

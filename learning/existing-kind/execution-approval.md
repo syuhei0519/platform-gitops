@@ -105,6 +105,13 @@ Account namespace and `istio-learning-system`.
   read/create/update stays only in the Istio control namespace; delete is removed.
   Public root-CA ConfigMap writes stay in Account/control namespaces. Any missing
   authority/Forbidden result stops startup; do not silently widen access.
+  ConfigMap create cannot be name-restricted by Kubernetes RBAC; update/patch/delete
+  is limited to `istio-ca-root-cert` and `istio-ca-crl`, and the unused broad report
+  ConfigMap delete grant is removed. The chart's control-namespace `gateways create`
+  is intentionally retained for the validator controller's server-dry-run invalid
+  Gateway readiness probe, not an ingress Gateway deployment. A compromised pilot
+  could persist a Gateway in that control namespace; this effective authority is
+  included in the same decision. No such Gateway is declared or created here.
 
 ## Reuse the existing Rollouts controller
 
