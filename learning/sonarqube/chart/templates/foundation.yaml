@@ -1,0 +1,187 @@
+{{- if ne .Release.Namespace "sonarqube" }}{{ fail "This lab chart is restricted to namespace sonarqube" }}{{ end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-tls-proxy
+  namespace: sonarqube
+data:
+  nginx.conf: |
+    pid /tmp/nginx.pid;
+    events {}
+    http {
+      access_log off;
+      client_body_temp_path /tmp/client;
+      proxy_temp_path /tmp/proxy;
+      fastcgi_temp_path /tmp/fastcgi;
+      uwsgi_temp_path /tmp/uwsgi;
+      scgi_temp_path /tmp/scgi;
+      server {
+        listen 8443 ssl;
+        server_name localhost host.docker.internal;
+        ssl_certificate /tls/tls.crt;
+        ssl_certificate_key /tls/tls.key;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        client_max_body_size 100m;
+        location / {
+          proxy_pass http://127.0.0.1:9000;
+          proxy_set_header Host $http_host;
+          proxy_set_header X-Forwarded-Proto https;
+          proxy_set_header X-Forwarded-For $remote_addr;
+          proxy_read_timeout 300s;
+        }
+      }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-postgresql-init
+  namespace: sonarqube
+data:
+  10-sonar-role.sh: |
+    #!/bin/bash
+    set +x
+    set -eu
+    jdbc_password=$(cat /run/jdbc/password)
+    case "$jdbc_password" in ''|*[!A-Za-z0-9_-]*) exit 1;; esac
+    # Credentials are read from mounted files, never argv or script tracing.
+    # Suppress statement text for this one initialization session only.
+    printf "SET log_min_error_statement = 'panic';\nCREATE ROLE sonarqube LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD '%s';\nCREATE DATABASE sonarqube OWNER sonarqube;\n" "$jdbc_password" |
+      psql -q -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname postgres
+    unset jdbc_password
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarqube-postgresql
+  namespace: sonarqube
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: standard
+  resources:
+    requests: {storage: 10Gi}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube-postgresql
+  namespace: sonarqube
+spec:
+  type: ClusterIP
+  selector: {app.kubernetes.io/name: sonarqube-postgresql}
+  ports: [{name: postgresql, port: 5432, targetPort: 5432}]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube-tls
+  namespace: sonarqube
+spec:
+  type: ClusterIP
+  selector: {app: sonarqube, release: sonarqube}
+  ports: [{name: https, port: 8443, targetPort: 8443}]
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sonarqube-postgresql
+  namespace: sonarqube
+spec:
+  replicas: 1
+  serviceName: sonarqube-postgresql
+  selector:
+    matchLabels: {app.kubernetes.io/name: sonarqube-postgresql}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: sonarqube-postgresql}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        runAsNonRoot: true
+        fsGroup: 999
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: postgres
+          image: postgres:18.6-bookworm@sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 250m, memory: 512Mi}
+            limits: {cpu: '1', memory: 1Gi}
+          env:
+            - {name: PGDATA, value: /var/lib/postgresql/18/docker}
+            - {name: POSTGRES_USER, value: postgres}
+            - {name: POSTGRES_PASSWORD_FILE, value: /run/admin/password}
+            - {name: POSTGRES_INITDB_ARGS, value: '--auth-host=scram-sha-256'}
+          ports: [{name: postgresql, containerPort: 5432}]
+          startupProbe:
+            exec: {command: [pg_isready, -U, postgres]}
+            periodSeconds: 5
+            failureThreshold: 60
+          readinessProbe:
+            exec: {command: [pg_isready, -U, postgres]}
+            periodSeconds: 5
+          livenessProbe:
+            exec: {command: [pg_isready, -U, postgres]}
+            periodSeconds: 10
+          volumeMounts:
+            - {name: data, mountPath: /var/lib/postgresql}
+            - {name: socket, mountPath: /var/run/postgresql}
+            - {name: tmp, mountPath: /tmp}
+            - {name: admin, mountPath: /run/admin, readOnly: true}
+            - {name: jdbc, mountPath: /run/jdbc, readOnly: true}
+            - {name: init, mountPath: /docker-entrypoint-initdb.d, readOnly: true}
+      volumes:
+        - {name: data, persistentVolumeClaim: {claimName: sonarqube-postgresql}}
+        - {name: socket, emptyDir: {sizeLimit: 16Mi}}
+        - {name: tmp, emptyDir: {sizeLimit: 64Mi}}
+        - {name: admin, secret: {secretName: sonarqube-postgresql-admin, defaultMode: 288}}
+        - {name: jdbc, secret: {secretName: sonarqube-jdbc, defaultMode: 288}}
+        - {name: init, configMap: {name: sonarqube-postgresql-init, defaultMode: 365}}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: sonarqube-default-deny, namespace: sonarqube}
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+  ingress: []
+  egress: []
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: sonarqube-database, namespace: sonarqube}
+spec:
+  podSelector:
+    matchLabels: {app.kubernetes.io/name: sonarqube-postgresql}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: {app: sonarqube, release: sonarqube}
+      ports: [{protocol: TCP, port: 5432}]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: sonarqube-egress, namespace: sonarqube}
+spec:
+  podSelector:
+    matchLabels: {app: sonarqube, release: sonarqube}
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - podSelector:
+            matchLabels: {app.kubernetes.io/name: sonarqube-postgresql}
+      ports: [{protocol: TCP, port: 5432}]
+    - to:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: kube-system}
+          podSelector:
+            matchLabels: {k8s-app: kube-dns}
+      ports: [{protocol: UDP, port: 53}, {protocol: TCP, port: 53}]

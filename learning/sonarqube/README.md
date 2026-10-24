@@ -47,11 +47,30 @@ Passing this regression confirms the limitation. It does **not** mean that the
 two-destination rollout is safe or that scanner/server acceptance passed. In
 particular, `normal` must not be used to hide the metadata failure.
 
-## Deployment remains stopped
+## Live alias integration
 
-The existing Core can still be reused, but a scope decision is required before
-applying the proposed registration/inclusion additions. A different-URL and
-authentication design may preserve both destinations, as described below. A separate bounded option is to
+On 2026-10-24, the explicitly approved alias was installed in the existing Core
+and validated against the real API. `lab-local-sonarqube-probe` used the exact
+source commit `34cabb9372b3b345801ca60265a882bac4abac90` to create only the
+non-secret `sonarqube-cache-probe` ConfigMap. The operation reached `Succeeded`
+and the Application reached `Synced`. This exercises real registration selection,
+exec-provider authentication, API discovery, URL-scoped inclusions and cache lookup.
+The canonical registration, old namespace Role and controller Pod specification
+were checked unchanged. No existing DB Secret permission was added.
+
+The first attempt failed before Application creation because WSL could not reopen
+the forwarded stdin as `/dev/stdin` for a public ConfigMap patch. Its added Role,
+Binding, registration and AppProject were removed by UID, and the old inclusions
+were verified unchanged. The dedicated namespace was retained. After a confirmed
+rollback, public metadata patches were passed directly and the integration passed.
+Rollback behavior was independently checked with six offline cases, including an
+in-flight sync, lost restore response, pending journal, Secret metadata-only reads
+and uncertain create outcomes. This is not yet a Sonar analysis acceptance result.
+
+## Remaining deployment work
+
+The existing Core is reused with a different-URL registration and the existing
+projected identity, preserving both destinations. A separate bounded option was to
 use the existing controller with **only** the Sonar destination while no existing
 Application is registered. That changes the earlier learning destination scope and
 requires explicit approval; the successful control case is not permission to do it.
@@ -62,8 +81,39 @@ remain unavailable until its scope is deliberately restored/redesigned.
 Do not add old-namespace DB Secret read access, grant cluster-admin, deploy a second
 Core, change the controller image, replace kind, or change the registration scope
 as a workaround. Those are not authorized by the diagnostic test or this PR.
-The Sonar server, NetworkPolicy live checks, sysctl change, seven credential flows,
-main scans and actual Quality Gates remain separate unfinished steps.
+The live NetworkPolicy test subsequently passed baseline connectivity, default
+deny, selective ingress and selective egress. All seven temporary resources were
+deleted by verified UID. Production default-deny and DB/DNS allow policies were
+then installed before any credential was configured. Sonar startup, temporary
+sysctl change, credential flows, main scans and actual Quality Gates remain
+separate required steps.
+
+## Pinned deployment chart
+
+`chart/` embeds the unmodified official SonarSource chart `2026.5.1003`, package
+SHA-256 `c85b05ffd646deb9fea7c28463622e42d2a93bbe988625530eda7d6cf6ee96fc`.
+Community Build `26.9.0.129388`, PostgreSQL `18.6-bookworm` and the unprivileged
+nginx `1.29.5-alpine3.23` TLS sidecar all use fixed image digests in values/templates.
+The wrapper adds only the dedicated PostgreSQL, TLS configuration/private service,
+PVC and NetworkPolicies. No workload ServiceAccount or privileged init is created.
+Sonar and PostgreSQL reserve 5Gi + 10Gi using the existing `standard` StorageClass.
+Only these new PVs may be patched to `Retain` after binding; existing PVs are untouched.
+PVC pruning is disabled. These volumes are not a backup or a disk quota.
+
+Render with the CI-pinned Helm and validate using `validate.py <rendered.yaml>`.
+The render contains 16 resources, including the official chart's empty proxy Secret;
+it contains no real credential. Initial sync is manual and pinned to a reviewed
+commit. The lab accepts Kubernetes 1.36.4 outside the checked Sonar support matrix
+and the chart's stated Argo support limitations; it must be measured, not assumed.
+
+Secrets are operator-created through stdin only after NetworkPolicy proof.
+PostgreSQL admin/JDBC/monitoring/TLS key are stored only in this namespace and
+Windows Credential Manager; Sonar admin and future project analysis tokens are
+Credential Manager only. The public leaf certificate may be saved for explicit
+hostname/expiry/fingerprint verification. No private key, password or token is in
+Git, a rendered artifact, CLI arguments or chat. Token validity is seven days and
+tokens must be revoked after validation. Password rotation deadlines are operational
+deadlines, not automatic PostgreSQL or Sonar account expiry.
 
 ## Alternatives and limits of this test
 
@@ -93,22 +143,21 @@ The alias does **not** automatically inherit in-cluster credentials: the install
 `Cluster.RawRestConfig` selects `rest.InClusterConfig` only for the canonical
 `https://kubernetes.default.svc` value. A separately reviewed authentication route
 would be necessary. Reuse of the controller's existing projected ServiceAccount
- through an exec credential provider is a candidate; it has not been configured or
- tested against the real API here. No real token was read, copied, issued or stored
- for this investigation.
-Do not introduce a new static Argo token, disable TLS verification, or claim this
-candidate is deployable based only on these tests.
+through an exec credential provider was subsequently approved and validated by
+the live probe above. Only client-go consumes the provider output inside the Pod;
+no token value is copied into the registration, a log, Git or a local file.
+Do not introduce a new static Argo token or disable TLS verification.
 
-### Candidate authentication change requiring approval
+### Approved authentication change
 
-`existing-sa-credential.sh` is a candidate exec-provider command for that distinct
-URL, not an installed controller plugin. `credential_test.py` runs it in the exact
+`existing-sa-credential.sh` is the exec-provider command embedded in the approved
+registration for that distinct URL. `credential_test.py` runs it in the exact
 controller image, network disabled, with only a fake token mounted at the standard
 projected-token path. It checks valid protocol/one-minute cache expiry and rejects
 empty, invalid or missing input without credential output. Do not run it manually
 against an existing Pod: its stdout is a credential protocol intended for client-go.
 
-The proposed persistent change is a new `sonarqube-in-cluster` registration Secret
+The approved persistent change is a new `sonarqube-in-cluster` registration Secret
 in `learning-progressive-control`, containing the alias server URL, only the
 `sonarqube` namespace, `clusterResources=false`, public CA and exec-provider command.
 The command would run inside the existing controller, use its existing projected
@@ -121,12 +170,13 @@ Role would add workload management for this existing identity.
 This differs from canonical in-cluster authentication by reading the same projected
 token through the exec protocol, cached for at most one minute, rather than the
 automatic `rest.InClusterConfig` path. The registration is persistent access
-configuration even though it contains no token value. Approval is required before
-creating that registration or using the provider with real credentials. No mounted
+configuration even though it contains no token value. It was applied only after
+explicit approval. No mounted
 script, controller Pod change/restart, extra Core or Redis credential is proposed:
 the reviewed script would be embedded as the command argument in the registration.
 End-to-end registration, real filtering, real authentication and controller cache
-behavior still require a bounded approved live validation before Sonar deployment.
+behavior passed the bounded live probe. NetworkPolicy enforcement, Sonar deployment,
+main analyses and actual Quality Gates remain separate required validations.
 
 The fake API reproduces relevant namespace list denials and evaluates real HTTP
 SelfSubjectAccessReview requests in strict mode. It does not exercise actual
