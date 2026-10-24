@@ -1,0 +1,171 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: learning-account-data
+  namespace: learning-account-release
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: learning-account-init
+  namespace: learning-account-release
+  labels:
+    learning.local/owner: plat170-account
+data:
+  10-account.sh: '#!/bin/sh
+
+    set -eu
+
+    export ACCOUNT_APP_PASSWORD="$(cat /run/db/app-password)"
+
+    psql --set=ON_ERROR_STOP=1 <<''SQL''
+
+    \getenv app_password ACCOUNT_APP_PASSWORD
+
+    SELECT format(''CREATE ROLE account_app LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE
+    NOINHERIT PASSWORD %L'', :''app_password'') \gexec
+
+    CREATE DATABASE account OWNER account_app;
+
+    SQL
+
+    unset ACCOUNT_APP_PASSWORD
+
+    '
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: learning-account-db
+  namespace: learning-account-release
+  labels:
+    learning.local/owner: plat170-account
+spec:
+  clusterIP: None
+  selector:
+    app: learning-account-db
+  ports:
+  - name: postgresql
+    port: 5432
+    targetPort: postgresql
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: learning-account-db
+  namespace: learning-account-release
+  labels:
+    learning.local/owner: plat170-account
+spec:
+  replicas: 1
+  serviceName: learning-account-db
+  selector:
+    matchLabels:
+      app: learning-account-db
+  template:
+    metadata:
+      labels:
+        app: learning-account-db
+        learning.local/owner: plat170-account
+      annotations:
+        sidecar.istio.io/inject: 'false'
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: postgresql
+        image: docker.io/library/postgres@sha256:9b18b78397054fce88a9552e9d5a3ad5bb7fd258c5b3cc1c5028e46373d6ea8f
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_DB
+          value: postgres
+        - name: POSTGRES_PASSWORD_FILE
+          value: /run/db/admin-password
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        ports:
+        - name: postgresql
+          containerPort: 5432
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+        - name: run
+          mountPath: /var/run/postgresql
+        - name: tmp
+          mountPath: /tmp
+        - name: init
+          mountPath: /docker-entrypoint-initdb.d
+          readOnly: true
+        - name: credentials
+          mountPath: /run/db
+          readOnly: true
+        startupProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - postgres
+          periodSeconds: 5
+          failureThreshold: 60
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - postgres
+          periodSeconds: 5
+          timeoutSeconds: 2
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - postgres
+          periodSeconds: 10
+          timeoutSeconds: 2
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: learning-account-data
+      - name: run
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
+      - name: init
+        configMap:
+          name: learning-account-init
+          defaultMode: 365
+      - name: credentials
+        secret:
+          secretName: learning-account-db
+          defaultMode: 288

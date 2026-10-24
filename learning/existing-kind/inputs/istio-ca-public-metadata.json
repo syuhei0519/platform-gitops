@@ -1,0 +1,11 @@
+{
+  "secret": "istio-learning-system/istio-ca-secret",
+  "certificateField": "ca-cert.pem",
+  "publicMetadata": [
+    "subject=O = cluster.local",
+    "issuer=O = cluster.local",
+    "notBefore=Oct 18 17:50:58 2026 GMT",
+    "notAfter=Oct 15 17:50:58 2036 GMT",
+    "sha256 Fingerprint=5B:67:E6:94:C8:42:59:EB:82:FC:6F:42:73:91:0A:FD:18:13:5D:BE:48:78:F6:6F:6F:C6:E0:BA:3F:68:30:E2"
+  ]
+}

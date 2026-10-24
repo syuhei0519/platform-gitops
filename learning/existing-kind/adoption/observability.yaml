@@ -1,0 +1,974 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: learning-grafana-config
+  namespace: observability
+  labels:
+    app.kubernetes.io/part-of: learning-monitoring
+    learning.local/owner: codex-local-learning
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+data:
+  account-overview.json: "{\n  \"id\": null,\n  \"uid\": \"learning-account-overview\"\
+    ,\n  \"title\": \"Learning Account Overview\",\n  \"description\": \"\u30ED\u30FC\
+    \u30AB\u30EB\u5B66\u7FD2Account\u5C02\u7528\u3002\u5B9Fnamespace: learning-services-20261018\u3002\
+    SDK\u306Elegacy\u4E92\u63DB\u5024\u306F\u5B9Fnamespace\u8868\u793A\u306B\u4F7F\
+    \u3044\u307E\u305B\u3093\u3002\u5358\u4E00instance\u3001SDK\u9BAE\u5EA690\u79D2\
+    \u3002\u5C65\u6B74\u306F\u518D\u8D77\u52D5\u3067\u6D88\u5931\u3002 / \u5B66\u7FD2\
+    SLI: \u5168\u696D\u52D9HTTP\u30014xx/5xx\u3092\u5931\u6557\u306B\u542B\u3080\u3002\
+    5m/20 sample\u4EE5\u4E0A\u3001\u53EF\u7528\u602799%\u3001250ms\u4EE5\u518595%\u3002\
+    \u672C\u756ASLA\u30FB\u81EA\u52D5gate\u3067\u306F\u306A\u3044\u3002\",\n  \"schemaVersion\"\
+    : 39,\n  \"version\": 1,\n  \"editable\": false,\n  \"refresh\": \"30s\",\n  \"\
+    time\": {\n    \"from\": \"now-30m\",\n    \"to\": \"now\"\n  },\n  \"timezone\"\
+    : \"utc\",\n  \"tags\": [\n    \"learning\",\n    \"account\"\n  ],\n  \"panels\"\
+    : [\n    {\n      \"id\": 1,\n      \"title\": \"\u53CE\u96C6\u72B6\u614B\",\n\
+    \      \"type\": \"stat\",\n      \"description\": \"0: \u53CE\u96C6\u4E0D\u53EF\
+    /\u65B0\u9BAE\u3055\u672A\u78BA\u8A8D\u30011: SDK\u6B63\u5E38\u30FB\u8981\u6C42\
+    \u7CFB\u5217\u306E\u6E96\u5099\u4E2D\u30012: \u901A\u4FE1\u306A\u3057\u30013:\
+    \ \u901A\u4FE1\u3042\u308A\u3002\u5358\u4E00Account instance\u524D\u63D0\u3002\
+    Prometheus\u969C\u5BB3\u306FError/No data\u3002\",\n      \"datasource\": {\n\
+    \        \"type\": \"prometheus\",\n        \"uid\": \"learning-prometheus\"\n\
+    \      },\n      \"gridPos\": {\n        \"x\": 0,\n        \"y\": 0,\n      \
+    \  \"w\": 8,\n        \"h\": 8\n      },\n      \"fieldConfig\": {\n        \"\
+    defaults\": {\n          \"unit\": \"none\",\n          \"noValue\": \"N/A\",\n\
+    \          \"mappings\": [\n            {\n              \"type\": \"value\",\n\
+    \              \"options\": {\n                \"0\": {\n                  \"\
+    text\": \"\u53CE\u96C6\u4E0D\u53EF / \u65B0\u9BAE\u3055\u672A\u78BA\u8A8D\",\n\
+    \                  \"color\": \"red\"\n                },\n                \"\
+    1\": {\n                  \"text\": \"\u8981\u6C42\u7CFB\u5217\u306E\u6E96\u5099\
+    \u4E2D\",\n                  \"color\": \"orange\"\n                },\n     \
+    \           \"2\": {\n                  \"text\": \"\u901A\u4FE1\u306A\u3057\"\
+    ,\n                  \"color\": \"blue\"\n                },\n               \
+    \ \"3\": {\n                  \"text\": \"\u53CE\u96C6\u6B63\u5E38 / \u901A\u4FE1\
+    \u3042\u308A\",\n                  \"color\": \"green\"\n                }\n \
+    \             }\n            }\n          ]\n        },\n        \"overrides\"\
+    : []\n      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n\
+    \          \"expr\": \"(vector(0) and on() ((((min(up{job=\\\"otel-application\\\
+    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 0)) or ((vector(1) and on() ((((min(up{job=\\\
+    \"otel-application\\\"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\"}))) >= bool 0)) or vector(0)) == 1)) unless on() sum(rate(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) or (vector(2) and on() ((((min(up{job=\\\"otel-application\\\
+    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(rate(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) == 0)) or (vector(3) and on() ((((min(up{job=\\\"\
+    otel-application\\\"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(rate(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) > 0))\",\n          \"instant\": true,\n        \
+    \  \"range\": false,\n          \"legendFormat\": \"\u53CE\u96C6\u72B6\u614B\"\
+    \n        }\n      ],\n      \"options\": {\n        \"reduceOptions\": {\n  \
+    \        \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"\
+    fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
+    : \"value\"\n      }\n    },\n    {\n      \"id\": 2,\n      \"title\": \"\u8981\
+    \u6C42\u6570\u306E\u63A8\u5B9A / 5m\",\n      \"type\": \"stat\",\n      \"description\"\
+    : \"increase\u306E\u5916\u633F\u306B\u3088\u308B\u63A8\u5B9A\u6570\u3002curl\u56DE\
+    \u6570\u306E\u53B3\u5BC6\u306A\u5B9F\u6570\u3067\u306F\u3042\u308A\u307E\u305B\
+    \u3093\u3002health probe\u9664\u5916\u3002\",\n      \"datasource\": {\n     \
+    \   \"type\": \"prometheus\",\n        \"uid\": \"learning-prometheus\"\n    \
+    \  },\n      \"gridPos\": {\n        \"x\": 8,\n        \"y\": 0,\n        \"\
+    w\": 8,\n        \"h\": 8\n      },\n      \"fieldConfig\": {\n        \"defaults\"\
+    : {\n          \"unit\": \"short\",\n          \"noValue\": \"N/A\"\n        },\n\
+    \        \"overrides\": []\n      },\n      \"targets\": [\n        {\n      \
+    \    \"refId\": \"A\",\n          \"expr\": \"sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) and on() ((((min(up{job=\\\"otel-application\\\"\
+    }) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1)\",\n          \"instant\": true,\n    \
+    \      \"range\": false,\n          \"legendFormat\": \"\u8981\u6C42\u6570\u306E\
+    \u63A8\u5B9A / 5m\"\n        }\n      ],\n      \"options\": {\n        \"reduceOptions\"\
+    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
+    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
+    : \"value\"\n      }\n    },\n    {\n      \"id\": 3,\n      \"title\": \"\u8981\
+    \u6C42 / \u79D2\",\n      \"type\": \"stat\",\n      \"description\": \"instance\u3054\
+    \u3068\u306Brate\u5F8Csum\u3057\u3001counter reset\u3092\u51E6\u7406\u3002\u901A\
+    \u4FE1\u306A\u3057\u306F0\u3001\u53CE\u96C6\u4E0D\u53EF\u306FN/A\u3002\",\n  \
+    \    \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"\
+    learning-prometheus\"\n      },\n      \"gridPos\": {\n        \"x\": 16,\n  \
+    \      \"y\": 0,\n        \"w\": 8,\n        \"h\": 8\n      },\n      \"fieldConfig\"\
+    : {\n        \"defaults\": {\n          \"unit\": \"reqps\",\n          \"noValue\"\
+    : \"N/A\"\n        },\n        \"overrides\": []\n      },\n      \"targets\"\
+    : [\n        {\n          \"refId\": \"A\",\n          \"expr\": \"sum(rate(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) and on() ((((min(up{job=\\\"otel-application\\\"\
+    }) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1)\",\n          \"instant\": true,\n    \
+    \      \"range\": false,\n          \"legendFormat\": \"\u8981\u6C42 / \u79D2\"\
+    \n        }\n      ],\n      \"options\": {\n        \"reduceOptions\": {\n  \
+    \        \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"\
+    fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
+    : \"value\"\n      }\n    },\n    {\n      \"id\": 4,\n      \"title\": \"HTTP\u30A8\
+    \u30E9\u30FC\u7387 (4xx + 5xx)\",\n      \"type\": \"stat\",\n      \"description\"\
+    : \"4xx\u306Fclient\u30015xx\u306Fserver\u306E\u30A8\u30E9\u30FC\u3002\u7121\u901A\
+    \u4FE1\u3084\u53CE\u96C6\u4E0D\u53EF\u30920%\u3078\u5909\u63DB\u3057\u307E\u305B\
+    \u3093\u3002\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n\
+    \        \"uid\": \"learning-prometheus\"\n      },\n      \"gridPos\": {\n  \
+    \      \"x\": 0,\n        \"y\": 8,\n        \"w\": 8,\n        \"h\": 8\n   \
+    \   },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\"\
+    : \"percentunit\",\n          \"noValue\": \"N/A\"\n        },\n        \"overrides\"\
+    : []\n      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n\
+    \          \"expr\": \"((sum(rate(pe_http_server_requests_total{job=\\\"account-backend\\\
+    \",status_class=~\\\"4xx|5xx\\\"}[5m])) or vector(0)) / sum(rate(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) and on() (sum(rate(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) > 0) and on() ((((min(up{job=\\\"otel-application\\\
+    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1)\",\n          \"instant\": true,\n    \
+    \      \"range\": false,\n          \"legendFormat\": \"HTTP\u30A8\u30E9\u30FC\
+    \u7387 (4xx + 5xx)\"\n        }\n      ],\n      \"options\": {\n        \"reduceOptions\"\
+    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
+    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
+    : \"value\"\n      }\n    },\n    {\n      \"id\": 5,\n      \"title\": \"\u5FDC\
+    \u7B54\u6642\u9593 p95\",\n      \"type\": \"stat\",\n      \"description\": \"\
+    \u56FA\u5B9Ahistogram bucket\u306B\u3088\u308B\u63A8\u5B9A\u3001\u5358\u4F4D\u306F\
+    \u79D2\u3002\u7121\u901A\u4FE1/\u53CE\u96C6\u4E0D\u53EF\u306FN/A\u3002\",\n  \
+    \    \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"\
+    learning-prometheus\"\n      },\n      \"gridPos\": {\n        \"x\": 8,\n   \
+    \     \"y\": 8,\n        \"w\": 8,\n        \"h\": 8\n      },\n      \"fieldConfig\"\
+    : {\n        \"defaults\": {\n          \"unit\": \"s\",\n          \"noValue\"\
+    : \"N/A\"\n        },\n        \"overrides\": []\n      },\n      \"targets\"\
+    : [\n        {\n          \"refId\": \"A\",\n          \"expr\": \"histogram_quantile(0.95,\
+    \ sum by (le) (rate(pe_http_server_request_duration_seconds_bucket{job=\\\"account-backend\\\
+    \"}[5m]))) and on() (sum(rate(pe_http_server_requests_total{job=\\\"account-backend\\\
+    \"}[5m])) > 0) and on() ((((min(up{job=\\\"otel-application\\\"}) == bool 1) *\
+    \ on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\"})))\
+    \ < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1)\",\n          \"instant\": true,\n    \
+    \      \"range\": false,\n          \"legendFormat\": \"\u5FDC\u7B54\u6642\u9593\
+    \ p95\"\n        }\n      ],\n      \"options\": {\n        \"reduceOptions\"\
+    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
+    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
+    : \"value\"\n      }\n    },\n    {\n      \"id\": 6,\n      \"title\": \"status_class\u5225\
+    \ \u8981\u6C42 / \u79D2\",\n      \"type\": \"timeseries\",\n      \"description\"\
+    : \"\u5B89\u5168\u306A400\u8981\u6C42\u30924xx\u3068\u3057\u3066\u78BA\u8A8D\u3002\
+    5xx\u3092\u8D77\u3053\u3059\u305F\u3081\u306BDB\u3092\u505C\u6B62\u3057\u307E\u305B\
+    \u3093\u3002\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n\
+    \        \"uid\": \"learning-prometheus\"\n      },\n      \"gridPos\": {\n  \
+    \      \"x\": 16,\n        \"y\": 8,\n        \"w\": 8,\n        \"h\": 8\n  \
+    \    },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\"\
+    : \"reqps\",\n          \"noValue\": \"N/A\"\n        },\n        \"overrides\"\
+    : []\n      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n\
+    \          \"expr\": \"sum by (status_class) (rate(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) and on() ((((min(up{job=\\\"otel-application\\\"\
+    }) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1)\",\n          \"instant\": false,\n   \
+    \       \"range\": true,\n          \"legendFormat\": \"{{status_class}}\"\n \
+    \       }\n      ],\n      \"options\": {\n        \"legend\": {\n          \"\
+    displayMode\": \"list\",\n          \"placement\": \"bottom\"\n        },\n  \
+    \      \"tooltip\": {\n          \"mode\": \"single\"\n        }\n      }\n  \
+    \  },\n    {\n      \"id\": 7,\n      \"type\": \"stat\",\n      \"title\": \"\
+    SLI \u8A55\u4FA1\u72B6\u614B (5m)\",\n      \"datasource\": {\n        \"type\"\
+    : \"prometheus\",\n        \"uid\": \"learning-prometheus\"\n      },\n      \"\
+    gridPos\": {\n        \"h\": 5,\n        \"w\": 8,\n        \"x\": 0,\n      \
+    \  \"y\": 20\n      },\n      \"targets\": [\n        {\n          \"refId\":\
+    \ \"A\",\n          \"expr\": \"(vector(0) unless on() ((((min(up{job=\\\"otel-application\\\
+    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1)) or ((vector(1) and on() ((((min(up{job=\\\
+    \"otel-application\\\"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\"}))) >= bool 0)) or vector(0)) == 1)) unless on() sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) or (vector(2) and on() ((((min(up{job=\\\"otel-application\\\
+    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) == 0) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) < 0.001))) or (vector(3) and on() ((((min(up{job=\\\
+    \"otel-application\\\"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) > 0) and on() (sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) < 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) < 0.001))) or (vector(4) and on() ((sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"otel-application\\\
+    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1))) or ((vector(1) and on() ((((min(up{job=\\\
+    \"otel-application\\\"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) >= 0)) unless on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) < 0.001)))\",\n          \"instant\": true\n   \
+    \     }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n       \
+    \   \"noValue\": \"N/A\",\n          \"unit\": \"none\",\n          \"mappings\"\
+    : [\n            {\n              \"type\": \"value\",\n              \"options\"\
+    : {\n                \"0\": {\n                  \"text\": \"\u53CE\u96C6\u4E0D\
+    \u53EF/\u6B20\u6E2C\"\n                },\n                \"1\": {\n        \
+    \          \"text\": \"\u6E96\u5099\u4E2D/\u4E0D\u5B8C\u5168\"\n             \
+    \   },\n                \"2\": {\n                  \"text\": \"\u901A\u4FE1\u306A\
+    \u3057\"\n                },\n                \"3\": {\n                  \"text\"\
+    : \"\u5C11\u6570sample/\u5224\u5B9A\u4FDD\u7559\"\n                },\n      \
+    \          \"4\": {\n                  \"text\": \"\u8A55\u4FA1\u53EF\u80FD\"\n\
+    \                }\n              }\n            }\n          ]\n        },\n\
+    \        \"overrides\": []\n      },\n      \"options\": {\n        \"reduceOptions\"\
+    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
+    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
+    : \"value\",\n        \"graphMode\": \"none\"\n      }\n    },\n    {\n      \"\
+    id\": 8,\n      \"type\": \"stat\",\n      \"title\": \"SLI \u8981\u6C42\u6570\
+    \u63A8\u5B9A (5m)\",\n      \"datasource\": {\n        \"type\": \"prometheus\"\
+    ,\n        \"uid\": \"learning-prometheus\"\n      },\n      \"gridPos\": {\n\
+    \        \"h\": 5,\n        \"w\": 8,\n        \"x\": 8,\n        \"y\": 20\n\
+    \      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n    \
+    \      \"expr\": \"sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\
+    \"}[5m])) and on() ((((min(up{job=\\\"otel-application\\\"}) == bool 1) * on()\
+    \ ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\"}))) <\
+    \ bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1)\",\n          \"instant\": true\n     \
+    \   }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n         \
+    \ \"noValue\": \"N/A\",\n          \"unit\": \"none\"\n        },\n        \"\
+    overrides\": []\n      },\n      \"options\": {\n        \"reduceOptions\": {\n\
+    \          \"calcs\": [\n            \"lastNotNull\"\n          ],\n         \
+    \ \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
+    : \"value\",\n        \"graphMode\": \"none\"\n      }\n    },\n    {\n      \"\
+    id\": 9,\n      \"type\": \"stat\",\n      \"title\": \"\u53EF\u7528\u6027 (\u76EE\
+    \u6A1999%)\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n  \
+    \      \"uid\": \"learning-prometheus\"\n      },\n      \"gridPos\": {\n    \
+    \    \"h\": 5,\n        \"w\": 8,\n        \"x\": 16,\n        \"y\": 20\n   \
+    \   },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n       \
+    \   \"expr\": \"((sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\
+    \",status_class=~\\\"2xx|3xx\\\"}[5m])) or vector(0)) / sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) and on() ((sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"otel-application\\\
+    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1))\",\n          \"instant\": true\n    \
+    \    }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n        \
+    \  \"noValue\": \"N/A\",\n          \"unit\": \"percentunit\"\n        },\n  \
+    \      \"overrides\": []\n      },\n      \"options\": {\n        \"reduceOptions\"\
+    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
+    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
+    : \"value\",\n        \"graphMode\": \"none\"\n      }\n    },\n    {\n      \"\
+    id\": 10,\n      \"type\": \"stat\",\n      \"title\": \"HTTP error\u7387 (4xx+5xx)\"\
+    ,\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\"\
+    : \"learning-prometheus\"\n      },\n      \"gridPos\": {\n        \"h\": 5,\n\
+    \        \"w\": 8,\n        \"x\": 0,\n        \"y\": 25\n      },\n      \"targets\"\
+    : [\n        {\n          \"refId\": \"A\",\n          \"expr\": \"(1 - (((sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",status_class=~\\\"2xx|3xx\\\"}[5m])) or vector(0)) / sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) and on() ((sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"otel-application\\\
+    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1))))\",\n          \"instant\": true\n  \
+    \      }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n      \
+    \    \"noValue\": \"N/A\",\n          \"unit\": \"percentunit\"\n        },\n\
+    \        \"overrides\": []\n      },\n      \"options\": {\n        \"reduceOptions\"\
+    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
+    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
+    : \"value\",\n        \"graphMode\": \"none\"\n      }\n    },\n    {\n      \"\
+    id\": 11,\n      \"type\": \"stat\",\n      \"title\": \"250ms\u4EE5\u5185 (\u76EE\
+    \u6A1995%)\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n  \
+    \      \"uid\": \"learning-prometheus\"\n      },\n      \"gridPos\": {\n    \
+    \    \"h\": 5,\n        \"w\": 8,\n        \"x\": 8,\n        \"y\": 25\n    \
+    \  },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n        \
+    \  \"expr\": \"(sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) / sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m]))) and on() ((sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"otel-application\\\
+    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1))\",\n          \"instant\": true\n    \
+    \    }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n        \
+    \  \"noValue\": \"N/A\",\n          \"unit\": \"percentunit\"\n        },\n  \
+    \      \"overrides\": []\n      },\n      \"options\": {\n        \"reduceOptions\"\
+    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
+    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
+    : \"value\",\n        \"graphMode\": \"none\"\n      }\n    },\n    {\n      \"\
+    id\": 12,\n      \"type\": \"stat\",\n      \"title\": \"\u53EF\u7528\u6027 budget\u6B8B\
+    \u7387\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n      \
+    \  \"uid\": \"learning-prometheus\"\n      },\n      \"gridPos\": {\n        \"\
+    h\": 5,\n        \"w\": 8,\n        \"x\": 16,\n        \"y\": 25\n      },\n\
+    \      \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"expr\"\
+    : \"(1 - (1 - (((sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\
+    \",status_class=~\\\"2xx|3xx\\\"}[5m])) or vector(0)) / sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) and on() ((sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"otel-application\\\
+    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1)))) / 0.01)\",\n          \"instant\": true\n\
+    \        }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n    \
+    \      \"noValue\": \"N/A\",\n          \"unit\": \"percentunit\"\n        },\n\
+    \        \"overrides\": []\n      },\n      \"options\": {\n        \"reduceOptions\"\
+    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
+    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
+    : \"value\",\n        \"graphMode\": \"none\"\n      }\n    },\n    {\n      \"\
+    id\": 13,\n      \"type\": \"stat\",\n      \"title\": \"latency budget\u6B8B\u7387\
+    \",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\"\
+    : \"learning-prometheus\"\n      },\n      \"gridPos\": {\n        \"h\": 5,\n\
+    \        \"w\": 8,\n        \"x\": 0,\n        \"y\": 30\n      },\n      \"targets\"\
+    : [\n        {\n          \"refId\": \"A\",\n          \"expr\": \"(1 - (1 - ((sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) / sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m]))) and on() ((sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"otel-application\\\
+    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \"}))) >= bool 0)) or vector(0)) == 1)))) / 0.05)\",\n          \"instant\": true\n\
+    \        }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n    \
+    \      \"noValue\": \"N/A\",\n          \"unit\": \"percentunit\"\n        },\n\
+    \        \"overrides\": []\n      },\n      \"options\": {\n        \"reduceOptions\"\
+    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
+    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
+    : \"value\",\n        \"graphMode\": \"none\"\n      }\n    }\n  ]\n}\n"
+  datasources.yaml: "apiVersion: 1\ndatasources:\n  - name: Learning Prometheus\n\
+    \    uid: learning-prometheus\n    type: prometheus\n    access: proxy\n    url:\
+    \ http://learning-prometheus.observability.svc.cluster.local:9090\n    isDefault:\
+    \ true\n    editable: false\n    jsonData: {timeInterval: 30s, httpMethod: POST}\n"
+  grafana.ini: '[paths]
+
+    data = /var/lib/grafana
+
+    logs = /var/lib/grafana/log
+
+    plugins = /var/lib/grafana/plugins
+
+    provisioning = /etc/grafana/provisioning
+
+    [server]
+
+    http_port = 3000
+
+    [security]
+
+    disable_initial_admin_creation = true
+
+    [auth]
+
+    disable_login = true
+
+    disable_login_form = true
+
+    [auth.basic]
+
+    enabled = false
+
+    [auth.anonymous]
+
+    enabled = true
+
+    org_role = Viewer
+
+    [users]
+
+    allow_sign_up = false
+
+    allow_org_create = false
+
+    viewers_can_edit = false
+
+    [analytics]
+
+    enabled = false
+
+    reporting_enabled = false
+
+    check_for_updates = false
+
+    check_for_plugin_updates = false
+
+    [snapshots]
+
+    external_enabled = false
+
+    [plugins]
+
+    plugin_admin_enabled = false
+
+    preinstall_disabled = true
+
+    preinstall_auto_update = false
+
+    '
+  providers.yaml: "apiVersion: 1\nproviders:\n  - name: learning-account\n    orgId:\
+    \ 1\n    type: file\n    disableDeletion: true\n    editable: false\n    allowUiUpdates:\
+    \ false\n    updateIntervalSeconds: 30\n    options: {path: /etc/grafana/dashboards}\n"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: learning-prometheus-config
+  namespace: observability
+  labels:
+    app.kubernetes.io/part-of: learning-monitoring
+    learning.local/owner: codex-local-learning
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+data:
+  prometheus.yml: "global:\n  scrape_interval: 30s\n  scrape_timeout: 10s\n  evaluation_interval:\
+    \ 30s\nscrape_configs:\n  - job_name: otel-application\n    honor_labels: true\n\
+    \    honor_timestamps: true\n    static_configs:\n      - targets: [otel-collector.observability.svc.cluster.local:8889]\n\
+    \        labels: {account_namespace: \"learning-services-20261018\"}\n  - job_name:\
+    \ prometheus\n    static_configs:\n      - targets: [localhost:9090]\n"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+  namespace: observability
+  labels:
+    app.kubernetes.io/part-of: learning-monitoring
+    learning.local/owner: codex-local-learning
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+data:
+  config.yaml: "receivers:\n  otlp:\n    protocols:\n      http:\n        endpoint:\
+    \ 0.0.0.0:4318\n        max_request_body_size: 1048576\nprocessors:\n  memory_limiter:\n\
+    \    check_interval: 1s\n    limit_mib: 192\n    spike_limit_mib: 48\n  # Legacy\
+    \ SDK identity checks, not sender authentication. Only Account metrics.\n  filter/account:\n\
+    \    error_mode: propagate\n    metrics:\n      metric:\n        - 'resource.attributes[\"\
+    service.name\"] != \"account-backend\"'\n        - 'resource.attributes[\"deployment.environment.name\"\
+    ] != \"local\"'\n        - 'resource.attributes[\"k8s.namespace.name\"] != \"\
+    account\"'\n  resource/real_namespace:\n    attributes:\n      - key: k8s.namespace.name\n\
+    \        value: \"learning-services-20261018\"\n        action: upsert\n  # Associate\
+    \ only the SDK's Pod UID; never fall back to source IP.\n  k8sattributes/account:\n\
+    \    auth_type: serviceAccount\n    passthrough: false\n    filter:\n      namespace:\
+    \ \"learning-services-20261018\"\n    pod_association:\n      - sources: [{from:\
+    \ resource_attribute, name: k8s.pod.uid}]\n    extract:\n      metadata: [k8s.pod.uid]\n\
+    \      labels:\n        - {tag_name: rollout_revision, key: rollouts-pod-template-hash,\
+    \ from: pod}\n        - {tag_name: learning_service, key: learning.local/service,\
+    \ from: pod}\n  transform/revision:\n    error_mode: propagate\n    metric_statements:\n\
+    \      - context: datapoint\n        conditions:\n          - 'metric.name ==\
+    \ \"pe_http_server_requests\" or metric.name == \"pe_http_server_request_duration\"\
+    \ or metric.name == \"pe_go_goroutines\"'\n        statements:\n          # Override\
+    \ sender datapoint identity; unmatched Pods get no revision.\n          - 'delete_key(attributes,\
+    \ \"rollout_revision\")'\n          - 'delete_key(attributes, \"learning_service\"\
+    )'\n          - 'set(attributes[\"rollout_revision\"], resource.attributes[\"\
+    rollout_revision\"]) where resource.attributes[\"rollout_revision\"] != nil'\n\
+    \          - 'set(attributes[\"learning_service\"], resource.attributes[\"learning_service\"\
+    ]) where resource.attributes[\"learning_service\"] != nil'\n  batch:\n    timeout:\
+    \ 5s\n    send_batch_size: 512\n    send_batch_max_size: 1024\nexporters:\n  prometheus:\n\
+    \    endpoint: 0.0.0.0:8889\n    send_timestamps: true\n    metric_expiration:\
+    \ 90s\n    resource_to_telemetry_conversion: {enabled: false}\n    enable_open_metrics:\
+    \ true\n  nop: {}\nextensions:\n  health_check: {endpoint: 0.0.0.0:13133}\nservice:\n\
+    \  extensions: [health_check]\n  telemetry:\n    logs: {level: warn, encoding:\
+    \ json}\n  pipelines:\n    metrics:\n      receivers: [otlp]\n      processors:\
+    \ [memory_limiter, filter/account, resource/real_namespace, k8sattributes/account,\
+    \ transform/revision, batch]\n      exporters: [prometheus]\n    # The existing\
+    \ SDK sends traces too. Discard them without storage/export.\n    traces:\n  \
+    \    receivers: [otlp]\n      processors: [memory_limiter, batch]\n      exporters:\
+    \ [nop]\n"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learning-grafana
+  namespace: observability
+  labels:
+    app.kubernetes.io/part-of: learning-monitoring
+    learning.local/owner: codex-local-learning
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  progressDeadlineSeconds: 300
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      learning.local/owner: codex-local-learning
+      learning.local/workload: learning-grafana
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: 9fafa1f14e061e10dbb4e7341e1b15d515d845dc5a374bb9381e1ba4ac217437
+        checksum/dashboard: 7f96edd9626aba0db2e8de62ef79fa484d6d4dbecc3dc734bf9f96948dc7f82e
+      labels:
+        app.kubernetes.io/part-of: learning-monitoring
+        learning.local/owner: codex-local-learning
+        learning.local/workload: learning-grafana
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - --config=/etc/grafana/grafana.ini
+        image: docker.io/grafana/grafana:13.2.3@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/health
+            port: http
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        name: grafana
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/health
+            port: http
+            scheme: HTTP
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 2
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /api/health
+            port: http
+            scheme: HTTP
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 2
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/grafana/grafana.ini
+          name: config
+          readOnly: true
+          subPath: grafana.ini
+        - mountPath: /etc/grafana/provisioning/datasources/learning.yaml
+          name: config
+          readOnly: true
+          subPath: datasources.yaml
+        - mountPath: /etc/grafana/provisioning/dashboards/learning.yaml
+          name: config
+          readOnly: true
+          subPath: providers.yaml
+        - mountPath: /etc/grafana/dashboards/account-overview.json
+          name: config
+          readOnly: true
+          subPath: account-overview.json
+        - mountPath: /var/lib/grafana
+          name: data
+        - mountPath: /tmp
+          name: tmp
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 472
+        runAsGroup: 472
+        runAsNonRoot: true
+        runAsUser: 472
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccount: learning-grafana
+      serviceAccountName: learning-grafana
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 292
+          name: learning-grafana-config
+        name: config
+      - emptyDir:
+          sizeLimit: 512Mi
+        name: data
+      - emptyDir:
+          sizeLimit: 64Mi
+        name: tmp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learning-prometheus
+  namespace: observability
+  labels:
+    app.kubernetes.io/part-of: learning-monitoring
+    learning.local/owner: codex-local-learning
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  progressDeadlineSeconds: 300
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      learning.local/owner: codex-local-learning
+      learning.local/workload: learning-prometheus
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: 98bdeee897b4e47388c2b625ebc725f536eb40d784e2d51d07392d96a4fb7c06
+      labels:
+        app.kubernetes.io/part-of: learning-monitoring
+        learning.local/owner: codex-local-learning
+        learning.local/workload: learning-prometheus
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - --config.file=/etc/prometheus/prometheus.yml
+        - --storage.tsdb.path=/prometheus
+        - --storage.tsdb.retention.time=24h
+        - --storage.tsdb.retention.size=256MB
+        - --web.listen-address=0.0.0.0:9090
+        image: quay.io/prometheus/prometheus:v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /-/healthy
+            port: http
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        name: prometheus
+        ports:
+        - containerPort: 9090
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /-/ready
+            port: http
+            scheme: HTTP
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 2
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /-/healthy
+            port: http
+            scheme: HTTP
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 2
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/prometheus
+          name: config
+          readOnly: true
+        - mountPath: /prometheus
+          name: data
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccount: learning-prometheus
+      serviceAccountName: learning-prometheus
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 292
+          name: learning-prometheus-config
+        name: config
+      - emptyDir:
+          sizeLimit: 512Mi
+        name: data
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+  namespace: observability
+  labels:
+    app.kubernetes.io/part-of: learning-monitoring
+    learning.local/owner: codex-local-learning
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  progressDeadlineSeconds: 300
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      learning.local/owner: codex-local-learning
+      learning.local/workload: otel-collector
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: a31f5eb1d09ede4c54b5fc8326e7b1f7a060d92717d858ec4e85241cdc58cd4c
+      labels:
+        app.kubernetes.io/part-of: learning-monitoring
+        learning.local/owner: codex-local-learning
+        learning.local/workload: otel-collector
+    spec:
+      automountServiceAccountToken: true
+      containers:
+      - args:
+        - --config=/etc/otel/config.yaml
+        image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: health
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        name: collector
+        ports:
+        - containerPort: 4318
+          name: otlp-http
+          protocol: TCP
+        - containerPort: 8889
+          name: metrics
+          protocol: TCP
+        - containerPort: 13133
+          name: health
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: health
+            scheme: HTTP
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 2
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /
+            port: health
+            scheme: HTTP
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 2
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/otel
+          name: config
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccount: otel-collector
+      serviceAccountName: otel-collector
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 292
+          name: otel-collector-config
+        name: config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: learning-grafana
+  namespace: observability
+  labels:
+    app.kubernetes.io/part-of: learning-monitoring
+    learning.local/owner: codex-local-learning
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  clusterIP: 10.96.59.73
+  clusterIPs:
+  - 10.96.59.73
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http
+    port: 3000
+    protocol: TCP
+    targetPort: http
+  selector:
+    learning.local/owner: codex-local-learning
+    learning.local/workload: learning-grafana
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: learning-prometheus
+  namespace: observability
+  labels:
+    app.kubernetes.io/part-of: learning-monitoring
+    learning.local/owner: codex-local-learning
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  clusterIP: 10.96.53.210
+  clusterIPs:
+  - 10.96.53.210
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http
+    port: 9090
+    protocol: TCP
+    targetPort: http
+  selector:
+    learning.local/owner: codex-local-learning
+    learning.local/workload: learning-prometheus
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector
+  namespace: observability
+  labels:
+    app.kubernetes.io/part-of: learning-monitoring
+    learning.local/owner: codex-local-learning
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  clusterIP: 10.96.226.114
+  clusterIPs:
+  - 10.96.226.114
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: otlp-http
+    port: 4318
+    protocol: TCP
+    targetPort: otlp-http
+  - name: metrics
+    port: 8889
+    protocol: TCP
+    targetPort: metrics
+  selector:
+    learning.local/owner: codex-local-learning
+    learning.local/workload: otel-collector
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: learning-grafana
+  namespace: observability
+  labels:
+    app.kubernetes.io/part-of: learning-monitoring
+    learning.local/owner: codex-local-learning
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: learning-prometheus
+  namespace: observability
+  labels:
+    app.kubernetes.io/part-of: learning-monitoring
+    learning.local/owner: codex-local-learning
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: otel-collector
+  namespace: observability
+  labels:
+    app.kubernetes.io/part-of: learning-monitoring
+    learning.local/owner: codex-local-learning
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+automountServiceAccountToken: true
