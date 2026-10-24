@@ -33,7 +33,11 @@ def main():
     for d in istio:
         if d['kind']=='ClusterRole' and any('secrets' in r['resources'] for r in d['rules']):raise ValueError('cluster Secret grant')
         if d['kind']=='Role' and any('secrets' in r['resources'] for r in d['rules']) and d['metadata']['namespace']!=ISTIO:
-            raise ValueError('CA permission escapes control namespace')
+            if d['metadata']['namespace']!=APP or d['metadata']['name']!='learning-istiod-credentials' or d['rules']!=[dict(apiGroups=[''],resources=['secrets'],verbs=['list','watch'])]:
+                raise ValueError('Secret authority escapes Account/control namespaces')
+    pilot=next(d for d in istio if d['kind']=='Deployment')
+    env={e['name']:e.get('value') for e in pilot['spec']['template']['spec']['containers'][0]['env']}
+    if env.get('ISTIO_WATCH_NAMESPACE')!=APP:raise ValueError('unbounded Istio namespaced informer')
     rollout=next(d for d in docs('rollouts.yaml') if d['kind']=='Deployment')
     old=json.loads((ROOT/'inputs/rollouts-deployment.json').read_text())
     if rollout['metadata']!=old['metadata'] or rollout['spec']['selector']!=old['spec']['selector']:
