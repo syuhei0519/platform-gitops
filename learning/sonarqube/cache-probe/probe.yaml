@@ -1,0 +1,10 @@
+# A single non-secret object for the approved alias/cache integration check.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-cache-probe
+  namespace: sonarqube
+  labels:
+    app.kubernetes.io/part-of: sonarqube-cache-probe
+data:
+  purpose: alias-authentication-and-cache-only
