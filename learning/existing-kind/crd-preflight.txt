@@ -1,0 +1,22 @@
+non-persistent server dry-run; force-conflicts=false; manager=argocd-controller
+customresourcedefinition.apiextensions.k8s.io/analysisruns.argoproj.io
+customresourcedefinition.apiextensions.k8s.io/analysistemplates.argoproj.io
+customresourcedefinition.apiextensions.k8s.io/applications.argoproj.io
+customresourcedefinition.apiextensions.k8s.io/appprojects.argoproj.io
+customresourcedefinition.apiextensions.k8s.io/authorizationpolicies.security.istio.io
+customresourcedefinition.apiextensions.k8s.io/destinationrules.networking.istio.io
+customresourcedefinition.apiextensions.k8s.io/envoyfilters.networking.istio.io
+customresourcedefinition.apiextensions.k8s.io/experiments.argoproj.io
+customresourcedefinition.apiextensions.k8s.io/gateways.networking.istio.io
+customresourcedefinition.apiextensions.k8s.io/peerauthentications.security.istio.io
+customresourcedefinition.apiextensions.k8s.io/proxyconfigs.networking.istio.io
+customresourcedefinition.apiextensions.k8s.io/requestauthentications.security.istio.io
+customresourcedefinition.apiextensions.k8s.io/rollouts.argoproj.io
+customresourcedefinition.apiextensions.k8s.io/serviceentries.networking.istio.io
+customresourcedefinition.apiextensions.k8s.io/sidecars.networking.istio.io
+customresourcedefinition.apiextensions.k8s.io/telemetries.telemetry.istio.io
+customresourcedefinition.apiextensions.k8s.io/trafficextensions.extensions.istio.io
+customresourcedefinition.apiextensions.k8s.io/virtualservices.networking.istio.io
+customresourcedefinition.apiextensions.k8s.io/wasmplugins.extensions.istio.io
+customresourcedefinition.apiextensions.k8s.io/workloadentries.networking.istio.io
+customresourcedefinition.apiextensions.k8s.io/workloadgroups.networking.istio.io

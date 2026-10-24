@@ -1,0 +1,86 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: learning-existing
+  namespace: learning-progressive-control
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  sourceRepos:
+  - https://github.com/syuhei0519/platform-gitops.git
+  - https://github.com/syuhei0519/application-manifest.git
+  destinations:
+  - server: https://kubernetes.default.svc.cluster.local:443
+    namespace: learning-services-20261018
+  - server: https://kubernetes.default.svc.cluster.local:443
+    namespace: learning-progressive-control
+  - server: https://kubernetes.default.svc.cluster.local:443
+    namespace: observability
+  - server: https://kubernetes.default.svc.cluster.local:443
+    namespace: learning-istio-demo
+  - server: https://kubernetes.default.svc.cluster.local:443
+    namespace: istio-learning-system
+  - server: https://kubernetes.default.svc.cluster.local:443
+    namespace: learning-account-release
+  namespaceResourceWhitelist:
+  - group: ''
+    kind: ConfigMap
+  - group: ''
+    kind: Service
+  - group: ''
+    kind: ServiceAccount
+  - group: ''
+    kind: PersistentVolumeClaim
+  - group: apps
+    kind: Deployment
+  - group: apps
+    kind: StatefulSet
+  - group: argoproj.io
+    kind: Application
+  - group: argoproj.io
+    kind: AppProject
+  - group: argoproj.io
+    kind: Rollout
+  - group: argoproj.io
+    kind: AnalysisTemplate
+  - group: batch
+    kind: Job
+  - group: networking.k8s.io
+    kind: NetworkPolicy
+  - group: networking.istio.io
+    kind: VirtualService
+  - group: networking.istio.io
+    kind: DestinationRule
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+  - group: apiextensions.k8s.io
+    kind: CustomResourceDefinition
+  - group: admissionregistration.k8s.io
+    kind: MutatingWebhookConfiguration
+  - group: admissionregistration.k8s.io
+    kind: ValidatingWebhookConfiguration
+  - group: admissionregistration.k8s.io
+    kind: ValidatingAdmissionPolicy
+  - group: admissionregistration.k8s.io
+    kind: ValidatingAdmissionPolicyBinding
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-learning-root
+  namespace: learning-progressive-control
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  project: learning-existing
+  source:
+    repoURL: https://github.com/syuhei0519/platform-gitops.git
+    targetRevision: main
+    path: learning/existing-kind/root
+  destination:
+    server: https://kubernetes.default.svc.cluster.local:443
+    namespace: learning-progressive-control
+  syncPolicy:
+    syncOptions:
+    - RespectIgnoreDifferences=true

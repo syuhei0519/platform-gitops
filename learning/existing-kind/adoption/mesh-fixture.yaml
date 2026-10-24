@@ -1,0 +1,262 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mesh-demo-code
+  namespace: learning-istio-demo
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+data:
+  demo.py: "\"\"\"Dedicated learning fixture. No DB, writes, retries, or environment\
+    \ disclosure.\"\"\"\nimport argparse\nimport datetime\nimport http.server\nimport\
+    \ json\nimport time\nimport urllib.error\nimport urllib.request\n\nURL = \"http://mesh-demo.learning-istio-demo.svc.cluster.local:8080/version\"\
+    \n\n\nclass NoRedirect(urllib.request.HTTPRedirectHandler):\n    def redirect_request(self,\
+    \ *_args, **_kwargs):\n        return None\n\n\ndef now():\n    return datetime.datetime.now(datetime.timezone.utc).isoformat()\n\
+    \n\n# Disjoint acceptance bands; failures never disappear from the denominator.\n\
+    WINDOWS = {\"warmup\": (20, 0, 20), \"plain\": (200, 0, 0),\n           \"stable\"\
+    : (200, 0, 0), \"candidate\": (200, 200, 200), \"split90\": (1000, 60, 140),\n\
+    \           \"split50\": (1000, 440, 560)}\n\n\ndef measure(window, opener=None,\
+    \ url=URL, pause=time.sleep):\n    n, lower, upper = WINDOWS[window]\n    opener\
+    \ = opener or urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())\n\
+    \    counts = dict(v1=0, v2=0, http_failures=0, transport_failures=0, unknown_body=0)\n\
+    \    started = now()\n    for _ in range(n):\n        request = urllib.request.Request(url,\
+    \ headers={\"Connection\": \"close\"}, method=\"GET\")\n        try:\n       \
+    \     with opener.open(request, timeout=2) as response:\n                body\
+    \ = response.read(32)\n                if response.status != 200:\n          \
+    \          counts[\"http_failures\"] += 1\n                elif body in (b\"v1\\\
+    n\", b\"v2\\n\"):\n                    counts[body.decode().strip()] += 1\n  \
+    \              else:\n                    counts[\"unknown_body\"] += 1\n    \
+    \    except urllib.error.HTTPError:\n            counts[\"http_failures\"] +=\
+    \ 1\n        except (OSError, urllib.error.URLError, http.client.HTTPException):\n\
+    \            counts[\"transport_failures\"] += 1\n        pause(0.05)  # Sequential,\
+    \ at most 20 requests/s, no retry or early exit.\n    passed = (counts[\"http_failures\"\
+    ] == counts[\"transport_failures\"] == counts[\"unknown_body\"] == 0\n       \
+    \       and lower <= counts[\"v2\"] <= upper and counts[\"v1\"] == n - counts[\"\
+    v2\"])\n    result = dict(window=window, started=started, ended=now(), total=n,\n\
+    \                  v2_accepted_counts=[lower, upper], **counts,\n            \
+    \      v2_fraction_of_all_requests=counts[\"v2\"] / n, passed=passed)\n    assert\
+    \ sum(counts.values()) == n\n    return result\n\n\ndef serve(revision, port=8080):\n\
+    \    class Handler(http.server.BaseHTTPRequestHandler):\n        protocol_version\
+    \ = \"HTTP/1.1\"\n\n        def do_GET(self):\n            body = (revision +\
+    \ \"\\n\").encode() if self.path == \"/version\" else b\"ok\\n\"\n           \
+    \ status = 200 if self.path in (\"/version\", \"/livez\", \"/readyz\") else 404\n\
+    \            if revision == \"failed\" and self.path == \"/readyz\":\n       \
+    \         status = 503\n            if status == 404:\n                body =\
+    \ b\"not found\\n\"\n            self.send_response(status)\n            self.send_header(\"\
+    Content-Type\", \"text/plain\")\n            self.send_header(\"Content-Length\"\
+    , str(len(body)))\n            self.end_headers()\n            self.wfile.write(body)\n\
+    \n        def log_message(self, *_args):\n            pass\n\n    http.server.ThreadingHTTPServer((\"\
+    0.0.0.0\", port), Handler).serve_forever()\n\n\nif __name__ == \"__main__\":\n\
+    \    parser = argparse.ArgumentParser()\n    subs = parser.add_subparsers(dest=\"\
+    action\", required=True)\n    subs.add_parser(\"serve\").add_argument(\"revision\"\
+    , choices=[\"v1\", \"v2\", \"failed\"])\n    subs.add_parser(\"idle\")\n    measurement\
+    \ = subs.add_parser(\"measure\")\n    measurement.add_argument(\"window\", choices=list(WINDOWS))\n\
+    \    measurement.add_argument(\"--rollout\", action=\"store_true\")\n    args\
+    \ = parser.parse_args()\n    if args.action == \"serve\":\n        serve(args.revision)\n\
+    \    elif args.action == \"measure\":\n        result = measure(args.window, url=URL.replace(\"\
+    mesh-demo.\", \"mesh-rollout.\") if args.rollout else URL)\n        print(json.dumps(result,\
+    \ sort_keys=True))\n        raise SystemExit(0 if result[\"passed\"] else 1)\n\
+    \    else:\n        while True:\n            time.sleep(3600)\n"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mesh-demo-client
+  namespace: learning-istio-demo
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: mesh-demo-client
+      version: client
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: '2026-10-19T22:16:24+09:00'
+      labels:
+        app: mesh-demo-client
+        version: client
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - idle
+        command:
+        - python3
+        - -B
+        - /fixture/demo.py
+        image: docker.io/library/python@sha256:9bbb8720ae0a24a6ca8dd678bfdf57818fe70caf54c52a53ec01d8db43405056
+        imagePullPolicy: IfNotPresent
+        name: fixture
+        resources:
+          limits:
+            cpu: 200m
+            memory: 64Mi
+          requests:
+            cpu: 25m
+            memory: 32Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /fixture
+          name: code
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccount: mesh-demo
+      serviceAccountName: mesh-demo
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 292
+          name: mesh-demo-code
+        name: code
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mesh-demo-v1
+  namespace: learning-istio-demo
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: mesh-demo
+      version: v1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: '2026-10-19T22:16:24+09:00'
+      labels:
+        app: mesh-demo
+        version: v1
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - serve
+        - v1
+        command:
+        - python3
+        - -B
+        - /fixture/demo.py
+        image: docker.io/library/python@sha256:9bbb8720ae0a24a6ca8dd678bfdf57818fe70caf54c52a53ec01d8db43405056
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /livez
+            port: http
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: fixture
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /livez
+            port: http
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 200m
+            memory: 64Mi
+          requests:
+            cpu: 25m
+            memory: 32Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /fixture
+          name: code
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccount: mesh-demo
+      serviceAccountName: mesh-demo
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 292
+          name: mesh-demo-code
+        name: code
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mesh-demo
+  namespace: learning-istio-demo
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  clusterIP: 10.96.34.172
+  clusterIPs:
+  - 10.96.34.172
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - appProtocol: http
+    name: http
+    port: 8080
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: mesh-demo
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mesh-demo
+  namespace: learning-istio-demo
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+automountServiceAccountToken: false

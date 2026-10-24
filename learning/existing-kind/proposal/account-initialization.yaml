@@ -1,0 +1,87 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: account-release-migration
+  namespace: learning-account-release
+  annotations:
+    argocd.argoproj.io/sync-wave: '1'
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 180
+  template:
+    metadata:
+      labels:
+        app: account-release-migration
+        learning.local/owner: plat170-account
+      annotations:
+        sidecar.istio.io/inject: 'false'
+        proxy.istio.io/config: '{"holdApplicationUntilProxyStarts":true}'
+        learning.local/source-commit: f0425a9c0a70c200fbeb5a549bc8b631bf5a1906
+        learning.local/image: ghcr.io/syuhei0519/backend-app@sha256:f9a3dfd69853050d72647609eb2ee1493ed41bf17fb7c6c2abbf068361cc88df
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: api
+        image: ghcr.io/syuhei0519/backend-app@sha256:f9a3dfd69853050d72647609eb2ee1493ed41bf17fb7c6c2abbf068361cc88df
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: PGHOST
+          value: learning-account-db
+        - name: PGPORT
+          value: '5432'
+        - name: PGDATABASE
+          value: account
+        - name: PGUSER
+          value: account_app
+        - name: PGSSLMODE
+          value: disable
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: learning-account-db
+              key: app-password
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: http://account-release-otel-collector.observability.svc.cluster.local:4318
+        - name: DEPLOYMENT_ENVIRONMENT
+          value: local
+        - name: POD_NAMESPACE
+          value: account
+        - name: POD_UID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        args:
+        - migrate
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      restartPolicy: Never

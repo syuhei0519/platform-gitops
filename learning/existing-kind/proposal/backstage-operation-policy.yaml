@@ -1,0 +1,70 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: backstage-account-operation-only
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - operations:
+      - UPDATE
+      apiGroups:
+      - argoproj.io
+      apiVersions:
+      - v1alpha1
+      resources:
+      - applications
+      resourceNames:
+      - account-release
+      - account-release-definition
+      scope: Namespaced
+  validations:
+  - expression: request.userInfo.username != 'system:serviceaccount:learning-account-release:backstage-account'
+      || object.spec == oldObject.spec
+    message: Backstage cannot change Git-owned Application spec
+  - expression: 'request.userInfo.username != ''system:serviceaccount:learning-account-release:backstage-account''
+      || ( (has(object.metadata.annotations) ? object.metadata.annotations : {}) ==
+      (has(oldObject.metadata.annotations) ? oldObject.metadata.annotations : {})
+      && (has(object.metadata.labels) ? object.metadata.labels : {}) == (has(oldObject.metadata.labels)
+      ? oldObject.metadata.labels : {}) && (has(object.metadata.finalizers) ? object.metadata.finalizers
+      : []) == (has(oldObject.metadata.finalizers) ? oldObject.metadata.finalizers
+      : []) && (has(object.metadata.ownerReferences) ? object.metadata.ownerReferences
+      : []) == (has(oldObject.metadata.ownerReferences) ? oldObject.metadata.ownerReferences
+      : []))'
+    message: Backstage cannot change Application ownership or sync annotations
+  - expression: "request.userInfo.username != 'system:serviceaccount:learning-account-release:backstage-account'\
+      \ || ( !has(oldObject.operation) && has(object.operation) && has(object.operation.sync)\
+      \ && !has(object.operation.retry) && has(object.operation.initiatedBy) && object.operation.initiatedBy.username\
+      \ == 'account-release' && ((object.metadata.name == 'account-release-definition'\
+      \ && object.operation.sync.revision == 'main') ||\n (object.metadata.name ==\
+      \ 'account-release' && object.operation.sync.revision == oldObject.spec.source.targetRevision\
+      \ &&\n  object.operation.sync.revision.matches('^[0-9a-f]{40}$'))) &&\nhas(object.operation.sync.prune)\
+      \ && object.operation.sync.prune == false && (!has(object.operation.sync.dryRun)\
+      \ || object.operation.sync.dryRun == false) && !has(object.operation.sync.source)\
+      \ && !has(object.operation.sync.sources) && !has(object.operation.sync.revisions)\
+      \ && !has(object.operation.sync.resources) && !has(object.operation.sync.manifests)\
+      \ && !has(object.operation.sync.syncStrategy) && has(object.operation.sync.syncOptions)\
+      \ && object.operation.sync.syncOptions.size() == 1 && object.operation.sync.syncOptions.all(x,\
+      \ x in ['RespectIgnoreDifferences=true', 'RespectIgnoreDifferences=false']))"
+    message: Only definition main or the Git-owned workload commit may sync without
+      prune or overrides
+  - expression: object.metadata.name != 'account-release' || !has(oldObject.operation)
+      || object.spec == oldObject.spec
+    message: Git-owned workload spec cannot change during an active sync operation
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: backstage-account-operation-only
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Delete=false
+spec:
+  policyName: backstage-account-operation-only
+  validationActions:
+  - Deny
+  matchResources:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: learning-progressive-control

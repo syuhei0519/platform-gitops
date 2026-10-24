@@ -1,0 +1,373 @@
+[
+  {
+    "kind": "ConfigMap",
+    "namespace": "learning-services-20261018",
+    "name": "learning-account-init",
+    "uid": "7c04d3d9-140a-4404-899b-44162ec6c993",
+    "sha256": "fa0318124e3836233faa3fbe45c42662dece644c997a6b4543e6095048745c65"
+  },
+  {
+    "kind": "ConfigMap",
+    "namespace": "learning-services-20261018",
+    "name": "learning-notification-init",
+    "uid": "2c0d49f2-ceb5-40d5-8b64-fee328192e4a",
+    "sha256": "f148e75885ef95ad7751dbe281a6d71fc2445d876db41570df3e06d97079e421"
+  },
+  {
+    "kind": "ConfigMap",
+    "namespace": "learning-services-20261018",
+    "name": "learning-order-init",
+    "uid": "2bbc2349-7921-4730-a5b3-298b95b7b8b5",
+    "sha256": "25ec8fd26c6195fd638ca9bb93a164a3e4b1f66da5d74471c2b862b59e63545f"
+  },
+  {
+    "kind": "ConfigMap",
+    "namespace": "learning-services-20261018",
+    "name": "learning-payment-init",
+    "uid": "3f5c1d87-1d7e-47be-ba00-33fa204cc082",
+    "sha256": "7d0712306cbe812adb0398967017b0b6ff0ef32fbf20d6e551c57d4c7fe30634"
+  },
+  {
+    "kind": "Deployment",
+    "namespace": "learning-services-20261018",
+    "name": "learning-account",
+    "uid": "0f043058-9321-42a4-908f-b173d2ef5f24",
+    "sha256": "49a265ecca619f97347d0d3393daac124e698efb7aff1f216b2469386b2ba62c"
+  },
+  {
+    "kind": "Deployment",
+    "namespace": "learning-services-20261018",
+    "name": "learning-notification",
+    "uid": "7f3d5787-fc3a-4d3d-8b0f-04db75a8ec16",
+    "sha256": "34742ab5111e40904f19951dc426cbd3f7f50e278f3f72f4be0cdfe04361f4ab"
+  },
+  {
+    "kind": "Deployment",
+    "namespace": "learning-services-20261018",
+    "name": "learning-order",
+    "uid": "408fba52-3eb8-41b7-9b7a-ea5e0bfe8814",
+    "sha256": "5db373be04e2a2d29b02aca54c0926b3c5b70c759686ce4646b60135dc36616e"
+  },
+  {
+    "kind": "Deployment",
+    "namespace": "learning-services-20261018",
+    "name": "learning-payment",
+    "uid": "fc459a82-66a3-4d26-8b90-0ccf478d97f8",
+    "sha256": "3664340c208f75d76a47995b66cf59f99b519ed2ff99730b50ebdb6da21611ae"
+  },
+  {
+    "kind": "PersistentVolumeClaim",
+    "namespace": "learning-services-20261018",
+    "name": "learning-account-data",
+    "uid": "9ea2064f-271a-4a97-af7f-110750dc3af6",
+    "sha256": "5ef6422de28473bf5b390953907b54b4aaf08bd2e2128f5dca67b66174b81a4a"
+  },
+  {
+    "kind": "PersistentVolumeClaim",
+    "namespace": "learning-services-20261018",
+    "name": "learning-notification-data",
+    "uid": "3b432a3c-2f56-427d-bc93-ddabd02d0d73",
+    "sha256": "2aad01fe246b516c0861d43925ab8ae813c3f3517323a1493b01f653a2323cc7"
+  },
+  {
+    "kind": "PersistentVolumeClaim",
+    "namespace": "learning-services-20261018",
+    "name": "learning-order-data",
+    "uid": "9cc73725-b2a9-4aff-81ee-e48bb75d732c",
+    "sha256": "8f4bfaee4b5e608dd8baf151d5978fd5b48b58321e9bc65ec6d29f421cefd636"
+  },
+  {
+    "kind": "PersistentVolumeClaim",
+    "namespace": "learning-services-20261018",
+    "name": "learning-payment-data",
+    "uid": "247463c7-eec2-4942-b50a-25ca810f0387",
+    "sha256": "edc14e729b4eafb63a2939db04b88b6546b30851cfed69f21ac0a3229297880f"
+  },
+  {
+    "kind": "Service",
+    "namespace": "learning-services-20261018",
+    "name": "learning-account",
+    "uid": "c9fc94f3-716d-4b36-aac9-1397ef5ca9e2",
+    "sha256": "6c3136cb03da12f3d4b82acc7b349cc514632b7f92ac02390d75d332a3044f31"
+  },
+  {
+    "kind": "Service",
+    "namespace": "learning-services-20261018",
+    "name": "learning-account-db",
+    "uid": "d3a0ac15-66ae-42d1-8c90-7b1fcea9bbba",
+    "sha256": "136bd709589fc23bf62708c1fce700daf49256b28dca527aa619e55c161f961a"
+  },
+  {
+    "kind": "Service",
+    "namespace": "learning-services-20261018",
+    "name": "learning-notification",
+    "uid": "2ebd97ca-8f36-4427-87fd-1fc3cdcf8168",
+    "sha256": "dd2c967ce2905f432b582eb10a16c48bfb69ea95b16210b0e9562ad1ae4688d8"
+  },
+  {
+    "kind": "Service",
+    "namespace": "learning-services-20261018",
+    "name": "learning-notification-db",
+    "uid": "a5826ec9-9996-4128-90a4-83aa93bc1bdb",
+    "sha256": "8c07d79fe3552b9c5400998df555bda5076b5e5cd06597ca3a67fdffaa540c64"
+  },
+  {
+    "kind": "Service",
+    "namespace": "learning-services-20261018",
+    "name": "learning-order",
+    "uid": "0500740b-232b-4d1e-8776-86ef04c90488",
+    "sha256": "12d1c2d8e8bf58d5a339a9e1c16d0d6cdcc3921efdde686f8609df6ab2622863"
+  },
+  {
+    "kind": "Service",
+    "namespace": "learning-services-20261018",
+    "name": "learning-order-db",
+    "uid": "41015e92-82fb-4ced-9303-61f7faaf4c0a",
+    "sha256": "3253a286cf1f6df846fbd2adbf2d68ea9993953c36d6ce1d3854d6571b78c10c"
+  },
+  {
+    "kind": "Service",
+    "namespace": "learning-services-20261018",
+    "name": "learning-payment",
+    "uid": "98242b7d-72d7-475a-81b0-23ff5ce21e60",
+    "sha256": "4291446bbccdc4b40dda08041416c8dc3e3db9460668ec7cda8094b23c30664f"
+  },
+  {
+    "kind": "Service",
+    "namespace": "learning-services-20261018",
+    "name": "learning-payment-db",
+    "uid": "59bbc7ad-183e-476b-ab0f-3235daa24210",
+    "sha256": "8f632a36a39281256eb95a448da4c90feb0917464cd8ce9cce3bc3917853dac4"
+  },
+  {
+    "kind": "StatefulSet",
+    "namespace": "learning-services-20261018",
+    "name": "learning-account-db",
+    "uid": "6773a149-824d-4255-b3f5-112047976e77",
+    "sha256": "c587fbfd859e685db2f2ff877e0eaf031fabc96e118fc85749be14d029ff9d2d"
+  },
+  {
+    "kind": "StatefulSet",
+    "namespace": "learning-services-20261018",
+    "name": "learning-notification-db",
+    "uid": "39a2cbfd-1aad-45dd-9151-7b93676115e6",
+    "sha256": "8d6fb5087314cc09b273e3ce3384cad157dad94eb7c6e9120e9243d3c5a5cf83"
+  },
+  {
+    "kind": "StatefulSet",
+    "namespace": "learning-services-20261018",
+    "name": "learning-order-db",
+    "uid": "7f89e788-7beb-4712-8f15-57358535bf88",
+    "sha256": "f9b99b0e69efbe32bfcfb93fc03a541b4e422e82c5a33b3648f38826cfa597f0"
+  },
+  {
+    "kind": "StatefulSet",
+    "namespace": "learning-services-20261018",
+    "name": "learning-payment-db",
+    "uid": "33130439-cdb4-4616-80e5-e3b07d1c7ff2",
+    "sha256": "0d71e5a272a0f410186b89fe86ec76de815f38813b5fbf3464c17adfd2406552"
+  },
+  {
+    "kind": "ConfigMap",
+    "namespace": "observability",
+    "name": "learning-grafana-config",
+    "uid": "1dcfb889-2900-470d-bf4e-374cb84630ba",
+    "sha256": "628772fca4e5bacecaaa810859dfd9037533c4eb9d1e7f86e86e24052eed8ca0"
+  },
+  {
+    "kind": "ConfigMap",
+    "namespace": "observability",
+    "name": "learning-prometheus-config",
+    "uid": "5d856125-4a40-4685-99bc-4598aa86d29b",
+    "sha256": "887d4958ecb67bc5d70ba21b698a9758668a161572d6ba24fe09d88aa9a6f0b9"
+  },
+  {
+    "kind": "ConfigMap",
+    "namespace": "observability",
+    "name": "otel-collector-config",
+    "uid": "31358064-c203-4a67-8785-7c7b502a3a86",
+    "sha256": "18afc1ab956ecb1cb7b9db9eccb0be1bd8a4905d7d527ace2d0240fa89fc1ae9"
+  },
+  {
+    "kind": "Deployment",
+    "namespace": "observability",
+    "name": "learning-grafana",
+    "uid": "5d28b049-ba5a-49ac-8802-9f2fa01ee073",
+    "sha256": "3f5aaa9b80bbaf81d574bdd5fb367efbf2c4d7fa347e65bf6f9f32817d97e9b8"
+  },
+  {
+    "kind": "Deployment",
+    "namespace": "observability",
+    "name": "learning-prometheus",
+    "uid": "7ee3f497-8fc8-4b99-a6f4-f40ccdac1c75",
+    "sha256": "e084dd0af292057a227005cdd84d682f297e2e39dc705cbe33299a0b5f718c9a"
+  },
+  {
+    "kind": "Deployment",
+    "namespace": "observability",
+    "name": "otel-collector",
+    "uid": "fa7d5653-f7f0-4594-be99-7e310894da83",
+    "sha256": "bacac1d70b0dea93eab0f5477e30395e6c7e3a587417c78aaa20be9b29609cd1"
+  },
+  {
+    "kind": "Service",
+    "namespace": "observability",
+    "name": "learning-grafana",
+    "uid": "073bc94b-7c83-4d58-9d56-d6214ad8df41",
+    "sha256": "5a71a2f7c640cc1b57064cc3be7848315846e05c39e571c42bb20ee580c9e67a"
+  },
+  {
+    "kind": "Service",
+    "namespace": "observability",
+    "name": "learning-prometheus",
+    "uid": "5dd6291e-791a-434a-9746-b2d9cc866d3a",
+    "sha256": "9c6903d2492f5f01f6397c2dc62e3a122bb6053e557bc2389f7d3ed9d4ec324f"
+  },
+  {
+    "kind": "Service",
+    "namespace": "observability",
+    "name": "otel-collector",
+    "uid": "2e30cc15-66b2-40ce-aeff-5a8ba02c8ddf",
+    "sha256": "7fc4a5c02ec08f74550d0fb26d6cb5aac74d645a0856187f59a0a0af1d57ddcd"
+  },
+  {
+    "kind": "ServiceAccount",
+    "namespace": "observability",
+    "name": "learning-grafana",
+    "uid": "0275608c-f059-477c-a9ee-c2c77f6f6715",
+    "sha256": "8743ef70af590583b19e0b3b3b7789af54bba90067394a242996894f2355126c"
+  },
+  {
+    "kind": "ServiceAccount",
+    "namespace": "observability",
+    "name": "learning-prometheus",
+    "uid": "10beb4ad-c1cf-4d3d-926a-5c87141c3d42",
+    "sha256": "9f36547ce62aced635d880b4d2d8b6b8aae6d43a9254f7cc80b5d5793eeb5794"
+  },
+  {
+    "kind": "ServiceAccount",
+    "namespace": "observability",
+    "name": "otel-collector",
+    "uid": "1bed8cab-0d24-4af2-aa2e-0073f4799ff2",
+    "sha256": "7cdcb9670f178c0532176339c9f7f33a0f5c51cf0ed9f094ebaedef27f5a5a38"
+  },
+  {
+    "kind": "ConfigMap",
+    "namespace": "learning-istio-demo",
+    "name": "mesh-demo-code",
+    "uid": "f4011853-8b49-49b8-98bc-4bc41748c0e2",
+    "sha256": "e8851c08c984ef07e71f8a0785af5d19f76e9d5b1849f26ba9d079f2248ea96b"
+  },
+  {
+    "kind": "Deployment",
+    "namespace": "learning-istio-demo",
+    "name": "mesh-demo-client",
+    "uid": "6ef6c374-f1b3-4e36-ab31-5c86356c7842",
+    "sha256": "2f6d6a35ece84ed081a8cfa7a26a677b12e5131ebb5c6a39ca6245ca1b160f61"
+  },
+  {
+    "kind": "Deployment",
+    "namespace": "learning-istio-demo",
+    "name": "mesh-demo-v1",
+    "uid": "6a64647c-45a1-4fea-b212-1ddee3c8c341",
+    "sha256": "bb8c1e9fea163d578ed08ea48cd55738ccc2fce17160f77a9619da92f21f911e"
+  },
+  {
+    "kind": "Service",
+    "namespace": "learning-istio-demo",
+    "name": "mesh-demo",
+    "uid": "3dbdb8cd-7370-48af-b246-c0bd319af9ed",
+    "sha256": "3e03000a0c32b5f13e96995ee92cfdfc0f8e92524419e0489eb4ed89ff9061f9"
+  },
+  {
+    "kind": "ServiceAccount",
+    "namespace": "learning-istio-demo",
+    "name": "mesh-demo",
+    "uid": "ffaf12b2-0ad7-42ba-96d7-841a502ab6c3",
+    "sha256": "7da9502c18bfa4099d40f8e619c798666ad5c4f54827c9039f283191c6b5efcf"
+  },
+  {
+    "kind": "ConfigMap",
+    "namespace": "learning-progressive-control",
+    "name": "argocd-cmd-params-cm",
+    "uid": "e9bda099-2fa2-44d1-bcb3-6217061e0b67",
+    "sha256": "7f748d5a6f5d9a8a08f49d9b71fe280d711e224560a3662e671cb434917985e3"
+  },
+  {
+    "kind": "ConfigMap",
+    "namespace": "learning-progressive-control",
+    "name": "argocd-gpg-keys-cm",
+    "uid": "e17685b7-8546-4999-a46b-afd21dee40ae",
+    "sha256": "f1b938c08af7fa0be5c6c17433077527e745bfcb704a375b9c1e518b5ed9b41e"
+  },
+  {
+    "kind": "ConfigMap",
+    "namespace": "learning-progressive-control",
+    "name": "argocd-rbac-cm",
+    "uid": "0b860909-658d-4e9a-9a82-4f8480738f40",
+    "sha256": "ccc815613c0399f12cd33185acd945f640f67ea07888b1e2badd8345218ef9ff"
+  },
+  {
+    "kind": "ConfigMap",
+    "namespace": "learning-progressive-control",
+    "name": "argocd-ssh-known-hosts-cm",
+    "uid": "c06a52f0-7402-4004-9c42-ddc636cbec88",
+    "sha256": "9924659b4e613f7ec4935244432d2324780587d37abb893abf167ed5f6775345"
+  },
+  {
+    "kind": "ConfigMap",
+    "namespace": "learning-progressive-control",
+    "name": "argocd-tls-certs-cm",
+    "uid": "2dcc18ba-626c-4d29-85ef-0da342ff0e1e",
+    "sha256": "5a85bfab4d1ae41cea3cde5004d5ea7d6630e7bb22d9684d86d007a1d216a575"
+  },
+  {
+    "kind": "Deployment",
+    "namespace": "learning-progressive-control",
+    "name": "argocd-redis",
+    "uid": "63699dcb-78f8-444d-b337-df0feec18227",
+    "sha256": "254f9e3a9fe308db38c8d39110fba68443321ecef8c184708c052f7c3feda4b4"
+  },
+  {
+    "kind": "Deployment",
+    "namespace": "learning-progressive-control",
+    "name": "argocd-repo-server",
+    "uid": "33bcd85f-b064-48f4-9d82-8a91ffd4dafe",
+    "sha256": "a82290d95ab232d369cbb59a85bb524c7e4fb024d7792634735210451b499b5b"
+  },
+  {
+    "kind": "Service",
+    "namespace": "learning-progressive-control",
+    "name": "argocd-redis",
+    "uid": "4af25223-3320-4bba-8ded-34455fb4f0b0",
+    "sha256": "545317621d762e936206959120bd081995dd60a1eeda14ae305741397ae3ef38"
+  },
+  {
+    "kind": "Service",
+    "namespace": "learning-progressive-control",
+    "name": "argocd-repo-server",
+    "uid": "9f58e1a4-7542-4623-ba36-97680a550c61",
+    "sha256": "7c928727bc1df9a05eb6c396d798ad251bc0ade95f1106436777377d10c9f88a"
+  },
+  {
+    "kind": "ServiceAccount",
+    "namespace": "learning-progressive-control",
+    "name": "argocd-application-controller",
+    "uid": "12995803-7ef0-4967-a77b-2d68a0ee5371",
+    "sha256": "21c3dcc4d7c08b6d12c969572432ad39b024589903ddf5cb2a7301f399b1cd38"
+  },
+  {
+    "kind": "ServiceAccount",
+    "namespace": "learning-progressive-control",
+    "name": "argocd-repo-server",
+    "uid": "7294e0bb-1aa9-4c3e-b54f-431cfdae2428",
+    "sha256": "2e6eba2f9eb41e7bf0e0e1636594e6a2f958eb3b4ccbdd3510a2cdee8dfc1d3b"
+  },
+  {
+    "kind": "StatefulSet",
+    "namespace": "learning-progressive-control",
+    "name": "argocd-application-controller",
+    "uid": "1db73107-589f-43f2-8dad-bbef27c0349e",
+    "sha256": "5d3a1626a6e634d9393c61bbc3b1a1d283dc5003cb298684eb55a10caf3eda27"
+  }
+]

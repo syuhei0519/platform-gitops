@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: learning-progressive-control
+  labels:
+    app.kubernetes.io/name: argocd-cm
+    app.kubernetes.io/part-of: argocd
+    learning.local/owner: codex-local-learning
+data:
+  admin.enabled: 'false'
+  application.resourceTrackingMethod: annotation
+  resource.customizations.health.argoproj.io_Rollout: "local hs = {status = \"Progressing\"\
+    , message = \"Waiting for Rollout status\"}\nif obj.status == nil then return\
+    \ hs end\nlocal status = obj.status\nif status.observedGeneration ~= nil and obj.metadata.generation\
+    \ ~= nil and\n   tostring(status.observedGeneration) ~= tostring(obj.metadata.generation)\
+    \ then\n  hs.message = \"Waiting for observed generation\"\n  return hs\nend\n\
+    if status.abort == true or status.phase == \"Degraded\" then\n  return {status\
+    \ = \"Degraded\", message = status.message or \"Rollout aborted or degraded\"\
+    }\nend\nif (obj.spec ~= nil and obj.spec.paused == true) or status.phase == \"\
+    Paused\" or\n   (status.pauseConditions ~= nil and #status.pauseConditions > 0)\
+    \ then\n  return {status = \"Suspended\", message = \"Manual promotion required\"\
+    }\nend\nif status.phase == \"Healthy\" then\n  return {status = \"Healthy\", message\
+    \ = status.message or \"Rollout healthy\"}\nend\nhs.message = status.message or\
+    \ \"Rollout progressing\"\nreturn hs\n"
+  resource.inclusions: "- apiGroups:\n  - argoproj.io\n  clusters:\n  - '*'\n  kinds:\n\
+    \  - Rollout\n  - AnalysisTemplate\n  - AnalysisRun\n- apiGroups:\n  - ''\n  clusters:\n\
+    \  - '*'\n  kinds:\n  - Service\n  - Pod\n- apiGroups:\n  - apps\n  clusters:\n\
+    \  - '*'\n  kinds:\n  - ReplicaSet\n  - Deployment\n- apiGroups:\n  - ''\n  kinds:\n\
+    \  - ConfigMap\n  - Secret\n  - PersistentVolumeClaim\n  clusters:\n  - https://kubernetes.default.svc:443\n\
+    - apiGroups:\n  - apps\n  kinds:\n  - StatefulSet\n  clusters:\n  - https://kubernetes.default.svc:443\n\
+    - apiGroups:\n  - networking.k8s.io\n  kinds:\n  - NetworkPolicy\n  clusters:\n\
+    \  - https://kubernetes.default.svc:443\n- apiGroups:\n  - ''\n  kinds:\n  - Namespace\n\
+    \  - ServiceAccount\n  - ConfigMap\n  - PersistentVolumeClaim\n  clusters:\n \
+    \ - https://kubernetes.default.svc.cluster.local:443\n- apiGroups:\n  - apps\n\
+    \  kinds:\n  - StatefulSet\n  clusters:\n  - https://kubernetes.default.svc.cluster.local:443\n\
+    - apiGroups:\n  - argoproj.io\n  kinds:\n  - Application\n  - AppProject\n  -\
+    \ Experiment\n  clusters:\n  - https://kubernetes.default.svc.cluster.local:443\n\
+    - apiGroups:\n  - apiextensions.k8s.io\n  kinds:\n  - CustomResourceDefinition\n\
+    \  clusters:\n  - https://kubernetes.default.svc.cluster.local:443\n- apiGroups:\n\
+    \  - rbac.authorization.k8s.io\n  kinds:\n  - Role\n  - RoleBinding\n  - ClusterRole\n\
+    \  - ClusterRoleBinding\n  clusters:\n  - https://kubernetes.default.svc.cluster.local:443\n\
+    - apiGroups:\n  - admissionregistration.k8s.io\n  kinds:\n  - MutatingWebhookConfiguration\n\
+    \  - ValidatingWebhookConfiguration\n  clusters:\n  - https://kubernetes.default.svc.cluster.local:443\n\
+    - apiGroups:\n  - admissionregistration.k8s.io\n  kinds:\n  - ValidatingAdmissionPolicy\n\
+    \  - ValidatingAdmissionPolicyBinding\n  clusters:\n  - https://kubernetes.default.svc.cluster.local:443\n\
+    - apiGroups:\n  - networking.istio.io\n  kinds:\n  - VirtualService\n  - DestinationRule\n\
+    \  clusters:\n  - https://kubernetes.default.svc.cluster.local:443\n- apiGroups:\n\
+    \  - networking.k8s.io\n  kinds:\n  - NetworkPolicy\n  clusters:\n  - https://kubernetes.default.svc.cluster.local:443\n\
+    - apiGroups:\n  - batch\n  kinds:\n  - Job\n  clusters:\n  - https://kubernetes.default.svc.cluster.local:443\n"
