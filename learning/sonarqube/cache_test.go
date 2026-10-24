@@ -118,3 +118,68 @@ func TestSonarNamespaceCacheBoundary(t *testing.T) {
 		})
 	}
 }
+
+// The controller keys its cache by the exact server URL. This checks the Engine
+// half of a distinct-URL proposal, given already filtered discovery results.
+// It does NOT test cluster registration, the real resource filter or credentials.
+func TestSonarEndpointSplitCache(t *testing.T) {
+	const old = "learning-services-20261018"
+	const sonar = "sonarqube"
+	resources := []struct{ group, kind, plural string }{
+		{"", "Secret", "secrets"}, {"", "ConfigMap", "configmaps"},
+		{"", "PersistentVolumeClaim", "persistentvolumeclaims"},
+		{"", "ServiceAccount", "serviceaccounts"}, {"apps", "StatefulSet", "statefulsets"},
+		{"networking.k8s.io", "NetworkPolicy", "networkpolicies"},
+		{"", "Service", "services"}, {"", "Pod", "pods"},
+	}
+	lists := map[schema.GroupVersionResource]string{}
+	objects := []runtime.Object{}
+	apis := []kube.APIResourceInfo{}
+	for _, r := range resources {
+		gvr := schema.GroupVersionResource{Group: r.group, Version: "v1", Resource: r.plural}
+		lists[gvr] = r.kind + "List"
+		apis = append(apis, kube.APIResourceInfo{GroupKind: schema.GroupKind{Group: r.group, Kind: r.kind}, GroupVersionResource: gvr, Meta: metav1.APIResource{Name: r.plural, Kind: r.kind, Namespaced: true}})
+		for _, ns := range []string{old, sonar} {
+			if ns == old && r.kind != "Service" && r.kind != "Pod" {
+				continue
+			}
+			objects = append(objects, &unstructured.Unstructured{Object: map[string]any{"apiVersion": gvr.GroupVersion().String(), "kind": r.kind, "metadata": map[string]any{"name": "fixture", "namespace": ns, "resourceVersion": "1"}}})
+		}
+	}
+	client := fake.NewSimpleDynamicClientWithCustomListKinds(runtime.NewScheme(), lists, objects...)
+	client.PrependReactor("list", "*", func(a ktesting.Action) (bool, runtime.Object, error) {
+		if a.GetNamespace() == old && a.GetResource().Resource != "services" && a.GetResource().Resource != "pods" {
+			t.Errorf("old destination must not gain list access to %s", a.GetResource())
+			return true, nil, apierrors.NewForbidden(a.GetResource().GroupResource(), "", nil)
+		}
+		return false, nil, nil
+	})
+	for _, tc := range []struct{ name, server, namespace, kind string }{
+		{"old-destination-unchanged", "https://kubernetes.default.svc", old, "Service"},
+		{"sonar-distinct-url", "https://kubernetes.default.svc:443", sonar, "Secret"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			// MockKubectlCmd does not implement filtering. Simulate only the
+			// discovery output of cluster-URL-scoped inclusions, explicitly.
+			visible := []kube.APIResourceInfo{}
+			for _, api := range apis {
+				if tc.namespace == sonar || api.GroupKind.Kind == "Service" || api.GroupKind.Kind == "Pod" {
+					visible = append(visible, api)
+				}
+			}
+			c := NewClusterCache(&rest.Config{Host: tc.server}, SetKubectl(&kubetest.MockKubectlCmd{APIResources: visible, DynamicClient: client}), SetNamespaces([]string{tc.namespace}), SetRespectRBAC(RespectRbacDisabled), SetWatchResyncTimeout(time.Hour), SetPopulateResourceInfoHandler(func(*unstructured.Unstructured, bool) (any, bool) { return nil, true }))
+			defer c.Invalidate()
+			if err := c.EnsureSynced(); err != nil {
+				t.Fatal(err)
+			}
+			if _, err := c.IsNamespaced(schema.GroupKind{Kind: tc.kind}); err != nil {
+				t.Fatal(err)
+			}
+			obj := &unstructured.Unstructured{Object: map[string]any{"apiVersion": "v1", "kind": tc.kind, "metadata": map[string]any{"name": "fixture", "namespace": tc.namespace}}}
+			live, err := c.GetManagedLiveObjs([]*unstructured.Unstructured{obj}, func(*Resource) bool { return false })
+			if err != nil || len(live) != 1 {
+				t.Fatalf("live lookup %s/%s: count=%d err=%v", tc.namespace, tc.kind, len(live), err)
+			}
+		})
+	}
+}

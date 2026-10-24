@@ -25,7 +25,7 @@ def main():
         engine = target / 'gitops-engine'
         shutil.copyfile(ROOT / 'cache_test.go', engine / 'pkg/cache/sonar_boundary_test.go')
         env = dict(os.environ, GOFLAGS='-mod=readonly -buildvcs=false', GOWORK='off')
-        subprocess.run(['go', 'test', './pkg/cache', '-run', '^TestSonarNamespaceCacheBoundary$',
+        subprocess.run(['go', 'test', './pkg/cache', '-run', '^TestSonar(NamespaceCacheBoundary|EndpointSplitCache)$',
                         '-count=1', '-timeout', '90s', '-v'], cwd=engine, env=env, check=True, timeout=600)
 
 
