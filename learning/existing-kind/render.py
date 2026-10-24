@@ -94,7 +94,7 @@ def build(helm,manifest):
     # bind/escalate or permission to rewrite RBAC is granted to Argo.
     base_values=yaml.safe_load((PLATFORM/'learning/istio/install/istiod.values.yaml').read_text())
     base_values['meshConfig']['discoverySelectors']=[dict(matchLabels={'kubernetes.io/metadata.name':n}) for n in [APP,ISTIO]]
-    base_values['env'].update(PILOT_ENABLE_GATEWAY_API='false',DEFAULT_WORKLOAD_CERT_TTL='1h',MAX_WORKLOAD_CERT_TTL='24h')
+    base_values['env'].update(ISTIO_WATCH_NAMESPACE=APP,PILOT_ENABLE_GATEWAY_API='false',DEFAULT_WORKLOAD_CERT_TTL='1h',MAX_WORKLOAD_CERT_TTL='24h')
     base_values['global'].setdefault('istiod',{})['enableAnalysis']=False
     istio=template(PLATFORM/'learning/istio/vendor/istiod','istiod',ISTIO,base_values)
     istio_sa=dict(kind='ServiceAccount',name='istiod-learning-1-31-2',namespace=ISTIO)
@@ -134,6 +134,12 @@ def build(helm,manifest):
     for ns in [APP,ISTIO]:
         clean += [obj('Role','learning-istiod-public-ca',ns,rules=[rule('','configmaps','create get list watch'),
           rule('','configmaps','update patch delete',['istio-ca-root-cert','istio-ca-crl'])]),bind('learning-istiod-public-ca',ns,istio_sa)]
+    # Standard 1.31.2 ToOpts scopes otherwise namespace-empty informers to APP.
+    # No cluster Secret API grant; list/watch still exposes new Account values.
+    clean += [obj('Role','learning-istiod-credentials',APP,rules=[rule('','secrets','list watch')]),
+              bind('learning-istiod-credentials',APP,istio_sa),
+              obj('Role','learning-istiod-runtime',ISTIO,rules=[rule('','configmaps','update',['istio-leader','istio-ip-autoallocate'])]),
+              bind('learning-istiod-runtime',ISTIO,istio_sa)]
     outputs['istiod.yaml']=clean
     outputs['istiod-values.yaml']=[base_values]
     # Reuse the current Deployment/SA, preserving namespace/name/selector and
