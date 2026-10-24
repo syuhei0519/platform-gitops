@@ -10,7 +10,7 @@ spec:
   project: lab-sonarqube
   source:
     repoURL: https://github.com/syuhei0519/platform-gitops.git
-    targetRevision: 72061c0175fd4ec082b6ec954689ad41d311f13b
+    targetRevision: 8eadbdb2673592a316d519e1a6df2fb0741c465b
     path: learning/sonarqube/chart
     helm:
       releaseName: sonarqube
