@@ -44,3 +44,24 @@ After explicit approval, apply only these added role/binding identities, then sy
 Istiod Deployment from reviewed main. Require readiness, no Forbidden, CA identity unchanged,
 correct admission bundles and Account injection before enabling subsequent traffic. This
 source review/render is not a runtime pass; Account acceptance and PLAT-199 remain pending.
+
+## Public CA namespace-controller lock follow-up (additional approval pending)
+
+After the two reviewed lock updates were permitted, the standard CA distribution
+controller attempted to update `istio-learning-system/istio-namespace-controller-election`.
+The API denied that exact action. Istiod is Ready, but Account traffic remains stopped.
+Add only this third resourceName to the existing `learning-istiod-runtime` Role's
+ConfigMap update rule. No extra verb, namespace, Secret authority or workload change.
+This lock elects the controller distributing the existing public root certificate
+ConfigMap to the selected namespaces; it is not a CA private key or root rotation.
+The CA Secret UID and stored public fingerprint were rechecked unchanged. An initial
+fingerprint assertion failure was a copied-string omission in the operator checker;
+comparison now reads the captured public-metadata file, and passes.
+
+The fixed 1.31.2 source defines all lock names in
+[pilot/pkg/leaderelection/leaderelection.go](https://github.com/istio/istio/blob/1.31.2/pilot/pkg/leaderelection/leaderelection.go).
+The active namespace controller is started by
+[multicluster.go](https://github.com/istio/istio/blob/1.31.2/pilot/pkg/serviceregistry/kube/controller/multicluster.go#L299).
+Other gateway/status/analysis/MCS/node-untaint paths remain disabled in this configuration;
+no permissions for their lock names are requested. Stop on any further Forbidden.
+The additional update permission is not applied until separately approved.
