@@ -1,10 +1,10 @@
-# PLAT-3 / PLAT-5: existing Argo CD cache boundary
+# PLAT-3 / PLAT-5: shared SonarQube with the existing Argo CD Core
 
-This is a diagnostic prerequisite for the shared SonarQube rollout, not an
-installation or a completed acceptance result. It never connects to Kubernetes,
-creates credentials, changes the controller or modifies the existing learning
-namespace permissions. The application SAST changes were merged separately in
-backend-app#59 and frontend-app#14.
+This directory contains the pinned shared server chart, manual bootstrap/access
+definitions and offline boundary checks. Tests never connect to Kubernetes or
+read real credentials. The application SAST changes were merged separately in
+backend-app#59 and frontend-app#14. Live validation was performed only after
+explicit approval; ticket completion also requires the staged scanner gates.
 
 The inspected cluster is `learning-20261018-69c763`, not a running `platform-lab`.
 Argo CD Core v3.5.2 runs in `learning-progressive-control`, using the
@@ -67,26 +67,49 @@ Rollback behavior was independently checked with six offline cases, including an
 in-flight sync, lost restore response, pending journal, Secret metadata-only reads
 and uncertain create outcomes. This is not yet a Sonar analysis acceptance result.
 
-## Remaining deployment work
+## Live deployment and analysis evidence
 
 The existing Core is reused with a different-URL registration and the existing
-projected identity, preserving both destinations. A separate bounded option was to
-use the existing controller with **only** the Sonar destination while no existing
-Application is registered. That changes the earlier learning destination scope and
-requires explicit approval; the successful control case is not permission to do it.
-Existing application Deployments, DBs, PVCs and Roles would not be deleted by such
-a registration change, but future Argo management of the old destination would
-remain unavailable until its scope is deliberately restored/redesigned.
+projected identity, preserving both destinations. The Sonar-only control case was
+not deployed. `lab-local-sonarqube` reached `Synced / Healthy / Succeeded` using the
+fixed chart commit `8eadbdb2673592a316d519e1a6df2fb0741c465b`. Sonar was 2/2 Ready,
+PostgreSQL 1/1 Ready, and both new PVs were Bound and Retain. Existing 26 Pods stayed
+Ready with unchanged UID/image; old Argo registration, Role and Pod spec stayed intact.
 
 Do not add old-namespace DB Secret read access, grant cluster-admin, deploy a second
 Core, change the controller image, replace kind, or change the registration scope
 as a workaround. Those are not authorized by the diagnostic test or this PR.
-The live NetworkPolicy test subsequently passed baseline connectivity, default
+The live NetworkPolicy test passed baseline connectivity, default
 deny, selective ingress and selective egress. All seven temporary resources were
 deleted by verified UID. Production default-deny and DB/DNS allow policies were
-then installed before any credential was configured. Sonar startup, temporary
-sysctl change, credential flows, main scans and actual Quality Gates remain
-separate required steps.
+then installed before any credential was configured. `vm.max_map_count` was changed
+temporarily from 262144 to 524288 without reboot or persistence. Initial admin
+password replacement was verified with new-value acceptance and old-value rejection.
+TLS checks used the explicit public leaf, hostname, validity and fingerprint, on
+the WSL localhost path and Docker `host.docker.internal` path; no validation was disabled.
+
+Sonar Community 26.9.0.129388 analyzed only these main revisions:
+
+| Project | Main revision | Baseline results |
+| --- | --- | --- |
+| platform-backend-app | c0c2878db3f61be1f8c9c77d2813e12281356a58 | 38 code smells; no vulnerabilities/hotspots |
+| platform-frontend-app | 9e49e72df157bc6bf550a24adbd4f267a93efaca | 2 code smells + 1 bug; no vulnerabilities/hotspots |
+
+Go analyzer was 1.43.0.7704, JavaScript/TypeScript 13.8 build 44569 and text analyzer
+2.49.0.12346. Both first analyses completed successfully; first-analysis QG had no
+evaluated New Code condition. After a second unchanged main analysis, both CE tasks
+again succeeded and Sonar way reported `OK` with `new_violations=0`, threshold `>0`.
+This is a passing unchanged baseline, not proof of no existing quality findings.
+The other three Sonar way conditions (new coverage 80%, duplication 3%, hotspots
+reviewed 100%) were not applicable to zero new lines/hotspots. They were not removed.
+Both seven-day project tokens were revoked after validation and their old credentials
+were confirmed rejected. Admin remains in Windows Credential Manager only.
+
+Semgrep remains in initial observation mode and CodeQL has no new merge ruleset.
+The eleven backend executable audit findings were independently confirmed as test
+harness false positives; the existing CodeQL High remains an analyzer-model candidate,
+not a dismissed result. Policy selection, authorized CodeQL merge protection and its
+blocked/corrected PR validation remain separate incomplete acceptance stages.
 
 ## Pinned deployment chart
 
@@ -114,6 +137,17 @@ hostname/expiry/fingerprint verification. No private key, password or token is i
 Git, a rendered artifact, CLI arguments or chat. Token validity is seven days and
 tokens must be revoked after validation. Password rotation deadlines are operational
 deadlines, not automatic PostgreSQL or Sonar account expiry.
+
+`access.yaml` records only the dedicated namespace, namespace Role/Binding and
+restricted AppProject. It is operator bootstrap, not part of the unrelated root
+chart or a new kind environment. `additional-inclusions.yaml` is an **append-only**
+fragment for `argocd-cm`, never a replacement for the three existing inclusion entries.
+`registration.py <preverified-public-ca-file>` renders the alias registration without
+reading any token. Only client-go invokes the separately tested provider inside the
+existing Pod. Check the exact kind identity, CA/expiry/hostname, resource capacity and
+rollback journal before applying access configuration. Live bootstrap was done
+manually with explicit approval; GitOps application contents are pinned, while both
+implementation PRs are still Draft/unmerged pending separate workflow approval.
 
 ## Alternatives and limits of this test
 

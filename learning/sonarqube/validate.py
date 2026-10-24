@@ -66,6 +66,19 @@ def verify(text):
     ingress = by_name['NetworkPolicy', 'sonarqube-database']['spec']['ingress']
     assert len(ingress) == 1 and ingress[0]['ports'] == [dict(protocol='TCP', port=5432)]
     assert ingress[0]['from'] == [dict(podSelector=dict(matchLabels=dict(app='sonarqube', release='sonarqube')))]
+    access = list(yaml.safe_load_all((ROOT / 'access.yaml').read_text()))
+    assert Counter(x['kind'] for x in access) == dict(Namespace=1, Role=1, RoleBinding=1, AppProject=1)
+    namespace, role, binding, project = access
+    assert namespace['metadata']['name'] == 'sonarqube'
+    assert role['metadata']['namespace'] == binding['metadata']['namespace'] == 'sonarqube'
+    assert all('*' not in r['apiGroups'] + r['resources'] + r['verbs'] for r in role['rules'])
+    assert binding['roleRef'] == dict(apiGroup='rbac.authorization.k8s.io', kind='Role', name='sonarqube-argocd')
+    assert binding['subjects'] == [dict(kind='ServiceAccount', name='argocd-application-controller', namespace='learning-progressive-control')]
+    assert project['metadata']['namespace'] == 'learning-progressive-control'
+    assert project['spec']['clusterResourceWhitelist'] == []
+    assert project['spec']['destinations'] == [dict(server='https://kubernetes.default.svc:443', namespace='sonarqube')]
+    inclusions = yaml.safe_load((ROOT / 'additional-inclusions.yaml').read_text())
+    assert len(inclusions) == 3 and all(x['clusters'] == ['https://kubernetes.default.svc:443'] for x in inclusions)
     print('PASS official chart digest, 16 resources, 15Gi PVC, pinned nonprivileged workloads, no workload API token, private services and deny/allow contracts')
 
 
