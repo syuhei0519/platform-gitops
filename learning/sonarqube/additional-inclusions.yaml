@@ -1,0 +1,20 @@
+- apiGroups:
+  - ''
+  kinds:
+  - ConfigMap
+  - Secret
+  - PersistentVolumeClaim
+  clusters:
+  - https://kubernetes.default.svc:443
+- apiGroups:
+  - apps
+  kinds:
+  - StatefulSet
+  clusters:
+  - https://kubernetes.default.svc:443
+- apiGroups:
+  - networking.k8s.io
+  kinds:
+  - NetworkPolicy
+  clusters:
+  - https://kubernetes.default.svc:443

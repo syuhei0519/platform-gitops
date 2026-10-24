@@ -1,0 +1,22 @@
+# Apply only after the approved live prerequisites; this is not part of root bootstrap.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: lab-local-sonarqube
+  namespace: learning-progressive-control
+  labels:
+    app.kubernetes.io/part-of: plat-3-5-sonarqube
+spec:
+  project: lab-sonarqube
+  source:
+    repoURL: https://github.com/syuhei0519/platform-gitops.git
+    targetRevision: 8eadbdb2673592a316d519e1a6df2fb0741c465b
+    path: learning/sonarqube/chart
+    helm:
+      releaseName: sonarqube
+  destination:
+    server: https://kubernetes.default.svc:443
+    namespace: sonarqube
+  syncPolicy:
+    syncOptions:
+      - FailOnSharedResource=true

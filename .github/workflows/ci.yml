@@ -57,7 +57,7 @@ jobs:
         with:
           go-version: '1.27.1'
           cache: false
-      - uses: syuhei0519/backend-app/.github/actions/shared-tools@96e5509757fbfb4bdc7e8b47876cdcc8c288142c # CRD schema / Pod settings guard
+      - uses: syuhei0519/backend-app/.github/actions/shared-tools@cdea9eda59aa56c8a068a79317da239b8133727e # Empty values carry no credential; nonempty/malformed Secret values fail
         with:
           modules: scan-gate
       - name: Policy and boundary tests
@@ -97,6 +97,12 @@ jobs:
           .build/progressive-venv/bin/python learning/progressive-delivery/validate.py --output .rendered/learning-progressive-delivery
           .build/progressive-venv/bin/python -m unittest discover -s learning/istio -p test_rollouts_access.py -v
           .build/progressive-venv/bin/python learning/istio/check_argocd_cache.py --argocd .build/argocd-istio
+          .build/progressive-venv/bin/python learning/sonarqube/check_cache.py --argocd .build/argocd-istio
+          python3 -I learning/sonarqube/credential_test.py
+          python3 learning/sonarqube/registration_test.py
+            .build/helm template sonarqube learning/sonarqube/chart --namespace sonarqube --kube-version 1.36.4 > .rendered/sonarqube.yaml
+            .build/progressive-venv/bin/python learning/sonarqube/validate.py .rendered/sonarqube.yaml
+            docker run --rm -v "$PWD:/work:ro" -w /work ghcr.io/yannh/kubeconform:v0.7.0-alpine@sha256:8f0eeaaa96ba27ba1500b0e4b1c215acc358d159c62a7ecae58d7a03403287b0 -strict -summary -kubernetes-version 1.36.0 .rendered/sonarqube.yaml
           .build/progressive-venv/bin/python learning/istio/rollouts_access.py --control-namespace learning-core-test --owner cloud-fixture --cache .build/istio-rollouts-cache --core-config learning/istio/fixtures/core-config.yaml --applications learning/istio/fixtures/no-applications.yaml --registered-namespaces learning-services-20261018 --output .rendered/istio-rollouts-access
           PATH="$PWD/.build:$PATH" .build/progressive-venv/bin/python learning/progressive-delivery/test_application.py --manifest-repo .build/metrics-manifest
           docker run --rm -v "$PWD:/work:ro" -w /work ghcr.io/yannh/kubeconform:v0.7.0-alpine@sha256:8f0eeaaa96ba27ba1500b0e4b1c215acc358d159c62a7ecae58d7a03403287b0 -strict -summary -kubernetes-version 1.36.0 .rendered/learning-progressive-delivery/control.yaml .rendered/learning-progressive-delivery/target.yaml .rendered/istio-rollouts-access/demo-access.yaml
