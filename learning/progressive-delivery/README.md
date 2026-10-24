@@ -1,5 +1,11 @@
 # 学習専用 progressive delivery（導入案）
 
+> Historical learning record. Its manual deployment route is retired for the existing kind.
+> Use the [Git/PR → Argo deployment contract](https://github.com/syuhei0519/platform-gitops/blob/main/learning/existing-kind/DEPLOYMENT.md).
+> The [original commands at fixed SHA](https://github.com/syuhei0519/platform-gitops/blob/cffb519cc26b08a41eb5c90d58698426ffc66789/learning/progressive-delivery/README.md)
+> remain available as historical evidence, not as a current execution procedure.
+
+
 1環境・Account 1サービスの手動同期用Argo CD Coreとnamespace限定Argo Rolloutsです。
 既存bootstrap/root/AppProject/Production登録/監視chartを変更しません。
 Argo CD API server/UI/Dex/ApplicationSet/Preview、Meshは含みません。
@@ -81,12 +87,9 @@ k() { kubectl --context="$CONTEXT" --namespace="$NAMESPACE" "$@"; }
 c() { kubectl --context="$CONTEXT" --namespace="$CONTROL_NAMESPACE" "$@"; }
 # 個別承認後: 新control namespaceを作成。Redis auth Secretはownerがprivate手段で供給。
 c create namespace "$CONTROL_NAMESPACE"
-k apply --server-side -f "$OUT/crds.yaml"
 k wait --for=condition=Established crd/applications.argoproj.io crd/appprojects.argoproj.io \
   crd/rollouts.argoproj.io crd/experiments.argoproj.io crd/analysisruns.argoproj.io crd/analysistemplates.argoproj.io --timeout=120s
 # ownerが承認済みprivate手段で上の3 Secretを供給済みであることを確認（値を表示しない）。
-c apply -f "$OUT/control.yaml"
-k apply -f "$OUT/target.yaml"
 c rollout status statefulset/argocd-application-controller --timeout=300s
 c rollout status deployment/argocd-repo-server --timeout=300s
 c rollout status deployment/argocd-redis --timeout=300s
