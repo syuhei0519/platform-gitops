@@ -138,7 +138,7 @@ def build(helm,manifest):
     # No cluster Secret API grant; list/watch still exposes new Account values.
     clean += [obj('Role','learning-istiod-credentials',APP,rules=[rule('','secrets','list watch')]),
               bind('learning-istiod-credentials',APP,istio_sa),
-              obj('Role','learning-istiod-runtime',ISTIO,rules=[rule('','configmaps','update',['istio-leader','istio-ip-autoallocate'])]),
+              obj('Role','learning-istiod-runtime',ISTIO,rules=[rule('','configmaps','update',['istio-leader','istio-ip-autoallocate','istio-namespace-controller-election'])]),
               bind('learning-istiod-runtime',ISTIO,istio_sa)]
     outputs['istiod.yaml']=clean
     outputs['istiod-values.yaml']=[base_values]
