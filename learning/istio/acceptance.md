@@ -1,5 +1,11 @@
 # 将来の確認・復帰手順と影響境界
 
+> Historical learning record. Its manual deployment route is retired for the existing kind.
+> Use the [Git/PR → Argo deployment contract](https://github.com/syuhei0519/platform-gitops/blob/main/learning/existing-kind/DEPLOYMENT.md).
+> The [original commands at fixed SHA](https://github.com/syuhei0519/platform-gitops/blob/cffb519cc26b08a41eb5c90d58698426ffc66789/learning/istio/acceptance.md)
+> remain available as historical evidence, not as a current execution procedure.
+
+
 **未実施の手順**です。今回のGit準備はcluster apply、namespaceラベル変更、RBAC/Secrets操作を許可しません。
 以下の記載は必要権限の説明と将来の操作案です。実適用・cleanupには別の明示承認と所有確認が必要です。
 適用方式は保存済みraw YAMLの手動applyだけです。Helm install/upgrade、istioctl install、Operator、Argo自動同期を併用しません。
@@ -22,8 +28,6 @@ render後の35資源のkind/name/namespaceと、開始前の不存在または�
 ```sh
 : "${ISTIO_CONTEXT:?verified context is required}"
 # 所有/接続先照合の後だけ。保存済みraw YAMLを手動applyする。
-kubectl --context "$ISTIO_CONTEXT" apply -f /tmp/istio-render/plain-namespaces.yaml
-kubectl --context "$ISTIO_CONTEXT" apply -f /tmp/istio-render/plain.yaml
 ```
 
 ### 導入前 → mesh → 解除後

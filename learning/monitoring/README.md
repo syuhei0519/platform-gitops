@@ -1,5 +1,11 @@
 # ローカルkindのAccount監視
 
+> Historical learning record. Its manual deployment route is retired for the existing kind.
+> Use the [Git/PR → Argo deployment contract](https://github.com/syuhei0519/platform-gitops/blob/main/learning/existing-kind/DEPLOYMENT.md).
+> The [original commands at fixed SHA](https://github.com/syuhei0519/platform-gitops/blob/cffb519cc26b08a41eb5c90d58698426ffc66789/learning/monitoring/README.md)
+> remain available as historical evidence, not as a current execution procedure.
+
+
 Account SDK → 専用Collector → Prometheus → Grafanaの1経路を、既存Argo/rootや
 observability foundationから独立させる。backendコードは変更しない。
 要求数推定/5m、req/s、HTTPエラー率（4xx+5xx）、p95秒、status_class別req/sと収集状態を
@@ -124,11 +130,9 @@ namespaceそのものはchartに含まれず、既存か承認された事前作
    完了済みJob/DB/PVC/Secret/他サービスは適用対象に含めない。
 
    ```sh
-   kubectl --context "$KUBE_CONTEXT" apply -f monitoring-render.yaml
    kubectl --context "$KUBE_CONTEXT" -n observability rollout status deploy/otel-collector --timeout=300s
    kubectl --context "$KUBE_CONTEXT" -n observability rollout status deploy/learning-prometheus --timeout=300s
    kubectl --context "$KUBE_CONTEXT" -n observability rollout status deploy/learning-grafana --timeout=300s
-   kubectl --context "$KUBE_CONTEXT" apply -f account-telemetry-delivery/account-api-telemetry.yaml
    kubectl --context "$KUBE_CONTEXT" -n "$ACCOUNT_NAMESPACE" rollout status deploy/learning-account --timeout=300s
    ```
 

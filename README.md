@@ -1,5 +1,15 @@
 # platform-gitops
 
+## Existing kind deployment (PLAT-195/198)
+
+For `kind-learning-20261018-69c763`, the ordinary deployment entry is a reviewed
+Git commit/PR followed by Argo CD sync. Follow the [current deployment contract](https://github.com/syuhei0519/platform-gitops/blob/main/learning/existing-kind/DEPLOYMENT.md).
+Manual workload apply, image mutation and rollout restart from historical learning
+instructions are retired. Existing Argo Core is reused; the old platform-lab and
+isolated Account trial instructions are not the current cluster's deployment route.
+This entry-point change does not claim that the pending PLAT-177/199 acceptance has passed.
+
+
 kind、Argo CD、App of Apps、GitLab Runner foundationを所有するリポジトリです。
 
 固定したkind/KubernetesとArgo CDを `bootstrap/` から導入し、`charts/root` のApp of AppsでPlatformとWorkloadを管理します。Chart既定値は `workloadsEnabled: false`、初回イメージ由来を検証済みの `environments/local/root.yaml` は `true` です。新規構築ではSecret再注入・イメージ準備の確認前にWorkloadを有効化しません。
