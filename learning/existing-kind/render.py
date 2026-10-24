@@ -269,6 +269,18 @@ def build(helm,manifest):
     # directory rather than reconciling unrelated siblings or identity JSON.
     outputs['adoption/mesh-fixture/resources.yaml']=[d for d in yaml.safe_load_all((ROOT/'adoption/mesh-fixture.yaml').read_text()) if d]
     foundation=[d for d in yaml.safe_load_all((ROOT/'adoption/argocd-core.yaml').read_text()) if d]
+    # copyutil's shared argocd binary alone occupies ~238Mi on this Core.
+    # Bound disk-backed working volumes without changing mounts/security context.
+    repo=next(d for d in foundation if d['kind']=='Deployment' and d['metadata']['name']=='argocd-repo-server')
+    pod=repo['spec']['template']['spec']
+    for c in pod['containers']+pod.get('initContainers',[]):
+        c['resources']['requests']['ephemeral-storage']='256Mi'
+        c['resources']['limits']['ephemeral-storage']='1Gi'
+    caps={'var-files':'256Mi','tmp':'512Mi','helm-working-dir':'128Mi','gpg-keyring':'8Mi','plugins':'8Mi'}
+    for v in pod['volumes']:
+        if v['name'] in caps:
+            assert v.get('emptyDir')=={},v['name']
+            v['emptyDir']['sizeLimit']=caps[v['name']]
     foundation += [d for d in yaml.safe_load_all((ROOT/'adoption/crds.yaml').read_text()) if d]
     for d in foundation:
         if d['kind']=='CustomResourceDefinition':
