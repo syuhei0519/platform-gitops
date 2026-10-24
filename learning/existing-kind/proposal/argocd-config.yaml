@@ -42,6 +42,8 @@ data:
     \  - ClusterRoleBinding\n  clusters:\n  - https://kubernetes.default.svc.cluster.local:443\n\
     - apiGroups:\n  - admissionregistration.k8s.io\n  kinds:\n  - MutatingWebhookConfiguration\n\
     \  - ValidatingWebhookConfiguration\n  clusters:\n  - https://kubernetes.default.svc.cluster.local:443\n\
+    - apiGroups:\n  - admissionregistration.k8s.io\n  kinds:\n  - ValidatingAdmissionPolicy\n\
+    \  - ValidatingAdmissionPolicyBinding\n  clusters:\n  - https://kubernetes.default.svc.cluster.local:443\n\
     - apiGroups:\n  - networking.istio.io\n  kinds:\n  - VirtualService\n  - DestinationRule\n\
     \  clusters:\n  - https://kubernetes.default.svc.cluster.local:443\n- apiGroups:\n\
     \  - networking.k8s.io\n  kinds:\n  - NetworkPolicy\n  clusters:\n  - https://kubernetes.default.svc.cluster.local:443\n\

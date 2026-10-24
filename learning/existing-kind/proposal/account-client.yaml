@@ -1,0 +1,232 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: account-release-client
+  namespace: learning-account-release
+data:
+  load.py: "#!/usr/bin/env python3\n\"\"\"Run inside the dedicated injected client\
+    \ after environment approval.\n\nOnly the fixed Account list API is requested;\
+    \ no data changes or redirects.\nRun warmup separately before taking the baseline\
+    \ counter snapshot.\n\"\"\"\nimport argparse\nimport json\nimport time\nimport\
+    \ urllib.error\nimport urllib.request\n\nfrom contract import ROUTING\n\n\nclass\
+    \ NoRedirect(urllib.request.HTTPRedirectHandler):\n    def redirect_request(self,\
+    \ *args, **kwargs):\n        return None\n\n\ndef main():\n    p = argparse.ArgumentParser(description=__doc__)\n\
+    \    p.add_argument('--phase', choices=['warmup', 'measure'], required=True)\n\
+    \    p.add_argument('--weight', type=int, choices=list(ROUTING), required=True)\n\
+    \    a = p.parse_args()\n    count = 20 if a.phase == 'warmup' else ROUTING[a.weight]['samples']\n\
+    \    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())\n\
+    \    result = dict(sent=0, ok=0, errors=0, timeouts=0, retries=0, warmup_excluded=a.phase\
+    \ == 'measure')\n    start = time.time()\n    latencies = []\n    for _ in range(count):\n\
+    \        request = urllib.request.Request('http://account-release.learning-account-release.svc.cluster.local:8080/api/accounts',\n\
+    \                                         headers={'Connection': 'close'})\n \
+    \       result['sent'] += 1\n        t = time.monotonic()\n        try:\n    \
+    \        with opener.open(request, timeout=2) as response:\n                response.read()\n\
+    \                result['ok' if response.status == 200 else 'errors'] += 1\n \
+    \       except urllib.error.HTTPError:\n            result['errors'] += 1\n  \
+    \      except (TimeoutError, urllib.error.URLError):\n            # Connection\
+    \ failures are counted conservatively with timeouts, never retried.\n        \
+    \    result['timeouts'] += 1\n        latencies.append(time.monotonic() - t)\n\
+    \    print(json.dumps(dict(phase=a.phase, weight=a.weight, start=start, end=time.time(),\
+    \ client=result,\n                         client_latency_seconds=latencies)))\n\
+    \n\nif __name__ == '__main__':\n    main()\n"
+  contract.py: "#!/usr/bin/env python3\n\"\"\"PLAT-169 executable specification. Pure\
+    \ functions; no UI, Git or cluster writes.\"\"\"\nfrom copy import deepcopy\n\
+    import math\nimport re\n\nfrom deployment_target import CONTEXT, NAMESPACE, CONTROL_NAMESPACE\n\
+    \nTARGET = {'context': CONTEXT, 'namespace': NAMESPACE,\n          'control_namespace':\
+    \ CONTROL_NAMESPACE, 'application': 'account-release',\n          'rollout': 'account-release',\
+    \ 'service': 'account-release',\n          'virtual_service': 'account-release',\
+    \ 'destination_rule': 'account-release',\n          'metrics_job': 'account-backend',\
+    \ 'metrics_service': 'account'}\nPOLICY = {'window_seconds': 300, 'minimum_requests':\
+    \ 20, 'availability_min': .99,\n          'latency_bucket_seconds': .25, 'latency_fraction_min':\
+    \ .95, 'query_timeout_seconds': 5}\nROUTING = {10: {'samples': 1000, 'candidate_min':\
+    \ 60, 'candidate_max': 140},\n           50: {'samples': 1000, 'candidate_min':\
+    \ 440, 'candidate_max': 560},\n           100: {'samples': 200, 'candidate_min':\
+    \ 200, 'candidate_max': 200},\n           0: {'samples': 200, 'candidate_min':\
+    \ 0, 'candidate_max': 0}}\nACTIVE = {'proposed', 'syncing', 'canary10', 'canary50',\
+    \ 'canary100', 'rolling', 'aborting', 'aborted', 'restoring'}\nTERMINAL = {'idle',\
+    \ 'succeeded', 'restored', 'failed'}\n\n\nclass Rejected(ValueError):\n    pass\n\
+    \n\ndef require(ok, reason):\n    if not ok:\n        raise Rejected(reason)\n\
+    \n\ndef validate_catalog(catalog):\n    \"\"\"Runtime accepts reviewed OCI manifests,\
+    \ not guessed tags or fixture digests.\"\"\"\n    require(isinstance(catalog,\
+    \ list) and len(catalog) >= 2, 'image-catalog-required')\n    digests = set()\n\
+    \    for entry in catalog:\n        require(re.fullmatch(r'[a-z0-9./_-]+@sha256:[0-9a-f]{64}',\
+    \ entry['image']), 'immutable-image-required')\n        require(re.fullmatch(r'[0-9a-f]{40}',\
+    \ entry['source_commit']), 'source-pin-required')\n        require(re.fullmatch(r'sha256:[0-9a-f]{64}',\
+    \ entry['config_digest']), 'config-pin-required')\n        require(entry['platform']\
+    \ == 'linux/amd64' and entry['verified'] is True, 'image-evidence-unverified')\n\
+    \        require(isinstance(entry['provenance'], str) and entry['provenance'].strip(),\
+    \ 'provenance-required')\n        manifest = entry['image'].split('@')[1]\n  \
+    \      require(manifest not in digests, 'duplicate-manifest-digest')\n       \
+    \ digests.add(manifest)\n    return {entry['image'] for entry in catalog}\n\n\n\
+    def validate_start(request, catalog, current):\n    images = validate_catalog(catalog)\n\
+    \    require(request['target'] == TARGET, 'target-out-of-scope')\n    require(request['image']\
+    \ in images and request['previous_image'] in images and\n            request['image']\
+    \ != request['previous_image'], 'distinct-reviewed-images-required')\n    require(request['previous_image']\
+    \ == current['stable_image'], 'stale-previous-image')\n    require(request['strategy']\
+    \ in ('Canary', 'Rolling'), 'invalid-strategy')\n    require((request['strategy']\
+    \ == 'Canary' and request['mode'] in ('manual', 'auto')) or\n            (request['strategy']\
+    \ == 'Rolling' and request['mode'] is None), 'invalid-mode')\n    require(current['state']\
+    \ in TERMINAL and not current['git_runtime_drift'], 'release-active-or-drift')\n\
+    \    require(type(request['expected_version']) is int and type(current['version'])\
+    \ is int and\n            request['expected_version'] == current['version'], 'stale-version')\n\
+    \    require(isinstance(request['idempotency_key'], str) and bool(request['idempotency_key'].strip()),\
+    \ 'idempotency-required')\n    return {'state': 'proposed', 'strategy': request['strategy'],\
+    \ 'mode': request['mode'],\n            'version': current['version'] + 1, 'verdict':\
+    \ 'unknown', 'paused': False, 'reason': 'awaiting-git-approval'}\n\n\ndef evaluate_metrics(observation,\
+    \ expected, now):\n    \"\"\"Missing/NaN/timeout is inconclusive, never success\
+    \ or a numeric zero.\"\"\"\n    if observation.get('window_seconds') != POLICY['window_seconds']\
+    \ or observation.get('query_status') != 'success':\n        return 'inconclusive',\
+    \ 'window-or-query-unavailable'\n    if not isinstance(expected, dict) or not\
+    \ expected or any(r not in ('stable', 'candidate') for r in expected):\n     \
+    \   return 'inconclusive', 'invalid-role-scope'\n    end = observation.get('window_end')\n\
+    \    if (isinstance(end, bool) or not isinstance(end, (float, int)) or not math.isfinite(end)\
+    \ or\n            isinstance(now, bool) or not isinstance(now, (float, int)) or\
+    \ not math.isfinite(now) or\n            not 0 <= now - end < 90 or observation.get('window_start')\
+    \ != end - POLICY['window_seconds']):\n        return 'inconclusive', 'stale-or-invalid-window'\n\
+    \    failures, unknown = [], []\n    for role, identity in expected.items():\n\
+    \        data = observation.get(role)\n        if not isinstance(data, dict) or\
+    \ data.get('coverage_complete') is not True:\n            unknown.append(role\
+    \ + '-coverage-missing')\n            continue\n        if (not isinstance(identity,\
+    \ dict) or set(identity) != {'revision_hash', 'image'} or\n                not\
+    \ all(isinstance(v, str) and v for v in identity.values()) or\n              \
+    \  any(data.get(k) != v for k, v in identity.items())):\n            unknown.append(role\
+    \ + '-revision-mismatch')\n            continue\n        sample = data.get('last_sample_at')\n\
+    \        if (isinstance(sample, bool) or not isinstance(sample, (int, float))\
+    \ or not math.isfinite(sample) or\n                not 0 <= now - sample < 90\
+    \ or sample > end):\n            unknown.append(role + '-stale-sample')\n    \
+    \        continue\n        def finite(value):\n            return not isinstance(value,\
+    \ bool) and isinstance(value, (float, int)) and math.isfinite(value)\n       \
+    \ requests = data.get('requests')\n        if not finite(requests) or requests\
+    \ < POLICY['minimum_requests']:\n            unknown.append(role + '-insufficient-traffic')\n\
+    \            continue\n        # A missing companion metric must not hide a valid\
+    \ observed violation.\n        for key, threshold, reason in [('availability',\
+    \ POLICY['availability_min'], 'availability-below-99pct'),\n                 \
+    \                      ('latency_fraction', POLICY['latency_fraction_min'], 'latency-250ms-below-95pct')]:\n\
+    \            value = data.get(key)\n            if not finite(value) or not 0\
+    \ <= value <= 1:\n                unknown.append(role + '-' + key + '-nonfinite-or-invalid')\n\
+    \            elif value < threshold:\n                failures.append(role + '-'\
+    \ + reason)\n    if failures:\n        return 'failed', ','.join(failures + unknown)\n\
+    \    return ('inconclusive', ','.join(unknown)) if unknown else ('passed', 'all-observed-roles-within-policy')\n\
+    \n\ndef transition(release, event, *, expected_version, approved=False, drift=False,\
+    \ verdict=None, reason=None):\n    \"\"\"Reference state machine; persistent lock/CAS\
+    \ and adapters are later issues.\"\"\"\n    require(type(expected_version) is\
+    \ int and expected_version == release['version'], 'stale-version')\n    require(release['strategy']\
+    \ in ('Canary', 'Rolling'), 'invalid-strategy')\n    state, strategy, mode = release['state'],\
+    \ release['strategy'], release['mode']\n    require((strategy == 'Canary' and\
+    \ mode in ('manual', 'auto')) or (strategy == 'Rolling' and mode is None), 'invalid-mode')\n\
+    \    require(state in ACTIVE | TERMINAL, 'unknown-state')\n    require(not drift\
+    \ or event in ('abort', 'stable_routed'), 'git-runtime-drift')\n    new = deepcopy(release)\n\
+    \    if event == 'approve_git':\n        require(state == 'proposed' and approved\
+    \ is True, 'git-approval-required')\n        new.update(state='syncing', reason='approved-git-change')\n\
+    \    elif event == 'synced':\n        require(state == 'syncing', 'sync-not-pending')\n\
+    \        new.update(state='canary10' if strategy == 'Canary' else 'rolling', verdict='unknown',\
+    \ reason='observing')\n    elif event == 'metrics':\n        require(state in\
+    \ ('canary10', 'canary50', 'canary100', 'rolling'), 'not-observing')\n       \
+    \ require(verdict in ('passed', 'failed', 'inconclusive'), 'invalid-verdict')\n\
+    \        require(isinstance(reason, str) and bool(reason.strip()), 'evaluation-reason-required')\n\
+    \        new.update(verdict=verdict, reason='metrics-' + verdict, metrics_reason=reason)\n\
+    \        if verdict == 'failed':\n            new.update(state='aborting', reason='metric-threshold-violation')\n\
+    \        elif verdict == 'inconclusive':\n            new['paused'] = True\n \
+    \       elif verdict == 'passed' and strategy == 'Canary' and mode == 'auto' and\
+    \ not release['paused']:\n            new.update(state={'canary10': 'canary50',\
+    \ 'canary50': 'canary100', 'canary100': 'succeeded'}[state],\n               \
+    \        verdict='passed' if state == 'canary100' else 'unknown')\n        # inconclusive\
+    \ stays at its stage (pause); no auto retry/promote/abort on missing data.\n \
+    \   elif event == 'promote':\n        require(strategy == 'Canary' and mode ==\
+    \ 'manual' and state.startswith('canary'), 'manual-canary-only')\n        require(release['verdict']\
+    \ == 'passed' and not release['paused'], 'metrics-not-passed-or-paused')\n   \
+    \     new.update(state={'canary10': 'canary50', 'canary50': 'canary100', 'canary100':\
+    \ 'succeeded'}[state],\n                   verdict='passed' if state == 'canary100'\
+    \ else 'unknown', reason='manual-promotion')\n    elif event == 'pause':\n   \
+    \     require(strategy == 'Canary' and state.startswith('canary'), 'canary-only')\n\
+    \        new.update(paused=True, verdict='unknown', reason='operator-pause')\n\
+    \    elif event == 'resume':\n        require(strategy == 'Canary' and state.startswith('canary')\
+    \ and release['paused'] and\n                release['verdict'] == 'passed', 'fresh-passed-metrics-required')\n\
+    \        new.update(paused=False, verdict='unknown', reason='operator-resume-reobserve')\n\
+    \    elif event == 'rolling_ready':\n        require(strategy == 'Rolling' and\
+    \ state == 'rolling' and release['verdict'] == 'passed', 'rolling-not-ready')\n\
+    \        new.update(state='succeeded', reason='rolling-healthy')\n    elif event\
+    \ == 'abort':\n        require(state in ('syncing', 'canary10', 'canary50', 'canary100',\
+    \ 'rolling'), 'not-abortable')\n        new.update(state='aborting', reason='operator-abort')\n\
+    \    elif event == 'stable_routed':\n        require(state == 'aborting', 'abort-not-pending')\n\
+    \        new.update(state='aborted', reason='stable-traffic-restored-git-still-pending')\n\
+    \    elif event == 'restore_git':\n        require(state == 'aborted' and approved\
+    \ is True, 'restore-approval-required')\n        new.update(state='restoring',\
+    \ reason='previous-digest-committed')\n    elif event == 'restore_verified':\n\
+    \        require(state == 'restoring', 'restore-not-pending')\n        new.update(state='restored',\
+    \ reason='git-runtime-crud-and-two-syncs-verified')\n    else:\n        raise\
+    \ Rejected('unknown-operation')\n    new['version'] += 1\n    return new\n"
+  deployment_target.py: '"""One fixed existing-kind target. No browser or environment
+    target overrides."""
+
+    CONTEXT = ''kind-learning-20261018-69c763''
+
+    NAMESPACE = ''learning-account-release''
+
+    CONTROL_NAMESPACE = ''learning-progressive-control''
+
+    ROLLOUTS_NAMESPACE = ''learning-services-20261018''
+
+    SERVER = ''https://kubernetes.default.svc.cluster.local:443''
+
+    GIT_BRANCH = ''main''
+
+    DEFINITION = ''account-release-definition''
+
+    '
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: account-release-client
+  namespace: learning-account-release
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: account-release-client
+  template:
+    metadata:
+      labels:
+        app: account-release-client
+        version: client
+        learning.local/owner: plat170-account
+      annotations:
+        sidecar.istio.io/inject: 'true'
+        proxy.istio.io/config: '{"holdApplicationUntilProxyStarts":true}'
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: client
+        image: docker.io/library/python@sha256:9bbb8720ae0a24a6ca8dd678bfdf57818fe70caf54c52a53ec01d8db43405056
+        command:
+        - python3
+        - -c
+        - import time; time.sleep(86400)
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+        volumeMounts:
+        - name: code
+          mountPath: /work
+          readOnly: true
+      volumes:
+      - name: code
+        configMap:
+          name: account-release-client

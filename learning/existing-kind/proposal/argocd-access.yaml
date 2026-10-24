@@ -792,6 +792,25 @@ rules:
   resourceNames:
   - istio-validator-learning-1-31-2-istio-learning-system
 - apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - validatingadmissionpolicies
+  - validatingadmissionpolicybindings
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - validatingadmissionpolicies
+  - validatingadmissionpolicybindings
+  verbs:
+  - update
+  - patch
+  resourceNames:
+  - backstage-account-operation-only
+- apiGroups:
   - rbac.authorization.k8s.io
   resources:
   - clusterroles

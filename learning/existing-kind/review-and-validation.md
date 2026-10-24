@@ -41,3 +41,28 @@ from adoption and classified it as generated state. Also excluded argocd-cm from
 the captured Core parents because the composed declaration has a single separate
 owner. Final adoption capture has 53 non-Secret parents and 21 CRDs, not generated
 Pods/status. Review of the new renderer/proposal is pending.
+
+## Final wiring implementation
+
+Source/role wiring is complete.21 affected adapter/receipt tests pass, including
+old-context/session rejection and definition-before-workload sync without spec
+patches. Historical fixture files remain unchanged; only synthetic in-memory
+fixtures bind to the new target. Seven manual children have existing source
+directories, unique managed identities, no managed Role/Secret declarations, and
+Canary/Rolling definition renders produce the intended Git-owned exact SHA and
+ignore set.
+
+The two native operation-boundary objects passed server create dry-run and were
+confirmed absent afterward. Actual enforcement/positive/negative authorization is
+not yet tested. All21 same-spec CRDs passed server-side dry-run with
+force-conflicts=false and argocd-controller manager; no ownership was saved.
+Pinned-source inspection corrected the migration option to
+ClientSideApplyMigration=false and the Rollouts plugin/lease namespace to its
+unchanged Pod SA namespace. Argo SSA's built-in ForceConflicts is explicitly
+disclosed for the one execution decision; no resource Force/Replace is set.
+
+Prior heads also completed CI: platform daa3e77 push40118889127/PR40118893053
+success, application-manifest8141756 PR40118894852 success. These are not claims
+about the new commit. Final source/operation-boundary review and latest required
+CI remain execution gates; no live grant, token, sync, admission activation or
+data recreation has occurred.

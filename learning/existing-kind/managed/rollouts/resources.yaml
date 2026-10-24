@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learning-rollouts
+  namespace: learning-services-20261018
+  labels:
+    app.kubernetes.io/component: rollouts-controller
+    app.kubernetes.io/name: argo-rollouts
+    app.kubernetes.io/part-of: argo-rollouts
+    learning.local/owner: codex-local-learning
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argo-rollouts
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: argo-rollouts
+    spec:
+      containers:
+      - args:
+        - --namespaced
+        - --namespace
+        - learning-account-release
+        - --leader-elect=true
+        - --istio-api-version=v1
+        image: learning.local/account-rollouts@sha256:966adba896524519bd1653b31ade97b624dd5cbf83623f7cdeb5c5708aaa69e0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: healthz
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: argo-rollouts
+        ports:
+        - containerPort: 8090
+          name: metrics
+          protocol: TCP
+        - containerPort: 8080
+          name: healthz
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            ephemeral-storage: 256Mi
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            ephemeral-storage: 32Mi
+            memory: 64Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /home/argo-rollouts/plugin-bin
+          name: plugin-bin
+        - mountPath: /tmp
+          name: tmp
+        env:
+        - name: ACCOUNT_POLICY_SHA256
+          value: 51c6505758ba09230478c65319b2e0696f9bad3b0e16802238823a7f361920db
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsNonRoot: true
+      serviceAccount: learning-rollouts
+      serviceAccountName: learning-rollouts
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: plugin-bin
+      - emptyDir: {}
+        name: tmp
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argo-rollouts-config
+  namespace: learning-services-20261018
+data:
+  metricProviderPlugins: "- name: learning-local/account-policy\n  location: file:///opt/account-policy\n\
+    \  sha256: 51c6505758ba09230478c65319b2e0696f9bad3b0e16802238823a7f361920db\n"

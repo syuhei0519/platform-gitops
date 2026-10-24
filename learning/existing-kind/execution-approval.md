@@ -1,9 +1,9 @@
-# Consolidated execution decision — draft, not yet applied
+# Consolidated execution decision — scope fixed, not yet applied
 
 This replaces the first-batch-only approval proposal. One decision should cover
 the reviewed execution phase below; do not ask separately for each row. The exact
 rendered files, hashes and identity lists accompany this record. No credential or
-live authority has been created. Remaining ordinary code work is listed at the end.
+live authority has been created. The source wiring/adapter implementation is complete; required CI and final review are separate execution gates.
 
 ## Minimal selected configuration
 
@@ -47,7 +47,7 @@ requires exact identities, lost data class and actual initialization evidence.
    explicit name set while supporting the Engine cache. The proposal discloses
    this cluster metadata read authority. Updates/patches are restricted by
    resourceNames to the existing 12 namespaces plus the new Account namespace,
-   the exact 21 existing CRDs and the exact two proposed webhook objects. No
+   the exact 21 existing CRDs and the exact two proposed Istio webhook objects plus ValidatingAdmissionPolicy/Binding `backstage-account-operation-only`. No
    Namespace/CRD deletion or namespace finalization is granted. CRD schema change
    is not intended: initial declarations retain the captured live spec and the
    installed versions. Name sets are in the rendered grant and inputs JSON files.
@@ -127,7 +127,10 @@ before importing its cache into this kind; no package publication is required.
 The new Account Role/Binding targets the existing SA from the old namespace. It
 allows only the one named Rollout status, Account-namespace generated RS/AnalysisRuns,
 lease/events, and the one named Istio route/subsets. No Secret rule is added. The
-ConfigMap plugin informer follows the new watch namespace. Do not add a second
+plugin ConfigMap, notification filters and leader lease remain in the existing
+controller Pod/SA namespace learning-services-20261018: v1.10.1 uses
+defaults.Namespace(), independently of --namespace. The old filtered Role is
+reused; new Account ConfigMap/lease permissions were removed. Do not add a second
 controller or grant cluster-wide workload writes. Prove this scope change and
 plugin readiness before Account acceptance; rendering is not a runtime pass.
 
@@ -150,8 +153,7 @@ plugin readiness before Account acceptance; rendering is not a runtime pass.
   status get+patch, Account Pod/RS/AnalysisRun reads, named route reads; control
   Application get+patch only for Account release/definition Applications needed
   by the selected Git-source ownership protocol. No Secret, exec, Pod deletion,
-  workload-spec write or merge permission. Final adapter/role agreement is a
-  remaining code gate below.
+  workload-spec write or merge permission. The adapter and named Role now agree.
 * API token: TokenRequest with default Kubernetes API audience, requested 3600s;
   use returned expirationTimestamp as authority. Store only a dedicated kubeconfig
   under user+SYSTEM ACL Temp, never standard kubeconfig. A single approval covers
@@ -183,22 +185,82 @@ Only affected static/render checks, required CI, independent review, integration
 smoke and the AC-required five cases/negative/drift/revert/restart tests are needed.
 The completed capability tests and SAST/Sonar results are reused at unchanged source.
 
-## Remaining ordinary code gates — no extra permission is requested for these
+## Final source/operation agreement
 
-1. Wire the final root/child project sources to the captured parents without
-   duplicate argocd-cm/CRL/controller ownership. CRLs are generated; the composed
-   argocd-cm has one owner. Captured parents do not imply live adoption.
-2. Remove the deleted-kind/trial-branch pins from the active adapter/receipt
-   identity while retaining historical evidence. Decide and implement the child
-   Application source ownership together: a root must not reset a release's
-   reviewed revision or mode-specific ignore pointers. The minimal intended
-   protocol is Git-owned `main` source/definition plus exact merged sync revision;
-   any needed definition-Application operation must be included in the final
-   named Backstage Role. Do not mask image/strategy drift or retain a competing
-   direct spec path to avoid implementing that agreement.
-3. Finish scoped checks/independent review at the final proposal SHA, then ask
-   for one concrete execution decision. Do not treat this draft as ready for
-   application while these gates remain open.
+The root creates seven manual children: foundation, existing services, shared
+observability, plain mesh fixture, reused Rollouts, Account DB/client foundation,
+and `account-release-definition`. It does not declare a competing direct Account
+workload Application. Every root/child has pruning off and no cascading finalizer.
+
+The definition chart consumes the Git profile and Argo's resolved Git revision via
+Helm parameter `manifestRevision=$ARGOCD_APP_REVISION`. It declares the Account
+Application's exact commit and Canary-only ignore pointers together. Re-syncing
+the root/definition therefore reproduces Git state instead of resetting a portal
+patch. Argo documents the resolved-revision build variable and Helm substitution:
+[build environment](https://argo-cd.readthedocs.io/en/latest/user-guide/build-environment/),
+[Helm parameters](https://argo-cd.readthedocs.io/en/latest/user-guide/helm/#build-environment).
+
+The adapter reads observed `status.sync.revision`, validates the merged main commit
+and unchanged tree, CAS-syncs the definition from protected main, waits for that
+same resolved SHA and child spec, then CAS-syncs the workload at that exact SHA.
+It never patches Application spec/source/ignore fields. A moved main, replaced UID,
+foreign operation or generation change is fail-closed. Receipt checks bind the
+actual Application UID/observed SHA and the reused controllers' real namespaces.
+The fixed existing-kind context is mandatory; deleted-kind/trial branch inputs
+are rejected. Token expiry and an absolute maximum24h session window are enforced.
+
+### Enforced Backstage credential boundary
+
+Kubernetes Application patch RBAC alone includes spec modification. To avoid
+implicitly giving this new credential access to the other projects in the reused
+Core, one native policy and binding named `backstage-account-operation-only` are
+added. They match only two named Applications in learning-progressive-control.
+For the new Backstage SA they enforce unchanged spec/ownership metadata, no active
+operation overwrite, no retry/source/resource/manifest/strategy override, no prune,
+and only the explicit RespectIgnoreDifferences option. Definition sync may use
+main; workload sync must use its Git-owned exact source SHA. During any actor's
+active workload sync, spec changes are rejected until the operation clears.
+Other actor updates are otherwise unaffected. No external webhook service or new
+certificate is introduced. Argo may reconcile these two native policy objects by
+name; initial operator bootstrap creates them before granting/issuing portal access.
+
+Server dry-run accepted the policy/binding without storing them. This does not
+prove enforcement. After approval and installation, inspect type-check warnings
+and use operator impersonation/dry-run requests to confirm allowed operations and
+denial of spec/source/project/destination/revision/prune/Force overrides before
+issuing the portal token. Any failure stops activation without widening authority.
+
+### Observability/data footprint
+
+The existing receiver is namespace-specific. Keep it and its old metric labels
+unchanged. Add just `observability/account-release-otel-collector` with the same
+pinned image (50m/64Mi request,500m/256Mi limit) and one new-Account Pod-read
+Role/Binding. Its projected Pod identity is runtime-managed, not a fixed Secret.
+Append its target to the existing otel-application scrape job with the new namespace
+label and append the existing scoped Envoy job. Prometheus alone receives a checksum
+restart to load this configuration; its emptyDir metric history may reset. This is
+a planned disposable observability effect, not a DB/CA/Sonar reset. Preserve all
+old scrape/alert entries and prove old targets after warmup.
+
+The new DB init/migration Job and bounded traffic client are Git declarations.
+They have not run. Reuse reviewed fixed API/client/controller images; verify cache
+artifact hashes rather than rebuilding unchanged code or publishing packages.
+Peak new Account+mesh/client/collector/istiod requests are approximately1160m CPU
+and1440Mi memory; combined limits add about5700m/3456Mi. Existing reservations were
+3100m/6498Mi. Limits are ceilings, not usage guarantees; measure actual free memory
+before session start and stop if node/host pressure or less than2Gi available
+memory threatens baseline services. The local portal is additionally limited to
+a1Gi Node heap. Do not claim capacity or functional acceptance from this estimate.
+
+## Execution gates
+
+Scope and intended authorities are fixed. One human execution decision may now
+cover these specific changes and credential lifetimes. Merge/apply remain gated
+on required CI and final targeted review; actual alias/cache, native admission,
+leaf issuance, new DB initialization/API and non-regression are checked after the
+approved small batches. These runtime checks are not completed or substituted by
+21 passing adapter/receipt tests. No live grants, credentials, admission activation,
+workload sync, deletion or data recreation has occurred.
 
 ## Existing volume identities (no destructive action selected)
 
@@ -211,3 +273,33 @@ PV UID and claim UID. The human-readable exact four application pairs follow.
 | learning-services-20261018/learning-notification-data | pvc-3b432a3c-2f56-427d-bc93-ddabd02d0d73 | a85cf840-ab32-467f-a3e2-fed8e5fc9643 | 3b432a3c-2f56-427d-bc93-ddabd02d0d73 | Delete |
 | learning-services-20261018/learning-order-data | pvc-9cc73725-b2a9-4aff-81ee-e48bb75d732c | 9bb7248a-713e-4b37-b300-38d8ae2dcdeb | 9cc73725-b2a9-4aff-81ee-e48bb75d732c | Delete |
 | learning-services-20261018/learning-account-data | pvc-9ea2064f-271a-4a97-af7f-110750dc3af6 | 2ecca1c3-5b5a-42ee-838f-c63d7944ffae | 9ea2064f-271a-4a97-af7f-110750dc3af6 | Delete |
+
+## Large CRD field ownership decision
+
+Existing CRD bodies exceed client-side last-applied annotation capacity. Only
+these21 captured same-spec CRDs use ServerSideApply=true with
+ClientSideApplyMigration=false (the exact v3.5.2 constant). No Force=true or
+Replace=true resource recreation is configured. Argo v3.5.2's SSA backend itself
+sets ForceConflicts=true; this is distinct from delete/recreate but is real field
+ownership authority and is included in this execution decision. All21 passed a
+non-persistent server-side dry-run with force-conflicts=false and the same
+argocd-controller field manager. Any changed live spec or ownership conflict at
+execution preflight stops this batch; do not retry a conflict forcibly. This is
+not a claim that the backend conflict flag is disabled. The pinned source is
+[resource operations](https://github.com/argoproj/argo-cd/blob/e258ee23c3e52266d407572f4bcdfe7d9ed36cb5/gitops-engine/pkg/utils/kube/resource_ops.go).
+
+## Credential cleanup included in this one decision
+
+At the portal session cutoff disable its writes, stop only the new portal-owned
+processes and remove its protected task kubeconfig. Remove only the two newly
+created RoleBindings `learning-account-release/backstage-account` and
+`learning-progressive-control/backstage-account-application`, after UID verification,
+to revoke their effective permissions while any short token naturally expires.
+Keep the SA/Role declarations, native policy and DB/CA/Sonar Secrets. This is a
+reversible authorization cleanup, not data deletion. Never remove the existing
+Argo, Rollouts, Sonar or unrelated bindings. Clip any requested renewal to the
+remaining approved window and reject a returned expiry beyond that window.
+
+The resolved-revision template and one native policy/binding are the entire new
+operation boundary; no general evidence service or external admission server is
+introduced. Live positive/negative authorization checks occur before token use.

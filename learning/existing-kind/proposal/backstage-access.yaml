@@ -85,6 +85,7 @@ rules:
   - applications
   resourceNames:
   - account-release
+  - account-release-definition
   verbs:
   - get
   - patch
