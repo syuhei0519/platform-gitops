@@ -6,8 +6,10 @@ sonarqube:
     enabled: true
     buildNumber: 26.9.0.129388
   image:
-    repository: sonarqube
-    tag: 26.9.0.129388-community@sha256:c0f1160bccfa435db4168c2d7df69af3c3ea7bfeb87395613014048fb33a68c1
+    # The upstream chart also uses image.tag as a Kubernetes label. Keep its tag
+    # label valid while assembling the exact immutable image with repository:tag.
+    repository: sonarqube@sha256
+    tag: c0f1160bccfa435db4168c2d7df69af3c3ea7bfeb87395613014048fb33a68c1
   initSysctl:
     enabled: false
   initFs:

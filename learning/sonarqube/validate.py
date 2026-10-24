@@ -1,6 +1,7 @@
 """Offline official-chart pin, render and lab isolation contract checks."""
 from collections import Counter
 import hashlib
+import re
 from pathlib import Path
 import sys
 import yaml
@@ -16,6 +17,19 @@ def verify(text):
         PersistentVolumeClaim=2, StatefulSet=2, Secret=1)
     by_name = {(x['kind'], x['metadata']['name']): x for x in objects}
     for obj in objects:
+        def labels_valid(value):
+            if isinstance(value, dict):
+                for key, child in value.items():
+                    if key == 'labels':
+                        assert all(isinstance(v, str) and len(v) <= 63 and
+                            (not v or re.fullmatch(r'[A-Za-z0-9](?:[-_.A-Za-z0-9]*[A-Za-z0-9])?', v))
+                            for v in child.values()), 'invalid Kubernetes label'
+                    else:
+                        labels_valid(child)
+            elif isinstance(value, list):
+                for child in value:
+                    labels_valid(child)
+        labels_valid(obj)
         assert obj['metadata'].get('namespace', 'sonarqube') == 'sonarqube'
         if obj['kind'] == 'Secret':
             # The official chart always creates this empty proxy configuration.
