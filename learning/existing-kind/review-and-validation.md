@@ -1,0 +1,25 @@
+# Initial proposal review and checks
+
+Scope: read-only PLAT-196 inventory and uninstalled first-batch access proposal.
+No actual migration, API/data acceptance or final PLAT-199 pass is claimed.
+
+* Independent reviewer: GPT-6.1-Sol, same model requested by the user.
+* The reviewer checked inventory/ownership identity equality, key object counts,
+  PV policies, actual old Argo role facts, all four namespace cache read sets and
+  whether pending checks were misrepresented as passing.
+* P2 finding: workload write permission enables indirect Secret access and use of
+  namespace ServiceAccounts. Corrected approval-scope.md to distinguish direct
+  Secret API permissions from effective workload authority. This risk is part of
+  the pending decision, not an assertion of credential isolation.
+* Targeted static check passed: all 572 inventoried identities map to ownership
+  rows, eight access documents parse, and the new role rules contain no delete,
+  direct Secret, wildcard-resource or cluster-scoped grant.
+* Live baseline: 32 Pods, 28 Running, all Running container statuses Ready;
+  four completed migration Pods retained. pod-baseline.json captures UID and
+  runtime imageID for later comparison.
+* The source check found no AGENTS.md or .agents/skills/SKILL.md in the four
+  checked-out repositories. README, CI validation entrypoints and relevant
+  progressive-delivery/Sonar/cache/Account handoff instructions were read.
+* No full suite, repeated Sonar/cache regression, SAST rebuild or live write was
+  performed. Required CI, exact rendered/live immutable-field comparison, alias
+  TLS/cache behavior and API/DB data acceptance remain pending.
