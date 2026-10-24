@@ -491,11 +491,11 @@ spec:
         resources:
           limits:
             cpu: 500m
-            ephemeral-storage: 256Mi
+            ephemeral-storage: 1Gi
             memory: 256Mi
           requests:
             cpu: 50m
-            ephemeral-storage: 32Mi
+            ephemeral-storage: 256Mi
             memory: 64Mi
         securityContext:
           allowPrivilegeEscalation: false
@@ -543,11 +543,11 @@ spec:
         resources:
           limits:
             cpu: 500m
-            ephemeral-storage: 256Mi
+            ephemeral-storage: 1Gi
             memory: 256Mi
           requests:
             cpu: 50m
-            ephemeral-storage: 32Mi
+            ephemeral-storage: 256Mi
             memory: 64Mi
         securityContext:
           allowPrivilegeEscalation: false
@@ -584,11 +584,14 @@ spec:
           defaultMode: 420
           name: argocd-gpg-keys-cm
         name: gpg-keys
-      - emptyDir: {}
+      - emptyDir:
+          sizeLimit: 8Mi
         name: gpg-keyring
-      - emptyDir: {}
+      - emptyDir:
+          sizeLimit: 512Mi
         name: tmp
-      - emptyDir: {}
+      - emptyDir:
+          sizeLimit: 128Mi
         name: helm-working-dir
       - name: argocd-repo-server-tls
         secret:
@@ -610,9 +613,11 @@ spec:
             path: client-ca.crt
           optional: true
           secretName: argocd-repo-server-mtls
-      - emptyDir: {}
+      - emptyDir:
+          sizeLimit: 256Mi
         name: var-files
-      - emptyDir: {}
+      - emptyDir:
+          sizeLimit: 8Mi
         name: plugins
       - configMap:
           defaultMode: 420
