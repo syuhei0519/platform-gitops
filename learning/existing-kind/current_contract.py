@@ -99,7 +99,26 @@ def secret_references(value, found):
             secret_references(child, found)
 
 
+def validate_crd(doc, application):
+    spec = doc.get('spec') or {}
+    names = spec.get('names') or {}
+    versions = spec.get('versions')
+    reason = f'crd-schema:{application}:{doc.get("metadata", {}).get("name")}'
+    require(isinstance(spec.get('group'), str) and spec['group'], reason)
+    require(isinstance(names.get('kind'), str) and names['kind'], reason)
+    require(isinstance(names.get('plural'), str) and names['plural'], reason)
+    require(spec.get('scope') in {'Namespaced', 'Cluster'}, reason)
+    require(isinstance(versions, list) and versions, reason)
+    require(sum(version.get('storage') is True for version in versions) == 1, reason)
+    for version in versions:
+        require(isinstance(version, dict) and isinstance(version.get('name'), str) and
+                version['name'] and version.get('served') is True, reason)
+        schema = version.get('schema', {}).get('openAPIV3Schema')
+        require(isinstance(schema, dict) and schema.get('type') == 'object', reason)
+
+
 def validate_project(doc, name, expected, contract):
+    require(doc.get('apiVersion') == 'argoproj.io/v1alpha1', f'project-api-version:{name}')
     require(doc.get('kind') == 'AppProject', f'project-kind:{name}')
     require(doc.get('metadata', {}).get('namespace') == contract['controlNamespace'], f'project-namespace:{name}')
     require(doc.get('metadata', {}).get('annotations', {}).get('argocd.argoproj.io/sync-options') == PROTECTED,
@@ -118,18 +137,28 @@ def validate_project(doc, name, expected, contract):
 
 
 def validate_application(doc, name, expected, contract):
+    require(doc.get('apiVersion') == 'argoproj.io/v1alpha1', f'application-api-version:{name}')
     require(doc.get('kind') == 'Application', f'application-kind:{name}')
     metadata = doc.get('metadata', {})
     require(metadata.get('namespace') == contract['controlNamespace'], f'application-namespace:{name}')
     require(metadata.get('annotations', {}).get('argocd.argoproj.io/sync-options') == PROTECTED,
             f'application-delete-protection:{name}')
     spec = doc.get('spec', {})
+    spec_fields = {'project', 'source', 'destination', 'syncPolicy'}
+    if expected.get('ignoreDifferences'):
+        spec_fields.add('ignoreDifferences')
+    require(set(spec) == spec_fields, f'application-fields:{name}')
     require(spec.get('project') == expected['project'], f'application-project:{name}')
     source = spec.get('source', {})
+    source_fields = {'repoURL', 'targetRevision', 'path'}
+    if 'sourceHelm' in expected:
+        source_fields.add('helm')
+    require(set(source) == source_fields, f'application-source-fields:{name}')
     require(source.get('repoURL') == f"https://github.com/syuhei0519/{expected['repo']}.git",
             f'application-repo:{name}')
     require(source.get('targetRevision') == 'main', f'application-revision:{name}')
     require(source.get('path') == expected['path'], f'application-path:{name}')
+    require(source.get('helm') == expected.get('sourceHelm'), f'application-source-helm:{name}')
     destination = spec.get('destination', {})
     require(destination == {'server': contract['server'], 'namespace': expected['destination']},
             f'application-destination:{name}')
@@ -141,11 +170,32 @@ def validate_application(doc, name, expected, contract):
             f'application-ignore:{name}')
 
 
+def indexed_documents(docs, expected_identities, label):
+    """Validate identity/API before building mappings that could overwrite duplicates."""
+    allowed = {'AppProject', 'Application'}
+    seen = set()
+    indexed = {}
+    for index, doc in enumerate(docs):
+        require(isinstance(doc, dict), f'{label}-document:{index}')
+        require(doc.get('apiVersion') == 'argoproj.io/v1alpha1', f'{label}-api-version:{index}')
+        kind = doc.get('kind')
+        require(kind in allowed, f'{label}-kind:{kind}')
+        name = doc.get('metadata', {}).get('name')
+        require(isinstance(name, str) and name, f'{label}-name:{index}')
+        key = (kind, name)
+        require(key not in seen, f'duplicate-{label}-identity:{kind}:{name}')
+        seen.add(key)
+        indexed[key] = doc
+    require(seen == expected_identities, f'{label}-identity-set:{sorted(seen)}')
+    return indexed
+
+
 def validate_resources(resources, contract):
     seen = {}
     secrets = set()
     pvcs = {}
     jobs = {}
+    observed_kinds = set()
     expected_identities = contract['_resourceIdentities']
     require(set(resources) == set(expected_identities), f'resource-identity-children:{sorted(resources)}')
     for application, docs in resources.items():
@@ -157,6 +207,9 @@ def validate_resources(resources, contract):
         for doc in docs:
             require(isinstance(doc.get('apiVersion'), str) and doc['apiVersion'], f'api-version:{application}')
             require(isinstance(doc.get('kind'), str) and doc['kind'], f'kind:{application}')
+            observed_kinds.add(doc['kind'])
+            require(doc['apiVersion'] == contract['apiVersions'].get(doc['kind']),
+                    f'api-version-contract:{application}:{doc["kind"]}:{doc["apiVersion"]}')
             metadata = doc.get('metadata') or {}
             require(isinstance(metadata.get('name'), str) and metadata['name'], f'name:{application}')
             key = identity(doc)
@@ -165,6 +218,8 @@ def validate_resources(resources, contract):
             require(key[2] in allowed_namespaces, f'resource-namespace:{application}:{key}')
             require(doc['kind'] != 'Secret', f'secret-object-in-git:{application}:{key}')
             require(doc['kind'] not in RBAC, f'child-rbac-object:{application}:{key}')
+            if doc['kind'] == 'CustomResourceDefinition':
+                validate_crd(doc, application)
             secret_references(doc, secrets)
             if doc['kind'] == 'PersistentVolumeClaim':
                 require(metadata.get('annotations', {}).get('argocd.argoproj.io/sync-options') == PROTECTED,
@@ -187,6 +242,8 @@ def validate_resources(resources, contract):
     require(pvcs == contract['persistentVolumeClaims'], 'pvc-immutable-contract')
     require(set(jobs) == set(contract['jobs']), f'job-set:{sorted(jobs)}')
     require(all(jobs[name] == 'lab-learning-account-foundation' for name in jobs), 'job-owner')
+    require(observed_kinds == set(contract['apiVersions']),
+            f'api-version-kind-set:{sorted(observed_kinds)}')
 
 
 def load_resources(repositories, contract):
@@ -212,21 +269,21 @@ def validate(platform, manifest, entry_docs=None, root_docs=None, resources=None
     contract['_resourceIdentities'] = json.loads(identity_path.read_text(encoding='utf-8'))
     repositories = {'platform-gitops': platform, 'application-manifest': manifest}
     entry = document_file(platform / contract['entry']) if entry_docs is None else entry_docs
-    root_entry = next((d for d in entry if d.get('kind') == 'Application' and
-                       d.get('metadata', {}).get('name') == 'lab-learning-root'), None)
-    require(root_entry is not None, 'missing-current-entry')
-    bootstrap_project = next((d for d in entry if d.get('kind') == 'AppProject' and
-                              d.get('metadata', {}).get('name') == 'learning-existing'), None)
-    require(bootstrap_project is not None, 'missing-bootstrap-project')
-    require(len(entry) == 2, 'bootstrap-entry-set')
+    entry_index = indexed_documents(entry, {
+        ('AppProject', 'learning-existing'), ('Application', 'lab-learning-root')}, 'entry')
+    root_entry = entry_index[('Application', 'lab-learning-root')]
+    bootstrap_project = entry_index[('AppProject', 'learning-existing')]
     validate_project(bootstrap_project, 'learning-existing', contract['projects']['learning-existing'], contract)
     validate_application(root_entry, 'lab-learning-root', {
         'repo': 'platform-gitops', 'path': 'learning/existing-kind/root',
         'project': 'learning-existing', 'destination': contract['controlNamespace']}, contract)
     if root_docs is None:
         root_docs = documents(platform / Path(contract['root']).parent)
-    projects = {d.get('metadata', {}).get('name'): d for d in root_docs if d.get('kind') == 'AppProject'}
-    applications = {d.get('metadata', {}).get('name'): d for d in root_docs if d.get('kind') == 'Application'}
+    expected_root = ({('AppProject', name) for name in contract['projects']} |
+                     {('Application', name) for name in contract['applications']})
+    root_index = indexed_documents(root_docs, expected_root, 'root')
+    projects = {name: root_index[('AppProject', name)] for name in contract['projects']}
+    applications = {name: root_index[('Application', name)] for name in contract['applications']}
     require(set(projects) == set(contract['projects']), f'project-set:{sorted(projects)}')
     require(set(applications) == set(contract['applications']), f'application-set:{sorted(applications)}')
     for name, expected in contract['projects'].items():
@@ -243,8 +300,19 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--platform', type=Path, default=HERE.parents[1])
     parser.add_argument('--application-manifest', type=Path, required=True)
+    parser.add_argument('--output', type=Path)
+    parser.add_argument('--schema-output', type=Path)
     args = parser.parse_args()
     contract, resources = validate(args.platform.resolve(), args.application_manifest.resolve())
+    if args.output:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        ordered = [doc for name in sorted(resources) for doc in resources[name]]
+        args.output.write_text(yaml.safe_dump_all(ordered, sort_keys=False), encoding='utf-8')
+    if args.schema_output:
+        args.schema_output.parent.mkdir(parents=True, exist_ok=True)
+        schema_resources = [doc for name in sorted(resources) for doc in resources[name]
+                            if doc.get('kind') != 'CustomResourceDefinition']
+        args.schema_output.write_text(yaml.safe_dump_all(schema_resources, sort_keys=False), encoding='utf-8')
     print(f"PASS current root: {len(contract['applications'])} children, "
           f"{sum(len(items) for items in resources.values())} concrete resources, paired repositories")
     print('Offline source contract only; live sync/health and immutable cluster state are not claimed')

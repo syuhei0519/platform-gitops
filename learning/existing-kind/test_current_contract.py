@@ -100,6 +100,65 @@ class CurrentContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ContractError, 'duplicate-identity'):
             validate_resources(resources, self.contract)
 
+    def test_invalid_child_api_version_fails(self):
+        resources = copy.deepcopy(self.resources)
+        deployment = next(doc for docs in resources.values() for doc in docs
+                          if doc.get('kind') == 'Deployment')
+        deployment['apiVersion'] = 'apps/v2'
+        with self.assertRaisesRegex(ContractError, 'api-version-contract'):
+            validate_resources(resources, self.contract)
+
+    def test_minimal_invalid_crd_spec_fails(self):
+        resources = copy.deepcopy(self.resources)
+        crd = next(doc for docs in resources.values() for doc in docs
+                   if doc.get('kind') == 'CustomResourceDefinition')
+        crd['spec']['versions'][0].pop('schema', None)
+        with self.assertRaisesRegex(ContractError, 'crd-schema'):
+            validate_resources(resources, self.contract)
+
+    def test_duplicate_root_identity_fails_before_mapping(self):
+        root = copy.deepcopy(self.root)
+        duplicate = next(doc for doc in root if doc.get('kind') == 'Application')
+        root.append(copy.deepcopy(duplicate))
+        with self.assertRaisesRegex(ContractError, 'duplicate-root-identity'):
+            validate(PLATFORM, MANIFEST, root_docs=root)
+
+    def test_unknown_root_kind_fails(self):
+        root = copy.deepcopy(self.root)
+        root.append({'apiVersion': 'argoproj.io/v1alpha1', 'kind': 'ConfigMap',
+                     'metadata': {'name': 'unexpected-root-object'}})
+        with self.assertRaisesRegex(ContractError, 'root-kind:ConfigMap'):
+            validate(PLATFORM, MANIFEST, root_docs=root)
+
+    def test_root_application_and_project_api_versions_fail(self):
+        for kind in ('Application', 'AppProject'):
+            with self.subTest(kind=kind):
+                root = copy.deepcopy(self.root)
+                next(doc for doc in root if doc.get('kind') == kind)['apiVersion'] = 'argoproj.io/v1beta1'
+                with self.assertRaisesRegex(ContractError, 'root-api-version'):
+                    validate(PLATFORM, MANIFEST, root_docs=root)
+
+    def test_entry_identity_and_api_version_are_exact(self):
+        entry = document_file(PLATFORM / self.contract['entry'])
+        entry[0]['apiVersion'] = 'argoproj.io/v1beta1'
+        with self.assertRaisesRegex(ContractError, 'entry-api-version'):
+            validate(PLATFORM, MANIFEST, entry_docs=entry)
+
+    def test_alternate_application_sources_fail(self):
+        root = copy.deepcopy(self.root)
+        app = next(doc for doc in root if doc.get('kind') == 'Application')
+        app['spec']['sources'] = [copy.deepcopy(app['spec']['source'])]
+        with self.assertRaisesRegex(ContractError, 'application-fields'):
+            validate(PLATFORM, MANIFEST, root_docs=root)
+
+    def test_account_release_chart_override_fails(self):
+        root = copy.deepcopy(self.root)
+        app = next(doc for doc in root if doc.get('metadata', {}).get('name') ==
+                   'account-release-definition')
+        app['spec']['source']['helm']['valueFiles'] = ['../../unreviewed.yaml']
+        with self.assertRaisesRegex(ContractError, 'application-source-helm'):
+            validate(PLATFORM, MANIFEST, root_docs=root)
+
     def test_unknown_secret_reference_fails(self):
         resources = copy.deepcopy(self.resources)
         config = next(doc for doc in resources['lab-learning-observability']

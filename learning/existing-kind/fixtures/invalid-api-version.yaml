@@ -1,0 +1,17 @@
+apiVersion: apps/v2
+kind: Deployment
+metadata:
+  name: invalid-version
+  namespace: validation-fixture
+spec:
+  selector:
+    matchLabels:
+      app: invalid-version
+  template:
+    metadata:
+      labels:
+        app: invalid-version
+    spec:
+      containers:
+      - name: fixture
+        image: example.invalid/fixture@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
