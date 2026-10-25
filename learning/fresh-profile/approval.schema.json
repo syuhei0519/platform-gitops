@@ -20,7 +20,7 @@
     "spec": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["approved", "target", "repositories", "hashes", "scope", "gates", "allowedSteps"],
+      "required": ["approved", "target", "repositories", "hashes", "scope", "gates", "inputDigests", "allowedSteps"],
       "properties": {
         "approved": {"type": "boolean"},
         "target": {
@@ -45,10 +45,12 @@
         "hashes": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["profileSha256", "materializationSha256"],
+          "required": ["profileSha256", "materializationSha256", "sourceSetSha256", "liveAdapterPlanSha256"],
           "properties": {
             "profileSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-            "materializationSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+            "materializationSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "sourceSetSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "liveAdapterPlanSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
           }
         },
         "scope": {
@@ -69,6 +71,11 @@
             "G3": {"$ref": "#/definitions/gate"},
             "security": {"$ref": "#/definitions/gate"}
           }
+        },
+        "inputDigests": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
         },
         "allowedSteps": {
           "const": ["preflight", "image-source", "cluster", "empty-node-cache", "image-import", "crds", "controllers", "security-boundary", "credential-bootstrap", "custom-resources", "database", "role-bootstrap", "migration", "application", "acceptance"]

@@ -45,6 +45,10 @@ def load_yaml(path: Path):
 def validate_canonical(contract):
     require(contract.get("schemaVersion") == "platform.lab/fresh-security-contract/v1", "canonical-version")
     require(contract.get("destinationServer") == "https://kubernetes.default.svc", "canonical-destination-server")
+    runtime_image = contract.get("approvedRuntimeImage")
+    require(runtime_image == "PENDING_PLAT211_VERIFIED_IMAGE" or re.fullmatch(
+        r"ghcr\.io/syuhei0519/backend-app@sha256:[0-9a-f]{64}", runtime_image or ""),
+        "canonical-runtime-image")
     namespaces = contract.get("namespaces", {})
     require(set(namespaces) == {"fresh-control", "fresh-account", "fresh-observability"}, "canonical-namespaces")
     for namespace, boundary in (("fresh-control", "control"), ("fresh-account", "account"),
@@ -67,6 +71,19 @@ def validate_canonical(contract):
                 f"application-server:{name}")
         require(application["destination"]["namespace"] in namespaces, f"application-destination:{name}")
         require(application.get("project") in {"fresh-platform", "fresh-account"}, f"application-project:{name}")
+    application_revision = applications["fresh-account-release"]["revision"]
+    require(applications["account-lightweight-root"].get("sourceConfig") ==
+            {"directory": {"recurse": True}}, "application-source-config:account-lightweight-root")
+    require(applications["fresh-observability"].get("sourceConfig") ==
+            {"directory": {"recurse": True}}, "application-source-config:fresh-observability")
+    require(applications["fresh-release-definitions"].get("sourceConfig") == {"helm": {
+        "releaseName": "fresh-account-release-definition", "parameters": [
+            {"name": "workloadRevision", "value": application_revision},
+            {"name": "accountRuntimeImage", "value": runtime_image},
+        ]}}, "application-source-config:fresh-release-definitions")
+    require(applications["fresh-account-release"].get("sourceConfig") == {"kustomize": {
+        "images": ["ghcr.io/syuhei0519/backend-app=" + runtime_image]}},
+        "application-source-config:fresh-account-release")
 
     controllers = contract.get("controllers", {})
     require(set(controllers) == {"StatefulSet/fresh-account/account-postgresql",
@@ -84,6 +101,13 @@ def validate_canonical(contract):
         "discoveryVerbs": ["get", "list", "watch"], "createVerbs": ["create"],
         "namedMutationVerbs": ["get", "update", "patch"], "deleteVerbs": [],
         "createIsBoundedByFailClosedAdmission": True}, "canonical-rbac-contract")
+    require(contract.get("podCreationBoundary") == {
+        "trustedCreateRequestor": "system:kube-controller-manager",
+        "namespacedPodCreateSubjects": [], "ownerReferenceUidLookupInCel": False,
+        "guarantee": "CREATE Pod requires trusted kube-controller-manager requestor plus canonical controller owner shape; namespaced GitOps and workload identities receive no Pod create verb",
+        "liveEvidence": ["audit-create-username", "kubectl-auth-can-i-no-direct-pod",
+                         "fake-owner-direct-pod-denied", "ephemeralcontainers-subresource-denied"]},
+        "canonical-pod-create-boundary")
     require(contract.get("liveEvidence", {}).get("status") == "required-unrun", "canonical-live-boundary")
     return contract
 
@@ -140,6 +164,14 @@ def validate_matrix(matrix, canonical=None):
     require(boundary.get("namespace") == "fresh-account" and boundary.get("directPodsAllowed") is False,
             "pod-boundary")
     require(set(boundary.get("controllers", {})) == set(canonical["controllers"]), "pod-controller-set")
+    require(boundary.get("enforcement") == "trusted-requestor-plus-owner-shape-plus-no-namespaced-pod-create"
+            and boundary.get("trustedCreateRequestor") ==
+            canonical["podCreationBoundary"]["trustedCreateRequestor"]
+            and boundary.get("namespacedPodCreateSubjects") == []
+            and boundary.get("ownerReferenceUidLookupInCel") is False
+            and boundary.get("requiredLiveEvidence") == ["audit-create-username",
+                "kubectl-auth-can-i-no-direct-pod", "fake-owner-direct-pod-denied",
+                "ephemeralcontainers-subresource-denied"], "pod-requestor-boundary")
     for identity, expected in canonical["controllers"].items():
         actual = boundary["controllers"][identity]
         require(actual.get("serviceAccountName") == expected["serviceAccountName"] and
@@ -215,6 +247,8 @@ def validate_rbac(canonical, documents):
     for namespace, role in roles.items():
         for rule in role["rules"]:
             require(not set(rule["verbs"]).intersection(DANGEROUS_VERBS), "rbac-dangerous-verb")
+            require(not set(rule["resources"]).intersection({"pods", "pods/ephemeralcontainers"}),
+                    "rbac-pod-create")
             names = tuple(sorted(rule.get("resourceNames", [])))
             for group in rule["apiGroups"]:
                 for resource in rule["resources"]:
@@ -242,6 +276,11 @@ def validate_admission(canonical, documents):
         for value in (name, app["project"], app["repository"], app["revision"], app["path"],
                       app["destination"]["server"], app["destination"]["namespace"]):
             require(value in app_expression, f"admission-application:{name}")
+    for fragment in ("spec.sources", "workloadRevision", "accountRuntimeImage",
+                     canonical["approvedRuntimeImage"],
+                     "ghcr.io/syuhei0519/backend-app=" + canonical["approvedRuntimeImage"],
+                     "kustomize.images", "fresh-account-release-definition"):
+        require(fragment in app_expression, f"admission-source-fragment:{fragment}")
     managed_expression = " ".join(item["expression"] for item in policies["fresh-managed-resource-boundary"]["spec"]["validations"])
     for namespace, resources in canonical["resourceNames"].items():
         if namespace == "fresh-control":
@@ -250,7 +289,8 @@ def validate_admission(canonical, documents):
         for names in resources.values():
             require(all(name in managed_expression for name in names), f"admission-managed-name:{namespace}")
     pod_expression = " ".join(item["expression"] for item in policies["fresh-account-pod-boundary"]["spec"]["validations"])
-    for fragment in ("ownerReferences", "initContainers", "ephemeralContainers", "secretRef", "secretKeyRef", "projected", "hostPath",
+    for fragment in ("ownerReferences", "initContainers", "ephemeralContainers", "request.subResource",
+                     "request.userInfo.username", "system:kube-controller-manager", "secretRef", "secretKeyRef", "projected", "hostPath",
                      "account-db-bootstrap", "account-db-migration", "account-db-runtime"):
         require(fragment in pod_expression, f"admission-pod-fragment:{fragment}")
     require(bindings["fresh-application-boundary"]["spec"]["matchResources"]["namespaceSelector"] ==
@@ -273,7 +313,8 @@ def validate_evidence(matrix, evidence, canonical=None):
         actual = applications[name]
         for actual_key, expected_key in (("namespace", "namespace"), ("project", "project"),
                                          ("repository", "repository"), ("revision", "revision"),
-                                         ("path", "path"), ("destination", "destination")):
+                                         ("path", "path"), ("sourceConfig", "sourceConfig"),
+                                         ("destination", "destination")):
             require(actual.get(actual_key) == expected[expected_key], f"application-{actual_key}:{name}")
     require(evidence.get("operations") and all(matching_permission(matrix, item) for item in evidence["operations"]),
             "operation-authority")
@@ -286,7 +327,9 @@ def validate_evidence(matrix, evidence, canonical=None):
     return matrix, evidence
 
 
-def negative_denied(canonical, obj):
+def negative_denied(canonical, obj, request=None):
+    request = request or {"operation": "CREATE", "resource": "pods", "subResource": "",
+                          "username": "system:kube-controller-manager"}
     kind = obj.get("kind")
     metadata = obj.get("metadata", {})
     if kind == "Application":
@@ -295,12 +338,20 @@ def negative_denied(canonical, obj):
             return True
         spec = obj.get("spec", {})
         source = spec.get("source", {})
+        expected_source = {"repoURL": expected["repository"], "targetRevision": expected["revision"],
+                           "path": expected["path"], **expected["sourceConfig"]}
         return not (metadata.get("namespace") == expected["namespace"] and spec.get("project") == expected["project"] and
-                    source.get("repoURL") == expected["repository"] and source.get("targetRevision") == expected["revision"] and
-                    source.get("path") == expected["path"] and spec.get("destination") == expected["destination"])
+                    source == expected_source and "sources" not in spec and
+                    spec.get("destination") == expected["destination"])
     if kind == "Pod":
+        if request.get("subResource") == "ephemeralcontainers":
+            return True
+        if request.get("operation") == "CREATE" and request.get("username") != \
+                canonical["podCreationBoundary"]["trustedCreateRequestor"]:
+            return True
         owners = metadata.get("ownerReferences", [])
         if not any(owner.get("controller") is True and
+                   bool(owner.get("uid")) and
                    ((owner.get("kind") == "StatefulSet" and owner.get("name") == "account-postgresql") or
                     (owner.get("kind") == "Job" and owner.get("name") in {"account-db-role-bootstrap", "account-migration"}) or
                     (owner.get("kind") == "ReplicaSet" and owner.get("name", "").startswith("account-api-")))
@@ -329,11 +380,15 @@ def negative_denied(canonical, obj):
 def validate_negatives(canonical, fixture):
     require(fixture.get("schemaVersion") == "platform.lab/security-negative-fixtures/v1", "negative-version")
     cases = fixture.get("cases", [])
-    require({item["id"] for item in cases} == {"wrong-application-project", "direct-pod", "secret-volume",
+    require({item["id"] for item in cases} == {"wrong-application-project", "multiple-application-sources",
+                                                "release-helm-runtime-image-swap", "generated-child-image-swap",
+                                                "direct-pod", "fake-owner-direct-pod", "secret-volume",
                                                 "wrong-secret-key", "privileged-init-container",
-                                                "secret-backed-init-container", "arbitrary-managed-resource"},
+                                                "secret-backed-init-container", "ephemeralcontainers-subresource",
+                                                "arbitrary-managed-resource"},
             "negative-case-set")
-    require(all(item.get("expected") == "deny" and negative_denied(canonical, item["object"]) for item in cases),
+    require(all(item.get("expected") == "deny" and
+                negative_denied(canonical, item["object"], item.get("request")) for item in cases),
             "negative-not-denied")
 
 
@@ -363,7 +418,7 @@ def main():
         print(f"authority proposal rejected: {error}")
         return 1
     print("authority proposal valid", f"permissions={len(matrix['permissions'])}",
-          f"applications={len(evidence['applications'])}", "negative=7")
+          f"applications={len(evidence['applications'])}", "negative=12")
     print("offline only; live can-i and admission observations remain required-unrun")
     return 0
 

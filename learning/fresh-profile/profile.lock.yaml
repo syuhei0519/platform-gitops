@@ -25,7 +25,7 @@ spec:
       commit: aecccce46295714645387854a4dad37bdd0cd3c3
     application-manifest:
       url: https://github.com/syuhei0519/application-manifest.git
-      commit: 0fc2ae19300af32f86643152e65597b022dcdc0f
+      commit: b759f1bd4976e0269740c10421c5537e35be72dd
     platform-gitops:
       url: https://github.com/syuhei0519/platform-gitops.git
       commit: __PLATFORM_GITOPS_SHA__
@@ -134,7 +134,7 @@ spec:
       renderedRequestTotals:
         cpuMilli: 475
         memoryMiB: 960
-        applicationManifestInputSha256: 62b01c44a0d03e389d032d72ded0db71ac0dc9ba4b0dc976736fe23bb8979451
+        applicationManifestInputSha256: 187698f2dae64029f7e3993e875058f04b085714fd41b0e29506c6b241a81a94
         platformObservabilityInputSha256: a7af14c5615d14de698c6c8fbc529faa02aa1e4f92c6644359c98f8e6e1ee512
         includes: Account-PostgreSQL-role-bootstrap-migration-two-API-replicas-OTel-Prometheus-Grafana
         excludes: Kubernetes-control-plane-ArgoCD-Rollouts-Istio

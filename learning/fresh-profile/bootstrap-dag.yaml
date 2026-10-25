@@ -53,16 +53,23 @@ spec:
     recordAfterEveryStep: true
     fields:
     - profileDigest
+    - materializationDigest
+    - sourceSetDigest
     - clusterUID
+    - targetContext
     - step
     - status
     - startedAt
     - completedAt
     - observedResourceIdentities
     - inputReferenceDigests
+    - resourceDigest
     - errorClass
     resume:
       verifyProfileDigest: true
+      verifyMaterializationDigest: true
+      verifySourceSetDigest: true
+      verifyInputReferenceDigests: true
       verifyClusterUID: true
       verifyCompletedResources: true
       retryOnlyFailedOrIncompleteStep: true

@@ -4,7 +4,22 @@
     {
       "id": "wrong-application-project",
       "expected": "deny",
-      "object": {"kind": "Application", "metadata": {"name": "fresh-account-release", "namespace": "fresh-control"}, "spec": {"project": "default", "source": {"repoURL": "https://github.com/syuhei0519/application-manifest.git", "targetRevision": "0fc2ae19300af32f86643152e65597b022dcdc0f", "path": "learning/fresh-profile/workload"}, "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-account"}}}
+      "object": {"kind": "Application", "metadata": {"name": "fresh-account-release", "namespace": "fresh-control"}, "spec": {"project": "default", "source": {"repoURL": "https://github.com/syuhei0519/application-manifest.git", "targetRevision": "b759f1bd4976e0269740c10421c5537e35be72dd", "path": "learning/fresh-profile/workload", "kustomize": {"images": ["ghcr.io/syuhei0519/backend-app=PENDING_PLAT211_VERIFIED_IMAGE"]}}, "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-account"}}}
+    },
+    {
+      "id": "multiple-application-sources",
+      "expected": "deny",
+      "object": {"kind": "Application", "metadata": {"name": "account-lightweight-root", "namespace": "fresh-control"}, "spec": {"project": "fresh-platform", "source": {"repoURL": "https://github.com/syuhei0519/platform-gitops.git", "targetRevision": "__PLATFORM_GITOPS_SHA__", "path": "learning/fresh-profile/root/children", "directory": {"recurse": true}}, "sources": [{"repoURL": "https://github.com/syuhei0519/platform-gitops.git", "targetRevision": "__PLATFORM_GITOPS_SHA__", "path": "learning/fresh-profile/root/children"}], "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}}}
+    },
+    {
+      "id": "release-helm-runtime-image-swap",
+      "expected": "deny",
+      "object": {"kind": "Application", "metadata": {"name": "fresh-release-definitions", "namespace": "fresh-control"}, "spec": {"project": "fresh-platform", "source": {"repoURL": "https://github.com/syuhei0519/application-manifest.git", "targetRevision": "b759f1bd4976e0269740c10421c5537e35be72dd", "path": "learning/fresh-profile/release-definition", "helm": {"releaseName": "fresh-account-release-definition", "parameters": [{"name": "workloadRevision", "value": "b759f1bd4976e0269740c10421c5537e35be72dd"}, {"name": "accountRuntimeImage", "value": "ghcr.io/syuhei0519/backend-app@sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"}]}}, "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}}}
+    },
+    {
+      "id": "generated-child-image-swap",
+      "expected": "deny",
+      "object": {"kind": "Application", "metadata": {"name": "fresh-account-release", "namespace": "fresh-control"}, "spec": {"project": "fresh-account", "source": {"repoURL": "https://github.com/syuhei0519/application-manifest.git", "targetRevision": "b759f1bd4976e0269740c10421c5537e35be72dd", "path": "learning/fresh-profile/workload", "kustomize": {"images": ["ghcr.io/syuhei0519/backend-app=ghcr.io/syuhei0519/backend-app@sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"]}}, "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-account"}}}
     },
     {
       "id": "direct-pod",
@@ -12,9 +27,15 @@
       "object": {"kind": "Pod", "metadata": {"name": "direct", "namespace": "fresh-account"}, "spec": {"serviceAccountName": "account-runtime", "automountServiceAccountToken": false, "containers": [{"name": "api", "securityContext": {"allowPrivilegeEscalation": false}}]}}
     },
     {
+      "id": "fake-owner-direct-pod",
+      "expected": "deny",
+      "request": {"operation": "CREATE", "resource": "pods", "subResource": "", "username": "system:serviceaccount:fresh-control:argocd-application-controller"},
+      "object": {"kind": "Pod", "metadata": {"name": "forged-owner", "namespace": "fresh-account", "ownerReferences": [{"kind": "ReplicaSet", "name": "account-api-forged", "uid": "00000000-0000-0000-0000-000000000000", "controller": true}]}, "spec": {"serviceAccountName": "account-runtime", "automountServiceAccountToken": false, "containers": [{"name": "api", "securityContext": {"allowPrivilegeEscalation": false}}], "volumes": []}}
+    },
+    {
       "id": "secret-volume",
       "expected": "deny",
-      "object": {"kind": "Pod", "metadata": {"name": "owned", "namespace": "fresh-account", "ownerReferences": [{"kind": "ReplicaSet", "name": "account-api-abc", "controller": true}]}, "spec": {"serviceAccountName": "account-runtime", "automountServiceAccountToken": false, "containers": [{"name": "api", "securityContext": {"allowPrivilegeEscalation": false}}], "volumes": [{"name": "credential", "secret": {"secretName": "account-db-runtime"}}]}}
+      "object": {"kind": "Pod", "metadata": {"name": "owned", "namespace": "fresh-account", "ownerReferences": [{"kind": "ReplicaSet", "name": "account-api-abc", "uid": "22222222-2222-2222-2222-222222222222", "controller": true}]}, "spec": {"serviceAccountName": "account-runtime", "automountServiceAccountToken": false, "containers": [{"name": "api", "securityContext": {"allowPrivilegeEscalation": false}}], "volumes": [{"name": "credential", "secret": {"secretName": "account-db-runtime"}}]}}
     },
     {
       "id": "wrong-secret-key",
@@ -30,6 +51,12 @@
       "id": "secret-backed-init-container",
       "expected": "deny",
       "object": {"kind": "Job", "metadata": {"name": "account-migration", "namespace": "fresh-account"}, "podSpec": {"serviceAccountName": "account-migration", "automountServiceAccountToken": false, "initContainers": [{"name": "init", "securityContext": {"allowPrivilegeEscalation": false}, "env": [{"name": "DATABASE_URL", "valueFrom": {"secretKeyRef": {"name": "account-db-migration", "key": "uri"}}}]}], "containers": [{"name": "migration", "securityContext": {"allowPrivilegeEscalation": false}, "env": [{"name": "DATABASE_URL", "valueFrom": {"secretKeyRef": {"name": "account-db-migration", "key": "uri"}}}]}], "volumes": []}}
+    },
+    {
+      "id": "ephemeralcontainers-subresource",
+      "expected": "deny",
+      "request": {"operation": "UPDATE", "resource": "pods", "subResource": "ephemeralcontainers", "username": "system:serviceaccount:fresh-control:argocd-application-controller"},
+      "object": {"kind": "Pod", "metadata": {"name": "account-api-pod", "namespace": "fresh-account", "ownerReferences": [{"kind": "ReplicaSet", "name": "account-api-abc", "uid": "11111111-1111-1111-1111-111111111111", "controller": true}]}, "spec": {"serviceAccountName": "account-runtime", "automountServiceAccountToken": false, "containers": [{"name": "api", "securityContext": {"allowPrivilegeEscalation": false}}], "ephemeralContainers": [{"name": "debug", "image": "busybox"}], "volumes": []}}
     },
     {
       "id": "arbitrary-managed-resource",

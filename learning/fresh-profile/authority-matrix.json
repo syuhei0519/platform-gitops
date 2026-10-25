@@ -49,14 +49,14 @@
     },
     "workload": {
       "repository": "https://github.com/syuhei0519/application-manifest.git",
-      "commit": "0fc2ae19300af32f86643152e65597b022dcdc0f",
+      "commit": "b759f1bd4976e0269740c10421c5537e35be72dd",
       "paths": ["learning/fresh-profile/workload"],
       "destinations": ["fresh-account"],
       "kinds": ["ConfigMap", "DestinationRule", "Job", "PersistentVolumeClaim", "Rollout", "Service", "ServiceAccount", "StatefulSet", "VirtualService"]
     },
     "release-definition": {
       "repository": "https://github.com/syuhei0519/application-manifest.git",
-      "commit": "0fc2ae19300af32f86643152e65597b022dcdc0f",
+      "commit": "b759f1bd4976e0269740c10421c5537e35be72dd",
       "paths": ["learning/fresh-profile/release-definition"],
       "destinations": ["fresh-control"],
       "kinds": ["Application"]
@@ -151,9 +151,14 @@
   ],
   "podBoundary": {
     "namespace": "fresh-account",
-    "enforcement": "trusted-namespace-plus-admission-required",
+    "enforcement": "trusted-requestor-plus-owner-shape-plus-no-namespaced-pod-create",
     "liveStatus": "pending-separate-approval",
     "directPodsAllowed": false,
+    "trustedCreateRequestor": "system:kube-controller-manager",
+    "namespacedPodCreateSubjects": [],
+    "ownerReferenceUidLookupInCel": false,
+    "ownerReferenceRule": "owner kind/name/uid shape is necessary but not trusted alone; CREATE userInfo and RBAC form the trust boundary",
+    "requiredLiveEvidence": ["audit-create-username", "kubectl-auth-can-i-no-direct-pod", "fake-owner-direct-pod-denied", "ephemeralcontainers-subresource-denied"],
     "controllers": {
       "StatefulSet/fresh-account/account-postgresql": {
         "serviceAccountName": "account-database",

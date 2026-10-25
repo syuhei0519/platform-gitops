@@ -18,6 +18,10 @@ class MaterializeTests(unittest.TestCase):
         (release / "values.yaml").write_text("workloadRevision: ''\n", encoding="utf-8")
         value = "# __APPLICATION_MANIFEST_SHA__\n" if token else "kind: Application\n"
         (release / "templates" / "application.yaml").write_text(value, encoding="utf-8")
+        workload = root / "workload"
+        workload.mkdir()
+        for relative in contract.APPLICATION_WORKLOAD_FILES:
+            (workload / relative).write_text("{}\n", encoding="utf-8")
         return release
 
     def test_fixed_revisions_are_sealed_without_approval_claim(self):
@@ -26,12 +30,28 @@ class MaterializeTests(unittest.TestCase):
             release = self.release_chart(root)
             output = root / "sealed"
             platform_sha = "1" * 40
-            application_sha = "0fc2ae19300af32f86643152e65597b022dcdc0f"
+            application_sha = "b759f1bd4976e0269740c10421c5537e35be72dd"
             path, manifest = contract.materialize(platform_sha, application_sha, release, output)
             self.assertTrue(path.is_file())
             self.assertFalse(manifest["liveApproved"])
             self.assertEqual(manifest["platformGitops"], platform_sha)
-            self.assertEqual(len(manifest["sourceFiles"]), 5)
+            self.assertEqual(len(manifest["sourceFiles"]), 9)
+            self.assertEqual(
+                set(name.rsplit(":", 1)[1] for name in manifest["sourceFiles"]
+                    if name.startswith(f"platform-gitops@{platform_sha}:")),
+                {f"learning/fresh-profile/{name}"
+                 for name in contract.GIT_FETCHED_PLATFORM_FILES},
+            )
+            self.assertEqual(
+                set(name.rsplit(":", 1)[1] for name in manifest["sourceFiles"]
+                    if name.startswith(f"application-manifest@{application_sha}:")),
+                {
+                    *(f"learning/fresh-profile/release-definition/{name}"
+                      for name in contract.APPLICATION_RELEASE_FILES),
+                    *(f"learning/fresh-profile/workload/{name}"
+                      for name in contract.APPLICATION_WORKLOAD_FILES),
+                },
+            )
             self.assertEqual((output / "root/children/applications.yaml").read_bytes(),
                              (contract.HERE / "root/children/applications.yaml").read_bytes())
             for name in manifest["files"]:
@@ -45,7 +65,7 @@ class MaterializeTests(unittest.TestCase):
             with self.assertRaises(contract.MaterializationError):
                 contract.materialize("main", "2" * 40, release, Path(directory) / "out")
             with self.assertRaises(contract.MaterializationError):
-                contract.materialize("1" * 40, "0fc2ae19300af32f86643152e65597b022dcdc0f",
+                contract.materialize("1" * 40, "b759f1bd4976e0269740c10421c5537e35be72dd",
                                      release, contract.HERE / "generated")
 
     def test_application_git_source_token_is_rejected(self):
@@ -53,7 +73,7 @@ class MaterializeTests(unittest.TestCase):
             root = Path(directory)
             release = self.release_chart(root, token=True)
             with self.assertRaisesRegex(contract.MaterializationError, "application-source-revision-token"):
-                contract.materialize("1" * 40, "0fc2ae19300af32f86643152e65597b022dcdc0f",
+                contract.materialize("1" * 40, "b759f1bd4976e0269740c10421c5537e35be72dd",
                                      release, root / "sealed")
 
 

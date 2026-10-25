@@ -17,6 +17,8 @@ APPLICATION_TOKEN = "__APPLICATION_MANIFEST_SHA__"
 SHA = re.compile(r"[0-9a-f]{40}")
 PLATFORM_FILES = (
     "profile.lock.yaml",
+    "bootstrap-dag.yaml",
+    "image-supply.lock.yaml",
     "acceptance.pending.json",
     "authority-matrix.json",
     "fixtures/canonical-two-sha.json",
@@ -35,6 +37,12 @@ APPLICATION_RELEASE_FILES = (
     "Chart.yaml",
     "values.yaml",
     "templates/application.yaml",
+)
+APPLICATION_WORKLOAD_FILES = (
+    "account-role-bootstrap.sql",
+    "account.yaml",
+    "db-permission-cases.json",
+    "kustomization.yaml",
 )
 
 
@@ -57,6 +65,10 @@ def materialize(platform_sha: str, application_sha: str, application_release: Pa
     if not release_root.is_dir() or any(not (release_root / relative).is_file()
                                         for relative in APPLICATION_RELEASE_FILES):
         raise MaterializationError("application-release-chart")
+    workload_root = release_root.parent / "workload"
+    if not workload_root.is_dir() or any(not (workload_root / relative).is_file()
+                                         for relative in APPLICATION_WORKLOAD_FILES):
+        raise MaterializationError("application-workload-source")
     profile_text = (HERE / "profile.lock.yaml").read_text(encoding="utf-8")
     children_text = (HERE / "root/children/applications.yaml").read_text(encoding="utf-8")
     if application_sha not in profile_text or application_sha not in children_text:
@@ -69,6 +81,10 @@ def materialize(platform_sha: str, application_sha: str, application_release: Pa
         text = (release_root / relative).read_text(encoding="utf-8")
         if PLATFORM_TOKEN in text or APPLICATION_TOKEN in text:
             raise MaterializationError("application-source-revision-token:" + relative)
+    for relative in APPLICATION_WORKLOAD_FILES:
+        text = (workload_root / relative).read_text(encoding="utf-8")
+        if PLATFORM_TOKEN in text or APPLICATION_TOKEN in text:
+            raise MaterializationError("application-source-revision-token:workload/" + relative)
 
     output.mkdir(parents=True, exist_ok=False)
     produced = []
@@ -96,13 +112,18 @@ def materialize(platform_sha: str, application_sha: str, application_release: Pa
     if sealed_children.read_bytes() != (HERE / "root/children/applications.yaml").read_bytes():
         raise MaterializationError("git-source-sealed-drift")
     source_files = {
-        f"platform-gitops@{platform_sha}:{relative}": digest(HERE / relative)
+        f"platform-gitops@{platform_sha}:learning/fresh-profile/{relative}": digest(HERE / relative)
         for relative in GIT_FETCHED_PLATFORM_FILES
     }
     source_files.update({
         f"application-manifest@{application_sha}:learning/fresh-profile/release-definition/{relative}":
             digest(release_root / relative)
         for relative in APPLICATION_RELEASE_FILES
+    })
+    source_files.update({
+        f"application-manifest@{application_sha}:learning/fresh-profile/workload/{relative}":
+            digest(workload_root / relative)
+        for relative in APPLICATION_WORKLOAD_FILES
     })
     manifest = {
         "schemaVersion": "platform.lab/materialization/v1alpha1",

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Fail-closed execution entrance for the PLAT-213..217 fresh profile.
 
-The module owns orchestration and checkpoints, not the cluster-specific step
-implementations.  A caller must supply a finite ``StepExecutor`` adapter.  No
-adapter in this repository executes kubectl, kind, Docker, or credential work.
+The module owns orchestration and checkpoints. Live mode uses a separately
+approved, hash-bound finite command plan through ``approved_live_adapter``.
+Nothing is executed by materialization, validation, or dry-run.
 """
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timezone
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import re
@@ -23,6 +24,7 @@ HERE = Path(__file__).resolve().parent
 DAG = HERE / "bootstrap-dag.yaml"
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
+SOURCE_KEY = re.compile(r"^(platform-gitops|application-manifest)@([0-9a-f]{40}):(.+)$")
 CURRENT_CLUSTER = "kind-learning-20261018-69c763"
 STEPS = (
     "preflight",
@@ -49,6 +51,33 @@ SCOPE = {
     "existingData": "preserve-excluded",
     "cutover": False,
 }
+REQUIRED_SEALED_FILES = {
+    "profile.lock.yaml", "image-supply.lock.yaml", "bootstrap-dag.yaml",
+    "acceptance.pending.json",
+    "authority-matrix.json", "fixtures/canonical-two-sha.json",
+    "fixtures/security-negative-fixtures.json", "root/bootstrap.yaml",
+    "root/children/applications.yaml", "security/admission.yaml",
+    "security/canonical-contract.json", "security/rbac.yaml",
+}
+REQUIRED_SOURCE_PATHS = {
+    "platform-gitops": {
+        "learning/fresh-profile/root/children/applications.yaml",
+        "learning/fresh-profile/observability/resources.yaml",
+    },
+    "application-manifest": {
+        "learning/fresh-profile/release-definition/Chart.yaml",
+        "learning/fresh-profile/release-definition/values.yaml",
+        "learning/fresh-profile/release-definition/templates/application.yaml",
+        "learning/fresh-profile/workload/account-role-bootstrap.sql",
+        "learning/fresh-profile/workload/account.yaml",
+        "learning/fresh-profile/workload/db-permission-cases.json",
+        "learning/fresh-profile/workload/kustomization.yaml",
+    },
+}
+TOOL_VERSION_KEYS = {
+    "kind": "kind", "kubectl": "kubectl", "helm": "helm", "istioctl": "istio",
+    "argocd": "argoCd", "rollouts": "rollouts",
+}
 
 
 class RunnerRejected(ValueError):
@@ -56,9 +85,12 @@ class RunnerRejected(ValueError):
 
 
 class StepExecutor(Protocol):
-    """Finite adapter implemented only in the separately approved live bundle."""
+    """Approved live adapter. Methods may mutate only from ``run``."""
 
+    plan_sha256: str
+    def identity(self, target: dict) -> dict: ...
     def verify(self, step: str, checkpoint: dict) -> dict: ...
+    def reconcile(self, step: str, checkpoint: dict) -> dict: ...
     def run(self, step: str) -> dict: ...
 
 
@@ -102,7 +134,85 @@ def _contains_pending(value) -> bool:
         return any(_contains_pending(item) for item in value.values())
     if isinstance(value, list):
         return any(_contains_pending(item) for item in value)
-    return isinstance(value, str) and ("PENDING_" in value or value.startswith("<operator-input:"))
+    return isinstance(value, str) and "PENDING_" in value
+
+
+def _operator_inputs(value, found=None):
+    found = found if found is not None else set()
+    if isinstance(value, dict):
+        for child in value.values():
+            _operator_inputs(child, found)
+    elif isinstance(value, list):
+        for child in value:
+            _operator_inputs(child, found)
+    elif isinstance(value, str) and value.startswith("<operator-input:") and value.endswith(">"):
+        found.add(value)
+    return found
+
+
+def _mapping_digest(value: dict) -> str:
+    encoded = json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _safe_file(root: Path, relative: str, label: str) -> Path:
+    candidate = (root / relative).resolve()
+    if not candidate.is_relative_to(root.resolve()) or not candidate.is_file():
+        raise RunnerRejected(label)
+    return candidate
+
+
+def _load_contract_module(name: str):
+    path = HERE / f"{name}.py"
+    spec = importlib.util.spec_from_file_location(f"fresh_runner_{name}", path)
+    if spec is None or spec.loader is None:
+        raise RunnerRejected("contract-loader:" + name)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _validate_sealed_files(materialization: dict, bundle_root: Path) -> None:
+    files = materialization.get("files")
+    if (not isinstance(files, dict) or not REQUIRED_SEALED_FILES.issubset(files)
+            or any(not isinstance(name, str) or not SHA256.fullmatch(value or "")
+                   for name, value in files.items())):
+        raise RunnerRejected("materialization-files")
+    for relative, expected in files.items():
+        if _digest(_safe_file(bundle_root, relative, "materialization-file-path")) != expected:
+            raise RunnerRejected("materialization-file-digest:" + relative)
+
+
+def _validate_source_files(materialization: dict, repositories: dict,
+                           platform_source_root: Path, application_source_root: Path) -> str:
+    source_files = materialization.get("sourceFiles")
+    if (not isinstance(source_files, dict) or not source_files
+            or any(not isinstance(name, str) or not SHA256.fullmatch(value or "")
+                   for name, value in source_files.items())):
+        raise RunnerRejected("materialization-source-files")
+    roots = {"platform-gitops": Path(platform_source_root),
+             "application-manifest": Path(application_source_root)}
+    repository_revisions = {
+        "platform-gitops": repositories["platformGitops"],
+        "application-manifest": repositories["applicationManifest"],
+    }
+    expected_identities = {
+        f"{repository}@{repository_revisions[repository]}:{relative}"
+        for repository, paths in REQUIRED_SOURCE_PATHS.items()
+        for relative in paths
+    }
+    if set(source_files) != expected_identities:
+        raise RunnerRejected("materialization-source-set")
+    for identity, expected in source_files.items():
+        match = SOURCE_KEY.fullmatch(identity)
+        if match is None:
+            raise RunnerRejected("source-file-identity")
+        repository, revision, relative = match.groups()
+        if revision != repository_revisions[repository]:
+            raise RunnerRejected("source-file-revision")
+        if _digest(_safe_file(roots[repository], relative, "source-file-path")) != expected:
+            raise RunnerRejected("source-file-digest:" + identity)
+    return _mapping_digest(source_files)
 
 
 def validate_dag(path: Path = DAG) -> dict:
@@ -119,6 +229,9 @@ def validate_dag(path: Path = DAG) -> dict:
     resume = dag.get("spec", {}).get("checkpoint", {}).get("resume", {})
     if resume != {
         "verifyProfileDigest": True,
+        "verifyMaterializationDigest": True,
+        "verifySourceSetDigest": True,
+        "verifyInputReferenceDigests": True,
         "verifyClusterUID": True,
         "verifyCompletedResources": True,
         "retryOnlyFailedOrIncompleteStep": True,
@@ -130,7 +243,9 @@ def validate_dag(path: Path = DAG) -> dict:
 
 
 def validate_live_gate(approval_path: Path, materialization_path: Path,
-                       profile_path: Path, now: datetime | None = None) -> dict:
+                       profile_path: Path, platform_source_root: Path,
+                       application_source_root: Path, adapter_plan_path: Path,
+                       now: datetime | None = None) -> dict:
     """Validate every mutation gate before a StepExecutor can be called."""
     approval_path = Path(approval_path)
     materialization_path = Path(materialization_path)
@@ -139,8 +254,6 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
     materialization = _load_json(materialization_path)
     profile = _load_yaml(profile_path)
     now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
-    validate_dag()
-
     _exact_keys(approval, {"apiVersion", "kind", "metadata", "spec"}, "approval")
     if approval["apiVersion"] != "platform.lab/v1alpha1" or approval["kind"] != "FreshExecutionApproval":
         raise RunnerRejected("approval-kind")
@@ -156,7 +269,8 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
         raise RunnerRejected("approval-time-window")
 
     spec = approval["spec"]
-    _exact_keys(spec, {"approved", "target", "repositories", "hashes", "scope", "gates", "allowedSteps"},
+    _exact_keys(spec, {"approved", "target", "repositories", "hashes", "scope", "gates",
+                       "inputDigests", "allowedSteps"},
                 "approval-spec")
     if spec["approved"] is not True:
         raise RunnerRejected("approval-not-granted")
@@ -176,13 +290,16 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
     if not all(SHA40.fullmatch(repositories[name] or "") for name in repositories):
         raise RunnerRejected("approval-repository-sha")
     hashes = spec["hashes"]
-    _exact_keys(hashes, {"profileSha256", "materializationSha256"}, "approval-hashes")
+    _exact_keys(hashes, {"profileSha256", "materializationSha256", "sourceSetSha256",
+                         "liveAdapterPlanSha256"}, "approval-hashes")
     if not all(SHA256.fullmatch(hashes[name] or "") for name in hashes):
         raise RunnerRejected("approval-hash-format")
     if hashes["profileSha256"] != _digest(profile_path):
         raise RunnerRejected("approval-profile-hash")
     if hashes["materializationSha256"] != _digest(materialization_path):
         raise RunnerRejected("approval-materialization-hash")
+    if hashes["liveAdapterPlanSha256"] != _digest(Path(adapter_plan_path)):
+        raise RunnerRejected("approval-live-adapter-plan-hash")
 
     _exact_keys(materialization, {"schemaVersion", "platformGitops", "applicationManifest", "liveApproved", "files", "sourceFiles"},
                 "materialization")
@@ -192,13 +309,15 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
         raise RunnerRejected("materialization-must-not-self-approve")
     if materialization["platformGitops"] != repositories["platformGitops"] or materialization["applicationManifest"] != repositories["applicationManifest"]:
         raise RunnerRejected("materialization-repositories")
+    bundle_root = materialization_path.parent.resolve()
+    _validate_sealed_files(materialization, bundle_root)
+    validate_dag(_safe_file(bundle_root, "bootstrap-dag.yaml", "sealed-bootstrap-dag"))
     if materialization["files"].get("profile.lock.yaml") != hashes["profileSha256"]:
         raise RunnerRejected("materialization-profile-hash")
-    source_files = materialization["sourceFiles"]
-    if (not isinstance(source_files, dict) or not source_files
-            or any(not isinstance(name, str) or not name or not SHA256.fullmatch(value or "")
-                   for name, value in source_files.items())):
-        raise RunnerRejected("materialization-source-files")
+    source_set_digest = _validate_source_files(materialization, repositories,
+                                               platform_source_root, application_source_root)
+    if hashes["sourceSetSha256"] != source_set_digest:
+        raise RunnerRejected("approval-source-set-hash")
 
     if profile.get("apiVersion") != "platform.lab/v1alpha1" or profile.get("kind") != "FreshProfileLock":
         raise RunnerRejected("profile-kind")
@@ -206,6 +325,11 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
         raise RunnerRejected("profile-pending-input")
     if profile.get("metadata", {}).get("name") != "account-lightweight-fresh":
         raise RunnerRejected("profile-name")
+    try:
+        profile_contract = _load_contract_module("validate_profile")
+        profile_contract.validate(profile_path, require_approved=True)
+    except Exception as error:
+        raise RunnerRejected("profile-contract:" + str(error)) from error
     profile_spec = profile.get("spec", {})
     target = profile_spec.get("target", {})
     _exact_keys(spec["target"], {"clusterName", "context", "profileName"}, "approval-target")
@@ -225,37 +349,122 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
     image_supply = profile_spec.get("imageSupply", {})
     if image_supply.get("immutable") is not True or image_supply.get("decision") == "PENDING_G2":
         raise RunnerRejected("profile-image-supply")
-    return {"approval": approval, "materialization": materialization, "profile": profile}
+    image_supply_path = _safe_file(bundle_root, "image-supply.lock.yaml", "image-supply-file")
+    try:
+        supply_contract = _load_contract_module("validate_image_supply")
+        supply_contract.validate(image_supply_path, require_fresh_evidence=True,
+                                 profile_override=profile_path)
+    except Exception as error:
+        raise RunnerRejected("image-supply-contract:" + str(error)) from error
+
+    secrets = profile_spec.get("inputs", {}).get("secrets", [])
+    expected_secrets = {
+        ("account-db-bootstrap", "fresh-account/account-db-bootstrap"),
+        ("account-db-runtime", "fresh-account/account-db-runtime"),
+        ("account-db-migration", "fresh-account/account-db-migration"),
+        ("repository-read", "fresh-control/repository-read"),
+    }
+    if {(item.get("name"), item.get("destination")) for item in secrets} != expected_secrets:
+        raise RunnerRejected("g3-secret-set")
+    for item in secrets:
+        if (not isinstance(item.get("owner"), str) or not item["owner"].strip()
+                or item["owner"].startswith("PENDING_")):
+            raise RunnerRejected("g3-owner")
+        try:
+            expiry = datetime.fromisoformat(item["expiry"] + "T23:59:59+00:00")
+        except (KeyError, TypeError, ValueError) as error:
+            raise RunnerRejected("g3-expiry") from error
+        if expiry <= now:
+            raise RunnerRejected("g3-expired")
+        if not re.fullmatch(r"sealed-input:sha256:[0-9a-f]{64}", item.get("sourceRef", "")):
+            raise RunnerRejected("g3-source-ref")
+
+    inputs = profile_spec.get("inputs", {})
+    expected_input_refs = {inputs.get("clusterKubeconfigRef"), inputs.get("imageSupplyRef")}
+    expected_input_refs.update(item["sourceRef"] for item in secrets)
+    input_digests = spec["inputDigests"]
+    if (None in expected_input_refs or not isinstance(input_digests, dict)
+            or set(input_digests) != expected_input_refs
+            or any(not SHA256.fullmatch(value or "") for value in input_digests.values())):
+        raise RunnerRejected("approval-input-digests")
+    for reference, digest_value in input_digests.items():
+        if reference.startswith("sealed-input:sha256:") and reference.rsplit(":", 1)[1] != digest_value:
+            raise RunnerRejected("g3-input-digest")
+    expected_versions = {
+        alias: profile_spec.get("tools", {}).get(profile_key)
+        for alias, profile_key in TOOL_VERSION_KEYS.items()
+    }
+    try:
+        adapter_contract = _load_contract_module("approved_live_adapter")
+        adapter_contract.validate_plan(
+            Path(adapter_plan_path),
+            {"clusterName": target["clusterName"], "context": target["context"]},
+            expected_versions,
+        )
+    except Exception as error:
+        raise RunnerRejected("live-adapter-contract:" + str(error)) from error
+    return {"approval": approval, "materialization": materialization, "profile": profile,
+            "sourceSetSha256": source_set_digest, "inputDigests": input_digests,
+            "liveAdapterPlanSha256": hashes["liveAdapterPlanSha256"]}
 
 
-def _new_journal(profile_digest: str, target: dict) -> dict:
+def _new_journal(profile_digest: str, materialization_digest: str, source_set_digest: str,
+                 live_adapter_plan_digest: str, input_digests: dict, target: dict,
+                 cluster_uid: str | None) -> dict:
     return {
-        "schemaVersion": "platform.lab/fresh-run-journal/v1",
+        "schemaVersion": "platform.lab/fresh-run-journal/v2",
         "profileSha256": profile_digest,
-        "target": {"clusterName": target["clusterName"], "context": target["context"]},
-        "steps": {step: {"status": "pending", "attempts": 0, "evidence": None, "errorClass": None}
+        "materializationSha256": materialization_digest,
+        "sourceSetSha256": source_set_digest,
+        "liveAdapterPlanSha256": live_adapter_plan_digest,
+        "inputDigests": input_digests,
+        "target": {"clusterName": target["clusterName"], "context": target["context"],
+                   "clusterUID": cluster_uid},
+        "steps": {step: {"status": "pending", "attempts": 0, "evidence": None,
+                          "resourceDigest": None, "errorClass": None}
                   for step in STEPS},
     }
 
 
-def _validate_journal(journal: dict, profile_digest: str, target: dict) -> None:
-    _exact_keys(journal, {"schemaVersion", "profileSha256", "target", "steps"}, "journal")
-    if journal["schemaVersion"] != "platform.lab/fresh-run-journal/v1" or journal["profileSha256"] != profile_digest:
+def _validate_journal(journal: dict, profile_digest: str, materialization_digest: str,
+                      source_set_digest: str, live_adapter_plan_digest: str,
+                      input_digests: dict, target: dict, observed_identity: dict) -> None:
+    _exact_keys(journal, {"schemaVersion", "profileSha256", "materializationSha256",
+                          "sourceSetSha256", "liveAdapterPlanSha256", "inputDigests",
+                          "target", "steps"}, "journal")
+    if journal["schemaVersion"] != "platform.lab/fresh-run-journal/v2" or journal["profileSha256"] != profile_digest:
         raise RunnerRejected("journal-profile")
-    if journal["target"] != {"clusterName": target["clusterName"], "context": target["context"]}:
+    if journal["materializationSha256"] != materialization_digest:
+        raise RunnerRejected("journal-materialization")
+    if (journal["sourceSetSha256"] != source_set_digest
+            or journal["liveAdapterPlanSha256"] != live_adapter_plan_digest
+            or journal["inputDigests"] != input_digests):
+        raise RunnerRejected("journal-inputs")
+    if journal["target"].get("clusterName") != target["clusterName"] or journal["target"].get("context") != target["context"]:
         raise RunnerRejected("journal-target")
+    if observed_identity.get("context") != target["context"]:
+        raise RunnerRejected("observed-context")
+    expected_uid = journal["target"].get("clusterUID")
+    if expected_uid is not None and observed_identity.get("clusterUID") != expected_uid:
+        raise RunnerRejected("journal-cluster-uid")
     if list(journal["steps"]) != list(STEPS):
         raise RunnerRejected("journal-steps")
     for step, state in journal["steps"].items():
-        _exact_keys(state, {"status", "attempts", "evidence", "errorClass"}, f"journal-step-{step}")
-        if state["status"] not in {"pending", "running", "failed", "succeeded"}:
+        _exact_keys(state, {"status", "attempts", "evidence", "resourceDigest", "errorClass"},
+                    f"journal-step-{step}")
+        if state["status"] not in {"pending", "running", "uncertain", "failed", "succeeded"}:
             raise RunnerRejected("journal-status")
         if not isinstance(state["attempts"], int) or state["attempts"] < 0:
             raise RunnerRejected("journal-attempts")
+        if state["status"] == "succeeded" and not SHA256.fullmatch(state.get("resourceDigest") or ""):
+            raise RunnerRejected("journal-resource-digest")
 
 
 def execute(mode: str, approval_path: Path | None, materialization_path: Path | None,
             profile_path: Path, journal_path: Path, executor: StepExecutor | None,
+            platform_source_root: Path | None = None,
+            application_source_root: Path | None = None,
+            adapter_plan_path: Path | None = None,
             now: datetime | None = None) -> dict:
     """Plan or execute the finite DAG.
 
@@ -266,20 +475,42 @@ def execute(mode: str, approval_path: Path | None, materialization_path: Path | 
         return {"mode": "dry-run", "steps": list(STEPS), "mutationCalls": 0}
     if mode not in {"first", "rerun", "resume"}:
         raise RunnerRejected("mode")
-    if approval_path is None or materialization_path is None or executor is None:
+    if adapter_plan_path is None and materialization_path is not None:
+        adapter_plan_path = Path(materialization_path).parent / "live-step-plan.json"
+    if (approval_path is None or materialization_path is None or executor is None
+            or platform_source_root is None or application_source_root is None
+            or adapter_plan_path is None):
         raise RunnerRejected("live-inputs-required")
 
-    sealed = validate_live_gate(approval_path, materialization_path, profile_path, now=now)
+    sealed = validate_live_gate(approval_path, materialization_path, profile_path,
+                                platform_source_root, application_source_root,
+                                adapter_plan_path, now=now)
+    if getattr(executor, "plan_sha256", None) != sealed["liveAdapterPlanSha256"]:
+        raise RunnerRejected("executor-plan-binding")
     profile_digest = _digest(Path(profile_path))
+    materialization_digest = _digest(Path(materialization_path))
     target = sealed["profile"]["spec"]["target"]
+    observed_identity = executor.identity(target)
+    if (not isinstance(observed_identity, dict)
+            or set(observed_identity) != {"context", "clusterUID"}
+            or observed_identity["context"] != target["context"]):
+        raise RunnerRejected("observed-identity")
+    if observed_identity["clusterUID"] is not None and not isinstance(observed_identity["clusterUID"], str):
+        raise RunnerRejected("observed-cluster-uid")
     journal_path = Path(journal_path)
     if journal_path.exists():
         journal = _load_json(journal_path)
-        _validate_journal(journal, profile_digest, target)
+        _validate_journal(journal, profile_digest, materialization_digest,
+                          sealed["sourceSetSha256"], sealed["liveAdapterPlanSha256"],
+                          sealed["inputDigests"], target, observed_identity)
     else:
         if mode != "first":
             raise RunnerRejected("journal-required")
-        journal = _new_journal(profile_digest, target)
+        if observed_identity["clusterUID"] is not None:
+            raise RunnerRejected("first-run-cluster-exists")
+        journal = _new_journal(profile_digest, materialization_digest,
+                               sealed["sourceSetSha256"], sealed["liveAdapterPlanSha256"],
+                               sealed["inputDigests"], target, None)
 
     if mode == "first" and any(state["status"] != "pending" for state in journal["steps"].values()):
         raise RunnerRejected("first-run-existing-state")
@@ -297,25 +528,56 @@ def execute(mode: str, approval_path: Path | None, materialization_path: Path | 
                 raise RunnerRejected(f"completed-step-verification:{step}") from error
             if not isinstance(observed, dict) or observed.get("verified") is not True:
                 raise RunnerRejected(f"completed-step-verification:{step}")
+            if observed.get("resourceDigest") != state["resourceDigest"]:
+                raise RunnerRejected(f"completed-step-digest:{step}")
             continue
+        must_reconcile = state["status"] in {"running", "uncertain"} or (
+            step in NON_RECREATABLE_JOBS and state["attempts"] > 0)
+        if must_reconcile:
+            try:
+                reconciled = executor.reconcile(step, state)
+            except Exception as error:
+                raise RunnerRejected(f"uncertain-step-reconcile:{step}") from error
+            if not isinstance(reconciled, dict) or reconciled.get("state") not in {"succeeded", "incomplete"}:
+                raise RunnerRejected(f"uncertain-step-evidence:{step}")
+            if reconciled["state"] == "succeeded":
+                digest_value = reconciled.get("resourceDigest")
+                if not SHA256.fullmatch(digest_value or "") or not isinstance(reconciled.get("evidence"), dict):
+                    raise RunnerRejected(f"uncertain-step-evidence:{step}")
+                state.update(status="succeeded", evidence=reconciled["evidence"],
+                             resourceDigest=digest_value, errorClass=None)
+                if step == "cluster":
+                    cluster_uid = reconciled["evidence"].get("clusterUID")
+                    if not isinstance(cluster_uid, str) or not cluster_uid:
+                        raise RunnerRejected("cluster-uid-evidence")
+                    journal["target"]["clusterUID"] = cluster_uid
+                journal_path.write_text(json.dumps(journal, indent=2) + "\n", encoding="utf-8")
+                continue
+            if step in NON_RECREATABLE_JOBS:
+                raise RunnerRejected(f"uncertain-job-outcome:{step}")
+            state.update(status="failed", errorClass="reconciled-incomplete")
         if mode == "rerun":
             raise RunnerRejected(f"rerun-incomplete-step:{step}")
-        if state["status"] == "running":
-            state["status"] = "failed"
-            state["errorClass"] = "interrupted-before-checkpoint"
         state["status"] = "running"
         state["attempts"] += 1
         journal_path.write_text(json.dumps(journal, indent=2) + "\n", encoding="utf-8")
         try:
             evidence = executor.run(step)
-            if not isinstance(evidence, dict) or evidence.get("succeeded") is not True:
+            if (not isinstance(evidence, dict) or evidence.get("succeeded") is not True
+                    or not SHA256.fullmatch(evidence.get("resourceDigest") or "")):
                 raise RunnerRejected(f"step-evidence:{step}")
         except Exception as error:
-            state["status"] = "failed"
+            state["status"] = "uncertain" if step in NON_RECREATABLE_JOBS else "failed"
             state["errorClass"] = type(error).__name__
             journal_path.write_text(json.dumps(journal, indent=2) + "\n", encoding="utf-8")
             raise
-        state.update(status="succeeded", evidence=evidence, errorClass=None)
+        state.update(status="succeeded", evidence=evidence,
+                     resourceDigest=evidence["resourceDigest"], errorClass=None)
+        if step == "cluster":
+            cluster_uid = evidence.get("clusterUID")
+            if not isinstance(cluster_uid, str) or not cluster_uid:
+                raise RunnerRejected("cluster-uid-evidence")
+            journal["target"]["clusterUID"] = cluster_uid
         journal_path.write_text(json.dumps(journal, indent=2) + "\n", encoding="utf-8")
     return journal
 
@@ -327,12 +589,27 @@ def main() -> int:
     parser.add_argument("--materialization", type=Path)
     parser.add_argument("--profile", type=Path, default=HERE / "profile.lock.yaml")
     parser.add_argument("--journal", type=Path, default=Path("fresh-profile-checkpoints.json"))
+    parser.add_argument("--platform-source-root", type=Path)
+    parser.add_argument("--application-source-root", type=Path)
+    parser.add_argument("--live-plan", type=Path)
     args = parser.parse_args()
-    if args.mode != "dry-run":
-        print("live execution rejected: no cluster executor is bundled; use the separately reviewed live adapter")
+    try:
+        if args.mode == "dry-run":
+            result = execute(args.mode, args.approval, args.materialization, args.profile,
+                             args.journal, None)
+        else:
+            if (args.live_plan is None or args.platform_source_root is None
+                    or args.application_source_root is None):
+                raise RunnerRejected("live-cli-inputs-required")
+            adapter_module = _load_contract_module("approved_live_adapter")
+            adapter = adapter_module.ApprovedLiveAdapter(args.live_plan)
+            result = execute(args.mode, args.approval, args.materialization, args.profile,
+                             args.journal, adapter, args.platform_source_root,
+                             args.application_source_root, args.live_plan)
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        print("runner rejected: " + str(error))
         return 2
-    plan = execute(args.mode, args.approval, args.materialization, args.profile, args.journal, None)
-    print(json.dumps(plan, indent=2))
+    print(json.dumps(result, indent=2))
     return 0
 
 

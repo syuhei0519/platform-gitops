@@ -16,11 +16,13 @@
     },
     "repositories": {
       "platformGitops": "0000000000000000000000000000000000000000",
-      "applicationManifest": "0fc2ae19300af32f86643152e65597b022dcdc0f"
+      "applicationManifest": "b759f1bd4976e0269740c10421c5537e35be72dd"
     },
     "hashes": {
       "profileSha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "materializationSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      "materializationSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sourceSetSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "liveAdapterPlanSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     "scope": {
       "environment": "fresh-isolated-sandbox",
@@ -33,6 +35,9 @@
       "G2": {"approved": false, "approvalId": "PENDING"},
       "G3": {"approved": false, "approvalId": "PENDING"},
       "security": {"approved": false, "approvalId": "PENDING"}
+    },
+    "inputDigests": {
+      "<operator-input:G1-kubeconfig>": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     "allowedSteps": [
       "preflight",

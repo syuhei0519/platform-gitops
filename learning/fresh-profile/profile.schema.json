@@ -121,7 +121,7 @@
     "secretReference": {
       "type": "object", "additionalProperties": false,
       "required": ["name", "purpose", "destination", "owner", "expiry", "sourceRef"],
-      "properties": {"name": {"type": "string"}, "purpose": {"type": "string"}, "destination": {"type": "string"}, "owner": {"type": "string"}, "expiry": {"type": "string"}, "sourceRef": {"type": "string", "pattern": "^<operator-input:G3-[a-z-]+>$"}}
+      "properties": {"name": {"type": "string"}, "purpose": {"type": "string"}, "destination": {"type": "string"}, "owner": {"type": "string"}, "expiry": {"type": "string"}, "sourceRef": {"type": "string", "pattern": "^(<operator-input:G3-[a-z-]+>|sealed-input:sha256:[0-9a-f]{64})$"}}
     },
     "decision": {
       "type": "object", "additionalProperties": false, "required": ["status", "choice"],
@@ -148,7 +148,7 @@
           "required": ["cpuMilli", "memoryMiB", "applicationManifestInputSha256", "platformObservabilityInputSha256", "includes", "excludes"],
           "properties": {
             "cpuMilli": {"const": 475}, "memoryMiB": {"const": 960},
-            "applicationManifestInputSha256": {"const": "62b01c44a0d03e389d032d72ded0db71ac0dc9ba4b0dc976736fe23bb8979451"},
+            "applicationManifestInputSha256": {"const": "187698f2dae64029f7e3993e875058f04b085714fd41b0e29506c6b241a81a94"},
             "platformObservabilityInputSha256": {"const": "a7af14c5615d14de698c6c8fbc529faa02aa1e4f92c6644359c98f8e6e1ee512"},
             "includes": {"type": "string"}, "excludes": {"type": "string"}
           }

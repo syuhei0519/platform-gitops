@@ -51,6 +51,9 @@ def validate_application(application, expected):
     require(source.get("repoURL") == expected["repository"], f"application-repository:{name}")
     require(source.get("targetRevision") == expected["revision"], f"application-revision:{name}")
     require(source.get("path") == expected["path"], f"application-path:{name}")
+    expected_source = {"repoURL": expected["repository"], "targetRevision": expected["revision"],
+                       "path": expected["path"], **expected["sourceConfig"]}
+    require(source == expected_source and "sources" not in spec, f"application-source-config:{name}")
     require(spec.get("destination") == expected["destination"], f"application-destination:{name}")
 
 

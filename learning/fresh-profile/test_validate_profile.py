@@ -113,6 +113,7 @@ class FreshProfileTests(unittest.TestCase):
         for item in value["spec"]["inputs"]["secrets"]:
             item["owner"] = "personal-platform-owner"
             item["expiry"] = "2026-11-25"
+            item["sourceRef"] = "sealed-input:sha256:" + "3" * 64
         value["spec"]["repositories"]["platform-gitops"]["commit"] = "1" * 40
         next(item for item in value["spec"]["images"] if item["name"] == "account-runtime")["ref"] = (
             "ghcr.io/syuhei0519/backend-app@sha256:" + "2" * 64)
@@ -131,7 +132,8 @@ class FreshProfileTests(unittest.TestCase):
         value["spec"]["imageSupply"].update(decision="retained-oci-archive", immutable=True,
                                              retentionUntil="2027-10-25", restoreOwner="personal-platform-owner")
         for item in value["spec"]["inputs"]["secrets"]:
-            item.update(owner="personal-platform-owner", expiry="2026-11-25")
+            item.update(owner="personal-platform-owner", expiry="2026-11-25",
+                        sourceRef="sealed-input:sha256:" + "3" * 64)
         value["spec"]["repositories"]["platform-gitops"]["commit"] = "1" * 40
         value["spec"]["budget"]["approvalLimits"].update(
             elapsedMaxMinutes=45, hostAvailableMemoryMinGiB=4, hostFreeDiskMinGiB=20,

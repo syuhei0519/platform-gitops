@@ -160,9 +160,12 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
         pending_fields = [target["clusterName"], target["context"], supply["decision"],
                           supply["retentionUntil"], supply["restoreOwner"]]
         pending_fields += [item[field] for item in spec["inputs"]["secrets"]
-                           for field in ("owner", "expiry")]
+                           for field in ("owner", "expiry", "sourceRef")]
         if any(str(value).startswith("PENDING_") for value in pending_fields):
             raise ContractError("approved-profile-placeholder")
+        if any(not item["sourceRef"].startswith("sealed-input:sha256:")
+               for item in spec["inputs"]["secrets"]):
+            raise ContractError("approved-secret-source-ref")
         if revisions["platform-gitops"] == "__PLATFORM_GITOPS_SHA__":
             raise ContractError("approved-profile-revision-token")
         if pending_runtime == "PENDING_PLAT211_VERIFIED_IMAGE":

@@ -50,6 +50,13 @@ class AuthorityTests(unittest.TestCase):
             with self.assertRaisesRegex(contract.ContractError, reason):
                 contract.validate_evidence(self.matrix, changed, self.canonical)
 
+        changed = copy.deepcopy(self.evidence)
+        app = next(item for item in changed["applications"] if item["name"] == "fresh-account-release")
+        app["sourceConfig"]["kustomize"]["images"] = [
+            "ghcr.io/syuhei0519/backend-app=ghcr.io/syuhei0519/backend-app@sha256:" + "f" * 64]
+        with self.assertRaisesRegex(contract.ContractError, "application-sourceConfig:fresh-account-release"):
+            contract.validate_evidence(self.matrix, changed, self.canonical)
+
     def test_unbounded_cluster_write_is_rejected(self):
         changed = copy.deepcopy(self.matrix)
         changed["permissions"][0]["resourceNames"] = []
@@ -98,6 +105,13 @@ class AuthorityTests(unittest.TestCase):
         with self.assertRaisesRegex(contract.ContractError, "rbac-canonical-rules"):
             contract.validate_rbac(self.canonical, documents)
 
+        documents = contract.load_yaml(contract.RBAC)
+        role = next(item for item in documents if item["kind"] == "Role" and
+                    item["metadata"]["namespace"] == "fresh-account")
+        role["rules"].append({"apiGroups": [""], "resources": ["pods"], "verbs": ["create"]})
+        with self.assertRaisesRegex(contract.ContractError, "rbac-pod-create"):
+            contract.validate_rbac(self.canonical, documents)
+
     def test_admission_expression_covers_direct_pods_secret_mounts_init_and_ephemeral_containers(self):
         documents = contract.load_yaml(contract.ADMISSION)
         contract.validate_admission(self.canonical, documents)
@@ -116,12 +130,27 @@ class AuthorityTests(unittest.TestCase):
         with self.assertRaisesRegex(contract.ContractError, "admission-pod-fragment:ephemeralContainers"):
             contract.validate_admission(self.canonical, documents)
 
+        documents = contract.load_yaml(contract.ADMISSION)
+        app_policy = next(item for item in documents if item.get("metadata", {}).get("name") ==
+                          "fresh-application-boundary" and item["kind"] == "ValidatingAdmissionPolicy")
+        app_policy["spec"]["validations"] = [item for item in app_policy["spec"]["validations"]
+                                               if "spec.sources" not in item["expression"]]
+        with self.assertRaisesRegex(contract.ContractError, "admission-source-fragment:spec.sources"):
+            contract.validate_admission(self.canonical, documents)
+
+        documents = contract.load_yaml(contract.ADMISSION)
+        pod_policy = next(item for item in documents if item.get("metadata", {}).get("name") ==
+                          "fresh-account-pod-boundary" and item["kind"] == "ValidatingAdmissionPolicy")
+        rules = pod_policy["spec"]["matchConstraints"]["resourceRules"]
+        self.assertTrue(any("pods/ephemeralcontainers" in item["resources"] for item in rules))
+
     def test_all_named_negative_fixtures_are_denied(self):
         fixture = contract.load(contract.NEGATIVE)
         contract.validate_negatives(self.canonical, fixture)
         bypass = next(item for item in fixture["cases"] if item["id"] == "direct-pod")
         bypass["object"]["metadata"]["ownerReferences"] = [
-            {"kind": "ReplicaSet", "name": "account-api-fixture", "controller": True}]
+            {"kind": "ReplicaSet", "name": "account-api-fixture",
+             "uid": "33333333-3333-3333-3333-333333333333", "controller": True}]
         with self.assertRaisesRegex(contract.ContractError, "negative-not-denied"):
             contract.validate_negatives(self.canonical, fixture)
 

@@ -2,6 +2,7 @@
   "schemaVersion": "platform.lab/fresh-security-contract/v1",
   "profile": "account-lightweight-fresh",
   "destinationServer": "https://kubernetes.default.svc",
+  "approvedRuntimeImage": "PENDING_PLAT211_VERIFIED_IMAGE",
   "namespaces": {
     "fresh-control": {"platform.lab/profile": "account-lightweight-fresh", "platform.lab/security-boundary": "control"},
     "fresh-account": {"platform.lab/profile": "account-lightweight-fresh", "platform.lab/security-boundary": "account", "istio.io/rev": "fresh-1-31-2"},
@@ -12,24 +13,31 @@
       "namespace": "fresh-control", "project": "fresh-platform",
       "repository": "https://github.com/syuhei0519/platform-gitops.git",
       "revision": "__PLATFORM_GITOPS_SHA__", "path": "learning/fresh-profile/root/children",
+      "sourceConfig": {"directory": {"recurse": true}},
       "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}
     },
     "fresh-release-definitions": {
       "namespace": "fresh-control", "project": "fresh-platform",
       "repository": "https://github.com/syuhei0519/application-manifest.git",
-      "revision": "0fc2ae19300af32f86643152e65597b022dcdc0f", "path": "learning/fresh-profile/release-definition",
+      "revision": "b759f1bd4976e0269740c10421c5537e35be72dd", "path": "learning/fresh-profile/release-definition",
+      "sourceConfig": {"helm": {"releaseName": "fresh-account-release-definition", "parameters": [
+        {"name": "workloadRevision", "value": "b759f1bd4976e0269740c10421c5537e35be72dd"},
+        {"name": "accountRuntimeImage", "value": "PENDING_PLAT211_VERIFIED_IMAGE"}
+      ]}},
       "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}
     },
     "fresh-observability": {
       "namespace": "fresh-control", "project": "fresh-platform",
       "repository": "https://github.com/syuhei0519/platform-gitops.git",
       "revision": "__PLATFORM_GITOPS_SHA__", "path": "learning/fresh-profile/observability",
+      "sourceConfig": {"directory": {"recurse": true}},
       "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-observability"}
     },
     "fresh-account-release": {
       "namespace": "fresh-control", "project": "fresh-account",
       "repository": "https://github.com/syuhei0519/application-manifest.git",
-      "revision": "0fc2ae19300af32f86643152e65597b022dcdc0f", "path": "learning/fresh-profile/workload",
+      "revision": "b759f1bd4976e0269740c10421c5537e35be72dd", "path": "learning/fresh-profile/workload",
+      "sourceConfig": {"kustomize": {"images": ["ghcr.io/syuhei0519/backend-app=PENDING_PLAT211_VERIFIED_IMAGE"]}},
       "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-account"}
     }
   },
@@ -70,6 +78,13 @@
     "discoveryVerbs": ["get", "list", "watch"], "createVerbs": ["create"],
     "namedMutationVerbs": ["get", "update", "patch"], "deleteVerbs": [],
     "createIsBoundedByFailClosedAdmission": true
+  },
+  "podCreationBoundary": {
+    "trustedCreateRequestor": "system:kube-controller-manager",
+    "namespacedPodCreateSubjects": [],
+    "ownerReferenceUidLookupInCel": false,
+    "guarantee": "CREATE Pod requires trusted kube-controller-manager requestor plus canonical controller owner shape; namespaced GitOps and workload identities receive no Pod create verb",
+    "liveEvidence": ["audit-create-username", "kubectl-auth-can-i-no-direct-pod", "fake-owner-direct-pod-denied", "ephemeralcontainers-subresource-denied"]
   },
   "liveEvidence": {
     "required": ["kubectl-auth-can-i-positive", "kubectl-auth-can-i-negative", "admission-positive", "admission-negative"],

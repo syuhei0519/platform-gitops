@@ -49,6 +49,7 @@ class AcceptanceTests(unittest.TestCase):
         for item in profile["spec"]["inputs"]["secrets"]:
             item["owner"] = "personal-platform-owner"
             item["expiry"] = "2026-11-25"
+            item["sourceRef"] = "sealed-input:sha256:" + "3" * 64
         profile["spec"]["repositories"]["platform-gitops"]["commit"] = "1" * 40
         runtime = next(item for item in profile["spec"]["images"] if item["name"] == "account-runtime")
         runtime["ref"] = "ghcr.io/syuhei0519/backend-app@sha256:" + "3" * 64

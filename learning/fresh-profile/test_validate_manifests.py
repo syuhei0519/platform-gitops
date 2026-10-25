@@ -57,6 +57,17 @@ class FreshManifestTests(unittest.TestCase):
         with self.assertRaisesRegex(contract.Rejected, "application-project:fresh-release-definitions"):
             contract.validate(children_path=self.temp(children))
 
+        children = contract.load(contract.CHILDREN)
+        children[0]["spec"]["source"]["helm"]["parameters"][1]["value"] = (
+            "ghcr.io/syuhei0519/backend-app@sha256:" + "f" * 64)
+        with self.assertRaisesRegex(contract.Rejected, "application-source-config:fresh-release-definitions"):
+            contract.validate(children_path=self.temp(children))
+
+        children = contract.load(contract.CHILDREN)
+        children[0]["spec"]["sources"] = [children[0]["spec"]["source"]]
+        with self.assertRaisesRegex(contract.Rejected, "application-source-config:fresh-release-definitions"):
+            contract.validate(children_path=self.temp(children))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

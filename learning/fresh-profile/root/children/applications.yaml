@@ -9,12 +9,12 @@ spec:
   project: fresh-platform
   source:
     repoURL: https://github.com/syuhei0519/application-manifest.git
-    targetRevision: 0fc2ae19300af32f86643152e65597b022dcdc0f
+    targetRevision: b759f1bd4976e0269740c10421c5537e35be72dd
     path: learning/fresh-profile/release-definition
     helm:
       releaseName: fresh-account-release-definition
       parameters:
-      - {name: workloadRevision, value: 0fc2ae19300af32f86643152e65597b022dcdc0f}
+      - {name: workloadRevision, value: b759f1bd4976e0269740c10421c5537e35be72dd}
       - {name: accountRuntimeImage, value: PENDING_PLAT211_VERIFIED_IMAGE}
   destination:
     server: https://kubernetes.default.svc
