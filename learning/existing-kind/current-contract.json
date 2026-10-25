@@ -1,0 +1,193 @@
+{
+  "version": 1,
+  "entry": "learning/existing-kind/bootstrap-root.yaml",
+  "root": "learning/existing-kind/root/children.yaml",
+  "server": "https://kubernetes.default.svc.cluster.local:443",
+  "controlNamespace": "learning-progressive-control",
+  "resourceIdentityContract": "learning/existing-kind/current-resource-identities.json",
+  "projects": {
+    "learning-existing": {
+      "sourceRepos": [
+        "https://github.com/syuhei0519/platform-gitops.git",
+        "https://github.com/syuhei0519/application-manifest.git"
+      ],
+      "destinations": [
+        "istio-learning-system",
+        "learning-account-release",
+        "learning-istio-demo",
+        "learning-progressive-control",
+        "learning-services-20261018",
+        "observability"
+      ],
+      "namespaceResourceWhitelist": [
+        {"group": "", "kind": "ConfigMap"},
+        {"group": "", "kind": "Service"},
+        {"group": "", "kind": "ServiceAccount"},
+        {"group": "", "kind": "PersistentVolumeClaim"},
+        {"group": "apps", "kind": "Deployment"},
+        {"group": "apps", "kind": "StatefulSet"},
+        {"group": "argoproj.io", "kind": "Application"},
+        {"group": "argoproj.io", "kind": "AppProject"},
+        {"group": "argoproj.io", "kind": "Rollout"},
+        {"group": "argoproj.io", "kind": "AnalysisTemplate"},
+        {"group": "batch", "kind": "Job"},
+        {"group": "networking.k8s.io", "kind": "NetworkPolicy"},
+        {"group": "networking.istio.io", "kind": "VirtualService"},
+        {"group": "networking.istio.io", "kind": "DestinationRule"}
+      ],
+      "clusterResourceWhitelist": [
+        {"group": "", "kind": "Namespace"},
+        {"group": "apiextensions.k8s.io", "kind": "CustomResourceDefinition"},
+        {"group": "admissionregistration.k8s.io", "kind": "MutatingWebhookConfiguration"},
+        {"group": "admissionregistration.k8s.io", "kind": "ValidatingWebhookConfiguration"},
+        {"group": "admissionregistration.k8s.io", "kind": "ValidatingAdmissionPolicy"},
+        {"group": "admissionregistration.k8s.io", "kind": "ValidatingAdmissionPolicyBinding"}
+      ]
+    },
+    "account-release": {
+      "sourceRepos": [
+        "https://github.com/syuhei0519/application-manifest.git"
+      ],
+      "destinations": [
+        "learning-account-release"
+      ],
+      "namespaceResourceWhitelist": [
+        {"group": "", "kind": "Service"},
+        {"group": "argoproj.io", "kind": "Rollout"},
+        {"group": "argoproj.io", "kind": "AnalysisTemplate"},
+        {"group": "networking.istio.io", "kind": "VirtualService"},
+        {"group": "networking.istio.io", "kind": "DestinationRule"}
+      ],
+      "clusterResourceWhitelist": []
+    }
+  },
+  "applications": {
+    "lab-learning-foundation": {
+      "repo": "platform-gitops",
+      "path": "learning/existing-kind/managed/foundation",
+      "project": "learning-existing",
+      "destination": "learning-progressive-control",
+      "resourceCount": 57,
+      "allowedNamespaces": [
+        "",
+        "istio-learning-system",
+        "learning-progressive-control"
+      ],
+      "allowedKinds": [
+        "ConfigMap", "CustomResourceDefinition", "Deployment", "MutatingWebhookConfiguration",
+        "Namespace", "Service", "ServiceAccount", "StatefulSet", "ValidatingAdmissionPolicy",
+        "ValidatingAdmissionPolicyBinding", "ValidatingWebhookConfiguration"
+      ],
+      "ignoreDifferences": [
+        {
+          "group": "admissionregistration.k8s.io",
+          "kind": "MutatingWebhookConfiguration",
+          "name": "istio-sidecar-injector-learning-1-31-2-istio-learning-system",
+          "jsonPointers": [
+            "/webhooks/0/clientConfig/caBundle",
+            "/webhooks/1/clientConfig/caBundle"
+          ]
+        },
+        {
+          "group": "admissionregistration.k8s.io",
+          "kind": "ValidatingWebhookConfiguration",
+          "name": "istio-validator-learning-1-31-2-istio-learning-system",
+          "jsonPointers": ["/webhooks/0/clientConfig/caBundle"]
+        }
+      ]
+    },
+    "lab-learning-services": {
+      "repo": "application-manifest",
+      "path": "learning/existing-kind/services",
+      "project": "learning-existing",
+      "destination": "learning-services-20261018",
+      "resourceCount": 24,
+      "allowedKinds": ["ConfigMap", "Deployment", "PersistentVolumeClaim", "Service", "StatefulSet"]
+    },
+    "lab-learning-observability": {
+      "repo": "platform-gitops",
+      "path": "learning/existing-kind/managed/observability",
+      "project": "learning-existing",
+      "destination": "observability",
+      "resourceCount": 16,
+      "allowedKinds": ["ConfigMap", "Deployment", "Service", "ServiceAccount"]
+    },
+    "lab-learning-mesh-fixture": {
+      "repo": "platform-gitops",
+      "path": "learning/existing-kind/adoption/mesh-fixture",
+      "project": "learning-existing",
+      "destination": "learning-istio-demo",
+      "resourceCount": 5,
+      "allowedKinds": ["ConfigMap", "Deployment", "Service", "ServiceAccount"]
+    },
+    "lab-learning-rollouts": {
+      "repo": "platform-gitops",
+      "path": "learning/existing-kind/managed/rollouts",
+      "project": "learning-existing",
+      "destination": "learning-services-20261018",
+      "resourceCount": 2,
+      "allowedKinds": ["ConfigMap", "Deployment"]
+    },
+    "lab-learning-account-foundation": {
+      "repo": "application-manifest",
+      "path": "learning/existing-kind/account-foundation",
+      "project": "learning-existing",
+      "destination": "learning-account-release",
+      "resourceCount": 7,
+      "allowedKinds": ["ConfigMap", "Deployment", "Job", "PersistentVolumeClaim", "Service", "StatefulSet"]
+    },
+    "account-release-definition": {
+      "repo": "application-manifest",
+      "path": "learning/account-release/application-chart",
+      "project": "learning-existing",
+      "destination": "learning-progressive-control",
+      "chartTemplateCount": 1,
+      "allowedKinds": ["Application"]
+    }
+  },
+  "secretReferences": [
+    "argocd-redis",
+    "argocd-repo-server-mtls",
+    "argocd-repo-server-tls",
+    "cacerts",
+    "istio-kubeconfig",
+    "istiod-tls",
+    "learning-account-db",
+    "learning-notification-db",
+    "learning-order-db",
+    "learning-payment-db"
+  ],
+  "persistentVolumeClaims": {
+    "learning-account-release/learning-account-data": {
+      "storageClassName": "standard",
+      "accessModes": ["ReadWriteOnce"],
+      "volumeName": null
+    },
+    "learning-services-20261018/learning-account-data": {
+      "storageClassName": "standard",
+      "accessModes": ["ReadWriteOnce"],
+      "volumeName": "pvc-9ea2064f-271a-4a97-af7f-110750dc3af6"
+    },
+    "learning-services-20261018/learning-notification-data": {
+      "storageClassName": "standard",
+      "accessModes": ["ReadWriteOnce"],
+      "volumeName": "pvc-3b432a3c-2f56-427d-bc93-ddabd02d0d73"
+    },
+    "learning-services-20261018/learning-order-data": {
+      "storageClassName": "standard",
+      "accessModes": ["ReadWriteOnce"],
+      "volumeName": "pvc-9cc73725-b2a9-4aff-81ee-e48bb75d732c"
+    },
+    "learning-services-20261018/learning-payment-data": {
+      "storageClassName": "standard",
+      "accessModes": ["ReadWriteOnce"],
+      "volumeName": "pvc-247463c7-eec2-4942-b50a-25ca810f0387"
+    }
+  },
+  "jobs": {
+    "learning-account-release/account-release-migration": {
+      "owner": "application-manifest/learning/existing-kind/account-foundation",
+      "lifecycle": "mutable-until-first-success-then-frozen"
+    }
+  }
+}

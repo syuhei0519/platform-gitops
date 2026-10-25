@@ -21,6 +21,15 @@ Draft7Validator.check_schema(SCHEMA)
 VALIDATOR = Draft7Validator(SCHEMA)
 
 
+def sli_queries(namespace):
+    """Bind the finite profile input before a query reaches Prometheus."""
+    assert namespace and '__' not in namespace
+    source = json.loads((ROOT / 'sli-queries.json').read_text())
+    assert all('__ACCOUNT_NAMESPACE__' in expr for expr in source.values())
+    return {key: expr.replace('__ACCOUNT_NAMESPACE__', namespace)
+            for key, expr in source.items()}
+
+
 def helm(args, ok=True):
     result = subprocess.run(['helm', *args], capture_output=True, text=True)
     assert (result.returncode == 0) == ok, result.stderr
@@ -137,8 +146,9 @@ def verify(text):
     fixtures = yaml.safe_load((ROOT / 'query-tests.yaml').read_text())
     tested = {e['expr'] for t in fixtures['tests'] for e in t['promql_expr_test']}
     assert queries == tested, 'promtool fixtures must test the exact dashboard expressions'
-    sli = json.loads((ROOT / 'sli-queries.json').read_text())
+    sli = sli_queries('learning-fixture')
     assert {p['targets'][0]['expr'] for p in dashboard['panels'][6:]} == set(sli.values())
+    assert all('account_namespace="learning-fixture"' in expr for expr in queries | set(sli.values()))
     assert all(p['fieldConfig']['defaults']['noValue'] == 'N/A' for p in dashboard['panels'])
     assert 'or vector(0)' not in dashboard['panels'][1]['targets'][0]['expr'].split(' and on() ')[0]
     return configs
@@ -174,7 +184,17 @@ def main():
         render(values, directory, release='wrong', ok=False)
         changed = copy.deepcopy(values)
         changed['accountNamespace'] = 'learning-other'
-        assert render(changed, directory) != text
+        changed_text = render(changed, directory)
+        assert changed_text != text
+        changed_objects = list(yaml.safe_load_all(changed_text))
+        changed_grafana = next(o for o in changed_objects
+                               if o['kind'] == 'ConfigMap' and o['metadata']['name'] == 'learning-grafana-config')
+        changed_dashboard = json.loads(changed_grafana['data']['account-overview.json'])
+        changed_queries = {p['targets'][0]['expr'] for p in changed_dashboard['panels']}
+        assert changed_queries == set(sli_queries('learning-other').values()) | {
+            p['targets'][0]['expr'] for p in changed_dashboard['panels'][:6]}
+        assert all('account_namespace="learning-other"' in expr for expr in changed_queries)
+        assert all('learning-fixture' not in expr for expr in changed_queries)
     if args.output:
         args.output.mkdir(parents=True, exist_ok=True)
         (args.output / 'rendered.yaml').write_text(text)
@@ -182,7 +202,7 @@ def main():
             for name, content in data.items():
                 (args.output / name).write_text(content)
         # Materialize exact dashboard expressions from compact numeric fixtures.
-        sli = json.loads((ROOT / 'sli-queries.json').read_text())
+        sli = sli_queries('learning-fixture')
         fixtures = yaml.safe_load((ROOT / 'sli-fixtures.yaml').read_text())
         for case in fixtures['tests']:
             expected = case.pop('expected')
