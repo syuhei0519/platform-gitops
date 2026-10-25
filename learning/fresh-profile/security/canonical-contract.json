@@ -19,9 +19,9 @@
     "fresh-release-definitions": {
       "namespace": "fresh-control", "project": "fresh-platform",
       "repository": "https://github.com/syuhei0519/application-manifest.git",
-      "revision": "d466fc5ff9c52bdc43f1c2cb9387f2362e140547", "path": "learning/fresh-profile/release-definition",
+      "revision": "a27735eb062d0feabd0092c1137ad882f73c8e5f", "path": "learning/fresh-profile/release-definition",
       "sourceConfig": {"helm": {"releaseName": "fresh-account-release-definition", "parameters": [
-        {"name": "workloadRevision", "value": "d466fc5ff9c52bdc43f1c2cb9387f2362e140547"},
+        {"name": "workloadRevision", "value": "a27735eb062d0feabd0092c1137ad882f73c8e5f"},
         {"name": "accountRuntimeImage", "value": "PENDING_PLAT211_VERIFIED_IMAGE"}
       ]}},
       "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}
@@ -36,7 +36,7 @@
     "fresh-account-release": {
       "namespace": "fresh-control", "project": "fresh-account",
       "repository": "https://github.com/syuhei0519/application-manifest.git",
-      "revision": "d466fc5ff9c52bdc43f1c2cb9387f2362e140547", "path": "learning/fresh-profile/workload",
+      "revision": "a27735eb062d0feabd0092c1137ad882f73c8e5f", "path": "learning/fresh-profile/workload",
       "sourceConfig": {"kustomize": {"images": ["ghcr.io/syuhei0519/backend-app=PENDING_PLAT211_VERIFIED_IMAGE"]}},
       "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-account"}
     }

@@ -16,7 +16,7 @@ spec:
          object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-control') ||
         (object.metadata.name == 'fresh-release-definitions' && object.spec.project == 'fresh-platform' &&
          object.spec.source.repoURL == 'https://github.com/syuhei0519/application-manifest.git' &&
-         object.spec.source.targetRevision == 'd466fc5ff9c52bdc43f1c2cb9387f2362e140547' &&
+         object.spec.source.targetRevision == 'a27735eb062d0feabd0092c1137ad882f73c8e5f' &&
          object.spec.source.path == 'learning/fresh-profile/release-definition' &&
          object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-control') ||
         (object.metadata.name == 'fresh-observability' && object.spec.project == 'fresh-platform' &&
@@ -26,7 +26,7 @@ spec:
          object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-observability') ||
         (object.metadata.name == 'fresh-account-release' && object.spec.project == 'fresh-account' &&
          object.spec.source.repoURL == 'https://github.com/syuhei0519/application-manifest.git' &&
-         object.spec.source.targetRevision == 'd466fc5ff9c52bdc43f1c2cb9387f2362e140547' &&
+         object.spec.source.targetRevision == 'a27735eb062d0feabd0092c1137ad882f73c8e5f' &&
          object.spec.source.path == 'learning/fresh-profile/workload' &&
          object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-account')
       )
@@ -42,7 +42,7 @@ spec:
         (object.metadata.name == 'fresh-release-definitions' &&
          has(object.spec.source.helm) && object.spec.source.helm.releaseName == 'fresh-account-release-definition' &&
          object.spec.source.helm.parameters.size() == 2 && object.spec.source.helm.parameters.all(p,
-           !has(p.forceString) && ((p.name == 'workloadRevision' && p.value == 'd466fc5ff9c52bdc43f1c2cb9387f2362e140547') ||
+           !has(p.forceString) && ((p.name == 'workloadRevision' && p.value == 'a27735eb062d0feabd0092c1137ad882f73c8e5f') ||
            (p.name == 'accountRuntimeImage' && p.value == 'PENDING_PLAT211_VERIFIED_IMAGE'))) &&
          !has(object.spec.source.helm.valueFiles) && !has(object.spec.source.helm.fileParameters) &&
          !has(object.spec.source.helm.values) && !has(object.spec.source.helm.valuesObject) &&

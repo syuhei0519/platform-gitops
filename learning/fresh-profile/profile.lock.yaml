@@ -19,13 +19,13 @@ spec:
   repositories:
     backend-app:
       url: https://github.com/syuhei0519/backend-app.git
-      commit: d797fc285618dea3eb9f64b425793eaf1e2a7012
+      commit: 45c08d6e451770530e46fe35c0ea8990fd53a6c3
     frontend-app:
       url: https://github.com/syuhei0519/frontend-app.git
       commit: aecccce46295714645387854a4dad37bdd0cd3c3
     application-manifest:
       url: https://github.com/syuhei0519/application-manifest.git
-      commit: d466fc5ff9c52bdc43f1c2cb9387f2362e140547
+      commit: a27735eb062d0feabd0092c1137ad882f73c8e5f
     platform-gitops:
       url: https://github.com/syuhei0519/platform-gitops.git
       commit: __PLATFORM_GITOPS_SHA__
@@ -73,7 +73,7 @@ spec:
     ref: docker.io/grafana/grafana:13.2.3@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4
     architecture: linux/amd64
   freshRuntimeRequirement:
-    sourceAtOrAfter: d797fc285618dea3eb9f64b425793eaf1e2a7012
+    sourceAtOrAfter: 45c08d6e451770530e46fe35c0ea8990fd53a6c3
     requiredConfig: finite-fresh-account-operation-roles-exact-namespace-schema-and-Downward-API
     admissionSecretKeyContract: username-password-operation-key-allowlist-aligned
     requiredIdentity: immutable-digest-source-config-platform-user-entrypoint-and-retained-G2-source
