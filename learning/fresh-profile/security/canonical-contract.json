@@ -2,7 +2,7 @@
   "schemaVersion": "platform.lab/fresh-security-contract/v1",
   "profile": "account-lightweight-fresh",
   "destinationServer": "https://kubernetes.default.svc",
-  "approvedRuntimeImage": "PENDING_PLAT211_VERIFIED_IMAGE",
+  "approvedRuntimeImage": "ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd",
   "namespaces": {
     "fresh-control": {"platform.lab/profile": "account-lightweight-fresh", "platform.lab/security-boundary": "control"},
     "fresh-account": {"platform.lab/profile": "account-lightweight-fresh", "platform.lab/security-boundary": "account", "istio.io/rev": "fresh-1-31-2"},
@@ -22,7 +22,7 @@
       "revision": "f019cc9ad76abdd49a6be303bd4e5c88050abc85", "path": "learning/fresh-profile/release-definition",
       "sourceConfig": {"helm": {"releaseName": "fresh-account-release-definition", "parameters": [
           {"name": "workloadRevision", "value": "f019cc9ad76abdd49a6be303bd4e5c88050abc85"},
-        {"name": "accountRuntimeImage", "value": "PENDING_PLAT211_VERIFIED_IMAGE"}
+          {"name": "accountRuntimeImage", "value": "ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd"}
       ]}},
       "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}
     },
@@ -37,7 +37,7 @@
       "namespace": "fresh-control", "project": "fresh-account",
       "repository": "https://github.com/syuhei0519/application-manifest.git",
       "revision": "f019cc9ad76abdd49a6be303bd4e5c88050abc85", "path": "learning/fresh-profile/workload",
-      "sourceConfig": {"kustomize": {"images": ["ghcr.io/syuhei0519/backend-app=PENDING_PLAT211_VERIFIED_IMAGE"]}},
+      "sourceConfig": {"kustomize": {"images": ["ghcr.io/syuhei0519/backend-app=ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd"]}},
       "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-account"}
     }
   },

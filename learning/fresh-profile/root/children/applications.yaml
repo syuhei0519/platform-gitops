@@ -15,7 +15,7 @@ spec:
       releaseName: fresh-account-release-definition
       parameters:
       - {name: workloadRevision, value: f019cc9ad76abdd49a6be303bd4e5c88050abc85}
-      - {name: accountRuntimeImage, value: PENDING_PLAT211_VERIFIED_IMAGE}
+      - {name: accountRuntimeImage, value: ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd}
   destination:
     server: https://kubernetes.default.svc
     namespace: fresh-control
