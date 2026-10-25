@@ -150,7 +150,7 @@
           "properties": {
             "cpuMilli": {"const": 475}, "memoryMiB": {"const": 960},
             "applicationManifestInputSha256": {"const": "187698f2dae64029f7e3993e875058f04b085714fd41b0e29506c6b241a81a94"},
-            "platformObservabilityInputSha256": {"const": "a7af14c5615d14de698c6c8fbc529faa02aa1e4f92c6644359c98f8e6e1ee512"},
+            "platformObservabilityInputSha256": {"const": "db2296494f234ba1d9e6956291bc804fc2ed72902394ab05cdfc3e52aa558950"},
             "includes": {"type": "string"}, "excludes": {"type": "string"}
           }
         }, "retainedArchiveBytes": {"type": "string"},
@@ -174,3 +174,4 @@
     }
   }
 }
+
