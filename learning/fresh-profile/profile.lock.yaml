@@ -175,4 +175,3 @@ spec:
     G4:
       status: pending-cutover
       choice: not-required-for-fresh-acceptance
-
