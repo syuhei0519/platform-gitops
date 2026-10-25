@@ -641,8 +641,7 @@ data:
     \ SDK identity checks, not sender authentication. Only Account metrics.\n  filter/account:\n\
     \    error_mode: propagate\n    metrics:\n      metric:\n        - 'resource.attributes[\"\
     service.name\"] != \"account-backend\"'\n        - 'resource.attributes[\"deployment.environment.name\"\
-    ] != \"local\"'\n        - 'resource.attributes[\"k8s.namespace.name\"] != \"\
-    account\"'\n  resource/real_namespace:\n    attributes:\n      - key: k8s.namespace.name\n\
+    ] != \"local\"'\n        - 'resource.attributes[\"k8s.namespace.name\"] != \"account\" and resource.attributes[\"k8s.namespace.name\"] != \"learning-services-20261018\"'\n  resource/real_namespace:\n    attributes:\n      - key: k8s.namespace.name\n\
     \        value: \"learning-services-20261018\"\n        action: upsert\n  # Associate\
     \ only the SDK's Pod UID; never fall back to source IP.\n  k8sattributes/account:\n\
     \    auth_type: serviceAccount\n    passthrough: false\n    filter:\n      namespace:\

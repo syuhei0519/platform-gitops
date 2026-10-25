@@ -8,6 +8,8 @@ import shutil
 import tempfile
 import unittest
 
+import yaml
+
 from current_contract import (ContractError, document_file, validate,
                               render_definition_chart, validate_resources)
 
@@ -29,6 +31,27 @@ class CurrentContractTests(unittest.TestCase):
         self.assertEqual(set(contract['applications']), {
             doc['metadata']['name'] for doc in self.root if doc['kind'] == 'Application'})
         self.assertEqual(sum(map(len, resources.values())), 111)
+
+    def test_account_collector_accepts_legacy_and_real_namespace_during_transition(self):
+        docs = self.resources['lab-learning-observability']
+        config_map = next(doc for doc in docs
+                          if doc.get('kind') == 'ConfigMap'
+                          and doc.get('metadata', {}).get('name') == 'otel-collector-config')
+        config = yaml.safe_load(config_map['data']['config.yaml'])
+        conditions = config['processors']['filter/account']['metrics']['metric']
+        expected = (
+            'resource.attributes["k8s.namespace.name"] != "account" and '
+            'resource.attributes["k8s.namespace.name"] != "learning-services-20261018"')
+        self.assertIn(expected, conditions)
+        self.assertNotIn(
+            'resource.attributes["k8s.namespace.name"] != "account"', conditions)
+        namespace_attribute = next(
+            item for item in config['processors']['resource/real_namespace']['attributes']
+            if item['key'] == 'k8s.namespace.name')
+        self.assertEqual(namespace_attribute,
+                         {'key': 'k8s.namespace.name',
+                          'value': 'learning-services-20261018',
+                          'action': 'upsert'})
 
     def test_wrong_current_root_source_fails(self):
         root = copy.deepcopy(self.root)
