@@ -58,6 +58,33 @@ def identity(doc):
     return group, doc.get('kind'), namespace, metadata.get('name')
 
 
+def identity_text(doc):
+    return '|'.join(identity(doc))
+
+
+def permission_set(items, reason):
+    require(isinstance(items, list), reason)
+    require(all(isinstance(item, dict) and set(item) == {'group', 'kind'} and
+                isinstance(item['group'], str) and isinstance(item['kind'], str) and item['kind']
+                for item in items), reason)
+    pairs = [(item['group'], item['kind']) for item in items]
+    require(len(pairs) == len(set(pairs)), reason)
+    return sorted(pairs)
+
+
+def ignore_contract(items, reason):
+    require(isinstance(items, list), reason)
+    result = []
+    for item in items:
+        require(isinstance(item, dict) and set(item) == {'group', 'kind', 'name', 'jsonPointers'}, reason)
+        pointers = item['jsonPointers']
+        require(isinstance(pointers, list), reason)
+        require(all(isinstance(value, str) and value.startswith('/') for value in pointers), reason)
+        require(len(pointers) == len(set(pointers)), reason)
+        result.append((item['group'], item['kind'], item['name'], tuple(sorted(pointers))))
+    return sorted(result)
+
+
 def secret_references(value, found):
     if isinstance(value, dict):
         if isinstance(value.get('secretName'), str):
@@ -78,15 +105,16 @@ def validate_project(doc, name, expected, contract):
     require(doc.get('metadata', {}).get('annotations', {}).get('argocd.argoproj.io/sync-options') == PROTECTED,
             f'project-delete-protection:{name}')
     spec = doc.get('spec', {})
+    require(set(spec) == {'sourceRepos', 'destinations', 'namespaceResourceWhitelist',
+                          'clusterResourceWhitelist'}, f'project-fields:{name}')
     require(sorted(spec.get('sourceRepos', [])) == sorted(expected['sourceRepos']), f'project-source-repos:{name}')
     destinations = spec.get('destinations', [])
     require(all(d.get('server') == contract['server'] for d in destinations), f'project-server:{name}')
     require(sorted(d.get('namespace') for d in destinations) == sorted(expected['destinations']), f'project-destinations:{name}')
-    require(not any(item.get('kind') == '*' or item.get('group') == '*'
-                    for key in ('namespaceResourceWhitelist', 'clusterResourceWhitelist')
-                    for item in spec.get(key, [])), f'project-wildcard:{name}')
-    if name == 'account-release':
-        require(spec.get('clusterResourceWhitelist') == [], 'account-release-cluster-permission')
+    for key in ('namespaceResourceWhitelist', 'clusterResourceWhitelist'):
+        require(permission_set(spec.get(key), f'project-permissions:{name}:{key}') ==
+                permission_set(expected[key], f'contract-project-permissions:{name}:{key}'),
+                f'project-permissions:{name}:{key}')
 
 
 def validate_application(doc, name, expected, contract):
@@ -108,6 +136,9 @@ def validate_application(doc, name, expected, contract):
     policy = spec.get('syncPolicy', {})
     require('automated' not in policy, f'application-automatic-sync:{name}')
     require(policy.get('syncOptions') == ['RespectIgnoreDifferences=true'], f'application-sync-options:{name}')
+    require(ignore_contract(spec.get('ignoreDifferences', []), f'application-ignore:{name}') ==
+            ignore_contract(expected.get('ignoreDifferences', []), f'contract-application-ignore:{name}'),
+            f'application-ignore:{name}')
 
 
 def validate_resources(resources, contract):
@@ -115,6 +146,8 @@ def validate_resources(resources, contract):
     secrets = set()
     pvcs = {}
     jobs = {}
+    expected_identities = contract['_resourceIdentities']
+    require(set(resources) == set(expected_identities), f'resource-identity-children:{sorted(resources)}')
     for application, docs in resources.items():
         expected = contract['applications'][application]
         require(len(docs) == expected['resourceCount'], f'resource-count:{application}')
@@ -147,6 +180,9 @@ def validate_resources(resources, contract):
                 require(metadata.get('annotations', {}).get('argocd.argoproj.io/sync-options') == PROTECTED,
                         f'job-delete-protection:{key}')
                 jobs[f"{key[2]}/{key[3]}"] = application
+        actual_identities = sorted(identity_text(doc) for doc in docs)
+        require(actual_identities == sorted(expected_identities[application]),
+                f'resource-identities:{application}')
     require(secrets == set(contract['secretReferences']), f'secret-reference-set:{sorted(secrets)}')
     require(pvcs == contract['persistentVolumeClaims'], 'pvc-immutable-contract')
     require(set(jobs) == set(contract['jobs']), f'job-set:{sorted(jobs)}')
@@ -170,13 +206,20 @@ def load_resources(repositories, contract):
     return result
 
 
-def validate(platform, manifest, root_docs=None, resources=None):
+def validate(platform, manifest, entry_docs=None, root_docs=None, resources=None):
     contract = json.loads((platform / 'learning/existing-kind/current-contract.json').read_text(encoding='utf-8'))
+    identity_path = platform / contract['resourceIdentityContract']
+    contract['_resourceIdentities'] = json.loads(identity_path.read_text(encoding='utf-8'))
     repositories = {'platform-gitops': platform, 'application-manifest': manifest}
-    entry = document_file(platform / contract['entry'])
+    entry = document_file(platform / contract['entry']) if entry_docs is None else entry_docs
     root_entry = next((d for d in entry if d.get('kind') == 'Application' and
                        d.get('metadata', {}).get('name') == 'lab-learning-root'), None)
     require(root_entry is not None, 'missing-current-entry')
+    bootstrap_project = next((d for d in entry if d.get('kind') == 'AppProject' and
+                              d.get('metadata', {}).get('name') == 'learning-existing'), None)
+    require(bootstrap_project is not None, 'missing-bootstrap-project')
+    require(len(entry) == 2, 'bootstrap-entry-set')
+    validate_project(bootstrap_project, 'learning-existing', contract['projects']['learning-existing'], contract)
     validate_application(root_entry, 'lab-learning-root', {
         'repo': 'platform-gitops', 'path': 'learning/existing-kind/root',
         'project': 'learning-existing', 'destination': contract['controlNamespace']}, contract)

@@ -10,11 +10,18 @@ There is one current entry: `learning/existing-kind/bootstrap-root.yaml`. It cre
 
 The current production-of-desired-state path is:
 
-1. A backend-app or frontend-app protected-main run builds and verifies an immutable image/release record.
-2. Only when its separately protected publication/proposal controls are enabled, the producer proposes a data-only application-manifest PR. It does not merge or deploy it.
-3. application-manifest protected-main code verifies the proposed PR identity and evidence. An owner separately approves and merges it.
-4. The root children consume `application-manifest/main` or `platform-gitops/main` at the exact repo/path declared in `current-contract.json`.
-5. Argo CD reconciles those reviewed declarations. The portal may request a guarded sync/release operation; it is not an alternative source of desired state.
+1. Current checked local-artifact/image identities and their runtime configuration are declared in the exact application-manifest paths named by `current-contract.json`.
+2. A change is made through a reviewed Git PR in application-manifest or platform-gitops. An owner separately approves and merges it; no CI job merges or deploys it.
+3. The root children consume `application-manifest/main` or `platform-gitops/main` at those exact repo/path pairs.
+4. Argo CD reconciles the reviewed declarations. The portal may request a guarded sync/release operation; it is not an alternative source of desired state.
+
+The protected-main image/release-record pipeline is related but is not yet a
+current-path producer. At this decision's input revisions, its automated
+proposal writes `environments/local/<service>.yaml`, which the current root does
+not consume. PLAT-210 must first land the typed current-profile consumer and
+protected verifier, then change the producer to propose only that reviewed
+current target. Until both halves are present, publication remains separately
+approved and the proposal connection is planned/conditional, not current.
 
 No legacy bootstrap directory, old trial cluster, generated proposal directory, or evidence capture is a second current entry.
 

@@ -4,6 +4,7 @@
   "root": "learning/existing-kind/root/children.yaml",
   "server": "https://kubernetes.default.svc.cluster.local:443",
   "controlNamespace": "learning-progressive-control",
+  "resourceIdentityContract": "learning/existing-kind/current-resource-identities.json",
   "projects": {
     "learning-existing": {
       "sourceRepos": [
@@ -17,6 +18,30 @@
         "learning-progressive-control",
         "learning-services-20261018",
         "observability"
+      ],
+      "namespaceResourceWhitelist": [
+        {"group": "", "kind": "ConfigMap"},
+        {"group": "", "kind": "Service"},
+        {"group": "", "kind": "ServiceAccount"},
+        {"group": "", "kind": "PersistentVolumeClaim"},
+        {"group": "apps", "kind": "Deployment"},
+        {"group": "apps", "kind": "StatefulSet"},
+        {"group": "argoproj.io", "kind": "Application"},
+        {"group": "argoproj.io", "kind": "AppProject"},
+        {"group": "argoproj.io", "kind": "Rollout"},
+        {"group": "argoproj.io", "kind": "AnalysisTemplate"},
+        {"group": "batch", "kind": "Job"},
+        {"group": "networking.k8s.io", "kind": "NetworkPolicy"},
+        {"group": "networking.istio.io", "kind": "VirtualService"},
+        {"group": "networking.istio.io", "kind": "DestinationRule"}
+      ],
+      "clusterResourceWhitelist": [
+        {"group": "", "kind": "Namespace"},
+        {"group": "apiextensions.k8s.io", "kind": "CustomResourceDefinition"},
+        {"group": "admissionregistration.k8s.io", "kind": "MutatingWebhookConfiguration"},
+        {"group": "admissionregistration.k8s.io", "kind": "ValidatingWebhookConfiguration"},
+        {"group": "admissionregistration.k8s.io", "kind": "ValidatingAdmissionPolicy"},
+        {"group": "admissionregistration.k8s.io", "kind": "ValidatingAdmissionPolicyBinding"}
       ]
     },
     "account-release": {
@@ -25,7 +50,15 @@
       ],
       "destinations": [
         "learning-account-release"
-      ]
+      ],
+      "namespaceResourceWhitelist": [
+        {"group": "", "kind": "Service"},
+        {"group": "argoproj.io", "kind": "Rollout"},
+        {"group": "argoproj.io", "kind": "AnalysisTemplate"},
+        {"group": "networking.istio.io", "kind": "VirtualService"},
+        {"group": "networking.istio.io", "kind": "DestinationRule"}
+      ],
+      "clusterResourceWhitelist": []
     }
   },
   "applications": {
@@ -44,6 +77,23 @@
         "ConfigMap", "CustomResourceDefinition", "Deployment", "MutatingWebhookConfiguration",
         "Namespace", "Service", "ServiceAccount", "StatefulSet", "ValidatingAdmissionPolicy",
         "ValidatingAdmissionPolicyBinding", "ValidatingWebhookConfiguration"
+      ],
+      "ignoreDifferences": [
+        {
+          "group": "admissionregistration.k8s.io",
+          "kind": "MutatingWebhookConfiguration",
+          "name": "istio-sidecar-injector-learning-1-31-2-istio-learning-system",
+          "jsonPointers": [
+            "/webhooks/0/clientConfig/caBundle",
+            "/webhooks/1/clientConfig/caBundle"
+          ]
+        },
+        {
+          "group": "admissionregistration.k8s.io",
+          "kind": "ValidatingWebhookConfiguration",
+          "name": "istio-validator-learning-1-31-2-istio-learning-system",
+          "jsonPointers": ["/webhooks/0/clientConfig/caBundle"]
+        }
       ]
     },
     "lab-learning-services": {

@@ -50,6 +50,40 @@ class CurrentContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ContractError, 'resource-kinds'):
             validate_resources(resources, self.contract)
 
+    def test_same_kind_resource_rename_fails_identity_contract(self):
+        resources = copy.deepcopy(self.resources)
+        deployment = next(doc for doc in resources['lab-learning-services']
+                          if doc['kind'] == 'Deployment')
+        deployment['metadata']['name'] = 'same-kind-unreviewed-rename'
+        with self.assertRaisesRegex(ContractError, 'resource-identities:lab-learning-services'):
+            validate_resources(resources, self.contract)
+
+    def test_specific_privileged_project_kind_fails(self):
+        root = copy.deepcopy(self.root)
+        project = next(doc for doc in root if doc.get('kind') == 'AppProject' and
+                       doc.get('metadata', {}).get('name') == 'learning-existing')
+        project['spec']['clusterResourceWhitelist'].append(
+            {'group': 'rbac.authorization.k8s.io', 'kind': 'ClusterRole'})
+        with self.assertRaisesRegex(ContractError, 'project-permissions:learning-existing'):
+            validate(PLATFORM, MANIFEST, root_docs=root)
+
+    def test_bootstrap_project_privileged_kind_fails(self):
+        entry = document_file(PLATFORM / self.contract['entry'])
+        project = next(doc for doc in entry if doc.get('kind') == 'AppProject')
+        project['spec']['clusterResourceWhitelist'].append(
+            {'group': 'rbac.authorization.k8s.io', 'kind': 'ClusterRoleBinding'})
+        with self.assertRaisesRegex(ContractError, 'project-permissions:learning-existing'):
+            validate(PLATFORM, MANIFEST, entry_docs=entry)
+
+    def test_broad_ignore_pointer_fails(self):
+        root = copy.deepcopy(self.root)
+        app = next(doc for doc in root if doc.get('metadata', {}).get('name') ==
+                   'lab-learning-foundation')
+        app['spec']['ignoreDifferences'].append({
+            'group': '*', 'kind': '*', 'name': '*', 'jsonPointers': ['/spec']})
+        with self.assertRaisesRegex(ContractError, 'application-ignore:lab-learning-foundation'):
+            validate(PLATFORM, MANIFEST, root_docs=root)
+
     def test_pvc_immutable_identity_mutation_fails(self):
         resources = copy.deepcopy(self.resources)
         pvc = next(doc for doc in resources['lab-learning-services']
