@@ -157,6 +157,9 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
         for gate in ("G1", "G2", "G3"):
             if spec["decisions"][gate]["status"] != "approved":
                 raise ContractError("approval-" + gate.lower())
+        if spec["freshRuntimeRequirement"]["admissionSecretKeyContract"] != \
+                "username-password-operation-key-allowlist-aligned":
+            raise ContractError("approved-admission-secret-key-contract")
         pending_fields = [target["clusterName"], target["context"], supply["decision"],
                           supply["retentionUntil"], supply["restoreOwner"]]
         pending_fields += [item[field] for item in spec["inputs"]["secrets"]

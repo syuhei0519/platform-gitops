@@ -53,10 +53,11 @@
         "images": {"type": "array", "minItems": 8, "items": {"$ref": "#/definitions/image"}},
         "freshRuntimeRequirement": {
           "type": "object", "additionalProperties": false,
-          "required": ["sourceAtOrAfter", "requiredConfig", "requiredIdentity", "priorRuntimeImage", "priorRuntimeUse", "priorRollbackImage", "priorRollbackSource", "rollbackRule"],
+          "required": ["sourceAtOrAfter", "requiredConfig", "admissionSecretKeyContract", "requiredIdentity", "priorRuntimeImage", "priorRuntimeUse", "priorRollbackImage", "priorRollbackSource", "rollbackRule"],
           "properties": {
             "sourceAtOrAfter": {"const": "d797fc285618dea3eb9f64b425793eaf1e2a7012"},
-            "requiredConfig": {"const": "PLAT-211-dual-profile-namespace-and-Downward-API"},
+            "requiredConfig": {"const": "finite-fresh-account-operation-roles-exact-namespace-schema-and-Downward-API"},
+            "admissionSecretKeyContract": {"enum": ["PENDING_EXACT_ADMISSION_SECRET_KEY_APPROVAL", "username-password-operation-key-allowlist-aligned"]},
             "requiredIdentity": {"const": "immutable-digest-source-config-platform-user-entrypoint-and-retained-G2-source"},
             "priorRuntimeImage": {"const": "ghcr.io/syuhei0519/backend-app@sha256:746e9acb5e5a24dcd6644ab5e082f2d3dad79620ec2e00afa80aa39a7436cf9a"},
             "priorRuntimeUse": {"const": "comparison-and-paired-rollback-only-not-fresh-compatible"},

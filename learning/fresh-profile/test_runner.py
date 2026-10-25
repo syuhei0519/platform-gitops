@@ -197,17 +197,37 @@ class RunnerTests(unittest.TestCase):
             return {"tool": "kubectl", "args": ["--kubeconfig", kubeconfig,
                     "--context", target_context, verb, "configmap", "runner-fixture",
                     "--namespace", "fresh-control"]}
+        def step_contract(step):
+            identities = {
+                "database": "StatefulSet/fresh-account/account-postgresql",
+                "role-bootstrap": "Job/fresh-account/account-db-role-bootstrap",
+                "migration": "Job/fresh-account/account-migration",
+                "application": "Rollout/fresh-account/account-api",
+            }
+            identity = identities.get(step, f"ConfigMap/fresh-control/{step}")
+            if step in {"role-bootstrap", "migration"}:
+                generation, health, conditions = "none", "job-complete", {"Complete": "True"}
+            elif step in {"database", "application"}:
+                generation, health, conditions = "observed-current", "workload-ready", {"Available": "True"}
+            else:
+                generation, health, conditions = "none", "none", {}
+            return {"verify": [command("get")], "reconcile": [command("get")],
+                    "run": [command("apply")], "resourceIdentities": [identity],
+                    "observations": [{
+                        "identity": identity, "desiredPaths": ["/data"],
+                        "desiredSha256": hashlib.sha256(json.dumps(
+                            {"/data": {"step": step}}, sort_keys=True,
+                            separators=(",", ":")).encode()).hexdigest(),
+                        "generationPolicy": generation, "healthPolicy": health,
+                        "requiredConditions": conditions,
+                    }]}
         adapter_plan = {
-            "schemaVersion": "platform.lab/approved-live-step-plan/v1",
+            "schemaVersion": "platform.lab/approved-live-step-plan/v2",
             "target": {"clusterName": spec["target"]["clusterName"],
                        "context": target_context, "kubeconfig": kubeconfig},
             "tools": tools,
             "identity": {"clusterUID": command("get")},
-            "steps": {step: {"verify": [command("get")],
-                              "reconcile": [command("get")],
-                              "run": [command("apply")],
-                              "resourceIdentities": [f"fixture/{step}"]}
-                      for step in runner.STEPS},
+            "steps": {step: step_contract(step) for step in runner.STEPS},
         }
         adapter_plan_path.write_text(json.dumps(adapter_plan) + "\n", encoding="utf-8")
         FakeExecutor.plan_sha256 = hashlib.sha256(adapter_plan_path.read_bytes()).hexdigest()

@@ -279,7 +279,17 @@ def validate_admission(canonical, documents):
     for fragment in ("spec.sources", "workloadRevision", "accountRuntimeImage",
                      canonical["approvedRuntimeImage"],
                      "ghcr.io/syuhei0519/backend-app=" + canonical["approvedRuntimeImage"],
-                     "kustomize.images", "fresh-account-release-definition"):
+                     "kustomize.images", "fresh-account-release-definition",
+                     "helm.valueFiles", "helm.fileParameters", "helm.values", "helm.valuesObject",
+                     "helm.version", "helm.passCredentials", "helm.skipCrds",
+                     "helm.ignoreMissingValueFiles", "helm.kubeVersion", "helm.apiVersions",
+                     "helm.skipSchemaValidation", "kustomize.namePrefix", "kustomize.nameSuffix",
+                     "kustomize.commonLabels", "kustomize.commonAnnotations",
+                     "kustomize.forceCommonLabels", "kustomize.forceCommonAnnotations",
+                     "kustomize.namespace", "kustomize.version", "kustomize.kubeVersion",
+                     "kustomize.apiVersions", "kustomize.components",
+                     "kustomize.ignoreMissingComponents", "kustomize.patches",
+                     "kustomize.replicas", "kustomize.labelWithoutSelector"):
         require(fragment in app_expression, f"admission-source-fragment:{fragment}")
     managed_expression = " ".join(item["expression"] for item in policies["fresh-managed-resource-boundary"]["spec"]["validations"])
     for namespace, resources in canonical["resourceNames"].items():
@@ -382,6 +392,7 @@ def validate_negatives(canonical, fixture):
     cases = fixture.get("cases", [])
     require({item["id"] for item in cases} == {"wrong-application-project", "multiple-application-sources",
                                                 "release-helm-runtime-image-swap", "generated-child-image-swap",
+                                                "release-helm-extra-values", "generated-child-kustomize-prefix",
                                                 "direct-pod", "fake-owner-direct-pod", "secret-volume",
                                                 "wrong-secret-key", "privileged-init-container",
                                                 "secret-backed-init-container", "ephemeralcontainers-subresource",

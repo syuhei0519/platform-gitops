@@ -104,6 +104,8 @@ class FreshProfileTests(unittest.TestCase):
 
     def test_explicit_g1_g2_g3_can_unlock_live_validation(self):
         value = copy.deepcopy(self.profile)
+        value["spec"]["freshRuntimeRequirement"]["admissionSecretKeyContract"] = \
+            "username-password-operation-key-allowlist-aligned"
         value["spec"]["target"].update(clusterName="kind-platform-fresh-plat217", context="kind-platform-fresh-plat217")
         for gate in ("G1", "G2", "G3"):
             value["spec"]["decisions"][gate] = {"status": "approved", "choice": "approved-fixture-choice"}
@@ -126,6 +128,8 @@ class FreshProfileTests(unittest.TestCase):
 
     def test_approved_profile_rejects_unverified_plat211_image(self):
         value = copy.deepcopy(self.profile)
+        value["spec"]["freshRuntimeRequirement"]["admissionSecretKeyContract"] = \
+            "username-password-operation-key-allowlist-aligned"
         value["spec"]["target"].update(clusterName="kind-platform-fresh-plat217", context="kind-platform-fresh-plat217")
         for gate in ("G1", "G2", "G3"):
             value["spec"]["decisions"][gate] = {"status": "approved", "choice": "approved-fixture-choice"}
@@ -140,6 +144,28 @@ class FreshProfileTests(unittest.TestCase):
             dockerAdditionalDiskMaxGiB=15, workloadCPURequestsMaxMilli=2000,
             workloadMemoryRequestsMaxMiB=4096, imageBytesMaxGiB=15, podPendingMaxSeconds=60)
         with self.assertRaisesRegex(contract.ContractError, "approved-account-runtime-pending"):
+            self.validate_copy(value, require_approved=True)
+
+    def test_approved_profile_rejects_pending_admission_secret_key_contract(self):
+        value = copy.deepcopy(self.profile)
+        value["spec"]["target"].update(clusterName="kind-platform-fresh-plat217",
+                                        context="kind-platform-fresh-plat217")
+        for gate in ("G1", "G2", "G3"):
+            value["spec"]["decisions"][gate] = {"status": "approved", "choice": "approved-fixture-choice"}
+        value["spec"]["imageSupply"].update(
+            decision="retained-oci-archive", immutable=True,
+            retentionUntil="2027-10-25", restoreOwner="personal-platform-owner")
+        for item in value["spec"]["inputs"]["secrets"]:
+            item.update(owner="personal-platform-owner", expiry="2026-11-25",
+                        sourceRef="sealed-input:sha256:" + "3" * 64)
+        value["spec"]["repositories"]["platform-gitops"]["commit"] = "1" * 40
+        next(item for item in value["spec"]["images"] if item["name"] == "account-runtime")["ref"] = (
+            "ghcr.io/syuhei0519/backend-app@sha256:" + "2" * 64)
+        value["spec"]["budget"]["approvalLimits"].update(
+            elapsedMaxMinutes=45, hostAvailableMemoryMinGiB=4, hostFreeDiskMinGiB=20,
+            dockerAdditionalDiskMaxGiB=15, workloadCPURequestsMaxMilli=2000,
+            workloadMemoryRequestsMaxMiB=4096, imageBytesMaxGiB=15, podPendingMaxSeconds=60)
+        with self.assertRaisesRegex(contract.ContractError, "approved-admission-secret-key-contract"):
             self.validate_copy(value, require_approved=True)
 
 

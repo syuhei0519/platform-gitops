@@ -138,6 +138,16 @@ class AuthorityTests(unittest.TestCase):
         with self.assertRaisesRegex(contract.ContractError, "admission-source-fragment:spec.sources"):
             contract.validate_admission(self.canonical, documents)
 
+        for fragment in ("helm.valuesObject", "kustomize.namePrefix"):
+            documents = contract.load_yaml(contract.ADMISSION)
+            app_policy = next(item for item in documents if item.get("metadata", {}).get("name") ==
+                              "fresh-application-boundary" and item["kind"] == "ValidatingAdmissionPolicy")
+            for validation in app_policy["spec"]["validations"]:
+                validation["expression"] = validation["expression"].replace(fragment, "removedField")
+            with self.subTest(fragment=fragment), self.assertRaisesRegex(
+                    contract.ContractError, "admission-source-fragment"):
+                contract.validate_admission(self.canonical, documents)
+
         documents = contract.load_yaml(contract.ADMISSION)
         pod_policy = next(item for item in documents if item.get("metadata", {}).get("name") ==
                           "fresh-account-pod-boundary" and item["kind"] == "ValidatingAdmissionPolicy")

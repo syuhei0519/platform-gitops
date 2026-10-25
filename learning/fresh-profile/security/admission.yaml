@@ -16,7 +16,7 @@ spec:
          object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-control') ||
         (object.metadata.name == 'fresh-release-definitions' && object.spec.project == 'fresh-platform' &&
          object.spec.source.repoURL == 'https://github.com/syuhei0519/application-manifest.git' &&
-         object.spec.source.targetRevision == 'b759f1bd4976e0269740c10421c5537e35be72dd' &&
+         object.spec.source.targetRevision == '9e6ef64cf4e37eb52612daa7e4a35e48f3f39754' &&
          object.spec.source.path == 'learning/fresh-profile/release-definition' &&
          object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-control') ||
         (object.metadata.name == 'fresh-observability' && object.spec.project == 'fresh-platform' &&
@@ -26,7 +26,7 @@ spec:
          object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-observability') ||
         (object.metadata.name == 'fresh-account-release' && object.spec.project == 'fresh-account' &&
          object.spec.source.repoURL == 'https://github.com/syuhei0519/application-manifest.git' &&
-         object.spec.source.targetRevision == 'b759f1bd4976e0269740c10421c5537e35be72dd' &&
+         object.spec.source.targetRevision == '9e6ef64cf4e37eb52612daa7e4a35e48f3f39754' &&
          object.spec.source.path == 'learning/fresh-profile/workload' &&
          object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-account')
       )
@@ -42,13 +42,27 @@ spec:
         (object.metadata.name == 'fresh-release-definitions' &&
          has(object.spec.source.helm) && object.spec.source.helm.releaseName == 'fresh-account-release-definition' &&
          object.spec.source.helm.parameters.size() == 2 && object.spec.source.helm.parameters.all(p,
-           !has(p.forceString) && ((p.name == 'workloadRevision' && p.value == 'b759f1bd4976e0269740c10421c5537e35be72dd') ||
+           !has(p.forceString) && ((p.name == 'workloadRevision' && p.value == '9e6ef64cf4e37eb52612daa7e4a35e48f3f39754') ||
            (p.name == 'accountRuntimeImage' && p.value == 'PENDING_PLAT211_VERIFIED_IMAGE'))) &&
+         !has(object.spec.source.helm.valueFiles) && !has(object.spec.source.helm.fileParameters) &&
+         !has(object.spec.source.helm.values) && !has(object.spec.source.helm.valuesObject) &&
+         !has(object.spec.source.helm.version) && !has(object.spec.source.helm.passCredentials) &&
+         !has(object.spec.source.helm.skipCrds) && !has(object.spec.source.helm.ignoreMissingValueFiles) &&
+         !has(object.spec.source.helm.kubeVersion) && !has(object.spec.source.helm.apiVersions) &&
+         !has(object.spec.source.helm.skipSchemaValidation) &&
          !has(object.spec.source.directory) && !has(object.spec.source.kustomize) &&
          !has(object.spec.source.plugin) && !has(object.spec.source.chart) && !has(object.spec.source.ref)) ||
         (object.metadata.name == 'fresh-account-release' &&
          has(object.spec.source.kustomize) && object.spec.source.kustomize.images.size() == 1 &&
          object.spec.source.kustomize.images[0] == 'ghcr.io/syuhei0519/backend-app=PENDING_PLAT211_VERIFIED_IMAGE' &&
+         !has(object.spec.source.kustomize.namePrefix) && !has(object.spec.source.kustomize.nameSuffix) &&
+         !has(object.spec.source.kustomize.commonLabels) && !has(object.spec.source.kustomize.commonAnnotations) &&
+         !has(object.spec.source.kustomize.forceCommonLabels) && !has(object.spec.source.kustomize.forceCommonAnnotations) &&
+         !has(object.spec.source.kustomize.namespace) && !has(object.spec.source.kustomize.version) &&
+         !has(object.spec.source.kustomize.kubeVersion) && !has(object.spec.source.kustomize.apiVersions) &&
+         !has(object.spec.source.kustomize.components) && !has(object.spec.source.kustomize.ignoreMissingComponents) &&
+         !has(object.spec.source.kustomize.patches) && !has(object.spec.source.kustomize.replicas) &&
+         !has(object.spec.source.kustomize.labelWithoutSelector) &&
          !has(object.spec.source.directory) && !has(object.spec.source.helm) &&
          !has(object.spec.source.plugin) && !has(object.spec.source.chart) && !has(object.spec.source.ref))
       )
