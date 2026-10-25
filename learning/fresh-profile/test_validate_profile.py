@@ -59,6 +59,18 @@ class FreshProfileTests(unittest.TestCase):
             with self.assertRaisesRegex(contract.ContractError, error):
                 self.validate_copy(value)
 
+    def test_multiarch_children_use_digest_only_references(self):
+        images = {item["name"]: item["ref"] for item in self.profile["spec"]["images"]}
+        for name in contract.DIGEST_ONLY_IMAGES:
+            repository = images[name].split("@", 1)[0]
+            self.assertNotIn(":", repository.rsplit("/", 1)[-1])
+
+        value = copy.deepcopy(self.profile)
+        argocd = next(item for item in value["spec"]["images"] if item["name"] == "argocd")
+        argocd["ref"] = argocd["ref"].replace("argocd@", "argocd:v3.5.2@")
+        with self.assertRaisesRegex(contract.ContractError, "version-lock-image"):
+            self.validate_copy(value)
+
     def test_node_cache_cannot_be_supply_evidence(self):
         value = copy.deepcopy(self.profile)
         value["spec"]["imageSupply"]["cacheIsEvidence"] = True
