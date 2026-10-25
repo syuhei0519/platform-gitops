@@ -245,6 +245,18 @@ def build(helm,manifest):
     outputs['collector-access.yaml']=collector_access
     observability=[d for d in yaml.safe_load_all((ROOT/'adoption/observability.yaml').read_text()) if d]
     prom=next(d for d in observability if d['kind']=='ConfigMap' and d['metadata']['name']=='learning-prometheus-config')
+    # The adoption capture is immutable history.  Refresh only the current
+    # managed copies of the dashboard and recording rules from their canonical
+    # chart sources, bound to this profile's finite namespace input.
+    current_grafana=next(d for d in monitoring if d['kind']=='ConfigMap' and d['metadata']['name']=='learning-grafana-config')
+    managed_grafana=next(d for d in observability if d['kind']=='ConfigMap' and d['metadata']['name']=='learning-grafana-config')
+    if {k:v for k,v in current_grafana['data'].items() if k!='account-overview.json'} != {k:v for k,v in managed_grafana['data'].items() if k!='account-overview.json'}:
+        raise ValueError('managed Grafana config drift outside the owned dashboard')
+    managed_grafana['data']['account-overview.json']=current_grafana['data']['account-overview.json']
+    current_grafana_deploy=next(d for d in monitoring if d['kind']=='Deployment' and d['metadata']['name']=='learning-grafana')
+    managed_grafana_deploy=next(d for d in observability if d['kind']=='Deployment' and d['metadata']['name']=='learning-grafana')
+    managed_grafana_deploy['spec']['template']['metadata']['annotations']['checksum/config']=current_grafana_deploy['spec']['template']['metadata']['annotations']['checksum/config']
+    prom['data']['account-alerts.yaml']=(PLATFORM/'learning/monitoring/chart/files/account-alerts.yaml').read_text().replace('__ACCOUNT_NAMESPACE__',APP)
     config=yaml.safe_load(prom['data']['prometheus.yml'])
     sdk=next(j for j in config['scrape_configs'] if j['job_name']=='otel-application')
     if any(e.get('labels',{}).get('account_namespace')==APP for e in sdk['static_configs']):raise ValueError('duplicate Account metrics')

@@ -67,10 +67,19 @@ jobs:
         run: |
           mkdir -p .security/public
           docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD:/work" -w /work --entrypoint sh alpine/helm:4.2.4@sha256:76c375eed56144c68d6197c55bc5a4552fb42002190b796729901cbab3ae6e51 -ec "sh ci/validate.sh; .security/scan-gate -check-render-only .rendered -out .security/public/pre-render.json; PE_OBSERVABILITY_RENDER_DIR=.rendered .build/bootstrap-test -test.run 'TestObservabilityContract|TestCollectorContract|TestGrafanaProvisioningBoundary|TestOrderWorkloadsContract' -test.v"
+      - name: Checkout paired current application declarations
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: syuhei0519/application-manifest
+          ref: 9441c696fc6fece4b431b832b7d7099539210081
+          path: .build/current-manifest
+          persist-credentials: false
       - name: Learning Account monitoring static checks
         run: |
           python3 -m venv .build/monitoring-venv
           .build/monitoring-venv/bin/python -m pip install PyYAML==6.0.3 jsonschema==4.26.0
+          PAIRED_APPLICATION_MANIFEST="$PWD/.build/current-manifest" \
+            .build/monitoring-venv/bin/python learning/existing-kind/test_current_contract.py
           docker run --rm --entrypoint cat alpine/helm:4.2.4@sha256:76c375eed56144c68d6197c55bc5a4552fb42002190b796729901cbab3ae6e51 /usr/bin/helm > .build/helm
           chmod +x .build/helm
           PATH="$PWD/.build:$PATH" .build/monitoring-venv/bin/python learning/monitoring/validate.py --output .rendered/learning-monitoring

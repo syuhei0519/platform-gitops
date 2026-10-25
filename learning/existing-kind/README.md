@@ -7,11 +7,15 @@ measurements and detailed acceptance evidence stay in the local execution record
 
 ## Sources and operation
 
+* [Current entry ADR](../../docs/architecture/ADR-0001-current-platform-entry.md)
+  and `current-contract.json`: the one current root, paired repository paths,
+  resource identities, PVC retention and Secret-reference boundary enforced by CI.
 * [Ownership contract](CURRENT-OWNERSHIP.md): authoritative repository sources,
   generated resources, bootstrap boundaries and recreation checks.
 * [Deployment contract](DEPLOYMENT.md): ordinary Git review and Argo sync, safe
   recovery and the explicit limits on bootstrap and incident exceptions.
 * `root` and `managed`: Application relationships and platform parent declarations.
+  Files under `adoption` are historical captures, not a second current root.
 * `render.py`, `bootstrap-root.yaml` and reviewed access proposals: preparation of
   the minimum operator bootstrap; preparation does not authorize live execution.
 

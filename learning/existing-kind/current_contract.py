@@ -1,0 +1,211 @@
+#!/usr/bin/env python3
+"""Validate the one current existing-kind root against both owning repos.
+
+This is an offline source contract.  It does not contact Kubernetes, infer live
+health, or replay frozen bootstrap Jobs.
+"""
+import argparse
+import json
+from pathlib import Path
+
+import yaml
+
+
+HERE = Path(__file__).resolve().parent
+REPOSITORIES = {
+    'platform-gitops': HERE.parents[1],
+}
+PROTECTED = 'Prune=false,Delete=false'
+CLUSTER_SCOPED = {
+    'CustomResourceDefinition', 'MutatingWebhookConfiguration', 'Namespace',
+    'ValidatingAdmissionPolicy', 'ValidatingAdmissionPolicyBinding',
+    'ValidatingWebhookConfiguration',
+}
+RBAC = {'Role', 'RoleBinding', 'ClusterRole', 'ClusterRoleBinding'}
+
+
+class ContractError(ValueError):
+    pass
+
+
+def require(value, reason):
+    if not value:
+        raise ContractError(reason)
+
+
+def documents(path):
+    result = []
+    for source in sorted(path.rglob('*.yaml')):
+        if source.name == 'Chart.yaml':
+            continue
+        for doc in yaml.safe_load_all(source.read_text(encoding='utf-8')):
+            if doc:
+                require(isinstance(doc, dict), f'non-object-document:{source}')
+                result.append(doc)
+    return result
+
+
+def document_file(path):
+    require(path.is_file(), f'missing-yaml:{path}')
+    return [doc for doc in yaml.safe_load_all(path.read_text(encoding='utf-8')) if doc]
+
+
+def identity(doc):
+    metadata = doc.get('metadata') or {}
+    api = doc.get('apiVersion', '')
+    group = api.split('/', 1)[0] if '/' in api else ''
+    namespace = '' if doc.get('kind') in CLUSTER_SCOPED else metadata.get('namespace', '')
+    return group, doc.get('kind'), namespace, metadata.get('name')
+
+
+def secret_references(value, found):
+    if isinstance(value, dict):
+        if isinstance(value.get('secretName'), str):
+            found.add(value['secretName'])
+        ref = value.get('secretKeyRef')
+        if isinstance(ref, dict) and isinstance(ref.get('name'), str):
+            found.add(ref['name'])
+        for child in value.values():
+            secret_references(child, found)
+    elif isinstance(value, list):
+        for child in value:
+            secret_references(child, found)
+
+
+def validate_project(doc, name, expected, contract):
+    require(doc.get('kind') == 'AppProject', f'project-kind:{name}')
+    require(doc.get('metadata', {}).get('namespace') == contract['controlNamespace'], f'project-namespace:{name}')
+    require(doc.get('metadata', {}).get('annotations', {}).get('argocd.argoproj.io/sync-options') == PROTECTED,
+            f'project-delete-protection:{name}')
+    spec = doc.get('spec', {})
+    require(sorted(spec.get('sourceRepos', [])) == sorted(expected['sourceRepos']), f'project-source-repos:{name}')
+    destinations = spec.get('destinations', [])
+    require(all(d.get('server') == contract['server'] for d in destinations), f'project-server:{name}')
+    require(sorted(d.get('namespace') for d in destinations) == sorted(expected['destinations']), f'project-destinations:{name}')
+    require(not any(item.get('kind') == '*' or item.get('group') == '*'
+                    for key in ('namespaceResourceWhitelist', 'clusterResourceWhitelist')
+                    for item in spec.get(key, [])), f'project-wildcard:{name}')
+    if name == 'account-release':
+        require(spec.get('clusterResourceWhitelist') == [], 'account-release-cluster-permission')
+
+
+def validate_application(doc, name, expected, contract):
+    require(doc.get('kind') == 'Application', f'application-kind:{name}')
+    metadata = doc.get('metadata', {})
+    require(metadata.get('namespace') == contract['controlNamespace'], f'application-namespace:{name}')
+    require(metadata.get('annotations', {}).get('argocd.argoproj.io/sync-options') == PROTECTED,
+            f'application-delete-protection:{name}')
+    spec = doc.get('spec', {})
+    require(spec.get('project') == expected['project'], f'application-project:{name}')
+    source = spec.get('source', {})
+    require(source.get('repoURL') == f"https://github.com/syuhei0519/{expected['repo']}.git",
+            f'application-repo:{name}')
+    require(source.get('targetRevision') == 'main', f'application-revision:{name}')
+    require(source.get('path') == expected['path'], f'application-path:{name}')
+    destination = spec.get('destination', {})
+    require(destination == {'server': contract['server'], 'namespace': expected['destination']},
+            f'application-destination:{name}')
+    policy = spec.get('syncPolicy', {})
+    require('automated' not in policy, f'application-automatic-sync:{name}')
+    require(policy.get('syncOptions') == ['RespectIgnoreDifferences=true'], f'application-sync-options:{name}')
+
+
+def validate_resources(resources, contract):
+    seen = {}
+    secrets = set()
+    pvcs = {}
+    jobs = {}
+    for application, docs in resources.items():
+        expected = contract['applications'][application]
+        require(len(docs) == expected['resourceCount'], f'resource-count:{application}')
+        actual_kinds = sorted({doc.get('kind') for doc in docs})
+        require(actual_kinds == sorted(expected['allowedKinds']), f'resource-kinds:{application}')
+        allowed_namespaces = set(expected.get('allowedNamespaces', ['', expected['destination']]))
+        for doc in docs:
+            require(isinstance(doc.get('apiVersion'), str) and doc['apiVersion'], f'api-version:{application}')
+            require(isinstance(doc.get('kind'), str) and doc['kind'], f'kind:{application}')
+            metadata = doc.get('metadata') or {}
+            require(isinstance(metadata.get('name'), str) and metadata['name'], f'name:{application}')
+            key = identity(doc)
+            require(key not in seen, f'duplicate-identity:{key}:{seen.get(key)}:{application}')
+            seen[key] = application
+            require(key[2] in allowed_namespaces, f'resource-namespace:{application}:{key}')
+            require(doc['kind'] != 'Secret', f'secret-object-in-git:{application}:{key}')
+            require(doc['kind'] not in RBAC, f'child-rbac-object:{application}:{key}')
+            secret_references(doc, secrets)
+            if doc['kind'] == 'PersistentVolumeClaim':
+                require(metadata.get('annotations', {}).get('argocd.argoproj.io/sync-options') == PROTECTED,
+                        f'pvc-delete-protection:{key}')
+                pvc_key = f"{key[2]}/{key[3]}"
+                spec = doc.get('spec', {})
+                pvcs[pvc_key] = {
+                    'storageClassName': spec.get('storageClassName'),
+                    'accessModes': spec.get('accessModes'),
+                    'volumeName': spec.get('volumeName'),
+                }
+            if doc['kind'] == 'Job':
+                require(metadata.get('annotations', {}).get('argocd.argoproj.io/sync-options') == PROTECTED,
+                        f'job-delete-protection:{key}')
+                jobs[f"{key[2]}/{key[3]}"] = application
+    require(secrets == set(contract['secretReferences']), f'secret-reference-set:{sorted(secrets)}')
+    require(pvcs == contract['persistentVolumeClaims'], 'pvc-immutable-contract')
+    require(set(jobs) == set(contract['jobs']), f'job-set:{sorted(jobs)}')
+    require(all(jobs[name] == 'lab-learning-account-foundation' for name in jobs), 'job-owner')
+
+
+def load_resources(repositories, contract):
+    result = {}
+    for name, expected in contract['applications'].items():
+        path = repositories[expected['repo']] / expected['path']
+        require(path.is_dir(), f'missing-child-path:{name}')
+        if 'chartTemplateCount' in expected:
+            require((path / 'Chart.yaml').is_file(), f'missing-chart:{name}')
+            templates = sorted((path / 'templates').glob('*.yaml'))
+            require(len(templates) == expected['chartTemplateCount'], f'chart-template-count:{name}')
+            kinds = {line.split(':', 1)[1].strip() for template in templates
+                     for line in template.read_text(encoding='utf-8').splitlines() if line.startswith('kind:')}
+            require(kinds == set(expected['allowedKinds']), f'chart-kinds:{name}')
+            continue
+        result[name] = documents(path)
+    return result
+
+
+def validate(platform, manifest, root_docs=None, resources=None):
+    contract = json.loads((platform / 'learning/existing-kind/current-contract.json').read_text(encoding='utf-8'))
+    repositories = {'platform-gitops': platform, 'application-manifest': manifest}
+    entry = document_file(platform / contract['entry'])
+    root_entry = next((d for d in entry if d.get('kind') == 'Application' and
+                       d.get('metadata', {}).get('name') == 'lab-learning-root'), None)
+    require(root_entry is not None, 'missing-current-entry')
+    validate_application(root_entry, 'lab-learning-root', {
+        'repo': 'platform-gitops', 'path': 'learning/existing-kind/root',
+        'project': 'learning-existing', 'destination': contract['controlNamespace']}, contract)
+    if root_docs is None:
+        root_docs = documents(platform / Path(contract['root']).parent)
+    projects = {d.get('metadata', {}).get('name'): d for d in root_docs if d.get('kind') == 'AppProject'}
+    applications = {d.get('metadata', {}).get('name'): d for d in root_docs if d.get('kind') == 'Application'}
+    require(set(projects) == set(contract['projects']), f'project-set:{sorted(projects)}')
+    require(set(applications) == set(contract['applications']), f'application-set:{sorted(applications)}')
+    for name, expected in contract['projects'].items():
+        validate_project(projects[name], name, expected, contract)
+    for name, expected in contract['applications'].items():
+        validate_application(applications[name], name, expected, contract)
+    if resources is None:
+        resources = load_resources(repositories, contract)
+    validate_resources(resources, contract)
+    return contract, resources
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--platform', type=Path, default=HERE.parents[1])
+    parser.add_argument('--application-manifest', type=Path, required=True)
+    args = parser.parse_args()
+    contract, resources = validate(args.platform.resolve(), args.application_manifest.resolve())
+    print(f"PASS current root: {len(contract['applications'])} children, "
+          f"{sum(len(items) for items in resources.values())} concrete resources, paired repositories")
+    print('Offline source contract only; live sync/health and immutable cluster state are not claimed')
+
+
+if __name__ == '__main__':
+    main()

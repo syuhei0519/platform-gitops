@@ -60,7 +60,10 @@ def prepare(output):
     assert changed_alert['annotations']['service_url'] == 'http://alternate-account.learning-other.svc.cluster.local:18080'
     assert changed_alert['labels']['service'] == 'backend'
     assert changed_alert['labels']['account_namespace'] == 'learning-other'
-    assert changed_rules[:2] == yaml.safe_load((output / 'account-alerts.yaml').read_text())['groups'][0]['rules'][:2]
+    baseline_rules = yaml.safe_load((output / 'account-alerts.yaml').read_text())['groups'][0]['rules']
+    assert changed_rules[:2] != baseline_rules[:2]
+    assert all('account_namespace="learning-other"' in rule['expr'] for rule in changed_rules[:2])
+    assert all('account_namespace="learning-fixture"' in rule['expr'] for rule in baseline_rules[:2])
     assert (changed_alert['expr'], changed_alert['for']) == (alert['expr'], alert['for'])
     routing = yaml.safe_load(configs['learning-alertmanager']['alertmanager.yml'])
     assert 'service="backend"' in routing['route']['routes'][0]['matchers']
@@ -83,12 +86,12 @@ def prepare(output):
         tests.append(case)
     # Sustained failure; pending first, firing after exactly 2m, then normal recovery.
     series = [
-        {'series': 'up{job="otel-application"}', 'values': '1+0x40'},
-        {'series': 'pe_go_goroutines{job="account-backend"}', 'values': '8+0x40'},
-        {'series': 'pe_http_server_requests_total{job="account-backend",status_class="2xx"}', 'values': '0+27x20 570+30x19'},
-        {'series': 'pe_http_server_requests_total{job="account-backend",status_class="5xx"}', 'values': '0+3x20 60+0x19'},
-        {'series': 'pe_http_server_request_duration_seconds_count{job="account-backend"}', 'values': '0+30x40'},
-        {'series': 'pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}', 'values': '0+30x40'}]
+        {'series': 'up{job="otel-application",account_namespace="learning-fixture"}', 'values': '1+0x40'},
+        {'series': 'pe_go_goroutines{job="account-backend",account_namespace="learning-fixture"}', 'values': '8+0x40'},
+        {'series': 'pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",status_class="2xx"}', 'values': '0+27x20 570+30x19'},
+        {'series': 'pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",status_class="5xx"}', 'values': '0+3x20 60+0x19'},
+        {'series': 'pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}', 'values': '0+30x40'},
+        {'series': 'pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}', 'values': '0+30x40'}]
     tests.append({'name': 'pending firing and healthy recovery', 'interval': '30s', 'input_series': series,
                   'alert_rule_test': [{'eval_time': t, 'alertname': alert['alert'], 'exp_alerts': [{'exp_labels': labels, 'exp_annotations': alert['annotations']}] if fire else []} for t, fire in [('2m', False), ('2m30s', True), ('10m', True), ('15m', False), ('20m', False)]],
                   'promql_expr_test': [{'expr': 'account:sli_state:5m', 'eval_time': '15m', 'exp_samples': [{'labels': 'account:sli_state:5m{}', 'value': 4}]}, {'expr': 'account:availability_burn_rate:5m', 'eval_time': '15m', 'exp_samples': [{'labels': 'account:availability_burn_rate:5m{}', 'value': 0}]}]})

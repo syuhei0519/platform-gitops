@@ -11,7 +11,7 @@ metadata:
 data:
   account-overview.json: "{\n  \"id\": null,\n  \"uid\": \"learning-account-overview\"\
     ,\n  \"title\": \"Learning Account Overview\",\n  \"description\": \"\u30ED\u30FC\
-    \u30AB\u30EB\u5B66\u7FD2Account\u5C02\u7528\u3002\u5B9Fnamespace: learning-services-20261018\u3002\
+    \u30AB\u30EB\u5B66\u7FD2Account\u5C02\u7528\u3002\u5B9Fnamespace: learning-account-release\u3002\
     SDK\u306Elegacy\u4E92\u63DB\u5024\u306F\u5B9Fnamespace\u8868\u793A\u306B\u4F7F\
     \u3044\u307E\u305B\u3093\u3002\u5358\u4E00instance\u3001SDK\u9BAE\u5EA690\u79D2\
     \u3002\u5C65\u6B74\u306F\u518D\u8D77\u52D5\u3067\u6D88\u5931\u3002 / \u5B66\u7FD2\
@@ -44,170 +44,223 @@ data:
     \             }\n            }\n          ]\n        },\n        \"overrides\"\
     : []\n      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n\
     \          \"expr\": \"(vector(0) and on() ((((min(up{job=\\\"otel-application\\\
+    \",account_namespace=\\\"learning-account-release\\\"}) == bool 1) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}))) >=\
+    \ bool 0)) or vector(0)) == 0)) or ((vector(1) and on() ((((min(up{job=\\\"otel-application\\\
+    \",account_namespace=\\\"learning-account-release\\\"}) == bool 1) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}))) >=\
+    \ bool 0)) or vector(0)) == 1)) unless on() sum(rate(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m])))\
+    \ or (vector(2) and on() ((((min(up{job=\\\"otel-application\\\",account_namespace=\\\
+    \"learning-account-release\\\"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}))) <\
+    \ bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}))) >= bool 0)) or vector(0))\
+    \ == 1) and on() (sum(rate(pe_http_server_requests_total{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}[5m])) == 0)) or (vector(3)\
+    \ and on() ((((min(up{job=\\\"otel-application\\\",account_namespace=\\\"learning-account-release\\\
     \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 0)) or ((vector(1) and on() ((((min(up{job=\\\
-    \"otel-application\\\"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
-    \"account-backend\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
-    \"account-backend\\\"}))) >= bool 0)) or vector(0)) == 1)) unless on() sum(rate(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) or (vector(2) and on() ((((min(up{job=\\\"otel-application\\\
-    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(rate(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) == 0)) or (vector(3) and on() ((((min(up{job=\\\"\
-    otel-application\\\"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
-    \"account-backend\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
-    \"account-backend\\\"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(rate(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) > 0))\",\n          \"instant\": true,\n        \
-    \  \"range\": false,\n          \"legendFormat\": \"\u53CE\u96C6\u72B6\u614B\"\
-    \n        }\n      ],\n      \"options\": {\n        \"reduceOptions\": {\n  \
-    \        \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"\
-    fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
-    : \"value\"\n      }\n    },\n    {\n      \"id\": 2,\n      \"title\": \"\u8981\
-    \u6C42\u6570\u306E\u63A8\u5B9A / 5m\",\n      \"type\": \"stat\",\n      \"description\"\
-    : \"increase\u306E\u5916\u633F\u306B\u3088\u308B\u63A8\u5B9A\u6570\u3002curl\u56DE\
-    \u6570\u306E\u53B3\u5BC6\u306A\u5B9F\u6570\u3067\u306F\u3042\u308A\u307E\u305B\
-    \u3093\u3002health probe\u9664\u5916\u3002\",\n      \"datasource\": {\n     \
-    \   \"type\": \"prometheus\",\n        \"uid\": \"learning-prometheus\"\n    \
-    \  },\n      \"gridPos\": {\n        \"x\": 8,\n        \"y\": 0,\n        \"\
-    w\": 8,\n        \"h\": 8\n      },\n      \"fieldConfig\": {\n        \"defaults\"\
-    : {\n          \"unit\": \"short\",\n          \"noValue\": \"N/A\"\n        },\n\
+    \",account_namespace=\\\"learning-account-release\\\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(rate(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ > 0))\",\n          \"instant\": true,\n          \"range\": false,\n      \
+    \    \"legendFormat\": \"\u53CE\u96C6\u72B6\u614B\"\n        }\n      ],\n   \
+    \   \"options\": {\n        \"reduceOptions\": {\n          \"calcs\": [\n   \
+    \         \"lastNotNull\"\n          ],\n          \"fields\": \"\",\n       \
+    \   \"values\": false\n        },\n        \"colorMode\": \"value\"\n      }\n\
+    \    },\n    {\n      \"id\": 2,\n      \"title\": \"\u8981\u6C42\u6570\u306E\u63A8\
+    \u5B9A / 5m\",\n      \"type\": \"stat\",\n      \"description\": \"increase\u306E\
+    \u5916\u633F\u306B\u3088\u308B\u63A8\u5B9A\u6570\u3002curl\u56DE\u6570\u306E\u53B3\
+    \u5BC6\u306A\u5B9F\u6570\u3067\u306F\u3042\u308A\u307E\u305B\u3093\u3002health\
+    \ probe\u9664\u5916\u3002\",\n      \"datasource\": {\n        \"type\": \"prometheus\"\
+    ,\n        \"uid\": \"learning-prometheus\"\n      },\n      \"gridPos\": {\n\
+    \        \"x\": 8,\n        \"y\": 0,\n        \"w\": 8,\n        \"h\": 8\n \
+    \     },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\"\
+    : \"short\",\n          \"noValue\": \"N/A\"\n        },\n        \"overrides\"\
+    : []\n      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n\
+    \          \"expr\": \"sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}[5m])) and on() ((((min(up{job=\\\
+    \"otel-application\\\",account_namespace=\\\"learning-account-release\\\"}) ==\
+    \ bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) >= bool 0)) or vector(0)) == 1)\",\n      \
+    \    \"instant\": true,\n          \"range\": false,\n          \"legendFormat\"\
+    : \"\u8981\u6C42\u6570\u306E\u63A8\u5B9A / 5m\"\n        }\n      ],\n      \"\
+    options\": {\n        \"reduceOptions\": {\n          \"calcs\": [\n         \
+    \   \"lastNotNull\"\n          ],\n          \"fields\": \"\",\n          \"values\"\
+    : false\n        },\n        \"colorMode\": \"value\"\n      }\n    },\n    {\n\
+    \      \"id\": 3,\n      \"title\": \"\u8981\u6C42 / \u79D2\",\n      \"type\"\
+    : \"stat\",\n      \"description\": \"instance\u3054\u3068\u306Brate\u5F8Csum\u3057\
+    \u3001counter reset\u3092\u51E6\u7406\u3002\u901A\u4FE1\u306A\u3057\u306F0\u3001\
+    \u53CE\u96C6\u4E0D\u53EF\u306FN/A\u3002\",\n      \"datasource\": {\n        \"\
+    type\": \"prometheus\",\n        \"uid\": \"learning-prometheus\"\n      },\n\
+    \      \"gridPos\": {\n        \"x\": 16,\n        \"y\": 0,\n        \"w\": 8,\n\
+    \        \"h\": 8\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n\
+    \          \"unit\": \"reqps\",\n          \"noValue\": \"N/A\"\n        },\n\
     \        \"overrides\": []\n      },\n      \"targets\": [\n        {\n      \
-    \    \"refId\": \"A\",\n          \"expr\": \"sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) and on() ((((min(up{job=\\\"otel-application\\\"\
-    }) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1)\",\n          \"instant\": true,\n    \
-    \      \"range\": false,\n          \"legendFormat\": \"\u8981\u6C42\u6570\u306E\
-    \u63A8\u5B9A / 5m\"\n        }\n      ],\n      \"options\": {\n        \"reduceOptions\"\
-    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
-    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
-    : \"value\"\n      }\n    },\n    {\n      \"id\": 3,\n      \"title\": \"\u8981\
-    \u6C42 / \u79D2\",\n      \"type\": \"stat\",\n      \"description\": \"instance\u3054\
-    \u3068\u306Brate\u5F8Csum\u3057\u3001counter reset\u3092\u51E6\u7406\u3002\u901A\
-    \u4FE1\u306A\u3057\u306F0\u3001\u53CE\u96C6\u4E0D\u53EF\u306FN/A\u3002\",\n  \
-    \    \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"\
-    learning-prometheus\"\n      },\n      \"gridPos\": {\n        \"x\": 16,\n  \
-    \      \"y\": 0,\n        \"w\": 8,\n        \"h\": 8\n      },\n      \"fieldConfig\"\
-    : {\n        \"defaults\": {\n          \"unit\": \"reqps\",\n          \"noValue\"\
-    : \"N/A\"\n        },\n        \"overrides\": []\n      },\n      \"targets\"\
-    : [\n        {\n          \"refId\": \"A\",\n          \"expr\": \"sum(rate(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) and on() ((((min(up{job=\\\"otel-application\\\"\
-    }) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1)\",\n          \"instant\": true,\n    \
-    \      \"range\": false,\n          \"legendFormat\": \"\u8981\u6C42 / \u79D2\"\
-    \n        }\n      ],\n      \"options\": {\n        \"reduceOptions\": {\n  \
-    \        \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"\
-    fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
-    : \"value\"\n      }\n    },\n    {\n      \"id\": 4,\n      \"title\": \"HTTP\u30A8\
-    \u30E9\u30FC\u7387 (4xx + 5xx)\",\n      \"type\": \"stat\",\n      \"description\"\
-    : \"4xx\u306Fclient\u30015xx\u306Fserver\u306E\u30A8\u30E9\u30FC\u3002\u7121\u901A\
-    \u4FE1\u3084\u53CE\u96C6\u4E0D\u53EF\u30920%\u3078\u5909\u63DB\u3057\u307E\u305B\
-    \u3093\u3002\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n\
-    \        \"uid\": \"learning-prometheus\"\n      },\n      \"gridPos\": {\n  \
-    \      \"x\": 0,\n        \"y\": 8,\n        \"w\": 8,\n        \"h\": 8\n   \
-    \   },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\"\
-    : \"percentunit\",\n          \"noValue\": \"N/A\"\n        },\n        \"overrides\"\
-    : []\n      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n\
-    \          \"expr\": \"((sum(rate(pe_http_server_requests_total{job=\\\"account-backend\\\
-    \",status_class=~\\\"4xx|5xx\\\"}[5m])) or vector(0)) / sum(rate(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) and on() (sum(rate(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) > 0) and on() ((((min(up{job=\\\"otel-application\\\
+    \    \"refId\": \"A\",\n          \"expr\": \"sum(rate(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ and on() ((((min(up{job=\\\"otel-application\\\",account_namespace=\\\"learning-account-release\\\
     \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1)\",\n          \"instant\": true,\n    \
-    \      \"range\": false,\n          \"legendFormat\": \"HTTP\u30A8\u30E9\u30FC\
-    \u7387 (4xx + 5xx)\"\n        }\n      ],\n      \"options\": {\n        \"reduceOptions\"\
-    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
-    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
-    : \"value\"\n      }\n    },\n    {\n      \"id\": 5,\n      \"title\": \"\u5FDC\
-    \u7B54\u6642\u9593 p95\",\n      \"type\": \"stat\",\n      \"description\": \"\
-    \u56FA\u5B9Ahistogram bucket\u306B\u3088\u308B\u63A8\u5B9A\u3001\u5358\u4F4D\u306F\
-    \u79D2\u3002\u7121\u901A\u4FE1/\u53CE\u96C6\u4E0D\u53EF\u306FN/A\u3002\",\n  \
-    \    \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"\
-    learning-prometheus\"\n      },\n      \"gridPos\": {\n        \"x\": 8,\n   \
-    \     \"y\": 8,\n        \"w\": 8,\n        \"h\": 8\n      },\n      \"fieldConfig\"\
-    : {\n        \"defaults\": {\n          \"unit\": \"s\",\n          \"noValue\"\
-    : \"N/A\"\n        },\n        \"overrides\": []\n      },\n      \"targets\"\
-    : [\n        {\n          \"refId\": \"A\",\n          \"expr\": \"histogram_quantile(0.95,\
-    \ sum by (le) (rate(pe_http_server_request_duration_seconds_bucket{job=\\\"account-backend\\\
-    \"}[5m]))) and on() (sum(rate(pe_http_server_requests_total{job=\\\"account-backend\\\
-    \"}[5m])) > 0) and on() ((((min(up{job=\\\"otel-application\\\"}) == bool 1) *\
-    \ on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\"})))\
-    \ < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1)\",\n          \"instant\": true,\n    \
-    \      \"range\": false,\n          \"legendFormat\": \"\u5FDC\u7B54\u6642\u9593\
-    \ p95\"\n        }\n      ],\n      \"options\": {\n        \"reduceOptions\"\
-    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
-    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
-    : \"value\"\n      }\n    },\n    {\n      \"id\": 6,\n      \"title\": \"status_class\u5225\
-    \ \u8981\u6C42 / \u79D2\",\n      \"type\": \"timeseries\",\n      \"description\"\
-    : \"\u5B89\u5168\u306A400\u8981\u6C42\u30924xx\u3068\u3057\u3066\u78BA\u8A8D\u3002\
-    5xx\u3092\u8D77\u3053\u3059\u305F\u3081\u306BDB\u3092\u505C\u6B62\u3057\u307E\u305B\
-    \u3093\u3002\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n\
-    \        \"uid\": \"learning-prometheus\"\n      },\n      \"gridPos\": {\n  \
-    \      \"x\": 16,\n        \"y\": 8,\n        \"w\": 8,\n        \"h\": 8\n  \
-    \    },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\"\
-    : \"reqps\",\n          \"noValue\": \"N/A\"\n        },\n        \"overrides\"\
-    : []\n      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n\
-    \          \"expr\": \"sum by (status_class) (rate(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) and on() ((((min(up{job=\\\"otel-application\\\"\
-    }) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1)\",\n          \"instant\": false,\n   \
-    \       \"range\": true,\n          \"legendFormat\": \"{{status_class}}\"\n \
-    \       }\n      ],\n      \"options\": {\n        \"legend\": {\n          \"\
-    displayMode\": \"list\",\n          \"placement\": \"bottom\"\n        },\n  \
-    \      \"tooltip\": {\n          \"mode\": \"single\"\n        }\n      }\n  \
-    \  },\n    {\n      \"id\": 7,\n      \"type\": \"stat\",\n      \"title\": \"\
-    SLI \u8A55\u4FA1\u72B6\u614B (5m)\",\n      \"datasource\": {\n        \"type\"\
-    : \"prometheus\",\n        \"uid\": \"learning-prometheus\"\n      },\n      \"\
-    gridPos\": {\n        \"h\": 5,\n        \"w\": 8,\n        \"x\": 0,\n      \
-    \  \"y\": 20\n      },\n      \"targets\": [\n        {\n          \"refId\":\
-    \ \"A\",\n          \"expr\": \"(vector(0) unless on() ((((min(up{job=\\\"otel-application\\\
+    \",account_namespace=\\\"learning-account-release\\\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) >= bool 0)) or vector(0)) == 1)\",\n      \
+    \    \"instant\": true,\n          \"range\": false,\n          \"legendFormat\"\
+    : \"\u8981\u6C42 / \u79D2\"\n        }\n      ],\n      \"options\": {\n     \
+    \   \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\n\
+    \          ],\n          \"fields\": \"\",\n          \"values\": false\n    \
+    \    },\n        \"colorMode\": \"value\"\n      }\n    },\n    {\n      \"id\"\
+    : 4,\n      \"title\": \"HTTP\u30A8\u30E9\u30FC\u7387 (4xx + 5xx)\",\n      \"\
+    type\": \"stat\",\n      \"description\": \"4xx\u306Fclient\u30015xx\u306Fserver\u306E\
+    \u30A8\u30E9\u30FC\u3002\u7121\u901A\u4FE1\u3084\u53CE\u96C6\u4E0D\u53EF\u3092\
+    0%\u3078\u5909\u63DB\u3057\u307E\u305B\u3093\u3002\",\n      \"datasource\": {\n\
+    \        \"type\": \"prometheus\",\n        \"uid\": \"learning-prometheus\"\n\
+    \      },\n      \"gridPos\": {\n        \"x\": 0,\n        \"y\": 8,\n      \
+    \  \"w\": 8,\n        \"h\": 8\n      },\n      \"fieldConfig\": {\n        \"\
+    defaults\": {\n          \"unit\": \"percentunit\",\n          \"noValue\": \"\
+    N/A\"\n        },\n        \"overrides\": []\n      },\n      \"targets\": [\n\
+    \        {\n          \"refId\": \"A\",\n          \"expr\": \"((sum(rate(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",status_class=~\\\
+    \"4xx|5xx\\\"}[5m])) or vector(0)) / sum(rate(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m])))\
+    \ and on() (sum(rate(pe_http_server_requests_total{job=\\\"account-backend\\\"\
+    ,account_namespace=\\\"learning-account-release\\\"}[5m])) > 0) and on() ((((min(up{job=\\\
+    \"otel-application\\\",account_namespace=\\\"learning-account-release\\\"}) ==\
+    \ bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) >= bool 0)) or vector(0)) == 1)\",\n      \
+    \    \"instant\": true,\n          \"range\": false,\n          \"legendFormat\"\
+    : \"HTTP\u30A8\u30E9\u30FC\u7387 (4xx + 5xx)\"\n        }\n      ],\n      \"\
+    options\": {\n        \"reduceOptions\": {\n          \"calcs\": [\n         \
+    \   \"lastNotNull\"\n          ],\n          \"fields\": \"\",\n          \"values\"\
+    : false\n        },\n        \"colorMode\": \"value\"\n      }\n    },\n    {\n\
+    \      \"id\": 5,\n      \"title\": \"\u5FDC\u7B54\u6642\u9593 p95\",\n      \"\
+    type\": \"stat\",\n      \"description\": \"\u56FA\u5B9Ahistogram bucket\u306B\
+    \u3088\u308B\u63A8\u5B9A\u3001\u5358\u4F4D\u306F\u79D2\u3002\u7121\u901A\u4FE1\
+    /\u53CE\u96C6\u4E0D\u53EF\u306FN/A\u3002\",\n      \"datasource\": {\n       \
+    \ \"type\": \"prometheus\",\n        \"uid\": \"learning-prometheus\"\n      },\n\
+    \      \"gridPos\": {\n        \"x\": 8,\n        \"y\": 8,\n        \"w\": 8,\n\
+    \        \"h\": 8\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n\
+    \          \"unit\": \"s\",\n          \"noValue\": \"N/A\"\n        },\n    \
+    \    \"overrides\": []\n      },\n      \"targets\": [\n        {\n          \"\
+    refId\": \"A\",\n          \"expr\": \"histogram_quantile(0.95, sum by (le) (rate(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m])))\
+    \ and on() (sum(rate(pe_http_server_requests_total{job=\\\"account-backend\\\"\
+    ,account_namespace=\\\"learning-account-release\\\"}[5m])) > 0) and on() ((((min(up{job=\\\
+    \"otel-application\\\",account_namespace=\\\"learning-account-release\\\"}) ==\
+    \ bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) >= bool 0)) or vector(0)) == 1)\",\n      \
+    \    \"instant\": true,\n          \"range\": false,\n          \"legendFormat\"\
+    : \"\u5FDC\u7B54\u6642\u9593 p95\"\n        }\n      ],\n      \"options\": {\n\
+    \        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\
+    \n          ],\n          \"fields\": \"\",\n          \"values\": false\n   \
+    \     },\n        \"colorMode\": \"value\"\n      }\n    },\n    {\n      \"id\"\
+    : 6,\n      \"title\": \"status_class\u5225 \u8981\u6C42 / \u79D2\",\n      \"\
+    type\": \"timeseries\",\n      \"description\": \"\u5B89\u5168\u306A400\u8981\u6C42\
+    \u30924xx\u3068\u3057\u3066\u78BA\u8A8D\u30025xx\u3092\u8D77\u3053\u3059\u305F\
+    \u3081\u306BDB\u3092\u505C\u6B62\u3057\u307E\u305B\u3093\u3002\",\n      \"datasource\"\
+    : {\n        \"type\": \"prometheus\",\n        \"uid\": \"learning-prometheus\"\
+    \n      },\n      \"gridPos\": {\n        \"x\": 16,\n        \"y\": 8,\n    \
+    \    \"w\": 8,\n        \"h\": 8\n      },\n      \"fieldConfig\": {\n       \
+    \ \"defaults\": {\n          \"unit\": \"reqps\",\n          \"noValue\": \"N/A\"\
+    \n        },\n        \"overrides\": []\n      },\n      \"targets\": [\n    \
+    \    {\n          \"refId\": \"A\",\n          \"expr\": \"sum by (status_class)\
+    \ (rate(pe_http_server_requests_total{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}[5m])) and on() ((((min(up{job=\\\"otel-application\\\
+    \",account_namespace=\\\"learning-account-release\\\"}) == bool 1) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}))) >=\
+    \ bool 0)) or vector(0)) == 1)\",\n          \"instant\": false,\n          \"\
+    range\": true,\n          \"legendFormat\": \"{{status_class}}\"\n        }\n\
+    \      ],\n      \"options\": {\n        \"legend\": {\n          \"displayMode\"\
+    : \"list\",\n          \"placement\": \"bottom\"\n        },\n        \"tooltip\"\
+    : {\n          \"mode\": \"single\"\n        }\n      }\n    },\n    {\n     \
+    \ \"id\": 7,\n      \"type\": \"stat\",\n      \"title\": \"SLI \u8A55\u4FA1\u72B6\
+    \u614B (5m)\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n \
+    \       \"uid\": \"learning-prometheus\"\n      },\n      \"gridPos\": {\n   \
+    \     \"h\": 5,\n        \"w\": 8,\n        \"x\": 0,\n        \"y\": 20\n   \
+    \   },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n       \
+    \   \"expr\": \"(vector(0) unless on() ((((min(up{job=\\\"otel-application\\\"\
+    ,account_namespace=\\\"learning-account-release\\\"}) == bool 1) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}))) >=\
+    \ bool 0)) or vector(0)) == 1)) or ((vector(1) and on() ((((min(up{job=\\\"otel-application\\\
+    \",account_namespace=\\\"learning-account-release\\\"}) == bool 1) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}))) >=\
+    \ bool 0)) or vector(0)) == 1)) unless on() sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m])))\
+    \ or (vector(2) and on() ((((min(up{job=\\\"otel-application\\\",account_namespace=\\\
+    \"learning-account-release\\\"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}))) <\
+    \ bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}))) >= bool 0)) or vector(0))\
+    \ == 1) and on() (sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}[5m])) == 0) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",le=\\\
+    \"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ - sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}[5m]))) < 0.001))) or (vector(3) and on() ((((min(up{job=\\\
+    \"otel-application\\\",account_namespace=\\\"learning-account-release\\\"}) ==\
+    \ bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ > 0) and on() (sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}[5m])) < 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",le=\\\
+    \"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ - sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}[5m]))) < 0.001))) or (vector(4) and on() ((sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",le=\\\
+    \"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ - sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"\
+    otel-application\\\",account_namespace=\\\"learning-account-release\\\"}) == bool\
+    \ 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) >= bool 0)) or vector(0)) == 1))) or ((vector(1)\
+    \ and on() ((((min(up{job=\\\"otel-application\\\",account_namespace=\\\"learning-account-release\\\
     \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1)) or ((vector(1) and on() ((((min(up{job=\\\
-    \"otel-application\\\"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
-    \"account-backend\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
-    \"account-backend\\\"}))) >= bool 0)) or vector(0)) == 1)) unless on() sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) or (vector(2) and on() ((((min(up{job=\\\"otel-application\\\
-    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) == 0) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
-    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) < 0.001))) or (vector(3) and on() ((((min(up{job=\\\
-    \"otel-application\\\"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
-    \"account-backend\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
-    \"account-backend\\\"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) > 0) and on() (sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) < 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
-    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) < 0.001))) or (vector(4) and on() ((sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
-    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"otel-application\\\
-    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1))) or ((vector(1) and on() ((((min(up{job=\\\
-    \"otel-application\\\"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
-    \"account-backend\\\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\
-    \"account-backend\\\"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) >= 0)) unless on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
-    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) < 0.001)))\",\n          \"instant\": true\n   \
-    \     }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n       \
-    \   \"noValue\": \"N/A\",\n          \"unit\": \"none\",\n          \"mappings\"\
+    \",account_namespace=\\\"learning-account-release\\\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ >= 0)) unless on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",le=\\\
+    \"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ - sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}[5m]))) < 0.001)))\",\n          \"instant\": true\n\
+    \        }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n    \
+    \      \"noValue\": \"N/A\",\n          \"unit\": \"none\",\n          \"mappings\"\
     : [\n            {\n              \"type\": \"value\",\n              \"options\"\
     : {\n                \"0\": {\n                  \"text\": \"\u53CE\u96C6\u4E0D\
     \u53EF/\u6B20\u6E2C\"\n                },\n                \"1\": {\n        \
@@ -227,124 +280,164 @@ data:
     \        \"h\": 5,\n        \"w\": 8,\n        \"x\": 8,\n        \"y\": 20\n\
     \      },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n    \
     \      \"expr\": \"sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\
-    \"}[5m])) and on() ((((min(up{job=\\\"otel-application\\\"}) == bool 1) * on()\
-    \ ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\"}))) <\
-    \ bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1)\",\n          \"instant\": true\n     \
-    \   }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n         \
-    \ \"noValue\": \"N/A\",\n          \"unit\": \"none\"\n        },\n        \"\
-    overrides\": []\n      },\n      \"options\": {\n        \"reduceOptions\": {\n\
-    \          \"calcs\": [\n            \"lastNotNull\"\n          ],\n         \
-    \ \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
-    : \"value\",\n        \"graphMode\": \"none\"\n      }\n    },\n    {\n      \"\
-    id\": 9,\n      \"type\": \"stat\",\n      \"title\": \"\u53EF\u7528\u6027 (\u76EE\
-    \u6A1999%)\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n  \
-    \      \"uid\": \"learning-prometheus\"\n      },\n      \"gridPos\": {\n    \
-    \    \"h\": 5,\n        \"w\": 8,\n        \"x\": 16,\n        \"y\": 20\n   \
-    \   },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n       \
-    \   \"expr\": \"((sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\
-    \",status_class=~\\\"2xx|3xx\\\"}[5m])) or vector(0)) / sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) and on() ((sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
-    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"otel-application\\\
-    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1))\",\n          \"instant\": true\n    \
-    \    }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n        \
-    \  \"noValue\": \"N/A\",\n          \"unit\": \"percentunit\"\n        },\n  \
-    \      \"overrides\": []\n      },\n      \"options\": {\n        \"reduceOptions\"\
-    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
-    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
-    : \"value\",\n        \"graphMode\": \"none\"\n      }\n    },\n    {\n      \"\
-    id\": 10,\n      \"type\": \"stat\",\n      \"title\": \"HTTP error\u7387 (4xx+5xx)\"\
-    ,\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\"\
-    : \"learning-prometheus\"\n      },\n      \"gridPos\": {\n        \"h\": 5,\n\
-    \        \"w\": 8,\n        \"x\": 0,\n        \"y\": 25\n      },\n      \"targets\"\
-    : [\n        {\n          \"refId\": \"A\",\n          \"expr\": \"(1 - (((sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\",status_class=~\\\"2xx|3xx\\\"}[5m])) or vector(0)) / sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) and on() ((sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
-    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"otel-application\\\
-    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1))))\",\n          \"instant\": true\n  \
-    \      }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n      \
-    \    \"noValue\": \"N/A\",\n          \"unit\": \"percentunit\"\n        },\n\
-    \        \"overrides\": []\n      },\n      \"options\": {\n        \"reduceOptions\"\
-    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
-    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
-    : \"value\",\n        \"graphMode\": \"none\"\n      }\n    },\n    {\n      \"\
-    id\": 11,\n      \"type\": \"stat\",\n      \"title\": \"250ms\u4EE5\u5185 (\u76EE\
-    \u6A1995%)\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n  \
-    \      \"uid\": \"learning-prometheus\"\n      },\n      \"gridPos\": {\n    \
-    \    \"h\": 5,\n        \"w\": 8,\n        \"x\": 8,\n        \"y\": 25\n    \
-    \  },\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n        \
-    \  \"expr\": \"(sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
-    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) / sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m]))) and on() ((sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
-    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"otel-application\\\
-    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1))\",\n          \"instant\": true\n    \
-    \    }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n        \
-    \  \"noValue\": \"N/A\",\n          \"unit\": \"percentunit\"\n        },\n  \
-    \      \"overrides\": []\n      },\n      \"options\": {\n        \"reduceOptions\"\
-    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
-    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
-    : \"value\",\n        \"graphMode\": \"none\"\n      }\n    },\n    {\n      \"\
-    id\": 12,\n      \"type\": \"stat\",\n      \"title\": \"\u53EF\u7528\u6027 budget\u6B8B\
-    \u7387\",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n      \
-    \  \"uid\": \"learning-prometheus\"\n      },\n      \"gridPos\": {\n        \"\
-    h\": 5,\n        \"w\": 8,\n        \"x\": 16,\n        \"y\": 25\n      },\n\
-    \      \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"expr\"\
-    : \"(1 - (1 - (((sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\
-    \",status_class=~\\\"2xx|3xx\\\"}[5m])) or vector(0)) / sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) and on() ((sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
-    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"otel-application\\\
-    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1)))) / 0.01)\",\n          \"instant\": true\n\
-    \        }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n    \
-    \      \"noValue\": \"N/A\",\n          \"unit\": \"percentunit\"\n        },\n\
-    \        \"overrides\": []\n      },\n      \"options\": {\n        \"reduceOptions\"\
-    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
-    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
-    : \"value\",\n        \"graphMode\": \"none\"\n      }\n    },\n    {\n      \"\
-    id\": 13,\n      \"type\": \"stat\",\n      \"title\": \"latency budget\u6B8B\u7387\
-    \",\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\"\
-    : \"learning-prometheus\"\n      },\n      \"gridPos\": {\n        \"h\": 5,\n\
-    \        \"w\": 8,\n        \"x\": 0,\n        \"y\": 30\n      },\n      \"targets\"\
-    : [\n        {\n          \"refId\": \"A\",\n          \"expr\": \"(1 - (1 - ((sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
-    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) / sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m]))) and on() ((sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
-    \"account-backend\\\",le=\\\"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
-    \"account-backend\\\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\\\
-    \"account-backend\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"otel-application\\\
-    \"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
-    \"}))) >= bool 0)) or vector(0)) == 1)))) / 0.05)\",\n          \"instant\": true\n\
-    \        }\n      ],\n      \"fieldConfig\": {\n        \"defaults\": {\n    \
-    \      \"noValue\": \"N/A\",\n          \"unit\": \"percentunit\"\n        },\n\
-    \        \"overrides\": []\n      },\n      \"options\": {\n        \"reduceOptions\"\
-    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n     \
-    \     \"fields\": \"\",\n          \"values\": false\n        },\n        \"colorMode\"\
-    : \"value\",\n        \"graphMode\": \"none\"\n      }\n    }\n  ]\n}\n"
+    \",account_namespace=\\\"learning-account-release\\\"}[5m])) and on() ((((min(up{job=\\\
+    \"otel-application\\\",account_namespace=\\\"learning-account-release\\\"}) ==\
+    \ bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) >= bool 0)) or vector(0)) == 1)\",\n      \
+    \    \"instant\": true\n        }\n      ],\n      \"fieldConfig\": {\n      \
+    \  \"defaults\": {\n          \"noValue\": \"N/A\",\n          \"unit\": \"none\"\
+    \n        },\n        \"overrides\": []\n      },\n      \"options\": {\n    \
+    \    \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\
+    \n          ],\n          \"fields\": \"\",\n          \"values\": false\n   \
+    \     },\n        \"colorMode\": \"value\",\n        \"graphMode\": \"none\"\n\
+    \      }\n    },\n    {\n      \"id\": 9,\n      \"type\": \"stat\",\n      \"\
+    title\": \"\u53EF\u7528\u6027 (\u76EE\u6A1999%)\",\n      \"datasource\": {\n\
+    \        \"type\": \"prometheus\",\n        \"uid\": \"learning-prometheus\"\n\
+    \      },\n      \"gridPos\": {\n        \"h\": 5,\n        \"w\": 8,\n      \
+    \  \"x\": 16,\n        \"y\": 20\n      },\n      \"targets\": [\n        {\n\
+    \          \"refId\": \"A\",\n          \"expr\": \"((sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",status_class=~\\\
+    \"2xx|3xx\\\"}[5m])) or vector(0)) / sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m])))\
+    \ and on() ((sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",le=\\\
+    \"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ - sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"\
+    otel-application\\\",account_namespace=\\\"learning-account-release\\\"}) == bool\
+    \ 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) >= bool 0)) or vector(0)) == 1))\",\n     \
+    \     \"instant\": true\n        }\n      ],\n      \"fieldConfig\": {\n     \
+    \   \"defaults\": {\n          \"noValue\": \"N/A\",\n          \"unit\": \"percentunit\"\
+    \n        },\n        \"overrides\": []\n      },\n      \"options\": {\n    \
+    \    \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\
+    \n          ],\n          \"fields\": \"\",\n          \"values\": false\n   \
+    \     },\n        \"colorMode\": \"value\",\n        \"graphMode\": \"none\"\n\
+    \      }\n    },\n    {\n      \"id\": 10,\n      \"type\": \"stat\",\n      \"\
+    title\": \"HTTP error\u7387 (4xx+5xx)\",\n      \"datasource\": {\n        \"\
+    type\": \"prometheus\",\n        \"uid\": \"learning-prometheus\"\n      },\n\
+    \      \"gridPos\": {\n        \"h\": 5,\n        \"w\": 8,\n        \"x\": 0,\n\
+    \        \"y\": 25\n      },\n      \"targets\": [\n        {\n          \"refId\"\
+    : \"A\",\n          \"expr\": \"(1 - (((sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",status_class=~\\\
+    \"2xx|3xx\\\"}[5m])) or vector(0)) / sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m])))\
+    \ and on() ((sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",le=\\\
+    \"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ - sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"\
+    otel-application\\\",account_namespace=\\\"learning-account-release\\\"}) == bool\
+    \ 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) >= bool 0)) or vector(0)) == 1))))\",\n   \
+    \       \"instant\": true\n        }\n      ],\n      \"fieldConfig\": {\n   \
+    \     \"defaults\": {\n          \"noValue\": \"N/A\",\n          \"unit\": \"\
+    percentunit\"\n        },\n        \"overrides\": []\n      },\n      \"options\"\
+    : {\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\
+    \n          ],\n          \"fields\": \"\",\n          \"values\": false\n   \
+    \     },\n        \"colorMode\": \"value\",\n        \"graphMode\": \"none\"\n\
+    \      }\n    },\n    {\n      \"id\": 11,\n      \"type\": \"stat\",\n      \"\
+    title\": \"250ms\u4EE5\u5185 (\u76EE\u6A1995%)\",\n      \"datasource\": {\n \
+    \       \"type\": \"prometheus\",\n        \"uid\": \"learning-prometheus\"\n\
+    \      },\n      \"gridPos\": {\n        \"h\": 5,\n        \"w\": 8,\n      \
+    \  \"x\": 8,\n        \"y\": 25\n      },\n      \"targets\": [\n        {\n \
+    \         \"refId\": \"A\",\n          \"expr\": \"(sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",le=\\\
+    \"0.25\\\"}[5m])) / sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m])))\
+    \ and on() ((sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",le=\\\
+    \"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ - sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"\
+    otel-application\\\",account_namespace=\\\"learning-account-release\\\"}) == bool\
+    \ 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) >= bool 0)) or vector(0)) == 1))\",\n     \
+    \     \"instant\": true\n        }\n      ],\n      \"fieldConfig\": {\n     \
+    \   \"defaults\": {\n          \"noValue\": \"N/A\",\n          \"unit\": \"percentunit\"\
+    \n        },\n        \"overrides\": []\n      },\n      \"options\": {\n    \
+    \    \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\
+    \n          ],\n          \"fields\": \"\",\n          \"values\": false\n   \
+    \     },\n        \"colorMode\": \"value\",\n        \"graphMode\": \"none\"\n\
+    \      }\n    },\n    {\n      \"id\": 12,\n      \"type\": \"stat\",\n      \"\
+    title\": \"\u53EF\u7528\u6027 budget\u6B8B\u7387\",\n      \"datasource\": {\n\
+    \        \"type\": \"prometheus\",\n        \"uid\": \"learning-prometheus\"\n\
+    \      },\n      \"gridPos\": {\n        \"h\": 5,\n        \"w\": 8,\n      \
+    \  \"x\": 16,\n        \"y\": 25\n      },\n      \"targets\": [\n        {\n\
+    \          \"refId\": \"A\",\n          \"expr\": \"(1 - (1 - (((sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",status_class=~\\\
+    \"2xx|3xx\\\"}[5m])) or vector(0)) / sum(increase(pe_http_server_requests_total{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m])))\
+    \ and on() ((sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",le=\\\
+    \"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ - sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"\
+    otel-application\\\",account_namespace=\\\"learning-account-release\\\"}) == bool\
+    \ 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) >= bool 0)) or vector(0)) == 1)))) / 0.01)\"\
+    ,\n          \"instant\": true\n        }\n      ],\n      \"fieldConfig\": {\n\
+    \        \"defaults\": {\n          \"noValue\": \"N/A\",\n          \"unit\"\
+    : \"percentunit\"\n        },\n        \"overrides\": []\n      },\n      \"options\"\
+    : {\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\
+    \n          ],\n          \"fields\": \"\",\n          \"values\": false\n   \
+    \     },\n        \"colorMode\": \"value\",\n        \"graphMode\": \"none\"\n\
+    \      }\n    },\n    {\n      \"id\": 13,\n      \"type\": \"stat\",\n      \"\
+    title\": \"latency budget\u6B8B\u7387\",\n      \"datasource\": {\n        \"\
+    type\": \"prometheus\",\n        \"uid\": \"learning-prometheus\"\n      },\n\
+    \      \"gridPos\": {\n        \"h\": 5,\n        \"w\": 8,\n        \"x\": 0,\n\
+    \        \"y\": 30\n      },\n      \"targets\": [\n        {\n          \"refId\"\
+    : \"A\",\n          \"expr\": \"(1 - (1 - ((sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",le=\\\
+    \"0.25\\\"}[5m])) / sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m])))\
+    \ and on() ((sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ >= 0) and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\",le=\\\
+    \"0.25\\\"}[5m])) >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\\\
+    \"account-backend\\\",account_namespace=\\\"learning-account-release\\\"}[5m]))\
+    \ - sum(increase(pe_http_server_requests_total{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}[5m]))) < 0.001)) and on() ((((min(up{job=\\\"\
+    otel-application\\\",account_namespace=\\\"learning-account-release\\\"}) == bool\
+    \ 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\
+    \",account_namespace=\\\"learning-account-release\\\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\\\"account-backend\\\",account_namespace=\\\
+    \"learning-account-release\\\"}))) >= bool 0)) or vector(0)) == 1)))) / 0.05)\"\
+    ,\n          \"instant\": true\n        }\n      ],\n      \"fieldConfig\": {\n\
+    \        \"defaults\": {\n          \"noValue\": \"N/A\",\n          \"unit\"\
+    : \"percentunit\"\n        },\n        \"overrides\": []\n      },\n      \"options\"\
+    : {\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\
+    \n          ],\n          \"fields\": \"\",\n          \"values\": false\n   \
+    \     },\n        \"colorMode\": \"value\",\n        \"graphMode\": \"none\"\n\
+    \      }\n    }\n  ]\n}\n"
   datasources.yaml: "apiVersion: 1\ndatasources:\n  - name: Learning Prometheus\n\
     \    uid: learning-prometheus\n    type: prometheus\n    access: proxy\n    url:\
     \ http://learning-prometheus.observability.svc.cluster.local:9090\n    isDefault:\
@@ -439,6 +532,97 @@ data:
     \  scrape_interval: 5s\n  scrape_timeout: 2s\n  metrics_path: /stats/prometheus\n\
     \  dns_sd_configs:\n  - names:\n    - account-release-metrics.learning-account-release.svc.cluster.local\n\
     \    type: A\n    port: 15090\n"
+  account-alerts.yaml: "groups:\n- name: account-availability\n  rules:\n  - record:\
+    \ account:sli_state:5m\n    expr: (vector(0) unless on() ((((min(up{job=\"otel-application\"\
+    ,account_namespace=\"learning-account-release\"}) == bool 1) * on() ((time() -\
+    \ max(timestamp(pe_go_goroutines{job=\"account-backend\",account_namespace=\"\
+    learning-account-release\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}))) >= bool 0))\
+    \ or vector(0)) == 1)) or ((vector(1) and on() ((((min(up{job=\"otel-application\"\
+    ,account_namespace=\"learning-account-release\"}) == bool 1) * on() ((time() -\
+    \ max(timestamp(pe_go_goroutines{job=\"account-backend\",account_namespace=\"\
+    learning-account-release\"}))) < bool 90) * on() ((time() - max(timestamp(pe_go_goroutines{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}))) >= bool 0))\
+    \ or vector(0)) == 1)) unless on() sum(increase(pe_http_server_requests_total{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m]))) or (vector(2)\
+    \ and on() ((((min(up{job=\"otel-application\",account_namespace=\"learning-account-release\"\
+    }) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\"account-backend\"\
+    ,account_namespace=\"learning-account-release\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\"account-backend\",account_namespace=\"\
+    learning-account-release\"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(increase(pe_http_server_requests_total{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m])) == 0)\
+    \ and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m])) >= 0)\
+    \ and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\",le=\"0.25\"}[5m]))\
+    \ >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m]))) < 0.001)))\
+    \ or (vector(3) and on() ((((min(up{job=\"otel-application\",account_namespace=\"\
+    learning-account-release\"}) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}))) < bool 90)\
+    \ * on() ((time() - max(timestamp(pe_go_goroutines{job=\"account-backend\",account_namespace=\"\
+    learning-account-release\"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(increase(pe_http_server_requests_total{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m])) > 0) and\
+    \ on() (sum(increase(pe_http_server_requests_total{job=\"account-backend\",account_namespace=\"\
+    learning-account-release\"}[5m])) < 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m])) >= 0)\
+    \ and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\",le=\"0.25\"}[5m]))\
+    \ >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m]))) < 0.001)))\
+    \ or (vector(4) and on() ((sum(increase(pe_http_server_requests_total{job=\"account-backend\"\
+    ,account_namespace=\"learning-account-release\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m])) >= 0)\
+    \ and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\",le=\"0.25\"}[5m]))\
+    \ >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m]))) < 0.001))\
+    \ and on() ((((min(up{job=\"otel-application\",account_namespace=\"learning-account-release\"\
+    }) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\"account-backend\"\
+    ,account_namespace=\"learning-account-release\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\"account-backend\",account_namespace=\"\
+    learning-account-release\"}))) >= bool 0)) or vector(0)) == 1))) or ((vector(1)\
+    \ and on() ((((min(up{job=\"otel-application\",account_namespace=\"learning-account-release\"\
+    }) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\"account-backend\"\
+    ,account_namespace=\"learning-account-release\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\"account-backend\",account_namespace=\"\
+    learning-account-release\"}))) >= bool 0)) or vector(0)) == 1) and on() (sum(increase(pe_http_server_requests_total{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m])) >= 0))\
+    \ unless on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m])) >= 0)\
+    \ and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\",le=\"0.25\"}[5m]))\
+    \ >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m]))) < 0.001)))\n\
+    \  - record: account:availability_burn_rate:5m\n    expr: round(((1 - (((sum(increase(pe_http_server_requests_total{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\",status_class=~\"\
+    2xx|3xx\"}[5m])) or vector(0)) / sum(increase(pe_http_server_requests_total{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m]))) and on()\
+    \ ((sum(increase(pe_http_server_requests_total{job=\"account-backend\",account_namespace=\"\
+    learning-account-release\"}[5m])) >= 20) and on() ((sum(increase(pe_http_server_request_duration_seconds_count{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m])) >= 0)\
+    \ and on() (sum(increase(pe_http_server_request_duration_seconds_bucket{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\",le=\"0.25\"}[5m]))\
+    \ >= 0) and on() (abs(sum(increase(pe_http_server_request_duration_seconds_count{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m])) - sum(increase(pe_http_server_requests_total{job=\"\
+    account-backend\",account_namespace=\"learning-account-release\"}[5m]))) < 0.001))\
+    \ and on() ((((min(up{job=\"otel-application\",account_namespace=\"learning-account-release\"\
+    }) == bool 1) * on() ((time() - max(timestamp(pe_go_goroutines{job=\"account-backend\"\
+    ,account_namespace=\"learning-account-release\"}))) < bool 90) * on() ((time()\
+    \ - max(timestamp(pe_go_goroutines{job=\"account-backend\",account_namespace=\"\
+    learning-account-release\"}))) >= bool 0)) or vector(0)) == 1)))) / 0.01) * 1e9)\
+    \ / 1e9\n  - alert: AccountAvailabilityBudgetBurn\n    expr: account:availability_burn_rate:5m\
+    \ > 2\n    for: 2m\n    labels:\n      severity: warning\n      service: backend\n\
+    \      account_namespace: learning-account-release\n    annotations:\n      summary:\
+    \ Account availability budget burn exceeds 2x for 2m\n      service_url: http://__ACCOUNT_SERVICE_NAME__.learning-account-release.svc.cluster.local:__ACCOUNT_SERVICE_PORT__\n\
+    \      query: account:availability_burn_rate:5m\n      state_query: account:sli_state:5m\n\
+    \      runbook_url: https://github.com/syuhei0519/platform-gitops/blob/d66d216f6bce200ec0981673a216cb3ce0a17d90/learning/monitoring/alerting/README.md\n\
+    \      recovery: Resolved is predicate cleared. Healthy recovery requires state=4\
+    \ and burn<=2; state=0/1/2/3 is unevaluable.\n"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -514,7 +698,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 9fafa1f14e061e10dbb4e7341e1b15d515d845dc5a374bb9381e1ba4ac217437
+        checksum/config: 386741f98e640baf924619e9eae96d01d4fad246e412ed23493febdf9645ba8d
         checksum/dashboard: 7f96edd9626aba0db2e8de62ef79fa484d6d4dbecc3dc734bf9f96948dc7f82e
       labels:
         app.kubernetes.io/part-of: learning-monitoring

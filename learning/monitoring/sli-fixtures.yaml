@@ -6,18 +6,20 @@ tests:
   interval: 30s
   input_series:
   - &id001
-    series: up{job="otel-application"}
+    series: up{job="otel-application",account_namespace="learning-fixture"}
     values: 1+0x20
-  - &id002
-    series: pe_go_goroutines{job="account-backend"}
-    values: 8+0x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
-    values: 0+30x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+  - series: up{job="otel-application",account_namespace="learning-other"}
     values: 0+0x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - &id002
+    series: pe_go_goroutines{job="account-backend",account_namespace="learning-fixture"}
+    values: 8+0x20
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+30x20
-  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="5xx"}
+    values: 0+0x20
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
+    values: 0+30x20
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}
     values: 0+30x20
   expected:
     state: 4
@@ -32,13 +34,13 @@ tests:
   input_series:
   - *id001
   - *id002
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+29x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="5xx"}
     values: 0+1x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+30x20
-  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}
     values: 0+27x20
   expected:
     state: 4
@@ -53,13 +55,13 @@ tests:
   input_series:
   - *id001
   - *id002
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+0x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="5xx"}
     values: 0+30x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+30x20
-  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}
     values: 0+30x20
   expected:
     state: 4
@@ -74,13 +76,13 @@ tests:
   input_series:
   - *id001
   - *id002
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+0x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="5xx"}
     values: 0+0x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+0x20
-  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}
     values: 0+0x20
   expected:
     state: 2
@@ -90,7 +92,7 @@ tests:
   input_series:
   - *id001
   - *id002
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+0x20
   expected:
     state: 1
@@ -100,9 +102,9 @@ tests:
   input_series:
   - *id001
   - *id002
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+0x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+0x20
   expected:
     state: 1
@@ -119,13 +121,13 @@ tests:
   input_series:
   - *id001
   - *id002
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+1x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="5xx"}
     values: 0+0x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+1x20
-  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}
     values: 0+1x20
   expected:
     state: 3
@@ -133,16 +135,16 @@ tests:
 - name: collector down no SLI
   interval: 30s
   input_series:
-  - series: up{job="otel-application"}
+  - series: up{job="otel-application",account_namespace="learning-fixture"}
     values: 0+0x20
   - *id002
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+29x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="5xx"}
     values: 0+1x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+30x20
-  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}
     values: 0+27x20
   expected:
     state: 0
@@ -150,13 +152,13 @@ tests:
   interval: 30s
   input_series:
   - *id001
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+29x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="5xx"}
     values: 0+1x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+30x20
-  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}
     values: 0+27x20
   expected:
     state: 0
@@ -164,15 +166,15 @@ tests:
   interval: 30s
   input_series:
   - *id001
-  - series: pe_go_goroutines{job="account-backend"}
+  - series: pe_go_goroutines{job="account-backend",account_namespace="learning-fixture"}
     values: 8+0x15 _ _ _ _ _
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+29x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="5xx"}
     values: 0+1x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+30x20
-  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}
     values: 0+27x20
   expected:
     state: 0
@@ -180,13 +182,13 @@ tests:
   interval: 30s
   input_series:
   - *id002
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+29x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="5xx"}
     values: 0+1x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+30x20
-  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}
     values: 0+27x20
   expected:
     state: 0
@@ -195,9 +197,9 @@ tests:
   input_series:
   - *id001
   - *id002
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+29x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="5xx"}
     values: 0+1x20
   expected:
     state: 1
@@ -207,11 +209,11 @@ tests:
   input_series:
   - *id001
   - *id002
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+29x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="5xx"}
     values: 0+1x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+30x20
   expected:
     state: 1
@@ -221,13 +223,13 @@ tests:
   input_series:
   - *id001
   - *id002
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+29x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="4xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="4xx"}
     values: 0+1x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+30x20
-  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}
     values: 0+27x20
   expected:
     state: 4
@@ -242,11 +244,11 @@ tests:
   input_series:
   - *id001
   - *id002
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+30x10 0+30x9
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+30x10 0+30x9
-  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}
     values: 0+30x10 0+30x9
   expected:
     state: 4
@@ -259,17 +261,17 @@ tests:
 - name: exactly twenty samples eligible
   interval: 30s
   input_series:
-  - series: up{job="otel-application"}
+  - series: up{job="otel-application",account_namespace="learning-fixture"}
     values: 1+0x20
-  - series: pe_go_goroutines{job="account-backend"}
+  - series: pe_go_goroutines{job="account-backend",account_namespace="learning-fixture"}
     values: 8+0x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+2x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="5xx"}
     values: 0+0x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+2x20
-  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}
     values: 0+2x20
   expected:
     state: 4
@@ -282,17 +284,17 @@ tests:
 - name: histogram count mismatch withheld
   interval: 30s
   input_series:
-  - series: up{job="otel-application"}
+  - series: up{job="otel-application",account_namespace="learning-fixture"}
     values: 1+0x20
-  - series: pe_go_goroutines{job="account-backend"}
+  - series: pe_go_goroutines{job="account-backend",account_namespace="learning-fixture"}
     values: 8+0x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+30x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="5xx"}
     values: 0+0x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+29x20
-  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}
     values: 0+30x20
   expected:
     state: 1
@@ -300,19 +302,19 @@ tests:
 - name: multiple instances sum after increase
   interval: 30s
   input_series:
-  - series: up{job="otel-application"}
+  - series: up{job="otel-application",account_namespace="learning-fixture"}
     values: 1+0x20
-  - series: pe_go_goroutines{job="account-backend"}
+  - series: pe_go_goroutines{job="account-backend",account_namespace="learning-fixture"}
     values: 8+0x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="2xx"}
     values: 0+30x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="one",status_class="5xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="one",status_class="5xx"}
     values: 0+0x20
-  - series: pe_http_server_request_duration_seconds_count{job="account-backend"}
+  - series: pe_http_server_request_duration_seconds_count{job="account-backend",account_namespace="learning-fixture"}
     values: 0+60x20
-  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",le="0.25"}
+  - series: pe_http_server_request_duration_seconds_bucket{job="account-backend",account_namespace="learning-fixture",le="0.25"}
     values: 0+60x20
-  - series: pe_http_server_requests_total{job="account-backend",instance="two",status_class="2xx"}
+  - series: pe_http_server_requests_total{job="account-backend",account_namespace="learning-fixture",instance="two",status_class="2xx"}
     values: 0+30x20
   expected:
     state: 4

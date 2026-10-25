@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""Positive and deliberate-break tests for the paired current-root contract."""
+import copy
+import json
+import os
+from pathlib import Path
+import unittest
+
+from current_contract import (ContractError, document_file, validate,
+                              validate_resources)
+
+
+HERE = Path(__file__).resolve().parent
+PLATFORM = HERE.parents[1]
+MANIFEST = Path(os.environ.get('PAIRED_APPLICATION_MANIFEST',
+                               str(PLATFORM.parent / 'application-manifest'))).resolve()
+
+
+class CurrentContractTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.contract, cls.resources = validate(PLATFORM, MANIFEST)
+        cls.root = document_file(PLATFORM / cls.contract['root'])
+
+    def test_current_pair_is_nonempty_and_exact(self):
+        contract, resources = validate(PLATFORM, MANIFEST)
+        self.assertEqual(set(contract['applications']), {
+            doc['metadata']['name'] for doc in self.root if doc['kind'] == 'Application'})
+        self.assertEqual(sum(map(len, resources.values())), 111)
+
+    def test_wrong_current_root_source_fails(self):
+        root = copy.deepcopy(self.root)
+        app = next(doc for doc in root if doc.get('metadata', {}).get('name') == 'lab-learning-services')
+        app['spec']['source']['path'] = 'learning/legacy-empty'
+        with self.assertRaisesRegex(ContractError, 'application-path'):
+            validate(PLATFORM, MANIFEST, root_docs=root)
+
+    def test_empty_child_fails_aggregate_contract(self):
+        resources = copy.deepcopy(self.resources)
+        resources['lab-learning-services'] = []
+        with self.assertRaisesRegex(ContractError, 'resource-count'):
+            validate_resources(resources, self.contract)
+
+    def test_forbidden_cluster_rbac_kind_fails(self):
+        resources = copy.deepcopy(self.resources)
+        docs = resources['lab-learning-foundation']
+        replace = next(i for i, doc in enumerate(docs) if doc['kind'] == 'ConfigMap')
+        docs[replace] = {'apiVersion': 'rbac.authorization.k8s.io/v1', 'kind': 'ClusterRole',
+                         'metadata': {'name': 'forbidden-escalation'}, 'rules': []}
+        with self.assertRaisesRegex(ContractError, 'resource-kinds'):
+            validate_resources(resources, self.contract)
+
+    def test_pvc_immutable_identity_mutation_fails(self):
+        resources = copy.deepcopy(self.resources)
+        pvc = next(doc for doc in resources['lab-learning-services']
+                   if doc['kind'] == 'PersistentVolumeClaim')
+        pvc['spec']['volumeName'] = 'pvc-replaced-without-review'
+        with self.assertRaisesRegex(ContractError, 'pvc-immutable-contract'):
+            validate_resources(resources, self.contract)
+
+    def test_duplicate_identity_fails(self):
+        resources = copy.deepcopy(self.resources)
+        docs = resources['lab-learning-observability']
+        indexes = [i for i, doc in enumerate(docs) if doc['kind'] == 'ConfigMap']
+        docs[indexes[1]] = copy.deepcopy(docs[indexes[0]])
+        with self.assertRaisesRegex(ContractError, 'duplicate-identity'):
+            validate_resources(resources, self.contract)
+
+    def test_unknown_secret_reference_fails(self):
+        resources = copy.deepcopy(self.resources)
+        config = next(doc for doc in resources['lab-learning-observability']
+                      if doc['kind'] == 'ConfigMap')
+        config.setdefault('data', {})['invalid-fixture'] = json.dumps(
+            {'secretKeyRef': {'name': 'unapproved-secret', 'key': 'value'}})
+        # Strings are not interpreted as Kubernetes fields.  Put the synthetic
+        # reference in an object field to exercise the recursive policy guard.
+        config['synthetic'] = {'secretKeyRef': {'name': 'unapproved-secret', 'key': 'value'}}
+        with self.assertRaisesRegex(ContractError, 'secret-reference-set'):
+            validate_resources(resources, self.contract)
+
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)
