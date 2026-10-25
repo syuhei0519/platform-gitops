@@ -43,10 +43,10 @@ spec:
     ref: kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed
     architecture: linux/amd64
   - name: argocd
-    ref: quay.io/argoproj/argocd:v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68
+    ref: quay.io/argoproj/argocd@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68
     architecture: linux/amd64
   - name: argocd-redis
-    ref: ecr-public.aws.com/docker/library/redis:8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1
+    ref: ecr-public.aws.com/docker/library/redis@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1
     architecture: linux/amd64
   - name: argo-rollouts
     ref: quay.io/argoproj/argo-rollouts:v1.10.1@sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396
@@ -64,13 +64,13 @@ spec:
     ref: ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd
     architecture: linux/amd64
   - name: prometheus
-    ref: quay.io/prometheus/prometheus:v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
+    ref: quay.io/prometheus/prometheus@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
     architecture: linux/amd64
   - name: otel-collector
-    ref: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc
+    ref: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc
     architecture: linux/amd64
   - name: grafana
-    ref: docker.io/grafana/grafana:13.2.3@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4
+    ref: docker.io/grafana/grafana@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4
     architecture: linux/amd64
   freshRuntimeRequirement:
     sourceAtOrAfter: 635814f5354f0fe238694d35137b283576a9127f
@@ -130,7 +130,7 @@ spec:
         cpuMilli: 475
         memoryMiB: 960
         applicationManifestInputSha256: 187698f2dae64029f7e3993e875058f04b085714fd41b0e29506c6b241a81a94
-        platformObservabilityInputSha256: a7af14c5615d14de698c6c8fbc529faa02aa1e4f92c6644359c98f8e6e1ee512
+        platformObservabilityInputSha256: db2296494f234ba1d9e6956291bc804fc2ed72902394ab05cdfc3e52aa558950
         includes: Account-PostgreSQL-role-bootstrap-migration-two-API-replicas-OTel-Prometheus-Grafana
         excludes: Kubernetes-control-plane-ArgoCD-Rollouts-Istio
       retainedArchiveBytes: PENDING_G2
@@ -175,3 +175,4 @@ spec:
     G4:
       status: pending-cutover
       choice: not-required-for-fresh-acceptance
+
