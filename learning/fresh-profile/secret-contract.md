@@ -19,7 +19,7 @@ and cleanup owner before manual creation. Fresh-isolated credentials and a
 fresh-sandbox CA are the default. Reading or moving an existing credential or
 CA is a separate approval. Evidence records metadata and key names only.
 
-The application source at `a27735eb062d0feabd0092c1137ad882f73c8e5f`
+The application source at `f019cc9ad76abdd49a6be303bd4e5c88050abc85`
 removes the `uri` fallback and consumes only `username` and `password` for the
 runtime and migration operations. The local Admission allowlist now matches
 those exact operation-scoped keys: the migration Job cannot read

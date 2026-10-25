@@ -130,9 +130,14 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
             raise SupplyError("comparison-boundary:" + name)
         if name == "account-runtime" and source["kind"] == "checked-local-artifact":
             expected_account = {
-                "sourceCommit": "527b9bccf4ae56244d134ae384564ec1cccea815",
-                "manifestDigest": "sha256:746e9acb5e5a24dcd6644ab5e082f2d3dad79620ec2e00afa80aa39a7436cf9a",
-                "configDigest": "sha256:5062ed82987c361535a339f6ee30c67d3fca5c8190989aa404f5bda13dd72822",
+                "location": "checked-artifact:account-runtime-main-635814",
+                "retentionHours": 168,
+                "sourceCommit": "635814f5354f0fe238694d35137b283576a9127f",
+                "manifestDigest": "sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd",
+                "configDigest": "sha256:ef442084e2b900ce842504ab5b05f2ae21dbb334ecf6295e70037dbb02420306",
+                "archiveSha256": "sha256:d98c960e2eaf68f5fb4e36b909d30b88c24492ae62d0f1f8fb91324d375ef6f8",
+                "ciRunId": 40210608840,
+                "artifactId": 12606240607,
                 "entrypoint": ["/server"], "user": "10001:10001",
             }
             if any(source.get(key) != value for key, value in expected_account.items()):

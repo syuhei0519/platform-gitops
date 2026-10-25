@@ -19,13 +19,13 @@ spec:
   repositories:
     backend-app:
       url: https://github.com/syuhei0519/backend-app.git
-      commit: 45c08d6e451770530e46fe35c0ea8990fd53a6c3
+      commit: 635814f5354f0fe238694d35137b283576a9127f
     frontend-app:
       url: https://github.com/syuhei0519/frontend-app.git
       commit: aecccce46295714645387854a4dad37bdd0cd3c3
     application-manifest:
       url: https://github.com/syuhei0519/application-manifest.git
-      commit: a27735eb062d0feabd0092c1137ad882f73c8e5f
+      commit: f019cc9ad76abdd49a6be303bd4e5c88050abc85
     platform-gitops:
       url: https://github.com/syuhei0519/platform-gitops.git
       commit: __PLATFORM_GITOPS_SHA__
@@ -61,7 +61,7 @@ spec:
     ref: postgres:18.6-bookworm@sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc
     architecture: linux/amd64
   - name: account-runtime
-    ref: PENDING_PLAT211_VERIFIED_IMAGE
+    ref: ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd
     architecture: linux/amd64
   - name: prometheus
     ref: quay.io/prometheus/prometheus:v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
@@ -73,7 +73,7 @@ spec:
     ref: docker.io/grafana/grafana:13.2.3@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4
     architecture: linux/amd64
   freshRuntimeRequirement:
-    sourceAtOrAfter: 45c08d6e451770530e46fe35c0ea8990fd53a6c3
+    sourceAtOrAfter: 635814f5354f0fe238694d35137b283576a9127f
     requiredConfig: finite-fresh-account-operation-roles-exact-namespace-schema-and-Downward-API
     admissionSecretKeyContract: username-password-operation-key-allowlist-aligned
     requiredIdentity: immutable-digest-source-config-platform-user-entrypoint-and-retained-G2-source

@@ -4,11 +4,11 @@
   "metadata": {"name": "account-lightweight-fresh", "recordedAt": null, "liveEvidence": false},
   "profile": {
     "lockPath": "learning/fresh-profile/profile.lock.yaml",
-    "sha256": "b600962cc0d4ea687f4aece14f9c4c94175e726ca3b6bfbc29f093935756d0a6",
+    "sha256": "0f8053d6321e4856e4cc5ca0a0a7102b604b0e1eb45e794743a590c8b22d8c10",
     "repositories": {
-      "backend-app": "45c08d6e451770530e46fe35c0ea8990fd53a6c3",
+      "backend-app": "635814f5354f0fe238694d35137b283576a9127f",
       "frontend-app": "aecccce46295714645387854a4dad37bdd0cd3c3",
-      "application-manifest": "a27735eb062d0feabd0092c1137ad882f73c8e5f",
+      "application-manifest": "f019cc9ad76abdd49a6be303bd4e5c88050abc85",
       "platform-gitops": "__PLATFORM_GITOPS_SHA__"
     }
   },
@@ -33,7 +33,7 @@
       {"name": "istio-pilot", "expectedDigest": "sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "istio-proxy", "expectedDigest": "sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "postgres", "expectedDigest": "sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
-      {"name": "account-runtime", "expectedDigest": "PENDING_PLAT211_VERIFIED_IMAGE", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
+      {"name": "account-runtime", "expectedDigest": "sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "prometheus", "expectedDigest": "sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "otel-collector", "expectedDigest": "sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "grafana", "expectedDigest": "sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"}
@@ -58,9 +58,9 @@
     "revisions": {
       "status": "unrun",
       "desired": {
-        "backend-app": "45c08d6e451770530e46fe35c0ea8990fd53a6c3",
+        "backend-app": "635814f5354f0fe238694d35137b283576a9127f",
         "frontend-app": "aecccce46295714645387854a4dad37bdd0cd3c3",
-        "application-manifest": "a27735eb062d0feabd0092c1137ad882f73c8e5f",
+        "application-manifest": "f019cc9ad76abdd49a6be303bd4e5c88050abc85",
         "platform-gitops": "__PLATFORM_GITOPS_SHA__"
       },
       "actual": {}

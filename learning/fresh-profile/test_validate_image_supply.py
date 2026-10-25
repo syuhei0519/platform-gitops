@@ -84,14 +84,17 @@ class ImageSupplyTests(unittest.TestCase):
             }
         return value
 
-    def test_pending_lock_is_complete_but_not_fresh_evidence(self):
+    def test_verified_candidate_is_fixed_but_not_retained_g2_evidence(self):
         lock, _ = contract.validate()
         self.assertEqual(len(lock["spec"]["images"]), 11)
         account = next(item for item in lock["spec"]["images"] if item["name"] == "account-runtime")
-        self.assertEqual(account["source"]["kind"], "pending-g2")
+        self.assertEqual(account["source"]["kind"], "checked-local-artifact")
         self.assertFalse(account["source"]["published"])
         self.assertFalse(account["source"]["freshEligible"])
-        self.assertEqual(self.profile_images["account-runtime"]["ref"], "PENDING_PLAT211_VERIFIED_IMAGE")
+        self.assertEqual(self.profile_images["account-runtime"]["ref"],
+                         "ghcr.io/syuhei0519/backend-app@sha256:"
+                         "fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd")
+        self.assertEqual(account["source"]["artifactId"], 12606240607)
         with self.assertRaisesRegex(contract.SupplyError, "approval-g2"):
             contract.validate(require_fresh_evidence=True)
 
@@ -106,7 +109,7 @@ class ImageSupplyTests(unittest.TestCase):
             "archiveSha256": "sha256:9e9b4b12315c9efa665f82dd43975668b738bb65f6f2434f8350f0d4e9a9ba37",
             "ciRunId": 40145897432, "artifactId": 12580417539,
             "entrypoint": ["/bin/rollouts-controller"], "user": "10001:10001"}
-        with self.assertRaisesRegex(contract.SupplyError, "schema|account-runtime-pending"):
+        with self.assertRaisesRegex(contract.SupplyError, "schema|account-artifact-identity"):
             self.validate_copy(value)
 
     def test_registry_and_retained_archive_are_finite_approved_modes(self):

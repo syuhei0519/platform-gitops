@@ -139,6 +139,8 @@ class FreshProfileTests(unittest.TestCase):
             item.update(owner="personal-platform-owner", expiry="2026-11-25",
                         sourceRef="sealed-input:sha256:" + "3" * 64)
         value["spec"]["repositories"]["platform-gitops"]["commit"] = "1" * 40
+        next(item for item in value["spec"]["images"] if item["name"] == "account-runtime")["ref"] = \
+            "PENDING_PLAT211_VERIFIED_IMAGE"
         value["spec"]["budget"]["approvalLimits"].update(
             elapsedMaxMinutes=45, hostAvailableMemoryMinGiB=4, hostFreeDiskMinGiB=20,
             dockerAdditionalDiskMaxGiB=15, workloadCPURequestsMaxMilli=2000,

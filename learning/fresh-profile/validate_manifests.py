@@ -92,7 +92,7 @@ def validate(root_path=ROOT, children_path=CHILDREN, observability_path=OBSERVAB
     validate_application(release, canonical["applications"]["fresh-release-definitions"])
     parameters = {item["name"]: item["value"] for item in release["spec"]["source"]["helm"]["parameters"]}
     require(parameters == {"workloadRevision": canonical["applications"]["fresh-account-release"]["revision"],
-                           "accountRuntimeImage": "PENDING_PLAT211_VERIFIED_IMAGE"},
+                           "accountRuntimeImage": canonical["approvedRuntimeImage"]},
             "release-helm-parameters")
     require(profile["repositories"]["application-manifest"]["commit"] ==
             canonical["applications"]["fresh-account-release"]["revision"], "profile-application-revision")
