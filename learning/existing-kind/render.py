@@ -227,6 +227,20 @@ def build(helm,manifest):
         elif d['kind'] in {'Role','RoleBinding'} and d['metadata'].get('namespace')==APP:
             collector_access.append(rename(d))
     if len(collector)!=4 or len(collector_access)!=2:raise ValueError('exact scoped collector boundary required')
+    # The existing-kind SDK now reports its actual namespace through Downward API.
+    # Keep the historical shared chart unchanged; this dedicated receiver accepts
+    # only the real namespace and must never relabel a legacy sender as this target.
+    current_cm=next(d for d in collector if d['kind']=='ConfigMap')
+    config=yaml.safe_load(current_cm['data']['config.yaml'])
+    predicates=config['processors']['filter/account']['metrics']['metric']
+    legacy='resource.attributes["k8s.namespace.name"] != "account"'
+    if predicates.count(legacy)!=1:raise ValueError('exact legacy SDK namespace filter required')
+    predicates[predicates.index(legacy)]=f'resource.attributes["k8s.namespace.name"] != "{APP}"'
+    del config['processors']['resource/real_namespace']
+    config['service']['pipelines']['metrics']['processors'].remove('resource/real_namespace')
+    current_cm['data']['config.yaml']=yaml.safe_dump(config,sort_keys=False)
+    current_dep=next(d for d in collector if d['kind']=='Deployment')
+    current_dep['spec']['template']['metadata']['annotations']['checksum/config']=hashlib.sha256(current_cm['data']['config.yaml'].encode()).hexdigest()
     outputs['collector-access.yaml']=collector_access
     observability=[d for d in yaml.safe_load_all((ROOT/'adoption/observability.yaml').read_text()) if d]
     prom=next(d for d in observability if d['kind']=='ConfigMap' and d['metadata']['name']=='learning-prometheus-config')

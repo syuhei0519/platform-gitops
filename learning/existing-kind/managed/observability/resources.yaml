@@ -999,40 +999,36 @@ metadata:
 data:
   config.yaml: "receivers:\n  otlp:\n    protocols:\n      http:\n        endpoint:\
     \ 0.0.0.0:4318\n        max_request_body_size: 1048576\nprocessors:\n  memory_limiter:\n\
-    \    check_interval: 1s\n    limit_mib: 192\n    spike_limit_mib: 48\n  # Legacy\
-    \ SDK identity checks, not sender authentication. Only Account metrics.\n  filter/account:\n\
-    \    error_mode: propagate\n    metrics:\n      metric:\n        - 'resource.attributes[\"\
-    service.name\"] != \"account-backend\"'\n        - 'resource.attributes[\"deployment.environment.name\"\
-    ] != \"local\"'\n        - 'resource.attributes[\"k8s.namespace.name\"] != \"\
-    account\"'\n  resource/real_namespace:\n    attributes:\n      - key: k8s.namespace.name\n\
-    \        value: \"learning-account-release\"\n        action: upsert\n  # Associate\
-    \ only the SDK's Pod UID; never fall back to source IP.\n  k8sattributes/account:\n\
-    \    auth_type: serviceAccount\n    passthrough: false\n    filter:\n      namespace:\
-    \ \"learning-account-release\"\n    pod_association:\n      - sources: [{from:\
-    \ resource_attribute, name: k8s.pod.uid}]\n    extract:\n      metadata: [k8s.pod.uid]\n\
-    \      labels:\n        - {tag_name: rollout_revision, key: rollouts-pod-template-hash,\
-    \ from: pod}\n        - {tag_name: learning_service, key: learning.local/service,\
-    \ from: pod}\n  transform/revision:\n    error_mode: propagate\n    metric_statements:\n\
-    \      - context: datapoint\n        conditions:\n          - 'metric.name ==\
-    \ \"pe_http_server_requests\" or metric.name == \"pe_http_server_request_duration\"\
-    \ or metric.name == \"pe_go_goroutines\"'\n        statements:\n          # Override\
-    \ sender datapoint identity; unmatched Pods get no revision.\n          - 'delete_key(attributes,\
-    \ \"rollout_revision\")'\n          - 'delete_key(attributes, \"learning_service\"\
-    )'\n          - 'set(attributes[\"rollout_revision\"], resource.attributes[\"\
-    rollout_revision\"]) where resource.attributes[\"rollout_revision\"] != nil'\n\
-    \          - 'set(attributes[\"learning_service\"], resource.attributes[\"learning_service\"\
-    ]) where resource.attributes[\"learning_service\"] != nil'\n  batch:\n    timeout:\
-    \ 5s\n    send_batch_size: 512\n    send_batch_max_size: 1024\nexporters:\n  prometheus:\n\
+    \    check_interval: 1s\n    limit_mib: 192\n    spike_limit_mib: 48\n  filter/account:\n\
+    \    error_mode: propagate\n    metrics:\n      metric:\n      - resource.attributes[\"\
+    service.name\"] != \"account-backend\"\n      - resource.attributes[\"deployment.environment.name\"\
+    ] != \"local\"\n      - resource.attributes[\"k8s.namespace.name\"] != \"learning-account-release\"\
+    \n  k8sattributes/account:\n    auth_type: serviceAccount\n    passthrough: false\n\
+    \    filter:\n      namespace: learning-account-release\n    pod_association:\n\
+    \    - sources:\n      - from: resource_attribute\n        name: k8s.pod.uid\n\
+    \    extract:\n      metadata:\n      - k8s.pod.uid\n      labels:\n      - tag_name:\
+    \ rollout_revision\n        key: rollouts-pod-template-hash\n        from: pod\n\
+    \      - tag_name: learning_service\n        key: learning.local/service\n   \
+    \     from: pod\n  transform/revision:\n    error_mode: propagate\n    metric_statements:\n\
+    \    - context: datapoint\n      conditions:\n      - metric.name == \"pe_http_server_requests\"\
+    \ or metric.name == \"pe_http_server_request_duration\"\n        or metric.name\
+    \ == \"pe_go_goroutines\"\n      statements:\n      - delete_key(attributes, \"\
+    rollout_revision\")\n      - delete_key(attributes, \"learning_service\")\n  \
+    \    - set(attributes[\"rollout_revision\"], resource.attributes[\"rollout_revision\"\
+    ])\n        where resource.attributes[\"rollout_revision\"] != nil\n      - set(attributes[\"\
+    learning_service\"], resource.attributes[\"learning_service\"])\n        where\
+    \ resource.attributes[\"learning_service\"] != nil\n  batch:\n    timeout: 5s\n\
+    \    send_batch_size: 512\n    send_batch_max_size: 1024\nexporters:\n  prometheus:\n\
     \    endpoint: 0.0.0.0:8889\n    send_timestamps: true\n    metric_expiration:\
-    \ 90s\n    resource_to_telemetry_conversion: {enabled: false}\n    enable_open_metrics:\
-    \ true\n  nop: {}\nextensions:\n  health_check: {endpoint: 0.0.0.0:13133}\nservice:\n\
-    \  extensions: [health_check]\n  telemetry:\n    logs: {level: warn, encoding:\
-    \ json}\n  pipelines:\n    metrics:\n      receivers: [otlp]\n      processors:\
-    \ [memory_limiter, filter/account, resource/real_namespace, k8sattributes/account,\
-    \ transform/revision, batch]\n      exporters: [prometheus]\n    # The existing\
-    \ SDK sends traces too. Discard them without storage/export.\n    traces:\n  \
-    \    receivers: [otlp]\n      processors: [memory_limiter, batch]\n      exporters:\
-    \ [nop]\n"
+    \ 90s\n    resource_to_telemetry_conversion:\n      enabled: false\n    enable_open_metrics:\
+    \ true\n  nop: {}\nextensions:\n  health_check:\n    endpoint: 0.0.0.0:13133\n\
+    service:\n  extensions:\n  - health_check\n  telemetry:\n    logs:\n      level:\
+    \ warn\n      encoding: json\n  pipelines:\n    metrics:\n      receivers:\n \
+    \     - otlp\n      processors:\n      - memory_limiter\n      - filter/account\n\
+    \      - k8sattributes/account\n      - transform/revision\n      - batch\n  \
+    \    exporters:\n      - prometheus\n    traces:\n      receivers:\n      - otlp\n\
+    \      processors:\n      - memory_limiter\n      - batch\n      exporters:\n\
+    \      - nop\n"
 ---
 apiVersion: v1
 kind: Service
@@ -1078,7 +1074,7 @@ spec:
         learning.local/owner: plat199-account
         learning.local/workload: account-release-otel-collector
       annotations:
-        checksum/config: f7bc95aacf10de2fd9cd05eca3467f4568ea55ec46bd505424dd6669c66a7a0f
+        checksum/config: ae127c6abc4084911cac3d7d36be13c40ccce6aa7cfee5f88362630d4e6a1c13
     spec:
       serviceAccountName: account-release-otel-collector
       automountServiceAccountToken: true
