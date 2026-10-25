@@ -356,8 +356,9 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
         supply_contract = _load_contract_module("validate_image_supply")
         # Before cluster creation only immutable source/archive provenance can
         # exist. Empty-node-cache import/pull evidence is a post-cluster step.
-        supply_contract.validate(image_supply_path, require_source_evidence=True,
-                                 profile_override=profile_path)
+        supply_lock, _ = supply_contract.validate(
+            image_supply_path, require_source_evidence=True,
+            profile_override=profile_path)
     except Exception as error:
         raise RunnerRejected("image-supply-contract:" + str(error)) from error
 
@@ -403,7 +404,10 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
             Path(adapter_plan_path),
             {"clusterName": target["clusterName"], "context": target["context"]},
             expected_versions,
-            {item["ref"].rsplit("@", 1)[1] for item in profile_spec["images"]},
+            {item["source"]["manifest"].get("childDigest",
+                                             item["source"]["manifest"].get(
+                                                 "manifestDigest"))
+             for item in supply_lock["spec"]["images"]},
         )
         live_input_set_digest = adapter_contract.plan_input_set_digest(plan)
         if hashes["liveAdapterInputSetSha256"] != live_input_set_digest:
