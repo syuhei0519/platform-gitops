@@ -88,6 +88,8 @@ jobs:
             --schema-output .rendered/current-schema-resources.yaml
           .build/monitoring-venv/bin/python learning/fresh-profile/test_validate_profile.py
           .build/monitoring-venv/bin/python learning/fresh-profile/validate_profile.py
+          .build/monitoring-venv/bin/python learning/fresh-profile/test_validate_image_supply.py
+          .build/monitoring-venv/bin/python learning/fresh-profile/validate_image_supply.py
           PATH="$PWD/.build:$PATH" .build/monitoring-venv/bin/python learning/monitoring/validate.py --output .rendered/learning-monitoring
           sh learning/monitoring/check-tools.sh .rendered/learning-monitoring
           PATH="$PWD/.build:$PATH" .build/monitoring-venv/bin/python learning/monitoring/alerting/validate.py .rendered/learning-alerting

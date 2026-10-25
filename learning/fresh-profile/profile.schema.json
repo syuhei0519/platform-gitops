@@ -87,8 +87,8 @@
         },
         "contracts": {
           "type": "object", "additionalProperties": false,
-          "required": ["currentComparison", "equivalence", "secretContract"],
-          "properties": {"currentComparison": {"type": "string"}, "equivalence": {"type": "string"}, "secretContract": {"type": "string"}}
+          "required": ["currentComparison", "equivalence", "secretContract", "imageSupply"],
+          "properties": {"currentComparison": {"type": "string"}, "equivalence": {"type": "string"}, "secretContract": {"type": "string"}, "imageSupply": {"const": "learning/fresh-profile/image-supply.lock.yaml"}}
         },
         "decisions": {
           "type": "object", "additionalProperties": false, "required": ["G1", "G2", "G3", "G4"],

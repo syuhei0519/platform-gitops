@@ -1,0 +1,97 @@
+apiVersion: platform.lab/v1alpha1
+kind: ImageSupplyLock
+metadata:
+  name: account-lightweight-fresh-images
+  purpose: PLAT-212-offline-contract
+spec:
+  profileRef: learning/fresh-profile/profile.lock.yaml
+  targetArchitecture: linux/amd64
+  decision:
+    status: pending-approval
+    selectedMode: PENDING_G2
+    restoreOwner: PENDING_G2
+    retentionUntil: PENDING_G2
+    restoreProcedureRef: PENDING_G2
+  prohibitedEvidence:
+  - old-node-cache
+  - ci-artifact-only
+  - tag-without-digest
+  requiredChecks:
+  - digest
+  - architecture
+  - entrypoint
+  - user
+  - args
+  - migration
+  - smoke
+  - scan
+  - sbom
+  images:
+  - name: kind-node
+    source: &pending
+      kind: pending-g2
+      published: false
+      immutable: false
+      freshEligible: false
+      location: PENDING_G2
+    retrieval: &pendingRetrieval
+      status: pending
+      emptyNodeCache: false
+      observedDigest: PENDING_G2
+      observedArchitecture: PENDING_G2
+    checks: &pendingChecks
+      digest: {status: pending, evidenceRef: PENDING_G2}
+      architecture: {status: pending, evidenceRef: PENDING_G2}
+      entrypoint: {status: pending, evidenceRef: PENDING_G2}
+      user: {status: pending, evidenceRef: PENDING_G2}
+      args: {status: pending, evidenceRef: PENDING_G2}
+      migration: {status: pending, evidenceRef: PENDING_G2}
+      smoke: {status: pending, evidenceRef: PENDING_G2}
+      scan: {status: pending, evidenceRef: PENDING_G2}
+      sbom: {status: pending, evidenceRef: PENDING_G2}
+  - name: argocd
+    source: *pending
+    retrieval: *pendingRetrieval
+    checks: *pendingChecks
+  - name: argocd-redis
+    source: *pending
+    retrieval: *pendingRetrieval
+    checks: *pendingChecks
+  - name: argo-rollouts
+    source: *pending
+    retrieval: *pendingRetrieval
+    checks: *pendingChecks
+  - name: istio-pilot
+    source: *pending
+    retrieval: *pendingRetrieval
+    checks: *pendingChecks
+  - name: istio-proxy
+    source: *pending
+    retrieval: *pendingRetrieval
+    checks: *pendingChecks
+  - name: postgres
+    source: *pending
+    retrieval: *pendingRetrieval
+    checks: *pendingChecks
+  - name: account-runtime
+    source:
+      kind: checked-local-artifact
+      published: false
+      immutable: true
+      freshEligible: false
+      location: checked-artifact:account-runtime
+      retentionHours: 0
+    retrieval: *pendingRetrieval
+    checks: *pendingChecks
+  - name: prometheus
+    source: *pending
+    retrieval: *pendingRetrieval
+    checks: *pendingChecks
+  - name: otel-collector
+    source: *pending
+    retrieval: *pendingRetrieval
+    checks: *pendingChecks
+  - name: grafana
+    source: *pending
+    retrieval: *pendingRetrieval
+    checks: *pendingChecks

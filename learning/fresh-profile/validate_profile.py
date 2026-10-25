@@ -149,6 +149,7 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
     validate_equivalence(equivalence)
     checked_path(spec["contracts"]["currentComparison"])
     checked_path(spec["contracts"]["secretContract"])
+    checked_path(spec["contracts"]["imageSupply"])
 
     version_lock = load_yaml(REPOSITORY / "bootstrap" / "versions.lock.yaml")["spec"]
     expected = {

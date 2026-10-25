@@ -31,6 +31,20 @@ Pending values are valid for offline review. They fail `--require-approved`, so
 this file cannot be mistaken for permission to run PLAT-217. A node cache or
 expiring CI artifact is never supply evidence.
 
+`image-supply.lock.yaml` makes that boundary executable. The current Account
+runtime is explicitly a `checked-local-artifact`: its digest was checked, but it
+is neither published nor eligible for a cacheless fresh build. The remaining
+images stay `pending-g2` until their real retrieval evidence is recorded.
+
+An approved lock selects exactly one finite supply mode: an authenticated private
+immutable registry reference, or an immutable retained OCI archive with its own
+archive hash. For every image it records cache-empty retrieval, the observed
+digest and architecture, entrypoint, user, args, migration/smoke,
+scan and SBOM evidence. A multi-platform image binds both the index digest and
+the selected child digest to child-specific scan/SBOM references. Retrieval
+classifies `registry-unknown` separately from `image-absent`; neither is treated
+as permission to reuse cache or retry blindly.
+
 ## Bootstrap and resume contract
 
 `bootstrap-dag.yaml` fixes the dependency order:
@@ -59,9 +73,12 @@ cleanup evidence remains required.
 ```text
 python learning/fresh-profile/validate_profile.py
 python learning/fresh-profile/test_validate_profile.py
+python learning/fresh-profile/validate_image_supply.py
+python learning/fresh-profile/test_validate_image_supply.py
 python learning/fresh-profile/validate_profile.py --require-approved
+python learning/fresh-profile/validate_image_supply.py --require-fresh-evidence
 ```
 
-The first two commands must pass in CI. The third is expected to reject the
-checked-in pending profile until the user separately approves G1–G3 and the
-lock is updated by review.
+The four offline commands must pass in CI. Both `--require-*` commands are
+expected to reject the checked-in pending profile until the user separately
+approves G1-G3 and the lock is updated by review.

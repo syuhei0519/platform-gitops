@@ -128,6 +128,7 @@ spec:
     currentComparison: learning/existing-kind/current-contract.json
     equivalence: learning/fresh-profile/equivalence.json
     secretContract: docs/secret-contract.md
+    imageSupply: learning/fresh-profile/image-supply.lock.yaml
   decisions:
     G1:
       status: pending-approval
