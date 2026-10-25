@@ -25,6 +25,7 @@ REQUIRED_IMAGES = {
     "istio-proxy", "postgres", "account-runtime", "prometheus",
     "otel-collector", "grafana",
 }
+DIGEST_ONLY_IMAGES = {"argocd", "argocd-redis", "prometheus", "otel-collector", "grafana"}
 STEPS = [
     "preflight", "image-source", "cluster", "empty-node-cache", "image-import", "crds", "controllers",
     "security-boundary", "credential-bootstrap", "custom-resources",
@@ -62,6 +63,17 @@ def checked_path(value: str) -> Path:
     if not path.is_relative_to(REPOSITORY.resolve()) or not path.is_file():
         raise ContractError("referenced-file")
     return path
+
+
+def digest_only(reference: str) -> str:
+    """Remove a mutable tag while preserving repository and manifest digest."""
+    repository, separator, digest = reference.rpartition("@")
+    if not separator or not re.fullmatch(r"sha256:[0-9a-f]{64}", digest):
+        raise ContractError("image-digest")
+    leaf = repository.rsplit("/", 1)[-1]
+    if ":" in leaf:
+        repository = repository.rsplit(":", 1)[0]
+    return repository + "@" + digest
 
 
 def reject_secret_material(value, path=()):
@@ -188,11 +200,11 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
     version_lock = load_yaml(REPOSITORY / "bootstrap" / "versions.lock.yaml")["spec"]
     expected = {
         "kind-node": version_lock["kind"]["nodeImage"],
-        "argocd": version_lock["argoCd"]["image"],
-        "argocd-redis": version_lock["argoCd"]["redisImage"],
-        "prometheus": version_lock["prometheus"]["image"],
-        "otel-collector": version_lock["plannedObservability"]["collectorContrib"]["image"],
-        "grafana": version_lock["plannedObservability"]["grafana"]["image"],
+        "argocd": digest_only(version_lock["argoCd"]["image"]),
+        "argocd-redis": digest_only(version_lock["argoCd"]["redisImage"]),
+        "prometheus": digest_only(version_lock["prometheus"]["image"]),
+        "otel-collector": digest_only(version_lock["plannedObservability"]["collectorContrib"]["image"]),
+        "grafana": digest_only(version_lock["plannedObservability"]["grafana"]["image"]),
     }
     locked_images = {item["name"]: item["ref"] for item in spec["images"]}
     if any(locked_images[name] != image for name, image in expected.items()):
@@ -227,3 +239,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
