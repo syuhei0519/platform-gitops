@@ -347,9 +347,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--matrix", type=Path, default=MATRIX)
     parser.add_argument("--evidence", type=Path, default=EVIDENCE)
+    parser.add_argument("--canonical", type=Path, default=CANONICAL)
+    parser.add_argument("--rbac", type=Path, default=RBAC)
+    parser.add_argument("--admission", type=Path, default=ADMISSION)
+    parser.add_argument("--negative", type=Path, default=NEGATIVE)
     args = parser.parse_args()
     try:
-        matrix, evidence = validate(args.matrix, args.evidence)
+        matrix, evidence = validate(args.matrix, args.evidence, args.canonical,
+                                    args.rbac, args.admission, args.negative)
     except (ContractError, json.JSONDecodeError, yaml.YAMLError) as error:
         print(f"authority proposal rejected: {error}")
         return 1

@@ -20,8 +20,12 @@ PLATFORM_FILES = (
     "acceptance.pending.json",
     "authority-matrix.json",
     "fixtures/canonical-two-sha.json",
+    "fixtures/security-negative-fixtures.json",
     "root/bootstrap.yaml",
     "root/children/applications.yaml",
+    "security/canonical-contract.json",
+    "security/rbac.yaml",
+    "security/admission.yaml",
 )
 GIT_FETCHED_PLATFORM_FILES = (
     "root/children/applications.yaml",
