@@ -63,6 +63,8 @@ jobs:
           modules: scan-gate
       - name: Policy and boundary tests
         run: bash ci/github/test.sh
+      - name: Fresh profile contract tests
+        run: python3 -m unittest discover -s learning/fresh-profile -p 'test_*.py' -v
       - name: Render, policy and checksum checks
         run: |
           mkdir -p .security/public
@@ -86,6 +88,14 @@ jobs:
             --application-manifest "$PWD/.build/current-manifest" \
             --output .rendered/current-resources.yaml \
             --schema-output .rendered/current-schema-resources.yaml
+          .build/monitoring-venv/bin/python learning/fresh-profile/test_validate_profile.py
+          .build/monitoring-venv/bin/python learning/fresh-profile/validate_profile.py
+          .build/monitoring-venv/bin/python learning/fresh-profile/test_validate_image_supply.py
+          .build/monitoring-venv/bin/python learning/fresh-profile/validate_image_supply.py
+          .build/monitoring-venv/bin/python learning/fresh-profile/test_validate_authority.py
+          .build/monitoring-venv/bin/python learning/fresh-profile/validate_authority.py
+          .build/monitoring-venv/bin/python learning/fresh-profile/test_validate_acceptance.py
+          .build/monitoring-venv/bin/python learning/fresh-profile/validate_acceptance.py
           PATH="$PWD/.build:$PATH" .build/monitoring-venv/bin/python learning/monitoring/validate.py --output .rendered/learning-monitoring
           sh learning/monitoring/check-tools.sh .rendered/learning-monitoring
           PATH="$PWD/.build:$PATH" .build/monitoring-venv/bin/python learning/monitoring/alerting/validate.py .rendered/learning-alerting

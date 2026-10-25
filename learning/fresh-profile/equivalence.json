@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "evidencePolicy": "prior evidence is comparison-only and never substitutes for fresh acceptance",
+  "mappings": [
+    {"ticket": "PLAT-177", "freshChecks": ["declared-resource-identities", "field-ownership", "nonempty-children"]},
+    {"ticket": "PLAT-193", "freshChecks": ["fixed-repository-shas", "desired-and-actual-revision", "resync"]},
+    {"ticket": "PLAT-194", "freshChecks": ["api-crud", "restart", "database-persistence"]},
+    {"ticket": "PLAT-195", "freshChecks": ["weighted-traffic", "abort", "restore"]},
+    {"ticket": "PLAT-196", "freshChecks": ["request-error-latency-metrics", "traces", "logs"]},
+    {"ticket": "PLAT-197", "freshChecks": ["secret-reference-only", "missing-secret-fail-closed", "value-non-disclosure"]},
+    {"ticket": "PLAT-198", "freshChecks": ["database-role-boundary", "migration-history", "rerun"]},
+    {"ticket": "PLAT-199", "freshChecks": ["sandbox-only-cleanup", "temporary-binding-cleanup", "current-environment-unchanged"]}
+  ]
+}

@@ -1,0 +1,79 @@
+apiVersion: platform.lab/v1alpha1
+kind: FreshBootstrapDAG
+metadata:
+  name: account-lightweight-fresh
+spec:
+  steps:
+  - id: preflight
+    requires: []
+    readyWhen: host-budget-approved-and-target-cluster-name-proved-absent
+  - id: image-source
+    requires: [preflight]
+    readyWhen: every-host-registry-or-archive-source-byte-digest-and-provenance-is-fixed-without-node-evidence
+  - id: cluster
+    requires: [image-source]
+    readyWhen: expected-new-cluster-uid-recorded
+  - id: empty-node-cache
+    requires: [cluster]
+    readyWhen: every-target-node-proves-required-images-absent-before-import
+  - id: image-import
+    requires: [empty-node-cache]
+    readyWhen: every-image-imported-from-approved-source-and-runtime-digest-proved-on-empty-cache-node
+  - id: crds
+    requires: [image-import]
+    readyWhen: every-required-crd-established
+  - id: controllers
+    requires: [crds]
+    readyWhen: controllers-and-webhooks-ready
+  - id: security-boundary
+    requires: [controllers]
+    readyWhen: appprojects-rbac-and-admission-positive-negative-evidence-recorded
+  - id: credential-bootstrap
+    requires: [security-boundary]
+    readyWhen: fresh-only-secret-metadata-and-ca-metadata-recorded
+  - id: custom-resources
+    requires: [credential-bootstrap]
+    readyWhen: admitted-custom-resources-reconciled
+  - id: database
+    requires: [custom-resources]
+    readyWhen: argocd-application-operation-succeeded-and-database-pvc-service-statefulset-ready
+  - id: role-bootstrap
+    requires: [database]
+    readyWhen: runtime-and-migration-role-boundaries-verified
+  - id: migration
+    requires: [role-bootstrap]
+    readyWhen: migration-job-succeeded-once-and-history-exact
+  - id: application
+    requires: [migration]
+    readyWhen: argocd-application-synced-healthy-and-locked-image-api-ready
+  - id: acceptance
+    requires: [application]
+    readyWhen: api-observability-resync-rerun-and-resume-evidence-complete
+  checkpoint:
+    recordAfterEveryStep: true
+    fields:
+    - profileDigest
+    - materializationDigest
+    - sourceSetDigest
+    - liveAdapterInputSetDigest
+    - clusterUID
+    - targetContext
+    - step
+    - status
+    - startedAt
+    - completedAt
+    - observedResourceIdentities
+    - inputReferenceDigests
+    - resourceDigest
+    - errorClass
+    resume:
+      verifyProfileDigest: true
+      verifyMaterializationDigest: true
+      verifySourceSetDigest: true
+      verifyLiveAdapterInputSetDigest: true
+      verifyInputReferenceDigests: true
+      verifyClusterUID: true
+      verifyCompletedResources: true
+      retryOnlyFailedOrIncompleteStep: true
+      neverRecreateSucceededRoleBootstrapJob: true
+      neverRecreateSucceededMigrationJob: true

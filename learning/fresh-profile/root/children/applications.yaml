@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fresh-release-definitions
+  namespace: fresh-control
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false
+spec:
+  project: fresh-platform
+  source:
+    repoURL: https://github.com/syuhei0519/application-manifest.git
+    targetRevision: 4a98e85a3866e48868c0c69505e546ac73f67641
+    path: learning/fresh-profile/release-definition
+    helm:
+      releaseName: fresh-account-release-definition
+      parameters:
+      - {name: workloadRevision, value: 4a98e85a3866e48868c0c69505e546ac73f67641}
+      - {name: accountRuntimeImage, value: ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fresh-control
+  syncPolicy:
+    syncOptions: [ApplyOutOfSyncOnly=true, Prune=false]

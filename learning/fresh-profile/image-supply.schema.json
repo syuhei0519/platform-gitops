@@ -1,0 +1,181 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": {"const": "platform.lab/v1alpha1"},
+    "kind": {"const": "ImageSupplyLock"},
+    "metadata": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "purpose"],
+      "properties": {
+        "name": {"const": "account-lightweight-fresh-images"},
+        "purpose": {"const": "PLAT-212-offline-contract"}
+      }
+    },
+    "spec": {
+      "type": "object", "additionalProperties": false,
+      "required": ["profileRef", "targetArchitecture", "decision", "prohibitedEvidence", "requiredChecks", "images"],
+      "properties": {
+        "profileRef": {"const": "learning/fresh-profile/profile.lock.yaml"},
+        "targetArchitecture": {"enum": ["linux/amd64", "linux/arm64"]},
+        "decision": {
+          "type": "object", "additionalProperties": false,
+          "required": ["status", "selectedMode", "restoreOwner", "retentionUntil", "restoreProcedureRef"],
+          "properties": {
+            "status": {"enum": ["pending-approval", "approved"]},
+            "selectedMode": {"enum": ["PENDING_G2", "private-registry", "retained-oci-archive", "public-upstream-plus-retained-account-archive"]},
+            "restoreOwner": {"type": "string", "pattern": "^(PENDING_G2|[a-z0-9][a-z0-9-]{2,63})$"},
+            "retentionUntil": {"type": "string", "pattern": "^(PENDING_G2|[0-9]{4}-[0-9]{2}-[0-9]{2})$"},
+            "restoreProcedureRef": {"type": "string", "pattern": "^(PENDING_G2|runbook:[a-z0-9-]+)$"}
+          }
+        },
+        "prohibitedEvidence": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "requiredChecks": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "images": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["name", "source", "retrieval", "checks"],
+            "properties": {
+              "name": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+              "source": {"$ref": "#/definitions/source"},
+              "retrieval": {"$ref": "#/definitions/retrieval"},
+              "checks": {"$ref": "#/definitions/checks"},
+              "comparisonOnly": {"$ref": "#/definitions/comparisonOnly"}
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "source": {
+      "oneOf": [
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "published", "immutable", "freshEligible", "location", "manifest"],
+          "properties": {
+            "kind": {"const": "public-registry"}, "published": {"const": true},
+            "immutable": {"const": true}, "freshEligible": {"const": true},
+            "location": {"type": "string", "pattern": "^oci://.+@sha256:[0-9a-f]{64}$"},
+            "manifest": {"$ref": "#/definitions/manifest"}
+          }
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "published", "immutable", "freshEligible", "location"],
+          "properties": {
+            "kind": {"const": "pending-g2"}, "published": {"const": false},
+            "immutable": {"const": false}, "freshEligible": {"const": false},
+            "location": {"const": "PENDING_G2"}
+          }
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "published", "immutable", "freshEligible", "location", "retentionHours", "sourceCommit", "manifestDigest", "configDigest", "archiveSha256", "ciRunId", "artifactId", "entrypoint", "user"],
+          "properties": {
+            "kind": {"const": "checked-local-artifact"}, "published": {"const": false},
+            "immutable": {"const": true}, "freshEligible": {"const": false},
+            "location": {"type": "string", "pattern": "^checked-artifact:[a-z0-9-]+$"},
+            "retentionHours": {"type": "integer", "minimum": 0, "maximum": 720},
+            "sourceCommit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+            "manifestDigest": {"$ref": "#/definitions/digest"},
+            "configDigest": {"$ref": "#/definitions/digest"},
+            "archiveSha256": {"$ref": "#/definitions/digest"},
+            "ciRunId": {"type": "integer", "minimum": 1},
+            "artifactId": {"type": "integer", "minimum": 1},
+            "entrypoint": {"const": ["/server"]},
+            "user": {"const": "10001:10001"}
+          }
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "published", "immutable", "freshEligible", "location", "manifest"],
+          "properties": {
+            "kind": {"const": "private-registry"}, "published": {"const": true},
+            "immutable": {"const": true}, "freshEligible": {"const": true},
+            "location": {"type": "string", "pattern": "^oci://.+@sha256:[0-9a-f]{64}$"},
+            "manifest": {"$ref": "#/definitions/manifest"}
+          }
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "published", "immutable", "freshEligible", "location", "archiveSha256", "manifest"],
+          "properties": {
+            "kind": {"const": "retained-oci-archive"}, "published": {"const": false},
+            "immutable": {"const": true}, "freshEligible": {"const": true},
+            "location": {"type": "string", "pattern": "^archive-ref:[A-Za-z0-9._/-]+$"},
+            "archiveSha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+            "manifest": {"$ref": "#/definitions/manifest"}
+          }
+        }
+      ]
+    },
+    "manifest": {
+      "oneOf": [
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "manifestDigest", "os", "architecture"],
+          "properties": {
+            "kind": {"const": "single-platform"},
+            "manifestDigest": {"$ref": "#/definitions/digest"},
+            "os": {"const": "linux"}, "architecture": {"enum": ["amd64", "arm64"]}
+          }
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "indexDigest", "childDigest", "os", "architecture", "childScanRef", "childSbomRef"],
+          "properties": {
+            "kind": {"const": "multi-platform-index"},
+            "indexDigest": {"$ref": "#/definitions/digest"},
+            "childDigest": {"$ref": "#/definitions/digest"},
+            "os": {"const": "linux"}, "architecture": {"enum": ["amd64", "arm64"]},
+            "childScanRef": {"type": "string", "minLength": 1},
+            "childSbomRef": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "comparisonOnly": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source", "indexDigest", "childDigest", "os", "architecture"],
+      "properties": {
+        "source": {"const": "old-node-cache"}, "indexDigest": {"$ref": "#/definitions/digest"},
+        "childDigest": {"$ref": "#/definitions/digest"}, "os": {"const": "linux"},
+        "architecture": {"const": "amd64"}
+      }
+    },
+    "retrieval": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "emptyNodeCache", "observedDigest", "observedArchitecture"],
+      "properties": {
+        "status": {"enum": ["pending", "succeeded", "registry-unknown", "image-absent", "failed"]},
+        "emptyNodeCache": {"type": "boolean"},
+        "observedDigest": {"type": "string", "minLength": 1},
+        "observedArchitecture": {"type": "string", "minLength": 1}
+      }
+    },
+    "check": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "evidenceRef"],
+      "properties": {
+        "status": {"enum": ["pending", "passed", "failed", "unrun"]},
+        "evidenceRef": {"type": "string", "minLength": 1}
+      }
+    },
+    "checks": {
+      "type": "object", "additionalProperties": false,
+      "required": ["digest", "architecture", "entrypoint", "user", "args", "migration", "smoke", "scan", "sbom"],
+      "properties": {
+        "digest": {"$ref": "#/definitions/check"}, "architecture": {"$ref": "#/definitions/check"},
+        "entrypoint": {"$ref": "#/definitions/check"}, "user": {"$ref": "#/definitions/check"},
+        "args": {"$ref": "#/definitions/check"}, "migration": {"$ref": "#/definitions/check"},
+        "smoke": {"$ref": "#/definitions/check"}, "scan": {"$ref": "#/definitions/check"},
+        "sbom": {"$ref": "#/definitions/check"}
+      }
+    }
+  }
+}

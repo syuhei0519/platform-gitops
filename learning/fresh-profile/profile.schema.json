@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": {"const": "platform.lab/v1alpha1"},
+    "kind": {"const": "FreshProfileLock"},
+    "metadata": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "purpose"],
+      "properties": {"name": {"const": "account-lightweight-fresh"}, "purpose": {"const": "PLAT-213-offline-design"}}
+    },
+    "spec": {
+      "type": "object", "additionalProperties": false,
+      "required": ["profileVersion", "scope", "target", "repositories", "tools", "images", "freshRuntimeRequirement", "imageSupply", "inputs", "budget", "bootstrap", "contracts", "decisions"],
+      "properties": {
+        "profileVersion": {"const": 1},
+        "scope": {
+          "type": "object", "additionalProperties": false,
+          "required": ["mode", "workload", "currentClusterExcluded", "legacyPlatformLabExcluded", "cutoverIncluded"],
+          "properties": {
+            "mode": {"const": "empty-data-build"}, "workload": {"const": "account-only"},
+            "currentClusterExcluded": {"const": "kind-learning-20261018-69c763"},
+            "legacyPlatformLabExcluded": {"const": true}, "cutoverIncluded": {"const": false}
+          }
+        },
+        "target": {
+          "type": "object", "additionalProperties": false,
+          "required": ["clusterName", "context", "architecture", "isolation"],
+          "properties": {
+            "clusterName": {"type": "string", "minLength": 1}, "context": {"type": "string", "minLength": 1},
+            "architecture": {"const": "linux/amd64"}, "isolation": {"const": "separate-named-sandbox"}
+          }
+        },
+        "repositories": {
+          "type": "object", "additionalProperties": false,
+          "required": ["backend-app", "frontend-app", "application-manifest", "platform-gitops"],
+          "properties": {
+            "backend-app": {"$ref": "#/definitions/repository"}, "frontend-app": {"$ref": "#/definitions/repository"},
+            "application-manifest": {"$ref": "#/definitions/repository"}, "platform-gitops": {"$ref": "#/definitions/repository"}
+          }
+        },
+        "tools": {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "kubernetes", "kubectl", "helm", "argoCdChart", "argoCd", "rollouts", "istio"],
+          "properties": {
+            "kind": {"type": "string"}, "kubernetes": {"type": "string"}, "kubectl": {"type": "string"},
+            "helm": {"type": "string"}, "argoCdChart": {"type": "string"}, "argoCd": {"type": "string"},
+            "rollouts": {"type": "string"}, "istio": {"type": "string"}
+          }
+        },
+        "images": {"type": "array", "minItems": 8, "items": {"$ref": "#/definitions/image"}},
+        "freshRuntimeRequirement": {
+          "type": "object", "additionalProperties": false,
+          "required": ["sourceAtOrAfter", "requiredConfig", "admissionSecretKeyContract", "requiredIdentity", "priorRuntimeImage", "priorRuntimeUse", "priorRollbackImage", "priorRollbackSource", "rollbackRule"],
+          "properties": {
+            "sourceAtOrAfter": {"const": "635814f5354f0fe238694d35137b283576a9127f"},
+            "requiredConfig": {"const": "finite-fresh-account-operation-roles-exact-namespace-schema-and-Downward-API"},
+            "admissionSecretKeyContract": {"enum": ["PENDING_EXACT_ADMISSION_SECRET_KEY_APPROVAL", "username-password-operation-key-allowlist-aligned"]},
+            "requiredIdentity": {"const": "immutable-digest-source-config-platform-user-entrypoint-and-retained-G2-source"},
+            "priorRuntimeImage": {"const": "ghcr.io/syuhei0519/backend-app@sha256:746e9acb5e5a24dcd6644ab5e082f2d3dad79620ec2e00afa80aa39a7436cf9a"},
+            "priorRuntimeUse": {"const": "comparison-and-paired-rollback-only-not-fresh-compatible"},
+            "priorRollbackImage": {"const": "ghcr.io/syuhei0519/backend-app@sha256:09155da800dfe1620124cb5e49b03f9e30c737d3e67ebd5c71dc47a452b967c0"},
+            "priorRollbackSource": {"const": "46ef1419c11363e263e1f1c254ca9096ea2b5835"},
+            "rollbackRule": {"const": "image-and-compatible-config-are-one-atomic-pair"}
+          }
+        },
+        "imageSupply": {
+          "type": "object", "additionalProperties": false,
+          "required": ["decision", "immutable", "retentionUntil", "restoreOwner", "cacheIsEvidence", "requiredProof"],
+          "properties": {
+            "decision": {"type": "string"}, "immutable": {"type": "boolean"}, "retentionUntil": {"type": "string"},
+            "restoreOwner": {"type": "string"}, "cacheIsEvidence": {"const": false}, "requiredProof": {"type": "string"}
+          }
+        },
+        "inputs": {
+          "type": "object", "additionalProperties": false,
+          "required": ["clusterKubeconfigRef", "imageSupplyRef", "secrets"],
+          "properties": {
+            "clusterKubeconfigRef": {"type": "string"}, "imageSupplyRef": {"type": "string"},
+            "secrets": {"type": "array", "minItems": 3, "items": {"$ref": "#/definitions/secretReference"}}
+          }
+        },
+        "budget": {
+          "type": "object", "additionalProperties": false,
+          "required": ["measureAt", "hostObservation", "estimates", "approvalLimits", "stopOn"],
+          "properties": {
+            "measureAt": {"const": ["before", "peak", "after"]},
+            "hostObservation": {"$ref": "#/definitions/hostObservation"},
+            "estimates": {"$ref": "#/definitions/estimates"},
+            "approvalLimits": {"$ref": "#/definitions/approvalLimits"},
+            "stopOn": {"type": "array", "minItems": 6, "uniqueItems": true, "items": {"type": "string"}}
+          }
+        },
+        "bootstrap": {
+          "type": "object", "additionalProperties": false,
+          "required": ["dagFile", "checkpointJournalRef", "resumePolicy", "rerunPolicy"],
+          "properties": {"dagFile": {"type": "string"}, "checkpointJournalRef": {"type": "string"}, "resumePolicy": {"type": "string"}, "rerunPolicy": {"type": "string"}}
+        },
+        "contracts": {
+          "type": "object", "additionalProperties": false,
+          "required": ["currentComparison", "equivalence", "secretContract", "imageSupply"],
+          "properties": {"currentComparison": {"type": "string"}, "equivalence": {"type": "string"}, "secretContract": {"type": "string"}, "imageSupply": {"const": "learning/fresh-profile/image-supply.lock.yaml"}}
+        },
+        "decisions": {
+          "type": "object", "additionalProperties": false, "required": ["G1", "G2", "G3", "G4"],
+          "properties": {"G1": {"$ref": "#/definitions/decision"}, "G2": {"$ref": "#/definitions/decision"}, "G3": {"$ref": "#/definitions/decision"}, "G4": {"$ref": "#/definitions/decision"}}
+        }
+      }
+    }
+  },
+  "definitions": {
+    "repository": {
+      "type": "object", "additionalProperties": false, "required": ["url", "commit"],
+      "properties": {"url": {"type": "string", "pattern": "^https://github.com/syuhei0519/[a-z-]+\\.git$"}, "commit": {"type": "string", "pattern": "^([0-9a-f]{40}|__PLATFORM_GITOPS_SHA__)$"}}
+    },
+    "image": {
+      "type": "object", "additionalProperties": false, "required": ["name", "ref", "architecture"],
+      "properties": {"name": {"type": "string", "pattern": "^[a-z0-9-]+$"}, "ref": {"type": "string", "pattern": "^(.+@sha256:[0-9a-f]{64}|PENDING_PLAT211_VERIFIED_IMAGE)$"}, "architecture": {"const": "linux/amd64"}}
+    },
+    "secretReference": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "purpose", "destination", "owner", "expiry", "sourceRef"],
+      "properties": {"name": {"type": "string"}, "purpose": {"type": "string"}, "destination": {"type": "string"}, "owner": {"type": "string"}, "expiry": {"type": "string"}, "sourceRef": {"type": "string", "pattern": "^(<operator-input:G3-[a-z-]+>|sealed-input:sha256:[0-9a-f]{64})$"}}
+    },
+    "decision": {
+      "type": "object", "additionalProperties": false, "required": ["status", "choice"],
+      "properties": {"status": {"enum": ["pending-approval", "approved", "pending-cutover"]}, "choice": {"type": "string", "minLength": 1}}
+    },
+    "hostObservation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["capturedAt", "logicalCpu", "installedMemoryGiB", "availableMemoryGiB", "freeDiskGiB", "dockerCpuLimit", "dockerMemoryLimitGiB", "dockerImagesGiB", "dockerVolumesGiB", "dockerBuildCacheGiB", "existingRunningContainers"],
+      "properties": {
+        "capturedAt": {"type": "string"}, "logicalCpu": {"const": 20},
+        "installedMemoryGiB": {"const": 31.84}, "availableMemoryGiB": {"const": 5.83},
+        "freeDiskGiB": {"const": 440.13}, "dockerCpuLimit": {"const": 20},
+        "dockerMemoryLimitGiB": {"const": 15.53}, "dockerImagesGiB": {"const": 10.86},
+        "dockerVolumesGiB": {"const": 11.21}, "dockerBuildCacheGiB": {"const": 2.847},
+        "existingRunningContainers": {"const": 1}
+      }
+    },
+    "estimates": {
+      "type": "object", "additionalProperties": false,
+      "required": ["renderedRequestTotals", "retainedArchiveBytes", "controlPlaneOverhead"],
+      "properties": {
+        "renderedRequestTotals": {
+          "type": "object", "additionalProperties": false,
+          "required": ["cpuMilli", "memoryMiB", "applicationManifestInputSha256", "platformObservabilityInputSha256", "includes", "excludes"],
+          "properties": {
+            "cpuMilli": {"const": 475}, "memoryMiB": {"const": 960},
+            "applicationManifestInputSha256": {"const": "187698f2dae64029f7e3993e875058f04b085714fd41b0e29506c6b241a81a94"},
+            "platformObservabilityInputSha256": {"const": "a7af14c5615d14de698c6c8fbc529faa02aa1e4f92c6644359c98f8e6e1ee512"},
+            "includes": {"type": "string"}, "excludes": {"type": "string"}
+          }
+        }, "retainedArchiveBytes": {"type": "string"},
+        "controlPlaneOverhead": {"type": "string"}
+      }
+    },
+    "approvalLimits": {
+      "type": "object", "additionalProperties": false,
+      "required": ["elapsedMaxMinutes", "hostAvailableMemoryMinGiB", "hostFreeDiskMinGiB", "dockerAdditionalDiskMaxGiB", "workloadCPURequestsMaxMilli", "workloadMemoryRequestsMaxMiB", "imageBytesMaxGiB", "podPendingMaxSeconds", "unexpectedRestartsMax"],
+      "properties": {
+        "elapsedMaxMinutes": {"type": ["integer", "string"]},
+        "hostAvailableMemoryMinGiB": {"type": ["number", "string"]},
+        "hostFreeDiskMinGiB": {"type": ["number", "string"]},
+        "dockerAdditionalDiskMaxGiB": {"type": ["number", "string"]},
+        "workloadCPURequestsMaxMilli": {"type": ["integer", "string"]},
+        "workloadMemoryRequestsMaxMiB": {"type": ["integer", "string"]},
+        "imageBytesMaxGiB": {"type": ["number", "string"]},
+        "podPendingMaxSeconds": {"type": ["integer", "string"]},
+        "unexpectedRestartsMax": {"const": 0}
+      }
+    }
+  }
+}

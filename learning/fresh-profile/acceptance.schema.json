@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "profile", "target", "runs", "evidence", "negativeCases", "preservation"],
+  "properties": {
+    "apiVersion": {"const": "platform.lab/v1alpha1"},
+    "kind": {"const": "FreshAcceptanceRecord"},
+    "metadata": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "recordedAt", "liveEvidence"],
+      "properties": {
+        "name": {"const": "account-lightweight-fresh"},
+        "recordedAt": {"type": ["string", "null"]},
+        "liveEvidence": {"type": "boolean"}
+      }
+    },
+    "profile": {
+      "type": "object", "additionalProperties": false,
+      "required": ["lockPath", "sha256", "repositories"],
+      "properties": {
+        "lockPath": {"const": "learning/fresh-profile/profile.lock.yaml"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "repositories": {
+          "type": "object", "additionalProperties": false,
+          "required": ["backend-app", "frontend-app", "application-manifest", "platform-gitops"],
+          "properties": {
+            "backend-app": {"$ref": "#/definitions/sha"},
+            "frontend-app": {"$ref": "#/definitions/sha"},
+            "application-manifest": {"$ref": "#/definitions/sha"},
+            "platform-gitops": {"$ref": "#/definitions/sha"}
+          }
+        }
+      }
+    },
+    "target": {
+      "type": "object", "additionalProperties": false,
+      "required": ["clusterName", "context", "kubeconfigRef", "clusterUID", "architecture"],
+      "properties": {
+        "clusterName": {"type": "string", "minLength": 1},
+        "context": {"type": "string", "minLength": 1},
+        "kubeconfigRef": {"type": "string", "pattern": "^<operator-input:G1-[a-z-]+>$"},
+        "clusterUID": {"type": ["string", "null"], "pattern": "^[A-Za-z0-9._:-]+$"},
+        "architecture": {"const": "linux/amd64"}
+      }
+    },
+    "runs": {
+      "type": "array", "minItems": 3, "maxItems": 3,
+      "items": {"$ref": "#/definitions/run"}
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["images", "resources", "revisions", "readiness", "fieldOwnership", "resyncRestart", "progressiveDelivery", "databaseAuthorization", "temporaryBindings", "processCleanup"],
+      "properties": {
+        "images": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/imageEvidence"}},
+        "resources": {
+          "type": "object", "additionalProperties": false,
+          "required": ["status", "expected", "observed"],
+          "properties": {
+            "status": {"$ref": "#/definitions/status"},
+            "expected": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9-]+/[A-Za-z]+/[a-z0-9-]+$"}},
+            "observed": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+          }
+        },
+        "revisions": {
+          "type": "object", "additionalProperties": false,
+          "required": ["status", "desired", "actual"],
+          "properties": {
+            "status": {"$ref": "#/definitions/status"},
+            "desired": {"type": "object"},
+            "actual": {"type": "object"}
+          }
+        },
+        "readiness": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/check"}},
+        "fieldOwnership": {
+          "type": "object", "additionalProperties": false,
+          "required": ["status", "expected", "observed"],
+          "properties": {
+            "status": {"$ref": "#/definitions/status"},
+            "expected": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+            "observed": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+          }
+        },
+        "resyncRestart": {"type": "array", "minItems": 2, "items": {"$ref": "#/definitions/check"}},
+        "progressiveDelivery": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "#/definitions/check"}},
+        "databaseAuthorization": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"$ref": "#/definitions/databaseCase"}},
+        "temporaryBindings": {
+          "type": "object", "additionalProperties": false,
+          "required": ["status", "expectedRemoved", "observedRemoved", "detail"],
+          "properties": {
+            "status": {"$ref": "#/definitions/status"},
+            "expectedRemoved": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string"}},
+            "observedRemoved": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+            "detail": {"type": ["string", "null"]}
+          }
+        },
+        "processCleanup": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "#/definitions/check"}}
+      }
+    },
+    "negativeCases": {"type": "array", "minItems": 5, "items": {"$ref": "#/definitions/negative"}},
+    "preservation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["currentCluster", "existingData", "cleanupScope", "cleanupStatus"],
+      "properties": {
+        "currentCluster": {"$ref": "#/definitions/check"},
+        "existingData": {"$ref": "#/definitions/check"},
+        "cleanupScope": {"const": "new-sandbox-only"},
+        "cleanupStatus": {"enum": ["not-requested", "unrun", "passed", "failed"]}
+      }
+    }
+  },
+  "definitions": {
+    "sha": {"type": "string", "pattern": "^([0-9a-f]{40}|__PLATFORM_GITOPS_SHA__)$"},
+    "status": {"enum": ["unrun", "passed", "failed"]},
+    "check": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "status", "detail"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "status": {"$ref": "#/definitions/status"},
+        "detail": {"type": ["string", "null"]}
+      }
+    },
+    "run": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "status", "completedSteps", "verifiedOnly", "interruptedStep", "resumedAtStep", "retriedSteps", "migrationJobRecreated"],
+      "properties": {
+        "mode": {"enum": ["first", "rerun", "resume-after-interruption"]},
+        "status": {"$ref": "#/definitions/status"},
+        "completedSteps": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "verifiedOnly": {"type": "boolean"},
+        "interruptedStep": {"type": ["string", "null"]},
+        "resumedAtStep": {"type": ["string", "null"]},
+        "retriedSteps": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "migrationJobRecreated": {"type": "boolean"}
+      }
+    },
+    "imageEvidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "expectedDigest", "expectedArchitecture", "status", "retrievedDigest", "actualArchitecture", "sourceType"],
+      "properties": {
+        "name": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "expectedDigest": {"type": "string", "pattern": "^(sha256:[0-9a-f]{64}|PENDING_PLAT211_VERIFIED_IMAGE)$"},
+        "expectedArchitecture": {"const": "linux/amd64"},
+        "status": {"$ref": "#/definitions/status"},
+        "retrievedDigest": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+        "actualArchitecture": {"type": ["string", "null"]},
+        "sourceType": {"enum": ["unrun", "private-registry", "public-registry", "retained-oci-archive"]}
+      }
+    },
+    "databaseCase": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "role", "operation", "target", "expected", "status", "observed", "detail"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "role": {"enum": ["account_migrator", "account_runtime"]},
+        "operation": {"enum": ["DDL", "DML"]},
+        "target": {"enum": ["account", "other_service"]},
+        "expected": {"enum": ["allow", "deny"]},
+        "status": {"$ref": "#/definitions/status"},
+        "observed": {"enum": [null, "allow", "deny"]},
+        "detail": {"type": ["string", "null"]}
+      }
+    },
+    "negative": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "status", "expectedClass", "observedClass"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "status": {"$ref": "#/definitions/status"},
+        "expectedClass": {"type": "string", "minLength": 1},
+        "observedClass": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "version": 1,
+  "mode": "offline-proposal",
+  "canonicalContract": "learning/fresh-profile/security/canonical-contract.json",
+  "liveEvidence": {
+    "required": true,
+    "status": "not-run",
+    "requiresSeparateApproval": [
+      "AppProject/RBAC/admission apply",
+      "kubectl auth can-i",
+      "controller-created Pod denial",
+      "canonical two-SHA sync"
+    ]
+  },
+  "identities": {
+    "bootstrap-operator": "separately-approved-no-stored-credential",
+    "gitops-controller": "system:serviceaccount:fresh-control:argocd-application-controller",
+    "database": "system:serviceaccount:fresh-account:account-database",
+    "migration": "system:serviceaccount:fresh-account:account-migration",
+    "runtime": "system:serviceaccount:fresh-account:account-runtime"
+  },
+  "rbac": {
+    "manifest": "learning/fresh-profile/security/rbac.yaml",
+    "roles": [
+      "Role/fresh-control/argocd-fresh-control-writer",
+      "Role/fresh-account/argocd-fresh-account-writer",
+      "Role/fresh-observability/argocd-fresh-observability-writer"
+    ],
+    "workloadServiceAccountApiVerbs": []
+  },
+  "admission": {
+    "manifest": "learning/fresh-profile/security/admission.yaml",
+    "policies": ["fresh-application-boundary", "fresh-managed-resource-boundary", "fresh-account-pod-boundary"],
+    "bindings": ["fresh-application-boundary", "fresh-managed-resource-boundary", "fresh-account-pod-boundary"],
+    "liveStatus": "pending-separate-approval"
+  },
+  "bootstrapOperations": [
+    {"actor": "bootstrap-operator", "kind": "CustomResourceDefinition", "names": ["applications.argoproj.io", "appprojects.argoproj.io", "rollouts.argoproj.io", "analysistemplates.argoproj.io"], "approval": "G1"},
+    {"actor": "bootstrap-operator", "kind": "AppProject", "namespace": "fresh-control", "names": ["fresh-platform", "fresh-account"], "approval": "security"},
+    {"actor": "bootstrap-operator", "kind": "Role|RoleBinding|ValidatingAdmissionPolicy|ValidatingAdmissionPolicyBinding", "manifest": "learning/fresh-profile/security", "approval": "security"}
+  ],
+  "sources": {
+    "platform": {
+      "repository": "https://github.com/syuhei0519/platform-gitops.git",
+      "commit": "__PLATFORM_GITOPS_SHA__",
+      "paths": ["learning/fresh-profile/root/children", "learning/fresh-profile/observability"],
+      "destinations": ["fresh-control", "fresh-observability"],
+      "kinds": ["Application", "ConfigMap", "Deployment", "Service", "ServiceAccount", "StatefulSet"]
+    },
+    "workload": {
+      "repository": "https://github.com/syuhei0519/application-manifest.git",
+        "commit": "4a98e85a3866e48868c0c69505e546ac73f67641",
+      "paths": ["learning/fresh-profile/workload"],
+      "destinations": ["fresh-account"],
+      "kinds": ["ConfigMap", "DestinationRule", "Job", "PersistentVolumeClaim", "Rollout", "Service", "ServiceAccount", "StatefulSet", "VirtualService"]
+    },
+    "release-definition": {
+      "repository": "https://github.com/syuhei0519/application-manifest.git",
+        "commit": "4a98e85a3866e48868c0c69505e546ac73f67641",
+      "paths": ["learning/fresh-profile/release-definition"],
+      "destinations": ["fresh-control"],
+      "kinds": ["Application"]
+    }
+  },
+  "permissions": [
+    {
+      "actor": "platform", "scope": "namespace", "namespace": "fresh-control",
+      "apiGroup": "argoproj.io", "resource": "appprojects", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["fresh-platform", "fresh-account"]
+    },
+    {
+      "actor": "platform", "scope": "namespace", "namespace": "fresh-control",
+      "apiGroup": "argoproj.io", "resource": "applications", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["account-lightweight-root", "fresh-release-definitions", "fresh-observability"]
+    },
+    {
+      "actor": "release-definition", "scope": "namespace", "namespace": "fresh-control",
+      "apiGroup": "argoproj.io", "resource": "applications", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["fresh-account-release"]
+    },
+    {
+      "actor": "workload", "scope": "namespace", "namespace": "fresh-account",
+      "apiGroup": "", "resource": "configmaps", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["account-role-bootstrap"]
+    },
+    {
+      "actor": "workload", "scope": "namespace", "namespace": "fresh-account",
+      "apiGroup": "", "resource": "services", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["account-api", "account-postgresql"]
+    },
+    {
+      "actor": "workload", "scope": "namespace", "namespace": "fresh-account",
+      "apiGroup": "", "resource": "serviceaccounts", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["account-database", "account-migration", "account-runtime"]
+    },
+    {
+      "actor": "workload", "scope": "namespace", "namespace": "fresh-account",
+      "apiGroup": "", "resource": "persistentvolumeclaims", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["account-data"]
+    },
+    {
+      "actor": "workload", "scope": "namespace", "namespace": "fresh-account",
+      "apiGroup": "argoproj.io", "resource": "rollouts", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["account-api"]
+    },
+    {
+      "actor": "workload", "scope": "namespace", "namespace": "fresh-account",
+      "apiGroup": "apps", "resource": "statefulsets", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["account-postgresql"]
+    },
+    {
+      "actor": "workload", "scope": "namespace", "namespace": "fresh-account",
+      "apiGroup": "batch", "resource": "jobs", "verbs": ["create", "get"],
+      "resourceNames": ["account-db-role-bootstrap", "account-migration"]
+    },
+    {
+      "actor": "workload", "scope": "namespace", "namespace": "fresh-account",
+      "apiGroup": "networking.istio.io", "resource": "destinationrules", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["account-api"]
+    },
+    {
+      "actor": "workload", "scope": "namespace", "namespace": "fresh-account",
+      "apiGroup": "networking.istio.io", "resource": "virtualservices", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["account-api"]
+    },
+    {
+      "actor": "platform", "scope": "namespace", "namespace": "fresh-observability",
+      "apiGroup": "", "resource": "configmaps", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["otel-collector", "prometheus"]
+    },
+    {
+      "actor": "platform", "scope": "namespace", "namespace": "fresh-observability",
+      "apiGroup": "", "resource": "services", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["otel-collector", "prometheus", "grafana"]
+    },
+    {
+      "actor": "platform", "scope": "namespace", "namespace": "fresh-observability",
+      "apiGroup": "", "resource": "serviceaccounts", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["otel-collector", "prometheus", "grafana"]
+    },
+    {
+      "actor": "platform", "scope": "namespace", "namespace": "fresh-observability",
+      "apiGroup": "apps", "resource": "deployments", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["otel-collector", "grafana"]
+    },
+    {
+      "actor": "platform", "scope": "namespace", "namespace": "fresh-observability",
+      "apiGroup": "apps", "resource": "statefulsets", "verbs": ["create", "get", "patch"],
+      "resourceNames": ["prometheus"]
+    }
+  ],
+  "podBoundary": {
+    "namespace": "fresh-account",
+    "enforcement": "trusted-requestor-plus-owner-shape-plus-no-namespaced-pod-create",
+    "liveStatus": "pending-separate-approval",
+    "directPodsAllowed": false,
+    "trustedCreateRequestor": "system:kube-controller-manager",
+    "namespacedPodCreateSubjects": [],
+    "ownerReferenceUidLookupInCel": false,
+    "ownerReferenceRule": "owner kind/name/uid shape is necessary but not trusted alone; CREATE userInfo and RBAC form the trust boundary",
+    "requiredLiveEvidence": ["audit-create-username", "kubectl-auth-can-i-no-direct-pod", "fake-owner-direct-pod-denied", "ephemeralcontainers-subresource-denied"],
+    "controllers": {
+      "StatefulSet/fresh-account/account-postgresql": {
+        "serviceAccountName": "account-database",
+        "automountServiceAccountToken": false,
+        "allowedSecretKeys": {"account-db-bootstrap": ["admin-password"]}
+      },
+      "Job/fresh-account/account-db-role-bootstrap": {
+        "serviceAccountName": "account-migration",
+        "automountServiceAccountToken": false,
+        "allowedSecretKeys": {
+          "account-db-bootstrap": ["admin-password"],
+          "account-db-migration": ["username", "password"],
+          "account-db-runtime": ["username", "password"]
+        }
+      },
+      "Rollout/fresh-account/account-api": {
+        "serviceAccountName": "account-runtime",
+        "automountServiceAccountToken": false,
+        "allowedSecretKeys": {"account-db-runtime": ["username", "password"]}
+      },
+      "Job/fresh-account/account-migration": {
+        "serviceAccountName": "account-migration",
+        "automountServiceAccountToken": false,
+        "allowedSecretKeys": {"account-db-migration": ["username", "password"]}
+      }
+    }
+  },
+  "retainedSemantics": {
+    "secretObjectsInGit": false,
+    "secretReferences": ["account-db-bootstrap/admin-password", "account-db-migration/username", "account-db-migration/password", "account-db-runtime/username", "account-db-runtime/password"],
+    "persistentVolumeClaims": {
+      "fresh-account/account-data": {
+        "storageClassName": "standard",
+        "accessModes": ["ReadWriteOnce"],
+        "syncOptions": ["Prune=false", "Delete=false"]
+      }
+    },
+    "jobs": {
+      "fresh-account/account-db-role-bootstrap": "sync-wave-10-retained-on-success-never-recreated-by-resume",
+      "fresh-account/account-migration": "sync-wave-20-retained-on-success-never-recreated-by-rerun-or-resume"
+    },
+    "fieldOwners": {
+      "Application/fresh-control/account-lightweight-root": "platform",
+      "Application/fresh-control/fresh-release-definitions": "platform",
+      "Application/fresh-control/fresh-account-release": "release-definition",
+      "Rollout/fresh-account/account-api": "workload",
+      "PersistentVolumeClaim/fresh-account/account-data": "workload"
+    }
+  }
+}
