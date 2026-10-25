@@ -97,8 +97,15 @@ def prepare(output):
                   'promql_expr_test': [{'expr': 'account:sli_state:5m', 'eval_time': '15m', 'exp_samples': [{'labels': 'account:sli_state:5m{}', 'value': 4}]}, {'expr': 'account:availability_burn_rate:5m', 'eval_time': '15m', 'exp_samples': [{'labels': 'account:availability_burn_rate:5m{}', 'value': 0}]}]})
     # Existing normal fixture: exact 2x boundary must not fire (use 1 in 50).
     boundary = copy.deepcopy(tests[0]); boundary['name'] = 'exact 2x boundary does not fire'
-    boundary['input_series'][2]['values'] = '0+49x20'; boundary['input_series'][3]['values'] = '0+1x20'
-    boundary['input_series'][4]['values'] = boundary['input_series'][5]['values'] = '0+50x20'
+    for item in boundary['input_series']:
+        series = item['series']
+        if 'pe_http_server_requests_total' in series and 'status_class="2xx"' in series:
+            item['values'] = '0+49x20'
+        elif 'pe_http_server_requests_total' in series and 'status_class="5xx"' in series:
+            item['values'] = '0+1x20'
+        elif ('pe_http_server_request_duration_seconds_count' in series or
+              'pe_http_server_request_duration_seconds_bucket' in series):
+            item['values'] = '0+50x20'
     tests.append(boundary)
     # A single 30s evaluation above threshold must remain pending and then clear.
     short = copy.deepcopy(tests[-2])
