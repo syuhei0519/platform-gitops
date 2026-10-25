@@ -79,9 +79,10 @@ python learning/fresh-profile/validate_profile.py --require-approved
 python learning/fresh-profile/validate_image_supply.py --require-fresh-evidence
 ```
 
-The six offline commands must pass in CI. Both `--require-*` commands are
+The offline commands shown here must pass in CI. The `--require-*` commands are
 expected to reject the checked-in pending profile until the user separately
 approves G1-G3 and the lock is updated by review.
+
 ## Authority proposal (PLAT-215)
 
 `authority-matrix.json` separates platform, workload and release-definition
@@ -100,3 +101,28 @@ The checked-in matrix deliberately reports live evidence as `not-run`. Actual
 AppProject/RBAC/admission changes, `kubectl auth can-i`, admission denials and
 canonical two-SHA sync need separate action-time approval on the isolated
 fresh cluster. The offline fixture must never be reported as live effectiveness.
+
+## PLAT-217 acceptance record
+
+`acceptance.pending.json` and `acceptance.schema.json` define the evidence that
+must be produced by a separately approved live run. The checked-in record is
+deliberately `liveEvidence: false`: every observation, negative case, first
+run, idempotent rerun and interrupted-resume result is `unrun`. The offline
+validator rejects any result mixed into that pending record, so unit tests and
+rendering cannot be reported as fresh-cluster acceptance.
+
+The record locks the profile hash, all four repository revisions, every image
+digest and architecture, a nonempty expected resource set, field owners,
+readiness/API/metrics/traces, resync/restart, and the five required fail-closed
+negative cases. It also fixes cleanup to `new-sandbox-only` and requires
+separate evidence that the current cluster and existing data were unchanged.
+
+```text
+python learning/fresh-profile/validate_acceptance.py
+python learning/fresh-profile/test_validate_acceptance.py
+python learning/fresh-profile/validate_acceptance.py --require-complete
+```
+
+The first two commands are offline CI checks. The final command is expected to
+fail until G1-G3 are approved, the lock is updated, and real observations are
+recorded. It performs no cluster, image, Secret, fault or cleanup operation.
