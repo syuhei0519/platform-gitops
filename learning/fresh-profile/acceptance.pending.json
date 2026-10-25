@@ -4,7 +4,7 @@
   "metadata": {"name": "account-lightweight-fresh", "recordedAt": null, "liveEvidence": false},
   "profile": {
     "lockPath": "learning/fresh-profile/profile.lock.yaml",
-    "sha256": "714b2a1ef99ab020df6c6ce5d8346d528c76726f9bfef6380614ab349633daf6",
+    "sha256": "3ba74067a8efa5bf9a41be0724e67c4cbcd9821a045a18072b0f32240328ca72",
     "repositories": {
       "backend-app": "635814f5354f0fe238694d35137b283576a9127f",
       "frontend-app": "aecccce46295714645387854a4dad37bdd0cd3c3",
@@ -130,3 +130,4 @@
     "cleanupStatus": "not-requested"
   }
 }
+
