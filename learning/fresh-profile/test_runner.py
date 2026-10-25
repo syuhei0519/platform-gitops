@@ -89,6 +89,8 @@ class RunnerTests(unittest.TestCase):
                               context="kind-learning-fresh-plat217-20261025")
         spec["repositories"]["platform-gitops"]["commit"] = PLATFORM
         spec["repositories"]["application-manifest"]["commit"] = APPLICATION
+        spec["freshRuntimeRequirement"]["admissionSecretKeyContract"] = \
+            "username-password-operation-key-allowlist-aligned"
         for gate in ("G1", "G2", "G3"):
             spec["decisions"][gate] = {"status": "approved", "choice": "retained-oci-archive"}
         spec["imageSupply"].update(decision="retained-oci-archive", immutable=True,

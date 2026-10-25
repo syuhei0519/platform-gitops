@@ -428,8 +428,9 @@ def main():
     except (ContractError, json.JSONDecodeError, yaml.YAMLError) as error:
         print(f"authority proposal rejected: {error}")
         return 1
+    negative_count = len(load(args.negative).get("cases", []))
     print("authority proposal valid", f"permissions={len(matrix['permissions'])}",
-          f"applications={len(evidence['applications'])}", "negative=12")
+          f"applications={len(evidence['applications'])}", f"negative={negative_count}")
     print("offline only; live can-i and admission observations remain required-unrun")
     return 0
 

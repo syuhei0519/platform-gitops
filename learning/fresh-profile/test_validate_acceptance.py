@@ -36,6 +36,8 @@ class AcceptanceTests(unittest.TestCase):
 
     def approved(self):
         profile = copy.deepcopy(self.profile)
+        profile["spec"]["freshRuntimeRequirement"]["admissionSecretKeyContract"] = \
+            "username-password-operation-key-allowlist-aligned"
         profile["spec"]["target"].update(
             clusterName="kind-platform-fresh-plat217",
             context="kind-platform-fresh-plat217",
