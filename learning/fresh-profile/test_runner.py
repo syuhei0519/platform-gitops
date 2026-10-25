@@ -124,12 +124,19 @@ class RunnerTests(unittest.TestCase):
             "restoreProcedureRef": "runbook:restore-fresh-image-supply",
         }
         profile_images = {item["name"]: item["ref"] for item in spec["images"]}
+        archive_paths = {}
+        archive_dir = bundle / "approved-sources"
+        archive_dir.mkdir()
         for item in supply["spec"]["images"]:
             expected = profile_images[item["name"]].rsplit("@", 1)[1]
+            archive_path = archive_dir / (item["name"] + ".oci.tar")
+            archive_path.write_bytes(("fixture-archive:" + item["name"]).encode())
+            archive_paths[item["name"]] = archive_path
+            archive_sha = hashlib.sha256(archive_path.read_bytes()).hexdigest()
             item["source"] = {
                 "kind": "retained-oci-archive", "published": False, "immutable": True,
                 "freshEligible": True, "location": f"archive-ref:fresh/{item['name']}.oci.tar",
-                "archiveSha256": "sha256:" + "a" * 64,
+                "archiveSha256": "sha256:" + archive_sha,
                 "manifest": {"kind": "single-platform", "manifestDigest": expected,
                              "os": "linux", "architecture": "amd64"},
             }
@@ -313,7 +320,7 @@ class RunnerTests(unittest.TestCase):
             elif step == "cluster":
                 run = {"tool": "kind", "args": ["create", "cluster", "--name",
                        spec["target"]["clusterName"], "--kubeconfig", kubeconfig, "--image",
-                       "kindest/node@sha256:" + "a" * 64], "contentSha256": None}
+                       profile_images["kind-node"]], "contentSha256": None}
             elif step == "image-import":
                 archive = bundle / "images.oci.tar"
                 archive.write_bytes(b"fixture-image-archive")
@@ -350,16 +357,21 @@ class RunnerTests(unittest.TestCase):
                      "run": [copy.deepcopy(preflight_command)],
                      "resourceIdentities": ["HostState/None/target-cluster-absent"],
                      "observations": [], "hostArtifacts": []}
-        source_archive = bundle / "account-runtime.oci.tar"
-        source_archive.write_bytes(b"fixture-account-runtime-archive")
+        adapter_contract = runner._load_contract_module("approved_live_adapter")
+        supply_contract = adapter_contract.supply_plan_contract(supply, spec)
+        host_artifacts = []
+        for artifact_id, contract_item in sorted(supply_contract["hostArtifacts"].items()):
+            image_name = artifact_id.removesuffix("-archive")
+            path = archive_paths[image_name]
+            host_artifacts.append({
+                "id": artifact_id, "path": str(path.resolve()),
+                "sha256": contract_item["sha256"], "sizeBytes": path.stat().st_size,
+                "sourceIdentity": contract_item["sourceIdentity"],
+            })
         image_source = {"phase": "pre-cluster", "verify": [], "reconcile": [], "run": [],
-                        "resourceIdentities": ["HostArtifact/None/account-runtime-archive"],
-                        "observations": [], "hostArtifacts": [{
-                            "id": "account-runtime-archive", "path": str(source_archive.resolve()),
-                            "sha256": hashlib.sha256(source_archive.read_bytes()).hexdigest(),
-                            "sizeBytes": source_archive.stat().st_size,
-                            "sourceIdentity": "backend@" + APPLICATION,
-                        }]}
+                        "resourceIdentities": ["HostArtifact/None/" + item["id"]
+                                               for item in host_artifacts],
+                        "observations": [], "hostArtifacts": host_artifacts}
         steps = {step: step_contract(step) for step in runner.STEPS
                  if step not in {"preflight", "image-source"}}
         steps = {"preflight": preflight, "image-source": image_source, **steps}
@@ -376,7 +388,6 @@ class RunnerTests(unittest.TestCase):
         }
         adapter_plan_path.write_text(json.dumps(adapter_plan) + "\n", encoding="utf-8")
         FakeExecutor.plan_sha256 = hashlib.sha256(adapter_plan_path.read_bytes()).hexdigest()
-        adapter_contract = runner._load_contract_module("approved_live_adapter")
         adapter_input_set_digest = adapter_contract.plan_input_set_digest(adapter_plan)
         approval = {
             "apiVersion": "platform.lab/v1alpha1", "kind": "FreshExecutionApproval",

@@ -170,6 +170,34 @@ def plan_input_set_digest(plan: dict) -> str:
     return _mapping_digest(plan_input_manifest(plan))
 
 
+def supply_plan_contract(supply_lock: dict, profile_spec: dict) -> dict:
+    """Translate a validated G2 lock into the only plan identities it permits."""
+    profile_images = {item["name"]: item["ref"] for item in profile_spec["images"]}
+    if "kind-node" not in profile_images:
+        raise AdapterRejected("supply-kind-node-missing")
+    artifacts = {}
+    for item in supply_lock["spec"]["images"]:
+        source = item["source"]
+        if source["kind"] != "retained-oci-archive":
+            continue
+        manifest = source["manifest"]
+        selected_digest = manifest.get("childDigest", manifest.get("manifestDigest"))
+        archive_digest = source.get("archiveSha256")
+        if (not isinstance(archive_digest, str) or not archive_digest.startswith("sha256:")
+                or not isinstance(selected_digest, str)):
+            raise AdapterRejected("supply-archive-identity:" + item["name"])
+        artifact_id = item["name"] + "-archive"
+        source_identity = ":".join((
+            "image-supply", item["name"], source["kind"], source["location"],
+            archive_digest, selected_digest,
+        ))
+        artifacts[artifact_id] = {
+            "sha256": archive_digest.removeprefix("sha256:"),
+            "sourceIdentity": source_identity,
+        }
+    return {"kindNodeRef": profile_images["kind-node"], "hostArtifacts": artifacts}
+
+
 def _bound_content_path(command: dict) -> str:
     args = command["args"]
     tool = command["tool"]
@@ -212,15 +240,18 @@ class ApprovedLiveAdapter:
     def __init__(self, plan_path: Path, transport: Transport | None = None,
                  expected_target: dict | None = None,
                  expected_versions: dict | None = None,
-                 expected_image_digests: set[str] | None = None):
+                 expected_image_digests: set[str] | None = None,
+                 expected_supply_contract: dict | None = None):
         self.plan_path = Path(plan_path)
         self.plan_sha256 = _sha256(self.plan_path)
         self.plan = json.loads(self.plan_path.read_text(encoding="utf-8"))
         self.transport = transport or SubprocessTransport()
-        self._validate_plan(expected_target, expected_versions, expected_image_digests)
+        self._validate_plan(expected_target, expected_versions, expected_image_digests,
+                            expected_supply_contract)
         self.command_env = self._command_environment()
 
-    def _validate_plan(self, expected_target, expected_versions, expected_image_digests):
+    def _validate_plan(self, expected_target, expected_versions, expected_image_digests,
+                       expected_supply_contract):
         if set(self.plan) != {"schemaVersion", "target", "tools", "identity", "steps"}:
             raise AdapterRejected("plan-fields")
         if self.plan["schemaVersion"] != "platform.lab/approved-live-step-plan/v3":
@@ -236,6 +267,7 @@ class ApprovedLiveAdapter:
                 target.get(name) != expected_target.get(name)
                 for name in ("clusterName", "context")):
             raise AdapterRejected("target-contract")
+        self.expected_kind_node_ref = (expected_supply_contract or {}).get("kindNodeRef")
         self._reject_environment_override(target)
         if set(self.plan["tools"]) != ALLOWED_TOOLS:
             raise AdapterRejected("tool-set")
@@ -278,7 +310,7 @@ class ApprovedLiveAdapter:
                 self._validate_preflight_step(actions)
                 continue
             if step == "image-source":
-                self._validate_image_source_step(actions)
+                self._validate_image_source_step(actions, expected_supply_contract)
                 continue
             if not observations or actions["hostArtifacts"]:
                 raise AdapterRejected("step-cluster-contract:" + step)
@@ -323,7 +355,7 @@ class ApprovedLiveAdapter:
             self._validate_command(actions[section][0], section=section, step="preflight",
                                    resource_identities=actions["resourceIdentities"])
 
-    def _validate_image_source_step(self, actions):
+    def _validate_image_source_step(self, actions, expected_supply_contract):
         if actions["observations"] or any(actions[name] for name in ("verify", "reconcile", "run")):
             raise AdapterRejected("image-source-command-contract")
         artifacts = actions["hostArtifacts"]
@@ -345,6 +377,16 @@ class ApprovedLiveAdapter:
             identities.append("HostArtifact/None/" + artifact["id"])
         if identities != actions["resourceIdentities"] or len(identities) != len(set(identities)):
             raise AdapterRejected("host-artifact-resource-set")
+        if expected_supply_contract is not None:
+            expected = expected_supply_contract.get("hostArtifacts")
+            if not isinstance(expected, dict) or set(expected) != {
+                    item["id"] for item in artifacts}:
+                raise AdapterRejected("host-artifact-supply-set")
+            for artifact in artifacts:
+                contract = expected[artifact["id"]]
+                if (artifact["sha256"] != contract.get("sha256")
+                        or artifact["sourceIdentity"] != contract.get("sourceIdentity")):
+                    raise AdapterRejected("host-artifact-supply-identity:" + artifact["id"])
 
     def _validate_node_image_step(self, step, actions, expected_image_digests):
         expected_identity = ("Node/None/" + self.plan["target"]["clusterName"]
@@ -502,7 +544,9 @@ class ApprovedLiveAdapter:
                         "--kubeconfig", target["kubeconfig"]]
             if (args[:len(expected)] != expected or len(args) != len(expected) + 2
                     or args[-2] != "--image" or "@sha256:" not in args[-1]
-                    or content_digest is not None):
+                    or content_digest is not None
+                    or (self.expected_kind_node_ref is not None
+                        and args[-1] != self.expected_kind_node_ref)):
                 raise AdapterRejected("kind-create-command")
             return
         if section == "run" and step == "image-import":
@@ -1026,9 +1070,11 @@ class ApprovedLiveAdapter:
 
 def validate_plan(plan_path: Path, expected_target: dict,
                   expected_versions: dict,
-                  expected_image_digests: set[str] | None = None) -> dict:
+                  expected_image_digests: set[str] | None = None,
+                  expected_supply_contract: dict | None = None) -> dict:
     """Validate a plan and its tool bytes without executing any command."""
     return ApprovedLiveAdapter(plan_path, expected_target=expected_target,
                                expected_versions=expected_versions,
-                               expected_image_digests=expected_image_digests).plan
+                               expected_image_digests=expected_image_digests,
+                               expected_supply_contract=expected_supply_contract).plan
 

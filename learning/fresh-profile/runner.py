@@ -408,6 +408,7 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
                                              item["source"]["manifest"].get(
                                                  "manifestDigest"))
              for item in supply_lock["spec"]["images"]},
+            adapter_contract.supply_plan_contract(supply_lock, profile_spec),
         )
         live_input_set_digest = adapter_contract.plan_input_set_digest(plan)
         if hashes["liveAdapterInputSetSha256"] != live_input_set_digest:

@@ -388,6 +388,50 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
                 {"clusterName": self.cluster, "context": self.context}, self.versions,
                 {"sha256:" + "d" * 64})
 
+    def test_kind_node_and_host_archives_are_bound_to_the_g2_supply_contract(self):
+        value = self.plan()
+        artifact = value["steps"]["image-source"]["hostArtifacts"][0]
+        supply = {
+            "kindNodeRef": value["steps"]["cluster"]["run"][0]["args"][-1],
+            "hostArtifacts": {artifact["id"]: {
+                "sha256": artifact["sha256"],
+                "sourceIdentity": artifact["sourceIdentity"],
+            }},
+        }
+        adapter.ApprovedLiveAdapter(
+            self.write(value), FakeTransport(),
+            {"clusterName": self.cluster, "context": self.context}, self.versions,
+            {"sha256:" + "d" * 64}, supply)
+
+        wrong_node = copy.deepcopy(value)
+        wrong_node["steps"]["cluster"]["run"][0]["args"][-1] = (
+            "kindest/node@sha256:" + "f" * 64)
+        with self.assertRaisesRegex(adapter.AdapterRejected, "kind-create-command"):
+            adapter.ApprovedLiveAdapter(
+                self.write(wrong_node), FakeTransport(),
+                {"clusterName": self.cluster, "context": self.context}, self.versions,
+                {"sha256:" + "d" * 64}, supply)
+
+        wrong_source = copy.deepcopy(value)
+        wrong_source["steps"]["image-source"]["hostArtifacts"][0]["sourceIdentity"] = \
+            "image-supply:unapproved"
+        with self.assertRaisesRegex(adapter.AdapterRejected,
+                                    "host-artifact-supply-identity"):
+            adapter.ApprovedLiveAdapter(
+                self.write(wrong_source), FakeTransport(),
+                {"clusterName": self.cluster, "context": self.context}, self.versions,
+                {"sha256:" + "d" * 64}, supply)
+
+        missing = copy.deepcopy(value)
+        missing["steps"]["image-source"]["hostArtifacts"] = []
+        missing["steps"]["image-source"]["resourceIdentities"] = [
+            "HostArtifact/None/missing"]
+        with self.assertRaises(adapter.AdapterRejected):
+            adapter.ApprovedLiveAdapter(
+                self.write(missing), FakeTransport(),
+                {"clusterName": self.cluster, "context": self.context}, self.versions,
+                {"sha256:" + "d" * 64}, supply)
+
     def test_argocd_noop_stale_or_wrong_revision_never_counts_as_gitops_success(self):
         mutations = (
             lambda value: value["status"]["operationState"].update(phase="Running")
