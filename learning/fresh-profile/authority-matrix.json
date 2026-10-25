@@ -49,14 +49,14 @@
     },
     "workload": {
       "repository": "https://github.com/syuhei0519/application-manifest.git",
-        "commit": "379689c7c7928d5a9fca222ec511eec27068ae7f",
+        "commit": "0046e8e366ce10f64712af5b8353141f4350df5b",
       "paths": ["learning/fresh-profile/workload"],
       "destinations": ["fresh-account"],
       "kinds": ["ConfigMap", "DestinationRule", "Job", "PersistentVolumeClaim", "Rollout", "Service", "ServiceAccount", "StatefulSet", "VirtualService"]
     },
     "release-definition": {
       "repository": "https://github.com/syuhei0519/application-manifest.git",
-        "commit": "379689c7c7928d5a9fca222ec511eec27068ae7f",
+        "commit": "0046e8e366ce10f64712af5b8353141f4350df5b",
       "paths": ["learning/fresh-profile/release-definition"],
       "destinations": ["fresh-control"],
       "kinds": ["Application"]
