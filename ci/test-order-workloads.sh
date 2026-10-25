@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+# Order 用 Application の描画結果と固定見本を比較し、無効化と不正入力の拒否を確認します。
 # Synthetic render/schema tests only. Never registers Applications in a cluster.
 set -eu
 mkdir -p .rendered

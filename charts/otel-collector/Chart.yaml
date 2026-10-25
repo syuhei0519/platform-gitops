@@ -1,3 +1,4 @@
+# OpenTelemetry の受信・転送の Chart 名と版を Helm に伝えるメタデータです。
 apiVersion: v2
 name: otel-collector
 description: Fixed single-instance OTLP receiver, Prometheus bridge and trace exporter

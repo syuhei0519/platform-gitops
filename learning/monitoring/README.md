@@ -201,3 +201,27 @@ Cloudはsource/config/query検証のみで、2hashの実Pod関連付け/export�
 
 既存SLI契約を使うopt-inの通知差分は [alerting/README.md](alerting/README.md) を参照。
 専用namespaceの使い捨てAlertmanager/受信器を使い、追加RBAC/Secret・外部通知はない。
+
+## 構成と入口
+
+計測の意味は [SLI.md](SLI.md)、構成の静的検査は [validate.py](validate.py) を参照します。
+
+この階層のディレクトリと役割は次のとおりです。末端のファイルは親の説明から追えます。
+
+| 場所 | 役割 |
+| --- | --- |
+| [alerting/](alerting/README.md) | 可用性低下のルール生成と、人工的な入力を使う通知試験。 |
+| [chart/](chart) | Account 学習環境の監視と通知を描画する Chart。 |
+
+### 本文にコメントを入れないファイル
+
+JSON などの形式、埋め込み・checksum、既存 reader の文字コードの前提を保つため、役割はここで説明します。
+
+| ファイル | 役割 |
+| --- | --- |
+| [chart/files/account-overview.json](chart/files/account-overview.json) | 学習用 Account の可用性・エラー・待ち時間を表示する Grafana dashboard です。 |
+| [chart/files/alertmanager.yml](chart/files/alertmanager.yml) | 学習用 Alertmanager の通知先と重複抑制を定義します。Chart に内容を埋め込むため原文を保持します。 |
+| [chart/files/receiver.py](chart/files/receiver.py) | 学習用 Alertmanager の通知をメモリ上で受け取る試験サーバーです。外部転送や payload のログ保存はしません。 |
+| [chart/values.schema.json](chart/values.schema.json) | Account 学習環境の監視と通知に渡す設定値の必須項目・型・許可する値を検証する schema です。 |
+| [chart/values.yaml](chart/values.yaml) | Account 学習環境の監視と通知を描画する既定値です。環境別の値は呼び出し側から上書きします。 |
+| [sli-queries.json](sli-queries.json) | Account の可用性・エラー率・待ち時間を計算する PromQL の定義です。 |

@@ -1,3 +1,4 @@
+# 共有 SonarQube と DB・通信制限の Chart 名と版を Helm に伝えるメタデータです。
 apiVersion: v2
 name: lab-shared-sonarqube
 description: Approved single-namespace lab deployment with the unmodified official chart

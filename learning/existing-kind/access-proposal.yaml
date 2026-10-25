@@ -1,3 +1,4 @@
+# 既存環境の管理を引き継ぐために必要なアクセス範囲を示す、レビュー用の権限定義です。
 # PROPOSAL ONLY. No Secret, delete, bind, escalate or cluster-scoped grant.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role

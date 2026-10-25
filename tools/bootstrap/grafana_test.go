@@ -1,3 +1,4 @@
+// Grafana の描画設定と dashboard の参照が、監視の契約を満たすことを確認します。
 package main
 
 import (

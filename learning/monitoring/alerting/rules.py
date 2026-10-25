@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Account の可用性低下を検出する Prometheus の記録・通知ルールを生成します。
 """Generate alert rules from the unchanged single-instance SLI contract."""
 import json
 from pathlib import Path

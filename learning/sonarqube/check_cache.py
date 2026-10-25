@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Argo CD の共有 cache の制限を、実クラスターに接続しない回帰試験で再現します。
 """Reproduce the current shared-cache limitation without any cluster access."""
 import argparse
 import os

@@ -1,4 +1,4 @@
-{{- if .Values.alerting.enabled }}
+{{/* Alertmanager と通知受信サーバーの設定・実行 Pod・接続口を出力します。 */}}{{- if .Values.alerting.enabled }}
 {{- range $name, $file := dict "learning-alertmanager" "alertmanager.yml" "learning-alert-receiver" "receiver.py" }}
 ---
 apiVersion: v1

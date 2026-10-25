@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# 段階配備用の描画結果を検査し、権限と配備先が学習用の範囲を外れないことを確認します。
 """Focused schema, permission and health tests; does not use kubeconfig."""
 import argparse
 import copy

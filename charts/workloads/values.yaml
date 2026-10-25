@@ -1,3 +1,4 @@
+# Account と Order の子 Applicationを描画する既定値です。環境別の値は呼び出し側から上書きします。
 applicationRepository: https://github.com/syuhei0519/application-manifest.git
 targetRevision: main
 # P0: registration remains disabled until an adopted Manifest commit is approved.

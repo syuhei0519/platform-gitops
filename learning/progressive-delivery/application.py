@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# 学習用の段階配備を管理する Argo CD Application を生成し、固定版と対象範囲を検証します。
 """Create the single manual-sync Account Application proposal, without API calls."""
 import argparse
 import re

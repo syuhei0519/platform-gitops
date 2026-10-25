@@ -1,3 +1,4 @@
+# ローカル環境で基盤サービスを管理する Applicationに使う、Chart の上書き設定です。
 runnerChartVersion: 0.92.1
 observabilityEnabled: true
 prometheusEnabled: true

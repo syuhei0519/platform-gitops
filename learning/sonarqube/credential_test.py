@@ -1,3 +1,4 @@
+# 既存 ServiceAccount の資格情報を扱う補助処理が、入力や出力の制限を守ることを確認します。
 """Offline protocol checks with fake data, never a real token or cluster."""
 import datetime
 import json

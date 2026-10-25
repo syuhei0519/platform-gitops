@@ -1,2 +1,3 @@
+# ローカル環境でGrafana の dashboard と接続に使う、Chart の上書き設定です。
 # All settings inherited from the pinned wrapper; no credential value in Git.
 {}

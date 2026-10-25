@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# 保存済み入力から、既存環境を GitOps 管理する親宣言と Application の提案を生成します。
 """Render the bounded execution proposal offline. No kube client or credentials."""
 import argparse
 from copy import deepcopy

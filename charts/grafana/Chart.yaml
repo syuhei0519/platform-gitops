@@ -1,3 +1,4 @@
+# Grafana の dashboard 配布の Chart 名と版を Helm に伝えるメタデータです。
 apiVersion: v2
 name: lab-grafana
 description: Pinned official Grafana with Git-owned provisioning

@@ -1,3 +1,4 @@
+# CI Runner の ServiceAccount と権限の Chart 名と版を Helm に伝えるメタデータです。
 apiVersion: v2
 name: runner-foundation
 description: Narrow cross-namespace RBAC for GitLab Runner

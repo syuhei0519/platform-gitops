@@ -1,4 +1,4 @@
-{{- if eq .Values.phase "mesh" }}
+{{/* Istio の VirtualService と DestinationRule で、試験アプリへの通信比率を定義します。 */}}{{- if eq .Values.phase "mesh" }}
 apiVersion: networking.istio.io/v1
 kind: DestinationRule
 metadata:

@@ -1,3 +1,4 @@
+// 基盤の静的検証と読み取り確認を行う Go ツールの module と依存定義です。
 module github.com/syuhei0519/platform-gitops/tools/bootstrap
 
 go 1.27.0

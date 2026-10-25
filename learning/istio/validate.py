@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Istio の描画結果を検査し、固定版・namespace・通信設定の境界を確認します。
 """Issue8 opt-in and existing Issue85 contracts + pinned Istio CRD spec schema. No cluster access."""
 import argparse
 import copy

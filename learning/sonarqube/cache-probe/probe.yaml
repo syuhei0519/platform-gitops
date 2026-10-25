@@ -1,3 +1,4 @@
+# Argo CD の cache 読み取り範囲を確認するための、限定した試験用リソースです。
 # A single non-secret object for the approved alias/cache integration check.
 apiVersion: v1
 kind: ConfigMap

@@ -1,3 +1,4 @@
+# 基盤サービスを管理する子 Applicationを描画する既定値です。環境別の値は呼び出し側から上書きします。
 platformRepository: https://github.com/syuhei0519/platform-gitops.git
 targetRevision: main
 runnerChartRepository: https://charts.gitlab.io

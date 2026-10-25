@@ -224,3 +224,24 @@ Sources: [installed cache implementation](https://github.com/argoproj/argo-cd/bl
 [resource filter fields](https://github.com/argoproj/argo-cd/blob/e258ee23c3e52266d407572f4bcdfe7d9ed36cb5/util/settings/filtered_resource.go),
 [credential selection](https://github.com/argoproj/argo-cd/blob/e258ee23c3e52266d407572f4bcdfe7d9ed36cb5/pkg/apis/application/v1alpha1/types.go),
 [Argo cluster registration and RBAC behavior](https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/).
+
+## 構成と入口
+
+[application.yaml](application.yaml) が管理入口、[registration.py](registration.py) が登録用公開設定の生成、[validate.py](validate.py) が静的検査を担当します。
+
+この階層のディレクトリと役割は次のとおりです。末端のファイルは親の説明から追えます。
+
+| 場所 | 役割 |
+| --- | --- |
+| [cache-probe/](cache-probe) | 共有 cache の対象範囲を確認する試験用リソース。 |
+| [chart/](chart) | 共有 SonarQube と DB・通信制限を描画する Chart。 |
+
+### 本文にコメントを入れないファイル
+
+JSON などの形式、埋め込み・checksum、既存 reader の文字コードの前提を保つため、役割はここで説明します。
+
+| ファイル | 役割 |
+| --- | --- |
+| [access.yaml](access.yaml) | 既存 Argo CD Core が SonarQube を管理するためのアクセス範囲を定義します。 |
+| [additional-inclusions.yaml](additional-inclusions.yaml) | Argo CD が SonarQube 管理で読み取るリソース種別を追加する設定です。 |
+| [existing-sa-credential.sh](existing-sa-credential.sh) | 既存 ServiceAccount の資格情報を登録処理へ渡す補助スクリプトです。秘密の扱いは既存手順に従います。 |

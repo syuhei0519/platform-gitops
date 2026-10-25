@@ -1,4 +1,4 @@
-{{- define "monitoring.labels" -}}
+{{/* Account 学習環境の監視と通知の描画で、複数のテンプレートで使う名前・ラベル・設定の組み立てをまとめます。 */}}{{- define "monitoring.labels" -}}
 app.kubernetes.io/part-of: learning-monitoring
 learning.local/owner: {{ .Values.owner | quote }}
 {{- end -}}

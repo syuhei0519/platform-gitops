@@ -1,3 +1,4 @@
+# 基盤とアプリを束ねる親 Application と Projectの Chart 名と版を Helm に伝えるメタデータです。
 apiVersion: v2
 name: root
 description: Root AppProjects and composition Applications

@@ -1,3 +1,4 @@
+# 成功・失敗の計測値を人工的に返す exporter です。通知試験で使い、Account API には接続しません。
 """Independent synthetic exporter. Never contacts Account or a cluster."""
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import time

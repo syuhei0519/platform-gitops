@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# 隔離した監視構成で、異常の発生から通知までのつながりを確かめる試験を組み立てます。
 """Actual Prometheus -> Alertmanager -> local webhook, internal Docker network only."""
 import json
 import os

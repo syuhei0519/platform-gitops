@@ -1,3 +1,4 @@
+// SonarQube 管理に必要な Argo CD cache の読み取りと権限境界を確認します。
 // Injected only into a disposable checkout of the fixed Argo CD GitOps Engine.
 package cache
 

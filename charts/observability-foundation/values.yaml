@@ -1,1 +1,2 @@
+# 監視用 ServiceAccount と権限を描画する既定値です。環境別の値は呼び出し側から上書きします。
 environment: local

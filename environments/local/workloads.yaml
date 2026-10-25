@@ -1,3 +1,4 @@
+# ローカル環境でAccount・Order の子 Applicationに使う、Chart の上書き設定です。
 applicationRepository: https://github.com/syuhei0519/application-manifest.git
 orderEnabled: false
 orderTargetRevision: ""

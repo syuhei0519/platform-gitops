@@ -1,4 +1,4 @@
-{{- if ne .Release.Namespace "observability" }}
+{{/* Account 学習環境の監視と通知の描画で、許可しない値の組み合わせを描画時に拒否し、不正な配備定義を作らないようにします。 */}}{{- if ne .Release.Namespace "observability" }}
 {{- fail "fixed SDK endpoint requires namespace observability; check collisions before apply" }}
 {{- end }}
 {{- if ne .Release.Name "learning-monitoring" }}

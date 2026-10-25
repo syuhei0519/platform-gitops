@@ -1,3 +1,4 @@
+# 固定した共有 SonarQube の Chart と設定を参照する Argo CD Application の定義です。
 # Apply only after the approved live prerequisites; this is not part of root bootstrap.
 apiVersion: argoproj.io/v1alpha1
 kind: Application

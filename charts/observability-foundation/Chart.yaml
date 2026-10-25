@@ -1,3 +1,4 @@
+# 監視用 ServiceAccount と権限の Chart 名と版を Helm に伝えるメタデータです。
 apiVersion: v2
 name: observability-foundation
 description: Single owner of local Prometheus and account-scoped KSM permissions

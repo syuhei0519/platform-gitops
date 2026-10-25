@@ -1,2 +1,3 @@
+# CI Runner の ServiceAccount と権限を描画する既定値です。環境別の値は呼び出し側から上書きします。
 manager: {namespace: runner-system, serviceAccount: runner-manager}
 job: {namespace: build, serviceAccount: ci-job}

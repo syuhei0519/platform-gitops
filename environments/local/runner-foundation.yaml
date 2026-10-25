@@ -1,2 +1,3 @@
+# ローカル環境でCI Runner の実行主体と権限に使う、Chart の上書き設定です。
 manager: {namespace: runner-system, serviceAccount: runner-manager}
 job: {namespace: build, serviceAccount: ci-job}

@@ -1,4 +1,4 @@
-apiVersion: v1
+{{/* Account の計測データを受信・転送する Collector の設定を出力します。 */}}apiVersion: v1
 kind: ConfigMap
 metadata:
   name: otel-collector-config

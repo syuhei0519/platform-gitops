@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# 既存環境向けの生成済み提案を照合し、所有範囲や固定情報が変わっていないか確認します。
 """Fail-closed offline checks for the reviewed access/admission/storage boundary."""
 import argparse
 import json

@@ -1,3 +1,4 @@
+# Git で保存する改行やテキストの扱いを揃え、環境による差分を防ぐ設定です。
 * text=auto eol=lf
 docs/implementation/evidence/PE019/** -text
 *.sh text eol=lf
