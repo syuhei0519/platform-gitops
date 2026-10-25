@@ -34,7 +34,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: collector
-        image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc
+        image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc
         args: [--config=/conf/config.yaml]
         ports:
         - {name: otlp-grpc, containerPort: 4317}
@@ -75,7 +75,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: prometheus
-        image: quay.io/prometheus/prometheus:v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
+        image: quay.io/prometheus/prometheus@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
         args:
         - --config.file=/etc/prometheus/prometheus.yml
         - --storage.tsdb.path=/prometheus
@@ -122,7 +122,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: grafana
-        image: docker.io/grafana/grafana:13.2.3@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4
+        image: docker.io/grafana/grafana@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4
         ports: [{name: http, containerPort: 3000}]
         resources:
           requests: {cpu: 50m, memory: 128Mi}
@@ -134,3 +134,4 @@ metadata: {name: grafana, namespace: fresh-observability}
 spec:
   selector: {app.kubernetes.io/name: grafana}
   ports: [{name: http, port: 3000, targetPort: http}]
+
