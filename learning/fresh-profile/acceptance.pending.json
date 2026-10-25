@@ -4,11 +4,11 @@
   "metadata": {"name": "account-lightweight-fresh", "recordedAt": null, "liveEvidence": false},
   "profile": {
     "lockPath": "learning/fresh-profile/profile.lock.yaml",
-    "sha256": "98351b566a90bf77862c7d85eaf1ff6b288244e65f26cb0168a7645d9987f48a",
+    "sha256": "4ce81471e76c3dd259a5923a832cc3cc9a914a5d87899769eb4429f7da17be52",
     "repositories": {
       "backend-app": "d797fc285618dea3eb9f64b425793eaf1e2a7012",
       "frontend-app": "aecccce46295714645387854a4dad37bdd0cd3c3",
-      "application-manifest": "9e6ef64cf4e37eb52612daa7e4a35e48f3f39754",
+      "application-manifest": "d466fc5ff9c52bdc43f1c2cb9387f2362e140547",
       "platform-gitops": "__PLATFORM_GITOPS_SHA__"
     }
   },
@@ -60,7 +60,7 @@
       "desired": {
         "backend-app": "d797fc285618dea3eb9f64b425793eaf1e2a7012",
         "frontend-app": "aecccce46295714645387854a4dad37bdd0cd3c3",
-        "application-manifest": "9e6ef64cf4e37eb52612daa7e4a35e48f3f39754",
+        "application-manifest": "d466fc5ff9c52bdc43f1c2cb9387f2362e140547",
         "platform-gitops": "__PLATFORM_GITOPS_SHA__"
       },
       "actual": {}
