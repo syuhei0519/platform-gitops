@@ -492,6 +492,24 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(executor.identity_calls, [])
             self.assertEqual(executor.run_calls, [])
 
+    def test_unneeded_repository_credential_is_rejected(self):
+        (approval, approval_path, materialization_path, profile_path, journal_path,
+         platform_source, application_source) = self.fixture()
+        profile = yaml.safe_load(profile_path.read_text(encoding="utf-8"))
+        profile["spec"]["inputs"]["secrets"].append({
+            "name": "repository-read", "purpose": "unneeded public Git credential",
+            "destination": "fresh-control/repository-read", "owner": "espoi",
+            "expiry": "2026-11-24", "sourceRef": "sealed-input:sha256:" + "f" * 64,
+        })
+        profile_path.write_text(yaml.safe_dump(profile, sort_keys=False), encoding="utf-8")
+        self.reseal(approval, approval_path, materialization_path, profile_path)
+        executor = FakeExecutor()
+        with self.assertRaisesRegex(runner.RunnerRejected, "g3-secret-set"):
+            runner.execute("first", approval_path, materialization_path, profile_path,
+                           journal_path, executor, platform_source, application_source, now=NOW)
+        self.assertEqual(executor.identity_calls, [])
+        self.assertEqual(executor.run_calls, [])
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

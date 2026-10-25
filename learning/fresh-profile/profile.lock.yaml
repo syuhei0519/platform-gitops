@@ -110,12 +110,6 @@ spec:
       owner: PENDING_G3
       expiry: PENDING_G3
       sourceRef: <operator-input:G3-account-migration-db>
-    - name: repository-read
-      purpose: Argo read-only Git access when public access is unavailable
-      destination: fresh-control/repository-read
-      owner: PENDING_G3
-      expiry: PENDING_G3
-      sourceRef: <operator-input:G3-repository-read>
   budget:
     measureAt: [before, peak, after]
     hostObservation:

@@ -362,7 +362,6 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
         ("account-db-bootstrap", "fresh-account/account-db-bootstrap"),
         ("account-db-runtime", "fresh-account/account-db-runtime"),
         ("account-db-migration", "fresh-account/account-db-migration"),
-        ("repository-read", "fresh-control/repository-read"),
     }
     if {(item.get("name"), item.get("destination")) for item in secrets} != expected_secrets:
         raise RunnerRejected("g3-secret-set")
