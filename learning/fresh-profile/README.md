@@ -79,6 +79,24 @@ python learning/fresh-profile/validate_profile.py --require-approved
 python learning/fresh-profile/validate_image_supply.py --require-fresh-evidence
 ```
 
-The four offline commands must pass in CI. Both `--require-*` commands are
+The six offline commands must pass in CI. Both `--require-*` commands are
 expected to reject the checked-in pending profile until the user separately
 approves G1-G3 and the lock is updated by review.
+## Authority proposal (PLAT-215)
+
+`authority-matrix.json` separates platform, workload and release-definition
+sources by fixed repository SHA, destination, kind, verb and resource name.
+`fixtures/canonical-two-sha.json` is an offline positive fixture; it is not a
+record of an applied policy or a successful sync. The validator also enforces
+the reviewed ServiceAccount, disabled token automount, finite Secret keys,
+PVC/Job retention and field-owner split for controller-created Pods.
+
+```text
+python learning/fresh-profile/validate_authority.py
+python learning/fresh-profile/test_validate_authority.py
+```
+
+The checked-in matrix deliberately reports live evidence as `not-run`. Actual
+AppProject/RBAC/admission changes, `kubectl auth can-i`, admission denials and
+canonical two-SHA sync need separate action-time approval on the isolated
+fresh cluster. The offline fixture must never be reported as live effectiveness.

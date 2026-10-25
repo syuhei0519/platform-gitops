@@ -1,0 +1,49 @@
+{
+  "sources": {
+    "platform": {"repository": "https://github.com/syuhei0519/platform-gitops.git", "commit": "4a40c64a58105cc91fa1d48940707d09d003dcc6", "path": "learning/fresh-profile/root"},
+    "workload": {"repository": "https://github.com/syuhei0519/application-manifest.git", "commit": "9441c696fc6fece4b431b832b7d7099539210081", "path": "learning/fresh-profile/workload"},
+    "release-definition": {"repository": "https://github.com/syuhei0519/application-manifest.git", "commit": "9441c696fc6fece4b431b832b7d7099539210081", "path": "learning/fresh-profile/release-definition"}
+  },
+  "applications": [
+    {"actor": "platform", "name": "fresh-platform-root", "namespace": "fresh-control", "repository": "https://github.com/syuhei0519/platform-gitops.git", "revision": "4a40c64a58105cc91fa1d48940707d09d003dcc6", "path": "learning/fresh-profile/root", "destination": "fresh-control"},
+    {"actor": "release-definition", "name": "fresh-account-release", "namespace": "fresh-control", "repository": "https://github.com/syuhei0519/application-manifest.git", "revision": "9441c696fc6fece4b431b832b7d7099539210081", "path": "learning/fresh-profile/release-definition", "destination": "fresh-account"}
+  ],
+  "operations": [
+    {"actor": "platform", "verb": "patch", "scope": "cluster", "apiGroup": "apiextensions.k8s.io", "resource": "customresourcedefinitions", "name": "applications.argoproj.io"},
+    {"actor": "platform", "verb": "create", "scope": "namespace", "namespace": "fresh-control", "apiGroup": "argoproj.io", "resource": "applications", "name": "fresh-platform-root"},
+    {"actor": "release-definition", "verb": "create", "scope": "namespace", "namespace": "fresh-control", "apiGroup": "argoproj.io", "resource": "applications", "name": "fresh-account-release"},
+    {"actor": "workload", "verb": "create", "scope": "namespace", "namespace": "fresh-account", "apiGroup": "apps", "resource": "deployments", "name": "account-api"},
+    {"actor": "workload", "verb": "create", "scope": "namespace", "namespace": "fresh-account", "apiGroup": "batch", "resource": "jobs", "name": "account-migration"},
+    {"actor": "workload", "verb": "create", "scope": "namespace", "namespace": "fresh-account", "apiGroup": "", "resource": "persistentvolumeclaims", "name": "account-data"}
+  ],
+  "controllers": [
+    {
+      "kind": "Deployment", "namespace": "fresh-account", "name": "account-api",
+      "podSpec": {
+        "serviceAccountName": "account-runtime", "automountServiceAccountToken": false,
+        "containers": [{"name": "api", "securityContext": {"privileged": false, "allowPrivilegeEscalation": false}, "env": [{"name": "DATABASE_URL", "valueFrom": {"secretKeyRef": {"name": "account-db-runtime", "key": "uri"}}}]}],
+        "volumes": []
+      }
+    },
+    {
+      "kind": "Job", "namespace": "fresh-account", "name": "account-migration",
+      "podSpec": {
+        "serviceAccountName": "account-migration", "automountServiceAccountToken": false, "restartPolicy": "Never",
+        "containers": [{"name": "migration", "securityContext": {"privileged": false, "allowPrivilegeEscalation": false}, "env": [{"name": "DATABASE_URL", "valueFrom": {"secretKeyRef": {"name": "account-db-migration", "key": "uri"}}}]}],
+        "volumes": []
+      }
+    }
+  ],
+  "retained": {
+    "secretObjectsInGit": false,
+    "secretReferences": ["account-db-migration/uri", "account-db-runtime/uri"],
+    "persistentVolumeClaims": {"fresh-account/account-data": {"storageClassName": "standard", "accessModes": ["ReadWriteOnce"], "syncOptions": ["Prune=false", "Delete=false"]}},
+    "jobs": {"fresh-account/account-migration": "mutable-until-first-success-then-frozen"},
+    "fieldOwners": {
+      "Application/fresh-control/fresh-platform-root": "platform",
+      "Application/fresh-control/fresh-account-release": "release-definition",
+      "Deployment/fresh-account/account-api": "workload",
+      "PersistentVolumeClaim/fresh-account/account-data": "workload"
+    }
+  }
+}
