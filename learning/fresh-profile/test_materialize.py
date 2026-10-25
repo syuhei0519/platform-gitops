@@ -30,7 +30,7 @@ class MaterializeTests(unittest.TestCase):
             release = self.release_chart(root)
             output = root / "sealed"
             platform_sha = "1" * 40
-            application_sha = "0046e8e366ce10f64712af5b8353141f4350df5b"
+            application_sha = "4a98e85a3866e48868c0c69505e546ac73f67641"
             path, manifest = contract.materialize(platform_sha, application_sha, release, output)
             self.assertTrue(path.is_file())
             self.assertFalse(manifest["liveApproved"])
@@ -65,7 +65,7 @@ class MaterializeTests(unittest.TestCase):
             with self.assertRaises(contract.MaterializationError):
                 contract.materialize("main", "2" * 40, release, Path(directory) / "out")
             with self.assertRaises(contract.MaterializationError):
-                contract.materialize("1" * 40, "0046e8e366ce10f64712af5b8353141f4350df5b",
+                contract.materialize("1" * 40, "4a98e85a3866e48868c0c69505e546ac73f67641",
                                      release, contract.HERE / "generated")
 
     def test_application_git_source_token_is_rejected(self):
@@ -73,7 +73,7 @@ class MaterializeTests(unittest.TestCase):
             root = Path(directory)
             release = self.release_chart(root, token=True)
             with self.assertRaisesRegex(contract.MaterializationError, "application-source-revision-token"):
-                contract.materialize("1" * 40, "0046e8e366ce10f64712af5b8353141f4350df5b",
+                contract.materialize("1" * 40, "4a98e85a3866e48868c0c69505e546ac73f67641",
                                      release, root / "sealed")
 
 

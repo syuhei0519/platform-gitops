@@ -25,7 +25,7 @@ spec:
       commit: aecccce46295714645387854a4dad37bdd0cd3c3
     application-manifest:
       url: https://github.com/syuhei0519/application-manifest.git
-      commit: 0046e8e366ce10f64712af5b8353141f4350df5b
+      commit: 4a98e85a3866e48868c0c69505e546ac73f67641
     platform-gitops:
       url: https://github.com/syuhei0519/platform-gitops.git
       commit: __PLATFORM_GITOPS_SHA__
