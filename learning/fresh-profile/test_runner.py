@@ -195,40 +195,82 @@ class RunnerTests(unittest.TestCase):
                             "version": version}
         kubeconfig = str((self.temporary / fixture_name / "fresh.kubeconfig").resolve())
         target_context = spec["target"]["context"]
-        def command(verb):
+        resource_tokens = {
+            "Deployment": "deployment", "Job": "job", "PersistentVolumeClaim": "pvc",
+            "StatefulSet": "statefulset", "Rollout": "rollout", "Service": "service",
+            "DestinationRule": "destinationrule", "VirtualService": "virtualservice",
+        }
+        def resource_spec(kind, name):
+            if kind == "Job":
+                return {"template": {"metadata": {"labels": {"step": name}}}}
+            if kind == "PersistentVolumeClaim":
+                return {"accessModes": ["ReadWriteOnce"], "volumeName": "pvc-account-data"}
+            if kind in {"Deployment", "StatefulSet", "Rollout"}:
+                return {"replicas": 1, "template": {"metadata": {"labels": {"step": name}}}}
+            return {"selector": {"app": name}}
+        def command(kind, namespace, name):
             return {"tool": "kubectl", "args": ["--kubeconfig", kubeconfig,
-                    "--context", target_context, verb, "configmap", "runner-fixture",
-                    "--namespace", "fresh-control"]}
+                    "--context", target_context, "get", resource_tokens[kind], name,
+                    "--namespace", namespace, "--output", "json"]}
         def step_contract(step):
-            identities = {
-                "database": "StatefulSet/fresh-account/account-postgresql",
-                "role-bootstrap": "Job/fresh-account/account-db-role-bootstrap",
-                "migration": "Job/fresh-account/account-migration",
-                "application": "Rollout/fresh-account/account-api",
-            }
-            identity = identities.get(step, f"ConfigMap/fresh-control/{step}")
-            if step in {"role-bootstrap", "migration"}:
-                generation, health, conditions = "none", "job-complete", {"Complete": "True"}
-            elif step in {"database", "application"}:
-                generation, health, conditions = "observed-current", "workload-ready", {"Available": "True"}
+            if step == "database":
+                contracts = [
+                    ("v1", "PersistentVolumeClaim", "fresh-account", "account-data",
+                     "none", "pvc-bound", {}),
+                    ("apps/v1", "StatefulSet", "fresh-account", "account-postgresql",
+                     "observed-current", "statefulset-ready", {}),
+                ]
+            elif step == "application":
+                contracts = [
+                    ("argoproj.io/v1alpha1", "Rollout", "fresh-account", "account-api",
+                     "observed-current", "rollout-ready", {"Available": "True"}),
+                    ("v1", "Service", "fresh-account", "account-api", "none", "none", {}),
+                    ("networking.istio.io/v1beta1", "DestinationRule", "fresh-account",
+                     "account-api", "none", "none", {}),
+                    ("networking.istio.io/v1beta1", "VirtualService", "fresh-account",
+                     "account-api", "none", "none", {}),
+                ]
+            elif step in {"role-bootstrap", "migration"}:
+                name = "account-db-role-bootstrap" if step == "role-bootstrap" else "account-migration"
+                contracts = [("batch/v1", "Job", "fresh-account", name,
+                              "none", "job-complete", {"Complete": "True"})]
             else:
-                generation, health, conditions = "none", "none", {}
-            return {"verify": [command("get")], "reconcile": [command("get")],
-                    "run": [command("apply")], "resourceIdentities": [identity],
-                    "observations": [{
-                        "identity": identity, "desiredPaths": ["/data"],
-                        "desiredSha256": hashlib.sha256(json.dumps(
-                            {"/data": {"step": step}}, sort_keys=True,
-                            separators=(",", ":")).encode()).hexdigest(),
-                        "generationPolicy": generation, "healthPolicy": health,
-                        "requiredConditions": conditions,
-                    }]}
+                contracts = [("apps/v1", "Deployment", "fresh-control", step,
+                              "observed-current", "workload-ready", {"Available": "True"})]
+            observations, identities, verify, manifests = [], [], [], []
+            for api_version, kind, namespace, name, generation, health, conditions in contracts:
+                identity = f"{kind}/{namespace}/{name}"
+                desired = {"/spec": resource_spec(kind, name)}
+                identities.append(identity)
+                verify.append(command(kind, namespace, name))
+                observations.append({
+                    "apiVersion": api_version, "identity": identity,
+                    "desiredPaths": ["/spec"],
+                    "desiredSha256": hashlib.sha256(json.dumps(
+                        desired, sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
+                    "generationPolicy": generation, "healthPolicy": health,
+                    "requiredConditions": conditions,
+                })
+                manifests.append({"apiVersion": api_version, "kind": kind,
+                                  "metadata": {"namespace": namespace, "name": name},
+                                  "spec": resource_spec(kind, name)})
+            manifest_path = bundle / f"{step}-apply.json"
+            manifest_path.write_text(json.dumps({"apiVersion": "v1", "kind": "List",
+                                                  "items": manifests}), encoding="utf-8")
+            run = {"tool": "kubectl", "args": ["--kubeconfig", kubeconfig,
+                   "--context", target_context, "apply", "--filename",
+                   str(manifest_path.resolve())]}
+            return {"verify": verify, "reconcile": copy.deepcopy(verify), "run": [run],
+                    "resourceIdentities": identities, "observations": observations}
         adapter_plan = {
             "schemaVersion": "platform.lab/approved-live-step-plan/v2",
             "target": {"clusterName": spec["target"]["clusterName"],
                        "context": target_context, "kubeconfig": kubeconfig},
             "tools": tools,
-            "identity": {"clusterUID": command("get")},
+            "identity": {"clusterUID": {"tool": "kubectl", "args": [
+                "--kubeconfig", kubeconfig, "--context", target_context,
+                "get", "namespace", "kube-system", "--output",
+                "jsonpath={.metadata.uid}"]}},
             "steps": {step: step_contract(step) for step in runner.STEPS},
         }
         adapter_plan_path.write_text(json.dumps(adapter_plan) + "\n", encoding="utf-8")

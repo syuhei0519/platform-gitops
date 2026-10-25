@@ -26,10 +26,45 @@ STEPS = (
 SENSITIVE_FRAGMENTS = ("--password", "--token", "--auth-token", "password=", "token=",
                        "-----begin ", "secretvalue")
 REQUIRED_STEP_HEALTH = {
-    "database": {"workload-ready", "conditions"},
+    "database": {"statefulset-ready", "pvc-bound"},
     "role-bootstrap": {"job-complete"},
     "migration": {"job-complete"},
-    "application": {"workload-ready", "conditions"},
+    "application": {"rollout-ready"},
+}
+STEP_RESOURCE_CONTRACTS = {
+    "database": {
+        ("v1", "PersistentVolumeClaim/fresh-account/account-data", "pvc-bound"),
+        ("apps/v1", "StatefulSet/fresh-account/account-postgresql", "statefulset-ready"),
+    },
+    "application": {
+        ("argoproj.io/v1alpha1", "Rollout/fresh-account/account-api", "rollout-ready"),
+        ("v1", "Service/fresh-account/account-api", "none"),
+        ("networking.istio.io/v1beta1", "DestinationRule/fresh-account/account-api", "none"),
+        ("networking.istio.io/v1beta1", "VirtualService/fresh-account/account-api", "none"),
+    },
+}
+KUBECTL_RESOURCES = {
+    "application": ("argoproj.io/v1alpha1", "Application"),
+    "configmap": ("v1", "ConfigMap"),
+    "deployment": ("apps/v1", "Deployment"),
+    "destinationrule": ("networking.istio.io/v1beta1", "DestinationRule"),
+    "job": ("batch/v1", "Job"),
+    "namespace": ("v1", "Namespace"),
+    "persistentvolumeclaim": ("v1", "PersistentVolumeClaim"),
+    "pvc": ("v1", "PersistentVolumeClaim"),
+    "rollout": ("argoproj.io/v1alpha1", "Rollout"),
+    "service": ("v1", "Service"),
+    "serviceaccount": ("v1", "ServiceAccount"),
+    "statefulset": ("apps/v1", "StatefulSet"),
+    "virtualservice": ("networking.istio.io/v1beta1", "VirtualService"),
+}
+HELM_RELEASES = {
+    "crds": {("argo-rollouts-crds", "fresh-control")},
+    "controllers": {
+        ("argo-cd", "fresh-control"),
+        ("argo-rollouts", "fresh-control"),
+        ("istiod", "istio-system"),
+    },
 }
 
 
@@ -132,7 +167,8 @@ class ApprovedLiveAdapter:
         if list(self.plan["steps"]) != list(STEPS):
             raise AdapterRejected("step-set")
         for command in self.plan["identity"].values():
-            self._validate_command(command, read_only=True)
+            self._validate_command(command, section="identity", step=None,
+                                   resource_identities=[])
         for step, actions in self.plan["steps"].items():
             if set(actions) != {"verify", "reconcile", "run", "resourceIdentities", "observations"}:
                 raise AdapterRejected("step-fields:" + step)
@@ -159,13 +195,24 @@ class ApprovedLiveAdapter:
             if required_health and not any(item["healthPolicy"] in required_health
                                            for item in observations):
                 raise AdapterRejected("step-semantic-health:" + step)
+            required_resources = STEP_RESOURCE_CONTRACTS.get(step)
+            if required_resources is not None:
+                actual_resources = {
+                    (item["apiVersion"], item["identity"], item["healthPolicy"])
+                    for item in observations
+                }
+                if actual_resources != required_resources:
+                    raise AdapterRejected("step-resource-contract:" + step)
             for name in ("verify", "reconcile"):
                 for command in actions[name]:
-                    self._validate_command(command, read_only=True)
+                    self._validate_command(command, section=name, step=step,
+                                           resource_identities=actions["resourceIdentities"])
             for command in actions["run"]:
-                self._validate_command(command, read_only=False)
+                self._validate_command(command, section="run", step=step,
+                                       resource_identities=actions["resourceIdentities"])
 
-    def _validate_command(self, command: dict, read_only: bool):
+    def _validate_command(self, command: dict, section: str, step: str | None,
+                          resource_identities: list[str]):
         if set(command) != {"tool", "args"} or command["tool"] not in self.plan["tools"]:
             raise AdapterRejected("command-fields")
         if not isinstance(command["args"], list) or not all(isinstance(arg, str) for arg in command["args"]):
@@ -176,24 +223,184 @@ class ApprovedLiveAdapter:
         target = self.plan["target"]
         alias = command["tool"]
         args = command["args"]
-        if alias in {"kubectl", "istioctl", "rollouts"}:
-            self._require_pair(args, "--kubeconfig", target["kubeconfig"])
-            self._require_pair(args, "--context", target["context"])
-        elif alias == "helm":
-            self._require_pair(args, "--kubeconfig", target["kubeconfig"])
-            self._require_pair(args, "--kube-context", target["context"])
-        elif alias == "kind":
-            self._require_pair(args, "--name", target["clusterName"])
-        elif alias == "argocd":
-            if args.count("--core") != 1:
-                raise AdapterRejected("argocd-core-required")
-            self._require_pair(args, "--kube-context", target["context"])
-            if any(flag in args or any(arg.startswith(flag + "=") for arg in args)
-                   for flag in ("--server", "--config", "--auth-token")):
-                raise AdapterRejected("argocd-target-override")
-        if read_only and any(token in args for token in ("apply", "create", "delete", "patch", "replace",
-                                                          "label", "annotate", "set", "sync", "rollout")):
-            raise AdapterRejected("read-only-command")
+        validators = {
+            "kubectl": self._validate_kubectl_command,
+            "kind": self._validate_kind_command,
+            "helm": self._validate_helm_command,
+            "istioctl": self._validate_istioctl_command,
+            "argocd": self._validate_argocd_command,
+            "rollouts": self._validate_rollouts_command,
+        }
+        validators[alias](args, section, step, resource_identities, target)
+
+    @staticmethod
+    def _exact_prefix(args: list[str], expected: list[str]) -> list[str]:
+        if args[:len(expected)] != expected:
+            raise AdapterRejected("command-target-prefix")
+        return args[len(expected):]
+
+    def _validate_kubectl_command(self, args, section, step, resources, target):
+        rest = self._exact_prefix(args, ["--kubeconfig", target["kubeconfig"],
+                                         "--context", target["context"]])
+        if section == "identity":
+            if rest != ["get", "namespace", "kube-system", "--output",
+                        "jsonpath={.metadata.uid}"]:
+                raise AdapterRejected("kubectl-identity-command")
+            return
+        if section in {"verify", "reconcile"}:
+            if (len(rest) != 7 or rest[0] != "get" or rest[3] != "--namespace"
+                    or rest[5:] != ["--output", "json"]):
+                raise AdapterRejected("kubectl-read-command")
+            resource, name, namespace = rest[1], rest[2], rest[4]
+            api_kind = KUBECTL_RESOURCES.get(resource)
+            if api_kind is None:
+                raise AdapterRejected("kubectl-read-resource")
+            identity = f"{api_kind[1]}/{namespace}/{name}"
+            expected_targets = {
+                (item["apiVersion"], item["identity"])
+                for item in self.plan["steps"][step]["observations"]
+            }
+            if (api_kind[0], identity) not in expected_targets:
+                raise AdapterRejected("kubectl-read-target")
+            return
+        if section == "run":
+            if len(rest) != 3 or rest[:2] != ["apply", "--filename"]:
+                raise AdapterRejected("kubectl-run-command")
+            manifest_path = Path(rest[2])
+            if not manifest_path.is_absolute() or not manifest_path.is_file():
+                raise AdapterRejected("kubectl-manifest-path")
+            expected_targets = {
+                (item["apiVersion"], item["identity"])
+                for item in self.plan["steps"][step]["observations"]
+            }
+            if self._manifest_identities(
+                    manifest_path, self.plan["steps"][step]["observations"]) != expected_targets:
+                raise AdapterRejected("kubectl-manifest-targets")
+            return
+        raise AdapterRejected("kubectl-operation")
+
+    @staticmethod
+    def _manifest_identities(path: Path, observations: list[dict]) -> set[tuple[str, str]]:
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            raise AdapterRejected("kubectl-manifest-json") from error
+        items = value.get("items") if isinstance(value, dict) and value.get("kind") == "List" else [value]
+        if not isinstance(items, list) or not items or any(not isinstance(item, dict) for item in items):
+            raise AdapterRejected("kubectl-manifest-objects")
+        identities = set()
+        resources = {}
+        for item in items:
+            metadata = item.get("metadata")
+            if not isinstance(metadata, dict):
+                raise AdapterRejected("kubectl-manifest-metadata")
+            api_version, kind, name = item.get("apiVersion"), item.get("kind"), metadata.get("name")
+            namespace = metadata.get("namespace") or "None"
+            if not all(isinstance(value, str) and value
+                       for value in (api_version, kind, name, namespace)):
+                raise AdapterRejected("kubectl-manifest-identity")
+            identity = f"{kind}/{namespace}/{name}"
+            target = (api_version, identity)
+            if target in identities:
+                raise AdapterRejected("kubectl-manifest-duplicate")
+            identities.add(target)
+            resources[identity] = item
+        expected = {(item["apiVersion"], item["identity"]) for item in observations}
+        if identities != expected:
+            return identities
+        for contract in observations:
+            resource = resources[contract["identity"]]
+            desired = {pointer: _json_pointer(resource, pointer)
+                       for pointer in contract["desiredPaths"]}
+            if _mapping_digest(desired) != contract["desiredSha256"]:
+                raise AdapterRejected("kubectl-manifest-desired-digest:" + contract["identity"])
+        return identities
+
+    def _validate_kind_command(self, args, section, step, resources, target):
+        if section == "run" and step == "cluster":
+            expected = ["create", "cluster", "--name", target["clusterName"],
+                        "--kubeconfig", target["kubeconfig"]]
+            if args[:len(expected)] != expected or len(args) != len(expected) + 2 \
+                    or args[-2] != "--image" or "@sha256:" not in args[-1]:
+                raise AdapterRejected("kind-create-command")
+            return
+        if section == "run" and step == "image-import":
+            if (len(args) != 5 or args[:2] != ["load", "image-archive"]
+                    or not Path(args[2]).is_absolute()
+                    or args[3:] != ["--name", target["clusterName"]]):
+                raise AdapterRejected("kind-load-command")
+            return
+        if section in {"verify", "reconcile"} and step in {"cluster", "empty-node-cache"}:
+            if args != ["get", "nodes", "--name", target["clusterName"]]:
+                raise AdapterRejected("kind-read-command")
+            return
+        raise AdapterRejected("kind-operation")
+
+    def _validate_helm_command(self, args, section, step, resources, target):
+        prefix = ["--kubeconfig", target["kubeconfig"], "--kube-context", target["context"]]
+        rest = self._exact_prefix(args, prefix)
+        if section != "run" or step not in HELM_RELEASES:
+            raise AdapterRejected("helm-operation")
+        if len(rest) != 12 or rest[:2] != ["upgrade", "--install"]:
+            raise AdapterRejected("helm-command")
+        release, chart = rest[2], rest[3]
+        if (not Path(chart).is_absolute() or rest[4] != "--namespace"
+                or (release, rest[5]) not in HELM_RELEASES[step]
+                or rest[6] != "--version" or not rest[7]
+                or rest[8:] != ["--atomic", "--wait", "--wait-for-jobs", "--create-namespace"]):
+            raise AdapterRejected("helm-command")
+
+    def _validate_istioctl_command(self, args, section, step, resources, target):
+        prefix = ["--kubeconfig", target["kubeconfig"], "--context", target["context"]]
+        rest = self._exact_prefix(args, prefix)
+        if (section != "run" or step != "controllers" or len(rest) != 4
+                or rest[:2] != ["install", "--filename"]
+                or not Path(rest[2]).is_absolute() or rest[3] != "--skip-confirmation"):
+            raise AdapterRejected("istioctl-command")
+
+    def _validate_argocd_command(self, args, section, step, resources, target):
+        rest = self._exact_prefix(args, ["--core", "--kube-context", target["context"]])
+        if section in {"verify", "reconcile"}:
+            if len(rest) != 5 or rest[:2] != ["app", "get"] or rest[3:] != ["--output", "json"]:
+                raise AdapterRejected("argocd-read-command")
+            target = ("argoproj.io/v1alpha1", f"Application/fresh-control/{rest[2]}")
+            expected_targets = {(item["apiVersion"], item["identity"])
+                                for item in self.plan["steps"][step]["observations"]}
+            if target not in expected_targets:
+                raise AdapterRejected("argocd-read-target")
+            return
+        if section == "run" and step in {"custom-resources", "database", "application", "acceptance"}:
+            if len(rest) != 4 or rest[:2] != ["app", "sync"] or rest[3] != "--prune=false":
+                raise AdapterRejected("argocd-run-command")
+            target = ("argoproj.io/v1alpha1", f"Application/fresh-control/{rest[2]}")
+            expected_targets = {(item["apiVersion"], item["identity"])
+                                for item in self.plan["steps"][step]["observations"]}
+            if target not in expected_targets:
+                raise AdapterRejected("argocd-run-target")
+            return
+        raise AdapterRejected("argocd-operation")
+
+    def _validate_rollouts_command(self, args, section, step, resources, target):
+        rest = self._exact_prefix(args, ["--kubeconfig", target["kubeconfig"],
+                                         "--context", target["context"]])
+        exact_target = "Rollout/fresh-account/account-api"
+        expected_targets = {(item["apiVersion"], item["identity"])
+                            for item in self.plan["steps"][step]["observations"]}
+        if ("argoproj.io/v1alpha1", exact_target) not in expected_targets:
+            raise AdapterRejected("rollouts-target")
+        if section in {"verify", "reconcile"}:
+            if rest != ["get", "rollout", "account-api", "--namespace", "fresh-account",
+                        "--output", "json"]:
+                raise AdapterRejected("rollouts-read-command")
+            return
+        if section == "run" and step == "acceptance":
+            if rest not in (["restart", "rollout", "account-api", "--namespace", "fresh-account"],
+                            ["promote", "rollout", "account-api", "--namespace", "fresh-account"],
+                            ["abort", "rollout", "account-api", "--namespace", "fresh-account"],
+                            ["retry", "rollout", "account-api", "--namespace", "fresh-account"]):
+                raise AdapterRejected("rollouts-run-command")
+            return
+        raise AdapterRejected("rollouts-operation")
 
     @staticmethod
     def _require_pair(args: list[str], flag: str, expected: str):
@@ -208,7 +415,8 @@ class ApprovedLiveAdapter:
         kubeconfig = os.environ.get("KUBECONFIG")
         if kubeconfig and Path(kubeconfig).resolve() != Path(target["kubeconfig"]).resolve():
             raise AdapterRejected("environment-target-override:KUBECONFIG")
-        for name in ("HELM_KUBECONTEXT", "ARGOCD_SERVER", "ARGOCD_AUTH_TOKEN",
+        for name in ("KUBERNETES_MASTER", "KUBE_API_SERVER", "HELM_KUBECONTEXT",
+                     "HELM_KUBEAPISERVER", "ARGOCD_SERVER", "ARGOCD_AUTH_TOKEN",
                      "ARGOCD_OPTS", "ARGOCD_CONFIG_DIR", "ARGOCD_SERVER_NAME"):
             if os.environ.get(name):
                 raise AdapterRejected("environment-target-override:" + name)
@@ -222,11 +430,14 @@ class ApprovedLiveAdapter:
 
     @staticmethod
     def _validate_observation(observation: dict, step: str):
-        expected = {"identity", "desiredPaths", "desiredSha256", "generationPolicy",
+        expected = {"apiVersion", "identity", "desiredPaths", "desiredSha256", "generationPolicy",
                     "healthPolicy", "requiredConditions"}
         if set(observation) != expected:
             raise AdapterRejected("observation-fields:" + step)
         identity = observation["identity"]
+        api_version = observation["apiVersion"]
+        if not isinstance(api_version, str) or not api_version or "/" not in api_version and api_version != "v1":
+            raise AdapterRejected("observation-api-version:" + step)
         if (not isinstance(identity, str) or len(identity.split("/")) != 3
                 or any(not part for part in identity.split("/"))):
             raise AdapterRejected("observation-identity:" + step)
@@ -244,7 +455,8 @@ class ApprovedLiveAdapter:
             raise AdapterRejected("observation-digest:" + step)
         if observation["generationPolicy"] not in {"none", "observed-current"}:
             raise AdapterRejected("observation-generation:" + step)
-        if observation["healthPolicy"] not in {"none", "conditions", "workload-ready", "job-complete"}:
+        if observation["healthPolicy"] not in {"none", "conditions", "workload-ready", "job-complete",
+                                                 "pvc-bound", "statefulset-ready", "rollout-ready"}:
             raise AdapterRejected("observation-health:" + step)
         conditions = observation["requiredConditions"]
         if (not isinstance(conditions, dict)
@@ -261,6 +473,12 @@ class ApprovedLiveAdapter:
             raise AdapterRejected("observation-workload-kind:" + step)
         if observation["healthPolicy"] == "job-complete" and kind != "Job":
             raise AdapterRejected("observation-job-kind:" + step)
+        if observation["healthPolicy"] == "pvc-bound" and kind != "PersistentVolumeClaim":
+            raise AdapterRejected("observation-pvc-kind:" + step)
+        if observation["healthPolicy"] == "statefulset-ready" and kind != "StatefulSet":
+            raise AdapterRejected("observation-statefulset-kind:" + step)
+        if observation["healthPolicy"] == "rollout-ready" and kind != "Rollout":
+            raise AdapterRejected("observation-rollout-kind:" + step)
 
     def _argv(self, command):
         return [self.plan["tools"][command["tool"]]["path"], *command["args"]]
@@ -318,6 +536,8 @@ class ApprovedLiveAdapter:
         for contract in observations:
             identity = contract["identity"]
             resource = by_identity[identity]
+            if resource.get("apiVersion") != contract["apiVersion"]:
+                raise AdapterRejected("observation-api-version:" + identity)
             metadata = resource["metadata"]
             uid = metadata.get("uid")
             if not isinstance(uid, str) or not uid:
@@ -361,8 +581,38 @@ class ApprovedLiveAdapter:
                         or condition_map.get("Complete") != "True"
                         or not isinstance(status.get("completionTime"), str)):
                     raise AdapterRejected("observation-job-incomplete:" + identity)
+            elif health == "pvc-bound":
+                capacity = status.get("capacity", {}).get("storage")
+                if (resource.get("kind") != "PersistentVolumeClaim"
+                        or status.get("phase") != "Bound"
+                        or not isinstance(resource.get("spec", {}).get("volumeName"), str)
+                        or not resource["spec"]["volumeName"]
+                        or not isinstance(capacity, str) or not capacity):
+                    raise AdapterRejected("observation-pvc-unbound:" + identity)
+            elif health == "statefulset-ready":
+                replicas = resource.get("spec", {}).get("replicas")
+                revisions = (status.get("currentRevision"), status.get("updateRevision"))
+                if (resource.get("kind") != "StatefulSet"
+                        or not isinstance(replicas, int) or replicas < 1
+                        or any(status.get(field) != replicas for field in
+                               ("replicas", "readyReplicas", "currentReplicas", "updatedReplicas"))
+                        or not all(isinstance(value, str) and value for value in revisions)
+                        or revisions[0] != revisions[1]):
+                    raise AdapterRejected("observation-statefulset-unready:" + identity)
+            elif health == "rollout-ready":
+                replicas = resource.get("spec", {}).get("replicas")
+                hashes = (status.get("currentPodHash"), status.get("stableRS"))
+                if (resource.get("kind") != "Rollout"
+                        or not isinstance(replicas, int) or replicas < 1
+                        or any(status.get(field) != replicas for field in
+                               ("replicas", "readyReplicas", "availableReplicas", "updatedReplicas"))
+                        or not all(isinstance(value, str) and value for value in hashes)
+                        or hashes[0] != hashes[1]
+                        or condition_map.get("Available") != "True"):
+                    raise AdapterRejected("observation-rollout-unready:" + identity)
             normalized.append({
-                "identity": identity, "uid": uid, "generation": generation,
+                "apiVersion": contract["apiVersion"], "identity": identity, "uid": uid,
+                "generation": generation,
                 "observedGeneration": observed_generation, "desiredSha256": desired_digest,
                 "conditions": {key: condition_map.get(key) for key in sorted(contract["requiredConditions"])},
                 "healthPolicy": health,
