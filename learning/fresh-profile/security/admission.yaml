@@ -1,0 +1,59 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata: {name: fresh-application-boundary}
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups: [argoproj.io]
+      apiVersions: [v1alpha1]
+      operations: [CREATE, UPDATE]
+      resources: [applications]
+  validations:
+  - expression: "object.metadata.namespace == 'fresh-control' && object.metadata.name in ['account-lightweight-root', 'fresh-release-definitions', 'fresh-account-release', 'fresh-observability']"
+    message: only canonical fresh-profile Applications are admitted
+  - expression: "object.spec.source.targetRevision.matches('^[0-9a-f]{40}$')"
+    message: Application targetRevision must be a materialized commit SHA
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata: {name: fresh-application-boundary}
+spec:
+  policyName: fresh-application-boundary
+  validationActions: [Deny]
+  matchResources:
+    namespaceSelector:
+      matchLabels: {platform.lab/profile: account-lightweight-fresh}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata: {name: fresh-account-pod-boundary}
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups: [apps, batch, argoproj.io]
+      apiVersions: [v1, v1alpha1]
+      operations: [CREATE, UPDATE]
+      resources: [statefulsets, jobs, rollouts]
+  validations:
+  - expression: "object.spec.template.spec.serviceAccountName in ['account-database', 'account-migration', 'account-runtime']"
+    message: workload controller must use a canonical service account
+  - expression: "object.spec.template.spec.automountServiceAccountToken == false"
+    message: service account token automount is forbidden
+  - expression: "!has(object.spec.template.spec.hostNetwork) || object.spec.template.spec.hostNetwork == false"
+    message: host networking is forbidden
+  - expression: "!has(object.spec.template.spec.volumes) || object.spec.template.spec.volumes.all(v, !has(v.hostPath))"
+    message: hostPath is forbidden
+  - expression: "object.spec.template.spec.containers.all(c, !has(c.securityContext) || ((!has(c.securityContext.privileged) || c.securityContext.privileged == false) && (!has(c.securityContext.allowPrivilegeEscalation) || c.securityContext.allowPrivilegeEscalation == false)))"
+    message: privileged containers and privilege escalation are forbidden
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata: {name: fresh-account-pod-boundary}
+spec:
+  policyName: fresh-account-pod-boundary
+  validationActions: [Deny]
+  matchResources:
+    namespaceSelector:
+      matchLabels: {platform.lab/profile: account-lightweight-fresh}

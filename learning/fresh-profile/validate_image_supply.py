@@ -117,6 +117,21 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
         retrieval = item["retrieval"]
         checks = item["checks"]
 
+        comparison = item.get("comparisonOnly")
+        if comparison and (comparison["source"] != "old-node-cache" or comparison["architecture"] != architecture):
+            raise SupplyError("comparison-boundary:" + name)
+        if name == "account-runtime" and source["kind"] == "checked-local-artifact":
+            expected_account = {
+                "sourceCommit": "527b9bccf4ae56244d134ae384564ec1cccea815",
+                "manifestDigest": "sha256:746e9acb5e5a24dcd6644ab5e082f2d3dad79620ec2e00afa80aa39a7436cf9a",
+                "configDigest": "sha256:5062ed82987c361535a339f6ee30c67d3fca5c8190989aa404f5bda13dd72822",
+                "entrypoint": ["/server"], "user": "10001:10001",
+            }
+            if any(source.get(key) != value for key, value in expected_account.items()):
+                raise SupplyError("account-artifact-identity")
+            if source["manifestDigest"] != expected:
+                raise SupplyError("account-artifact-profile-digest")
+
         if source["kind"] == "pending-g2" and not pending:
             raise SupplyError("approved-pending-source:" + name)
         if not pending and source["kind"] != decision["selectedMode"]:

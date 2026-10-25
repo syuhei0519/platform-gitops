@@ -86,8 +86,18 @@ class ImageSupplyTests(unittest.TestCase):
         self.assertEqual(account["source"]["kind"], "checked-local-artifact")
         self.assertFalse(account["source"]["published"])
         self.assertFalse(account["source"]["freshEligible"])
+        self.assertEqual(account["source"]["entrypoint"], ["/server"])
+        self.assertEqual(account["source"]["user"], "10001:10001")
         with self.assertRaisesRegex(contract.SupplyError, "approval-g2"):
             contract.validate(require_fresh_evidence=True)
+
+    def test_account_artifact_is_not_rollouts_and_comparison_is_not_supply(self):
+        value = copy.deepcopy(self.lock)
+        account = next(item for item in value["spec"]["images"] if item["name"] == "account-runtime")
+        account["source"]["manifestDigest"] = "sha256:966adba896524519bd1653b31ade97b624dd5cbf83623f7cdeb5c5708aaa69e0"
+        account["source"]["entrypoint"] = ["/bin/rollouts-controller"]
+        with self.assertRaisesRegex(contract.SupplyError, "schema|account-artifact-identity"):
+            self.validate_copy(value)
 
     def test_registry_and_retained_archive_are_finite_approved_modes(self):
         for mode in ("private-registry", "retained-oci-archive"):

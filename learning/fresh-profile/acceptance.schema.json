@@ -97,7 +97,7 @@
     }
   },
   "definitions": {
-    "sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "sha": {"type": "string", "pattern": "^([0-9a-f]{40}|__PLATFORM_GITOPS_SHA__)$"},
     "status": {"enum": ["unrun", "passed", "failed"]},
     "check": {
       "type": "object", "additionalProperties": false,

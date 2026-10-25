@@ -64,19 +64,17 @@
           "required": ["clusterKubeconfigRef", "imageSupplyRef", "secrets"],
           "properties": {
             "clusterKubeconfigRef": {"type": "string"}, "imageSupplyRef": {"type": "string"},
-            "secrets": {"type": "array", "minItems": 2, "items": {"$ref": "#/definitions/secretReference"}}
+            "secrets": {"type": "array", "minItems": 3, "items": {"$ref": "#/definitions/secretReference"}}
           }
         },
         "budget": {
           "type": "object", "additionalProperties": false,
-          "required": ["measureAt", "elapsedMaxMinutes", "hostAvailableMemoryMinGiB", "hostFreeDiskMinGiB", "dockerAdditionalDiskMaxGiB", "workloadCPURequestsMaxMilli", "workloadMemoryRequestsMaxMiB", "imageBytesMaxGiB", "podPendingMaxSeconds", "unexpectedRestartsMax", "stopOn"],
+          "required": ["measureAt", "hostObservation", "estimates", "approvalLimits", "stopOn"],
           "properties": {
             "measureAt": {"const": ["before", "peak", "after"]},
-            "elapsedMaxMinutes": {"type": "integer", "minimum": 1, "maximum": 60},
-            "hostAvailableMemoryMinGiB": {"type": "integer", "minimum": 1}, "hostFreeDiskMinGiB": {"type": "integer", "minimum": 1},
-            "dockerAdditionalDiskMaxGiB": {"type": "integer", "minimum": 1}, "workloadCPURequestsMaxMilli": {"type": "integer", "minimum": 1},
-            "workloadMemoryRequestsMaxMiB": {"type": "integer", "minimum": 1}, "imageBytesMaxGiB": {"type": "integer", "minimum": 1},
-            "podPendingMaxSeconds": {"type": "integer", "minimum": 1, "maximum": 120}, "unexpectedRestartsMax": {"const": 0},
+            "hostObservation": {"$ref": "#/definitions/hostObservation"},
+            "estimates": {"$ref": "#/definitions/estimates"},
+            "approvalLimits": {"$ref": "#/definitions/approvalLimits"},
             "stopOn": {"type": "array", "minItems": 6, "uniqueItems": true, "items": {"type": "string"}}
           }
         },
@@ -100,7 +98,7 @@
   "definitions": {
     "repository": {
       "type": "object", "additionalProperties": false, "required": ["url", "commit"],
-      "properties": {"url": {"type": "string", "pattern": "^https://github.com/syuhei0519/[a-z-]+\\.git$"}, "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}}
+      "properties": {"url": {"type": "string", "pattern": "^https://github.com/syuhei0519/[a-z-]+\\.git$"}, "commit": {"type": "string", "pattern": "^([0-9a-f]{40}|__PLATFORM_GITOPS_SHA__)$"}}
     },
     "image": {
       "type": "object", "additionalProperties": false, "required": ["name", "ref", "architecture"],
@@ -114,6 +112,50 @@
     "decision": {
       "type": "object", "additionalProperties": false, "required": ["status", "choice"],
       "properties": {"status": {"enum": ["pending-approval", "approved", "pending-cutover"]}, "choice": {"type": "string", "minLength": 1}}
+    },
+    "hostObservation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["capturedAt", "logicalCpu", "installedMemoryGiB", "availableMemoryGiB", "freeDiskGiB", "dockerCpuLimit", "dockerMemoryLimitGiB", "dockerImagesGiB", "dockerVolumesGiB", "dockerBuildCacheGiB", "existingRunningContainers"],
+      "properties": {
+        "capturedAt": {"type": "string"}, "logicalCpu": {"const": 20},
+        "installedMemoryGiB": {"const": 31.84}, "availableMemoryGiB": {"const": 6.6},
+        "freeDiskGiB": {"const": 440.56}, "dockerCpuLimit": {"const": 20},
+        "dockerMemoryLimitGiB": {"const": 15.53}, "dockerImagesGiB": {"const": 10.86},
+        "dockerVolumesGiB": {"const": 11.21}, "dockerBuildCacheGiB": {"const": 2.847},
+        "existingRunningContainers": {"const": 1}
+      }
+    },
+    "estimates": {
+      "type": "object", "additionalProperties": false,
+      "required": ["renderedRequestTotals", "retainedArchiveBytes", "controlPlaneOverhead"],
+      "properties": {
+        "renderedRequestTotals": {
+          "type": "object", "additionalProperties": false,
+          "required": ["cpuMilli", "memoryMiB", "applicationManifestInputSha256", "platformObservabilityInputSha256", "includes", "excludes"],
+          "properties": {
+            "cpuMilli": {"const": 475}, "memoryMiB": {"const": 960},
+            "applicationManifestInputSha256": {"const": "b4620a74e38c968f56975c4f5253e79b04fa34302aa27afd19666a5838383ada"},
+            "platformObservabilityInputSha256": {"const": "a7af14c5615d14de698c6c8fbc529faa02aa1e4f92c6644359c98f8e6e1ee512"},
+            "includes": {"type": "string"}, "excludes": {"type": "string"}
+          }
+        }, "retainedArchiveBytes": {"type": "string"},
+        "controlPlaneOverhead": {"type": "string"}
+      }
+    },
+    "approvalLimits": {
+      "type": "object", "additionalProperties": false,
+      "required": ["elapsedMaxMinutes", "hostAvailableMemoryMinGiB", "hostFreeDiskMinGiB", "dockerAdditionalDiskMaxGiB", "workloadCPURequestsMaxMilli", "workloadMemoryRequestsMaxMiB", "imageBytesMaxGiB", "podPendingMaxSeconds", "unexpectedRestartsMax"],
+      "properties": {
+        "elapsedMaxMinutes": {"type": ["integer", "string"]},
+        "hostAvailableMemoryMinGiB": {"type": ["number", "string"]},
+        "hostFreeDiskMinGiB": {"type": ["number", "string"]},
+        "dockerAdditionalDiskMaxGiB": {"type": ["number", "string"]},
+        "workloadCPURequestsMaxMilli": {"type": ["integer", "string"]},
+        "workloadMemoryRequestsMaxMiB": {"type": ["integer", "string"]},
+        "imageBytesMaxGiB": {"type": ["number", "string"]},
+        "podPendingMaxSeconds": {"type": ["integer", "string"]},
+        "unexpectedRestartsMax": {"const": 0}
+      }
     }
   }
 }

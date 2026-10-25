@@ -26,13 +26,16 @@ REQUIRED_IMAGES = {
     "otel-collector", "grafana",
 }
 STEPS = [
-    "preflight", "cluster", "crds", "controllers", "custom-resources",
-    "database", "migration", "application", "acceptance",
+    "preflight", "image-supply", "cluster", "crds", "controllers",
+    "security-boundary", "credential-bootstrap", "custom-resources",
+    "database", "role-bootstrap", "migration", "application", "acceptance",
 ]
 REQUIRES = {
-    "preflight": [], "cluster": ["preflight"], "crds": ["cluster"],
-    "controllers": ["crds"], "custom-resources": ["controllers"],
-    "database": ["custom-resources"], "migration": ["database"],
+    "preflight": [], "image-supply": ["preflight"], "cluster": ["image-supply"],
+    "crds": ["cluster"], "controllers": ["crds"],
+    "security-boundary": ["controllers"], "credential-bootstrap": ["security-boundary"],
+    "custom-resources": ["credential-bootstrap"], "database": ["custom-resources"],
+    "role-bootstrap": ["database"], "migration": ["role-bootstrap"],
     "application": ["migration"], "acceptance": ["application"],
 }
 STOP_CONDITIONS = {
@@ -104,8 +107,12 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
 
     if set(spec["repositories"]) != REQUIRED_REPOSITORIES:
         raise ContractError("repository-set")
-    if any(not re.fullmatch(r"[0-9a-f]{40}", repo["commit"])
-           for repo in spec["repositories"].values()):
+    revisions = {name: repo["commit"] for name, repo in spec["repositories"].items()}
+    if any(not re.fullmatch(r"[0-9a-f]{40}", revision)
+           for name, revision in revisions.items() if name != "platform-gitops"):
+        raise ContractError("repository-sha")
+    if revisions["platform-gitops"] != "__PLATFORM_GITOPS_SHA__" and not re.fullmatch(
+            r"[0-9a-f]{40}", revisions["platform-gitops"]):
         raise ContractError("repository-sha")
 
     target = spec["target"]
@@ -126,6 +133,13 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
 
     if set(spec["budget"]["stopOn"]) != STOP_CONDITIONS:
         raise ContractError("stop-budget")
+    limits = spec["budget"]["approvalLimits"]
+    if spec["decisions"]["G1"]["status"] == "pending-approval":
+        if any(value != "PENDING_G1" for key, value in limits.items()
+               if key not in {"imageBytesMaxGiB", "unexpectedRestartsMax"}):
+            raise ContractError("pending-g1-budget")
+    if spec["decisions"]["G2"]["status"] == "pending-approval" and limits["imageBytesMaxGiB"] != "PENDING_G2":
+        raise ContractError("pending-g2-budget")
     if spec["decisions"]["G4"] != {
         "status": "pending-cutover", "choice": "not-required-for-fresh-acceptance"
     }:
@@ -141,6 +155,10 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
                            for field in ("owner", "expiry")]
         if any(str(value).startswith("PENDING_") for value in pending_fields):
             raise ContractError("approved-profile-placeholder")
+        if revisions["platform-gitops"] == "__PLATFORM_GITOPS_SHA__":
+            raise ContractError("approved-profile-revision-token")
+        if any(str(value).startswith("PENDING_") for value in limits.values()):
+            raise ContractError("approved-budget-placeholder")
 
     dag = load_yaml(checked_path(spec["bootstrap"]["dagFile"]))
     validate_dag(dag)

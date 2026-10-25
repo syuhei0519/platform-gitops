@@ -20,17 +20,18 @@ PROFILE = HERE / "profile.lock.yaml"
 CURRENT_CLUSTER = "kind-learning-20261018-69c763"
 RUN_MODES = ["first", "rerun", "resume-after-interruption"]
 STEPS = [
-    "preflight", "cluster", "crds", "controllers", "custom-resources",
-    "database", "migration", "application", "acceptance",
+    "preflight", "image-supply", "cluster", "crds", "controllers",
+    "security-boundary", "credential-bootstrap", "custom-resources",
+    "database", "role-bootstrap", "migration", "application", "acceptance",
 ]
 READINESS = {
     "root-nonempty", "dependencies-ready", "workloads-ready", "api",
-    "metrics", "traces",
+    "metrics", "traces", "telemetry-profile-and-pod-uid", "actual-db-role-owner",
 }
-RESYNC_RESTART = {"argocd-resync", "workload-restart"}
+RESYNC_RESTART = {"argocd-resync", "workload-restart", "db-down-recovery", "old-image-rollback"}
 NEGATIVE_CASES = {
     "missing-secret", "wrong-secret", "wrong-architecture",
-    "unready-dependency", "healthy-root-empty-child",
+    "unready-dependency", "healthy-root-empty-child", "wrong-profile-identity",
 }
 FORBIDDEN_SECRET_KEYS = {
     "data", "stringData", "password", "token", "privateKey",

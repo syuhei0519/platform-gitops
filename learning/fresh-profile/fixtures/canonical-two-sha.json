@@ -1,24 +1,45 @@
 {
   "sources": {
-    "platform": {"repository": "https://github.com/syuhei0519/platform-gitops.git", "commit": "4a40c64a58105cc91fa1d48940707d09d003dcc6", "path": "learning/fresh-profile/root"},
-    "workload": {"repository": "https://github.com/syuhei0519/application-manifest.git", "commit": "9441c696fc6fece4b431b832b7d7099539210081", "path": "learning/fresh-profile/workload"},
-    "release-definition": {"repository": "https://github.com/syuhei0519/application-manifest.git", "commit": "9441c696fc6fece4b431b832b7d7099539210081", "path": "learning/fresh-profile/release-definition"}
+    "platform": {"repository": "https://github.com/syuhei0519/platform-gitops.git", "commit": "__PLATFORM_GITOPS_SHA__", "path": "learning/fresh-profile/root"},
+    "workload": {"repository": "https://github.com/syuhei0519/application-manifest.git", "commit": "d9150a4de69d2447c1b767823fc23784edea0abc", "path": "learning/fresh-profile/workload"},
+    "release-definition": {"repository": "https://github.com/syuhei0519/application-manifest.git", "commit": "d9150a4de69d2447c1b767823fc23784edea0abc", "path": "learning/fresh-profile/release-definition"}
   },
   "applications": [
-    {"actor": "platform", "name": "fresh-platform-root", "namespace": "fresh-control", "repository": "https://github.com/syuhei0519/platform-gitops.git", "revision": "4a40c64a58105cc91fa1d48940707d09d003dcc6", "path": "learning/fresh-profile/root", "destination": "fresh-control"},
-    {"actor": "release-definition", "name": "fresh-account-release", "namespace": "fresh-control", "repository": "https://github.com/syuhei0519/application-manifest.git", "revision": "9441c696fc6fece4b431b832b7d7099539210081", "path": "learning/fresh-profile/release-definition", "destination": "fresh-account"}
+    {"actor": "platform", "name": "account-lightweight-root", "namespace": "fresh-control", "repository": "https://github.com/syuhei0519/platform-gitops.git", "revision": "__PLATFORM_GITOPS_SHA__", "path": "learning/fresh-profile/root", "destination": "fresh-control"},
+    {"actor": "release-definition", "name": "fresh-account-release", "namespace": "fresh-control", "repository": "https://github.com/syuhei0519/application-manifest.git", "revision": "d9150a4de69d2447c1b767823fc23784edea0abc", "path": "learning/fresh-profile/release-definition", "destination": "fresh-account"}
   ],
   "operations": [
-    {"actor": "platform", "verb": "patch", "scope": "cluster", "apiGroup": "apiextensions.k8s.io", "resource": "customresourcedefinitions", "name": "applications.argoproj.io"},
-    {"actor": "platform", "verb": "create", "scope": "namespace", "namespace": "fresh-control", "apiGroup": "argoproj.io", "resource": "applications", "name": "fresh-platform-root"},
+    {"actor": "platform", "verb": "create", "scope": "namespace", "namespace": "fresh-control", "apiGroup": "argoproj.io", "resource": "applications", "name": "account-lightweight-root"},
     {"actor": "release-definition", "verb": "create", "scope": "namespace", "namespace": "fresh-control", "apiGroup": "argoproj.io", "resource": "applications", "name": "fresh-account-release"},
-    {"actor": "workload", "verb": "create", "scope": "namespace", "namespace": "fresh-account", "apiGroup": "apps", "resource": "deployments", "name": "account-api"},
+    {"actor": "workload", "verb": "create", "scope": "namespace", "namespace": "fresh-account", "apiGroup": "argoproj.io", "resource": "rollouts", "name": "account-api"},
     {"actor": "workload", "verb": "create", "scope": "namespace", "namespace": "fresh-account", "apiGroup": "batch", "resource": "jobs", "name": "account-migration"},
     {"actor": "workload", "verb": "create", "scope": "namespace", "namespace": "fresh-account", "apiGroup": "", "resource": "persistentvolumeclaims", "name": "account-data"}
   ],
   "controllers": [
     {
-      "kind": "Deployment", "namespace": "fresh-account", "name": "account-api",
+      "kind": "StatefulSet", "namespace": "fresh-account", "name": "account-postgresql",
+      "podSpec": {
+        "serviceAccountName": "account-database", "automountServiceAccountToken": false,
+        "containers": [{"name": "postgresql", "securityContext": {"privileged": false, "allowPrivilegeEscalation": false}, "env": [{"name": "POSTGRES_PASSWORD", "valueFrom": {"secretKeyRef": {"name": "account-db-bootstrap", "key": "admin-password"}}}]}],
+        "volumes": []
+      }
+    },
+    {
+      "kind": "Job", "namespace": "fresh-account", "name": "account-db-role-bootstrap",
+      "podSpec": {
+        "serviceAccountName": "account-migration", "automountServiceAccountToken": false, "restartPolicy": "Never",
+        "containers": [{"name": "bootstrap", "securityContext": {"privileged": false, "allowPrivilegeEscalation": false}, "env": [
+          {"name": "PGPASSWORD", "valueFrom": {"secretKeyRef": {"name": "account-db-bootstrap", "key": "admin-password"}}},
+          {"name": "MIGRATION_USERNAME", "valueFrom": {"secretKeyRef": {"name": "account-db-migration", "key": "username"}}},
+          {"name": "MIGRATION_PASSWORD", "valueFrom": {"secretKeyRef": {"name": "account-db-migration", "key": "password"}}},
+          {"name": "RUNTIME_USERNAME", "valueFrom": {"secretKeyRef": {"name": "account-db-runtime", "key": "username"}}},
+          {"name": "RUNTIME_PASSWORD", "valueFrom": {"secretKeyRef": {"name": "account-db-runtime", "key": "password"}}}
+        ]}],
+        "volumes": []
+      }
+    },
+    {
+      "kind": "Rollout", "namespace": "fresh-account", "name": "account-api",
       "podSpec": {
         "serviceAccountName": "account-runtime", "automountServiceAccountToken": false,
         "containers": [{"name": "api", "securityContext": {"privileged": false, "allowPrivilegeEscalation": false}, "env": [{"name": "DATABASE_URL", "valueFrom": {"secretKeyRef": {"name": "account-db-runtime", "key": "uri"}}}]}],
@@ -36,13 +57,14 @@
   ],
   "retained": {
     "secretObjectsInGit": false,
-    "secretReferences": ["account-db-migration/uri", "account-db-runtime/uri"],
+    "secretReferences": ["account-db-bootstrap/admin-password", "account-db-migration/username", "account-db-migration/password", "account-db-migration/uri", "account-db-runtime/username", "account-db-runtime/password", "account-db-runtime/uri"],
     "persistentVolumeClaims": {"fresh-account/account-data": {"storageClassName": "standard", "accessModes": ["ReadWriteOnce"], "syncOptions": ["Prune=false", "Delete=false"]}},
-    "jobs": {"fresh-account/account-migration": "mutable-until-first-success-then-frozen"},
+    "jobs": {"fresh-account/account-db-role-bootstrap": "idempotent-hook-verified-before-migration", "fresh-account/account-migration": "mutable-until-first-success-then-frozen"},
     "fieldOwners": {
-      "Application/fresh-control/fresh-platform-root": "platform",
+      "Application/fresh-control/account-lightweight-root": "platform",
+      "Application/fresh-control/fresh-release-definitions": "platform",
       "Application/fresh-control/fresh-account-release": "release-definition",
-      "Deployment/fresh-account/account-api": "workload",
+      "Rollout/fresh-account/account-api": "workload",
       "PersistentVolumeClaim/fresh-account/account-data": "workload"
     }
   }

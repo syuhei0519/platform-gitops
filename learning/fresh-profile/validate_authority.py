@@ -8,6 +8,8 @@ import json
 import re
 from pathlib import Path
 
+import yaml
+
 
 HERE = Path(__file__).resolve().parent
 MATRIX = HERE / "authority-matrix.json"
@@ -15,6 +17,8 @@ EVIDENCE = HERE / "fixtures" / "canonical-two-sha.json"
 ACTORS = {"platform", "workload", "release-definition"}
 DANGEROUS_VERBS = {"delete", "deletecollection", "bind", "escalate", "impersonate"}
 SHA = re.compile(r"[0-9a-f]{40}")
+PLATFORM_TOKEN = "__PLATFORM_GITOPS_SHA__"
+REPOSITORY = HERE.parents[1]
 
 
 class ContractError(ValueError):
@@ -36,11 +40,27 @@ def validate_matrix(matrix):
     require(live.get("required") is True and live.get("status") == "not-run", "live-evidence-boundary")
     require(set(matrix.get("sources", {})) == ACTORS, "source-actors")
     for actor, source in matrix["sources"].items():
-        require(SHA.fullmatch(source.get("commit", "")), f"source-sha:{actor}")
+        revision = source.get("commit", "")
+        require(SHA.fullmatch(revision) or (actor == "platform" and revision == PLATFORM_TOKEN),
+                f"source-sha:{actor}")
         require(source.get("repository", "").endswith(".git"), f"source-repository:{actor}")
         require(source.get("paths") and source.get("destinations") and source.get("kinds"), f"source-finite:{actor}")
         require(not any("*" in item for key in ("paths", "destinations", "kinds") for item in source[key]),
                 f"source-wildcard:{actor}")
+
+    identities = matrix.get("identities", {})
+    require(identities.get("gitops-controller") ==
+            "system:serviceaccount:fresh-control:argocd-application-controller", "gitops-identity")
+    require({identities.get(name) for name in ("database", "migration", "runtime")} == {
+        "system:serviceaccount:fresh-account:account-database",
+        "system:serviceaccount:fresh-account:account-migration",
+        "system:serviceaccount:fresh-account:account-runtime"}, "workload-identities")
+    require(matrix.get("rbac", {}).get("workloadServiceAccountApiVerbs") == [], "workload-api-verbs")
+    require(matrix.get("admission", {}).get("policies") ==
+            ["fresh-application-boundary", "fresh-account-pod-boundary"], "admission-policies")
+    for field in ("rbac", "admission"):
+        path = (REPOSITORY / matrix[field]["manifest"]).resolve()
+        require(path.is_relative_to(REPOSITORY.resolve()) and path.is_file(), f"{field}-manifest")
 
     permissions = matrix.get("permissions", [])
     require(permissions, "permissions-empty")
@@ -145,7 +165,7 @@ def validate_evidence(matrix, evidence):
         require(application.get("revision") == source.get("commit"), f"application-revision:{identity}")
         require(application.get("path") in source.get("paths", []), f"application-path:{identity}")
         require(application.get("namespace") in source.get("destinations", []), f"application-namespace:{identity}")
-    require(identities == {"fresh-control/fresh-platform-root", "fresh-control/fresh-account-release"},
+    require(identities == {"fresh-control/account-lightweight-root", "fresh-control/fresh-account-release"},
             "application-set")
     release = next(item for item in evidence["applications"] if item["actor"] == "release-definition")
     require(release["destination"] == "fresh-account", "release-destination")

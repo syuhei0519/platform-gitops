@@ -12,23 +12,23 @@ spec:
     legacyPlatformLabExcluded: true
     cutoverIncluded: false
   target:
-    clusterName: PENDING_G1
-    context: PENDING_G1
+    clusterName: learning-fresh-plat217-20261025
+    context: kind-learning-fresh-plat217-20261025
     architecture: linux/amd64
     isolation: separate-named-sandbox
   repositories:
     backend-app:
       url: https://github.com/syuhei0519/backend-app.git
-      commit: 90ae1cc966ac37af72eb6fb440f3125a1363a98b
+      commit: 527b9bccf4ae56244d134ae384564ec1cccea815
     frontend-app:
       url: https://github.com/syuhei0519/frontend-app.git
-      commit: d507abff492c1842b9afc705cc439348e85ec35c
+      commit: aecccce46295714645387854a4dad37bdd0cd3c3
     application-manifest:
       url: https://github.com/syuhei0519/application-manifest.git
-      commit: 9441c696fc6fece4b431b832b7d7099539210081
+      commit: d9150a4de69d2447c1b767823fc23784edea0abc
     platform-gitops:
       url: https://github.com/syuhei0519/platform-gitops.git
-      commit: 4a40c64a58105cc91fa1d48940707d09d003dcc6
+      commit: __PLATFORM_GITOPS_SHA__
   tools:
     kind: v0.33.0
     kubernetes: v1.36.4
@@ -61,7 +61,7 @@ spec:
     ref: postgres:18.6-bookworm@sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc
     architecture: linux/amd64
   - name: account-runtime
-    ref: learning.local/account-rollouts@sha256:966adba896524519bd1653b31ade97b624dd5cbf83623f7cdeb5c5708aaa69e0
+    ref: ghcr.io/syuhei0519/backend-app@sha256:746e9acb5e5a24dcd6644ab5e082f2d3dad79620ec2e00afa80aa39a7436cf9a
     architecture: linux/amd64
   - name: prometheus
     ref: quay.io/prometheus/prometheus:v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
@@ -83,15 +83,21 @@ spec:
     clusterKubeconfigRef: <operator-input:G1-kubeconfig>
     imageSupplyRef: <operator-input:G2-image-supply>
     secrets:
+    - name: account-db-bootstrap
+      purpose: PostgreSQL bootstrap and recovery only
+      destination: fresh-account/account-db-bootstrap
+      owner: PENDING_G3
+      expiry: PENDING_G3
+      sourceRef: <operator-input:G3-account-db-bootstrap>
     - name: account-db-runtime
       purpose: Account runtime DML
-      destination: fresh-account/account-runtime-db
+      destination: fresh-account/account-db-runtime
       owner: PENDING_G3
       expiry: PENDING_G3
       sourceRef: <operator-input:G3-account-runtime-db>
     - name: account-db-migration
       purpose: Account owned-schema migration
-      destination: fresh-account/account-migration-db
+      destination: fresh-account/account-db-migration
       owner: PENDING_G3
       expiry: PENDING_G3
       sourceRef: <operator-input:G3-account-migration-db>
@@ -103,15 +109,38 @@ spec:
       sourceRef: <operator-input:G3-repository-read>
   budget:
     measureAt: [before, peak, after]
-    elapsedMaxMinutes: 45
-    hostAvailableMemoryMinGiB: 6
-    hostFreeDiskMinGiB: 20
-    dockerAdditionalDiskMaxGiB: 20
-    workloadCPURequestsMaxMilli: 3000
-    workloadMemoryRequestsMaxMiB: 6144
-    imageBytesMaxGiB: 15
-    podPendingMaxSeconds: 60
-    unexpectedRestartsMax: 0
+    hostObservation:
+      capturedAt: '2026-10-25T00:00:00Z'
+      logicalCpu: 20
+      installedMemoryGiB: 31.84
+      availableMemoryGiB: 6.60
+      freeDiskGiB: 440.56
+      dockerCpuLimit: 20
+      dockerMemoryLimitGiB: 15.53
+      dockerImagesGiB: 10.86
+      dockerVolumesGiB: 11.21
+      dockerBuildCacheGiB: 2.847
+      existingRunningContainers: 1
+    estimates:
+      renderedRequestTotals:
+        cpuMilli: 475
+        memoryMiB: 960
+        applicationManifestInputSha256: b4620a74e38c968f56975c4f5253e79b04fa34302aa27afd19666a5838383ada
+        platformObservabilityInputSha256: a7af14c5615d14de698c6c8fbc529faa02aa1e4f92c6644359c98f8e6e1ee512
+        includes: Account-PostgreSQL-role-bootstrap-migration-two-API-replicas-OTel-Prometheus-Grafana
+        excludes: Kubernetes-control-plane-ArgoCD-Rollouts-Istio
+      retainedArchiveBytes: PENDING_G2
+      controlPlaneOverhead: PENDING_G1
+    approvalLimits:
+      elapsedMaxMinutes: PENDING_G1
+      hostAvailableMemoryMinGiB: PENDING_G1
+      hostFreeDiskMinGiB: PENDING_G1
+      dockerAdditionalDiskMaxGiB: PENDING_G1
+      workloadCPURequestsMaxMilli: PENDING_G1
+      workloadMemoryRequestsMaxMiB: PENDING_G1
+      imageBytesMaxGiB: PENDING_G2
+      podPendingMaxSeconds: PENDING_G1
+      unexpectedRestartsMax: 0
     stopOn:
     - host-memory-below-minimum
     - host-disk-below-minimum
@@ -127,7 +156,7 @@ spec:
   contracts:
     currentComparison: learning/existing-kind/current-contract.json
     equivalence: learning/fresh-profile/equivalence.json
-    secretContract: docs/secret-contract.md
+    secretContract: learning/fresh-profile/secret-contract.md
     imageSupply: learning/fresh-profile/image-supply.lock.yaml
   decisions:
     G1:

@@ -1,0 +1,59 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: {name: argocd-fresh-control-writer, namespace: fresh-control}
+rules:
+- apiGroups: [argoproj.io]
+  resources: [applications]
+  verbs: [get, list, watch, create, update, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: {name: argocd-fresh-control-writer, namespace: fresh-control}
+subjects:
+- {kind: ServiceAccount, name: argocd-application-controller, namespace: fresh-control}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: argocd-fresh-control-writer}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: {name: argocd-fresh-account-writer, namespace: fresh-account}
+rules:
+- apiGroups: ['']
+  resources: [configmaps, persistentvolumeclaims, services, serviceaccounts]
+  verbs: [get, list, watch, create, update, patch]
+- apiGroups: [apps]
+  resources: [statefulsets]
+  verbs: [get, list, watch, create, update, patch]
+- apiGroups: [batch]
+  resources: [jobs]
+  verbs: [get, list, watch, create, update, patch]
+- apiGroups: [argoproj.io]
+  resources: [rollouts]
+  verbs: [get, list, watch, create, update, patch]
+- apiGroups: [networking.istio.io]
+  resources: [destinationrules, virtualservices]
+  verbs: [get, list, watch, create, update, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: {name: argocd-fresh-account-writer, namespace: fresh-account}
+subjects:
+- {kind: ServiceAccount, name: argocd-application-controller, namespace: fresh-control}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: argocd-fresh-account-writer}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: {name: argocd-fresh-observability-writer, namespace: fresh-observability}
+rules:
+- apiGroups: ['']
+  resources: [configmaps, services, serviceaccounts]
+  verbs: [get, list, watch, create, update, patch]
+- apiGroups: [apps]
+  resources: [deployments, statefulsets]
+  verbs: [get, list, watch, create, update, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: {name: argocd-fresh-observability-writer, namespace: fresh-observability}
+subjects:
+- {kind: ServiceAccount, name: argocd-application-controller, namespace: fresh-control}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: argocd-fresh-observability-writer}

@@ -42,7 +42,8 @@
               "name": {"type": "string", "pattern": "^[a-z0-9-]+$"},
               "source": {"$ref": "#/definitions/source"},
               "retrieval": {"$ref": "#/definitions/retrieval"},
-              "checks": {"$ref": "#/definitions/checks"}
+              "checks": {"$ref": "#/definitions/checks"},
+              "comparisonOnly": {"$ref": "#/definitions/comparisonOnly"}
             }
           }
         }
@@ -63,12 +64,20 @@
         },
         {
           "type": "object", "additionalProperties": false,
-          "required": ["kind", "published", "immutable", "freshEligible", "location", "retentionHours"],
+          "required": ["kind", "published", "immutable", "freshEligible", "location", "retentionHours", "sourceCommit", "manifestDigest", "configDigest", "archiveSha256", "ciRunId", "artifactId", "entrypoint", "user"],
           "properties": {
             "kind": {"const": "checked-local-artifact"}, "published": {"const": false},
             "immutable": {"const": true}, "freshEligible": {"const": false},
             "location": {"type": "string", "pattern": "^checked-artifact:[a-z0-9-]+$"},
-            "retentionHours": {"type": "integer", "minimum": 0, "maximum": 720}
+            "retentionHours": {"type": "integer", "minimum": 0, "maximum": 720},
+            "sourceCommit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+            "manifestDigest": {"$ref": "#/definitions/digest"},
+            "configDigest": {"$ref": "#/definitions/digest"},
+            "archiveSha256": {"$ref": "#/definitions/digest"},
+            "ciRunId": {"type": "integer", "minimum": 1},
+            "artifactId": {"type": "integer", "minimum": 1},
+            "entrypoint": {"const": ["/server"]},
+            "user": {"const": "10001:10001"}
           }
         },
         {
@@ -120,6 +129,15 @@
       ]
     },
     "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "comparisonOnly": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source", "indexDigest", "childDigest", "os", "architecture"],
+      "properties": {
+        "source": {"const": "old-node-cache"}, "indexDigest": {"$ref": "#/definitions/digest"},
+        "childDigest": {"$ref": "#/definitions/digest"}, "os": {"const": "linux"},
+        "architecture": {"const": "amd64"}
+      }
+    },
     "retrieval": {
       "type": "object", "additionalProperties": false,
       "required": ["status", "emptyNodeCache", "observedDigest", "observedArchitecture"],

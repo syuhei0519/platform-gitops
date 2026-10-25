@@ -6,9 +6,12 @@ spec:
   steps:
   - id: preflight
     requires: []
-    readyWhen: profile-lock-valid-and-budget-measured
-  - id: cluster
+    readyWhen: profile-lock-materialized-gates-approved-and-budget-measured
+  - id: image-supply
     requires: [preflight]
+    readyWhen: every-image-retrieved-by-digest-and-empty-node-cache-proved
+  - id: cluster
+    requires: [image-supply]
     readyWhen: expected-cluster-uid-and-empty-node-cache-recorded
   - id: crds
     requires: [cluster]
@@ -16,14 +19,23 @@ spec:
   - id: controllers
     requires: [crds]
     readyWhen: controllers-and-webhooks-ready
-  - id: custom-resources
+  - id: security-boundary
     requires: [controllers]
+    readyWhen: appprojects-rbac-and-admission-positive-negative-evidence-recorded
+  - id: credential-bootstrap
+    requires: [security-boundary]
+    readyWhen: fresh-only-secret-metadata-and-ca-metadata-recorded
+  - id: custom-resources
+    requires: [credential-bootstrap]
     readyWhen: admitted-custom-resources-reconciled
   - id: database
     requires: [custom-resources]
     readyWhen: database-ready-with-owned-empty-schema
-  - id: migration
+  - id: role-bootstrap
     requires: [database]
+    readyWhen: runtime-and-migration-role-boundaries-verified
+  - id: migration
+    requires: [role-bootstrap]
     readyWhen: migration-job-succeeded-once-and-history-exact
   - id: application
     requires: [migration]

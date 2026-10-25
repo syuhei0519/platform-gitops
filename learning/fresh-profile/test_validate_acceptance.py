@@ -49,7 +49,15 @@ class AcceptanceTests(unittest.TestCase):
         for item in profile["spec"]["inputs"]["secrets"]:
             item["owner"] = "personal-platform-owner"
             item["expiry"] = "2026-11-25"
+        profile["spec"]["repositories"]["platform-gitops"]["commit"] = "1" * 40
+        limits = profile["spec"]["budget"]["approvalLimits"]
+        limits.update(elapsedMaxMinutes=45, hostAvailableMemoryMinGiB=4,
+                      hostFreeDiskMinGiB=20, dockerAdditionalDiskMaxGiB=15,
+                      workloadCPURequestsMaxMilli=2000, workloadMemoryRequestsMaxMiB=4096,
+                      imageBytesMaxGiB=15, podPendingMaxSeconds=60)
         record = copy.deepcopy(self.pending)
+        record["profile"]["repositories"]["platform-gitops"] = "1" * 40
+        record["evidence"]["revisions"]["desired"]["platform-gitops"] = "1" * 40
         record["metadata"].update(recordedAt="2026-10-25T21:00:00Z", liveEvidence=True)
         record["target"].update(
             clusterName="kind-platform-fresh-plat217",

@@ -1,0 +1,60 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: fresh-platform
+  namespace: fresh-control
+spec:
+  sourceRepos:
+  - https://github.com/syuhei0519/platform-gitops.git
+  - https://github.com/syuhei0519/application-manifest.git
+  destinations:
+  - {server: https://kubernetes.default.svc, namespace: fresh-control}
+  - {server: https://kubernetes.default.svc, namespace: fresh-observability}
+  namespaceResourceWhitelist:
+  - {group: argoproj.io, kind: Application}
+  - {group: '', kind: ConfigMap}
+  - {group: '', kind: Service}
+  - {group: '', kind: ServiceAccount}
+  - {group: apps, kind: Deployment}
+  - {group: apps, kind: StatefulSet}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: fresh-workload
+  namespace: fresh-control
+spec:
+  sourceRepos:
+  - https://github.com/syuhei0519/application-manifest.git
+  destinations:
+  - {server: https://kubernetes.default.svc, namespace: fresh-account}
+  namespaceResourceWhitelist:
+  - {group: '', kind: ConfigMap}
+  - {group: '', kind: PersistentVolumeClaim}
+  - {group: '', kind: Service}
+  - {group: '', kind: ServiceAccount}
+  - {group: apps, kind: StatefulSet}
+  - {group: batch, kind: Job}
+  - {group: argoproj.io, kind: Rollout}
+  - {group: networking.istio.io, kind: DestinationRule}
+  - {group: networking.istio.io, kind: VirtualService}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: account-lightweight-root
+  namespace: fresh-control
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false
+spec:
+  project: fresh-platform
+  source:
+    repoURL: https://github.com/syuhei0519/platform-gitops.git
+    targetRevision: __PLATFORM_GITOPS_SHA__
+    path: learning/fresh-profile/root/children
+    directory: {recurse: true}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fresh-control
+  syncPolicy:
+    syncOptions: [ApplyOutOfSyncOnly=true, Prune=false]

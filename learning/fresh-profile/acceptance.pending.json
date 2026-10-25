@@ -4,17 +4,17 @@
   "metadata": {"name": "account-lightweight-fresh", "recordedAt": null, "liveEvidence": false},
   "profile": {
     "lockPath": "learning/fresh-profile/profile.lock.yaml",
-    "sha256": "74a52dca3f4dd928be3af09e6075eff0b24d6551d22082dab2020510521e7703",
+    "sha256": "2a8c6d8bcedf8a8808fcfdcba3f885b0f4697c5e88dcf5e87cd2839c39cab589",
     "repositories": {
-      "backend-app": "90ae1cc966ac37af72eb6fb440f3125a1363a98b",
-      "frontend-app": "d507abff492c1842b9afc705cc439348e85ec35c",
-      "application-manifest": "9441c696fc6fece4b431b832b7d7099539210081",
-      "platform-gitops": "4a40c64a58105cc91fa1d48940707d09d003dcc6"
+      "backend-app": "527b9bccf4ae56244d134ae384564ec1cccea815",
+      "frontend-app": "aecccce46295714645387854a4dad37bdd0cd3c3",
+      "application-manifest": "d9150a4de69d2447c1b767823fc23784edea0abc",
+      "platform-gitops": "__PLATFORM_GITOPS_SHA__"
     }
   },
   "target": {
-    "clusterName": "PENDING_G1",
-    "context": "PENDING_G1",
+    "clusterName": "learning-fresh-plat217-20261025",
+    "context": "kind-learning-fresh-plat217-20261025",
     "kubeconfigRef": "<operator-input:G1-kubeconfig>",
     "clusterUID": null,
     "architecture": "linux/amd64"
@@ -33,7 +33,7 @@
       {"name": "istio-pilot", "expectedDigest": "sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "istio-proxy", "expectedDigest": "sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "postgres", "expectedDigest": "sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
-      {"name": "account-runtime", "expectedDigest": "sha256:966adba896524519bd1653b31ade97b624dd5cbf83623f7cdeb5c5708aaa69e0", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
+      {"name": "account-runtime", "expectedDigest": "sha256:746e9acb5e5a24dcd6644ab5e082f2d3dad79620ec2e00afa80aa39a7436cf9a", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "prometheus", "expectedDigest": "sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "otel-collector", "expectedDigest": "sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "grafana", "expectedDigest": "sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"}
@@ -42,21 +42,25 @@
       "status": "unrun",
       "expected": [
         "fresh-control/Application/account-lightweight-root",
+        "fresh-control/Application/fresh-release-definitions",
+        "fresh-control/Application/fresh-account-release",
         "fresh-account/StatefulSet/account-postgresql",
+        "fresh-account/Job/account-db-role-bootstrap",
         "fresh-account/Job/account-migration",
         "fresh-account/Rollout/account-api",
         "fresh-observability/Deployment/otel-collector",
-        "fresh-observability/StatefulSet/prometheus"
+        "fresh-observability/StatefulSet/prometheus",
+        "fresh-observability/Deployment/grafana"
       ],
       "observed": []
     },
     "revisions": {
       "status": "unrun",
       "desired": {
-        "backend-app": "90ae1cc966ac37af72eb6fb440f3125a1363a98b",
-        "frontend-app": "d507abff492c1842b9afc705cc439348e85ec35c",
-        "application-manifest": "9441c696fc6fece4b431b832b7d7099539210081",
-        "platform-gitops": "4a40c64a58105cc91fa1d48940707d09d003dcc6"
+        "backend-app": "527b9bccf4ae56244d134ae384564ec1cccea815",
+        "frontend-app": "aecccce46295714645387854a4dad37bdd0cd3c3",
+        "application-manifest": "d9150a4de69d2447c1b767823fc23784edea0abc",
+        "platform-gitops": "__PLATFORM_GITOPS_SHA__"
       },
       "actual": {}
     },
@@ -66,16 +70,20 @@
       {"id": "workloads-ready", "status": "unrun", "detail": null},
       {"id": "api", "status": "unrun", "detail": null},
       {"id": "metrics", "status": "unrun", "detail": null},
-      {"id": "traces", "status": "unrun", "detail": null}
+      {"id": "traces", "status": "unrun", "detail": null},
+      {"id": "telemetry-profile-and-pod-uid", "status": "unrun", "detail": null},
+      {"id": "actual-db-role-owner", "status": "unrun", "detail": null}
     ],
     "fieldOwnership": {
       "status": "unrun",
-      "expected": ["argocd-application-controller:desired-fields", "argo-rollouts:rollout-status", "statefulset-controller:db-pod-template", "migration-job:succeeded-preserved"],
+      "expected": ["argocd-application-controller:desired-fields", "argo-rollouts:rollout-status", "statefulset-controller:db-pod-template", "role-bootstrap-job:succeeded-before-migration", "migration-job:succeeded-preserved"],
       "observed": []
     },
     "resyncRestart": [
       {"id": "argocd-resync", "status": "unrun", "detail": null},
-      {"id": "workload-restart", "status": "unrun", "detail": null}
+      {"id": "workload-restart", "status": "unrun", "detail": null},
+      {"id": "db-down-recovery", "status": "unrun", "detail": null},
+      {"id": "old-image-rollback", "status": "unrun", "detail": null}
     ]
   },
   "negativeCases": [
@@ -83,7 +91,8 @@
     {"id": "wrong-secret", "status": "unrun", "expectedClass": "fail-closed-secret-invalid", "observedClass": null},
     {"id": "wrong-architecture", "status": "unrun", "expectedClass": "fail-closed-architecture-mismatch", "observedClass": null},
     {"id": "unready-dependency", "status": "unrun", "expectedClass": "fail-closed-dependency-unready", "observedClass": null},
-    {"id": "healthy-root-empty-child", "status": "unrun", "expectedClass": "fail-closed-empty-child", "observedClass": null}
+    {"id": "healthy-root-empty-child", "status": "unrun", "expectedClass": "fail-closed-empty-child", "observedClass": null},
+    {"id": "wrong-profile-identity", "status": "unrun", "expectedClass": "fail-closed-profile-mismatch", "observedClass": null}
   ],
   "preservation": {
     "currentCluster": {"id": "existing-cluster-unchanged", "status": "unrun", "detail": null},

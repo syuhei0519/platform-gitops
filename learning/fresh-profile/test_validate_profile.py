@@ -31,7 +31,7 @@ class FreshProfileTests(unittest.TestCase):
         profile, dag, equivalence = contract.validate()
         self.assertEqual(len(profile["spec"]["repositories"]), 4)
         self.assertEqual(len(profile["spec"]["images"]), 11)
-        self.assertEqual(len(dag["spec"]["steps"]), 9)
+        self.assertEqual(len(dag["spec"]["steps"]), 13)
         self.assertEqual(len(equivalence["mappings"]), 8)
         with self.assertRaisesRegex(contract.ContractError, "approval-g1"):
             contract.validate(require_approved=True)
@@ -77,8 +77,8 @@ class FreshProfileTests(unittest.TestCase):
 
     def test_budget_and_stop_conditions_are_bounded(self):
         value = copy.deepcopy(self.profile)
-        value["spec"]["budget"]["elapsedMaxMinutes"] = 600
-        with self.assertRaisesRegex(contract.ContractError, "schema"):
+        value["spec"]["budget"]["approvalLimits"]["elapsedMaxMinutes"] = 600
+        with self.assertRaisesRegex(contract.ContractError, "pending-g1-budget"):
             self.validate_copy(value)
         value = copy.deepcopy(self.profile)
         value["spec"]["budget"]["stopOn"][-1] = "continue-after-unexpected-restart"
@@ -88,7 +88,7 @@ class FreshProfileTests(unittest.TestCase):
     def test_dag_order_dependency_and_resume_are_strict(self):
         dag = contract.load_yaml(contract.HERE / "bootstrap-dag.yaml")
         changed = copy.deepcopy(dag)
-        changed["spec"]["steps"][3]["requires"] = ["cluster"]
+        changed["spec"]["steps"][4]["requires"] = ["cluster"]
         with self.assertRaisesRegex(contract.ContractError, "dag-dependency"):
             contract.validate_dag(changed)
         changed = copy.deepcopy(dag)
@@ -113,6 +113,12 @@ class FreshProfileTests(unittest.TestCase):
         for item in value["spec"]["inputs"]["secrets"]:
             item["owner"] = "personal-platform-owner"
             item["expiry"] = "2026-11-25"
+        value["spec"]["repositories"]["platform-gitops"]["commit"] = "1" * 40
+        limits = value["spec"]["budget"]["approvalLimits"]
+        limits.update(elapsedMaxMinutes=45, hostAvailableMemoryMinGiB=4,
+                      hostFreeDiskMinGiB=20, dockerAdditionalDiskMaxGiB=15,
+                      workloadCPURequestsMaxMilli=2000, workloadMemoryRequestsMaxMiB=4096,
+                      imageBytesMaxGiB=15, podPendingMaxSeconds=60)
         self.validate_copy(value, require_approved=True)
 
 

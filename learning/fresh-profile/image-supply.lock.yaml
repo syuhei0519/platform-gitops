@@ -61,6 +61,12 @@ spec:
     source: *pending
     retrieval: *pendingRetrieval
     checks: *pendingChecks
+    comparisonOnly:
+      source: old-node-cache
+      indexDigest: sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396
+      childDigest: sha256:109c5d6cf7f1aa79d2c116f2acc994180a3bec8f583f6b24f6ddc7498fbd7a78
+      os: linux
+      architecture: amd64
   - name: istio-pilot
     source: *pending
     retrieval: *pendingRetrieval
@@ -73,6 +79,12 @@ spec:
     source: *pending
     retrieval: *pendingRetrieval
     checks: *pendingChecks
+    comparisonOnly:
+      source: old-node-cache
+      indexDigest: sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc
+      childDigest: sha256:6b38fe68f2c02cafffbbce7496f76d110d8a947c039bd22c067e9a43c2250240
+      os: linux
+      architecture: amd64
   - name: account-runtime
     source:
       kind: checked-local-artifact
@@ -81,6 +93,14 @@ spec:
       freshEligible: false
       location: checked-artifact:account-runtime
       retentionHours: 0
+      sourceCommit: 527b9bccf4ae56244d134ae384564ec1cccea815
+      manifestDigest: sha256:746e9acb5e5a24dcd6644ab5e082f2d3dad79620ec2e00afa80aa39a7436cf9a
+      configDigest: sha256:5062ed82987c361535a339f6ee30c67d3fca5c8190989aa404f5bda13dd72822
+      archiveSha256: sha256:9e9b4b12315c9efa665f82dd43975668b738bb65f6f2434f8350f0d4e9a9ba37
+      ciRunId: 40145897432
+      artifactId: 12580417539
+      entrypoint: [/server]
+      user: 10001:10001
     retrieval: *pendingRetrieval
     checks: *pendingChecks
   - name: prometheus

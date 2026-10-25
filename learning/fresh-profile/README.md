@@ -12,7 +12,10 @@ source. `learning/existing-kind/current-contract.json` is comparison input only.
 
 ## Locked inputs
 
-`profile.lock.yaml` records all four repository commits as 40-character SHAs,
+`profile.lock.yaml` records three external repository commits as 40-character
+SHAs. The platform repository uses the explicit self-reference token
+`__PLATFORM_GITOPS_SHA__`; `materialize.py` seals it to the final commit outside
+Git and re-hashes the pending acceptance record before any approval request.
 the tool/controller versions, every image required by this profile, the target
 architecture, external input references, measurement limits and stop
 conditions. Secret references contain metadata only; values and private key
@@ -20,8 +23,8 @@ material are forbidden by the validator.
 
 The checked-in lock intentionally leaves these action-time decisions pending:
 
-- **G1**: exact new cluster name/context, host budget and sandbox retention or
-  cleanup boundary;
+- **G1**: the proposed exact cluster/context are locked, while host thresholds,
+  run window, sandbox retention and cleanup authority remain pending;
 - **G2**: private registry or retained immutable OCI archive, owner, retention
   horizon, restore procedure and actual `linux/amd64` retrieval proof;
 - **G3**: credential owner, initial distribution/recovery source and expiry;
@@ -31,9 +34,10 @@ Pending values are valid for offline review. They fail `--require-approved`, so
 this file cannot be mistaken for permission to run PLAT-217. A node cache or
 expiring CI artifact is never supply evidence.
 
-`image-supply.lock.yaml` makes that boundary executable. The current Account
-runtime is explicitly a `checked-local-artifact`: its digest was checked, but it
-is neither published nor eligible for a cacheless fresh build. The remaining
+`image-supply.lock.yaml` makes that boundary executable. The Account runtime is
+fixed to backend source `527b9bcc...`, manifest `746e9acb...`, entrypoint
+`/server`, and user `10001:10001`. Its CI artifact metadata was checked, but it
+is neither published nor retained for a cacheless fresh build. The remaining
 images stay `pending-g2` until their real retrieval evidence is recorded.
 
 An approved lock selects exactly one finite supply mode: an authenticated private
@@ -57,7 +61,15 @@ cluster UID. Resume verifies those identities and completed resources, then
 retries only the failed/incomplete step. A succeeded migration Job is observed,
 not recreated. A rerun must be an idempotent verification of the same lock.
 
-The budget is measured before, at peak and after. Crossing a memory, disk,
+The authoritative checked-in DAG has thirteen steps: preflight, image supply,
+cluster, CRDs, controllers/webhooks, security boundary, credential bootstrap,
+custom resources, database, role bootstrap, migration, application, and
+acceptance. This list supersedes the shorter historical sequence above.
+
+The declared Account and minimal observability requests are reproducibly
+measured with `measure_requests.py`. Control-plane overhead, archive bytes, and
+all stop thresholds remain pending rather than guessed. The budget is measured
+before, at peak and after. Crossing an approved memory, disk,
 elapsed, Pending or unexpected-restart limit stops the batch; it does not
 silently enlarge the host or omit a component.
 
@@ -75,6 +87,9 @@ python learning/fresh-profile/validate_profile.py
 python learning/fresh-profile/test_validate_profile.py
 python learning/fresh-profile/validate_image_supply.py
 python learning/fresh-profile/test_validate_image_supply.py
+python learning/fresh-profile/test_validate_manifests.py
+python learning/fresh-profile/test_measure_requests.py
+python learning/fresh-profile/test_materialize.py
 python learning/fresh-profile/validate_profile.py --require-approved
 python learning/fresh-profile/validate_image_supply.py --require-fresh-evidence
 ```
@@ -86,7 +101,11 @@ approves G1-G3 and the lock is updated by review.
 ## Authority proposal (PLAT-215)
 
 `authority-matrix.json` separates platform, workload and release-definition
-sources by fixed repository SHA, destination, kind, verb and resource name.
+sources by materialized repository SHA, destination, kind, verb and resource
+name. The matrix separately names the actual Argo controller KSA and workload
+KSAs; Git source labels are not treated as Kubernetes subjects. The exact
+Role/RoleBinding and ValidatingAdmissionPolicy/Binding designs are under
+`security/`.
 `fixtures/canonical-two-sha.json` is an offline positive fixture; it is not a
 record of an applied policy or a successful sync. The validator also enforces
 the reviewed ServiceAccount, disabled token automount, finite Secret keys,
@@ -113,8 +132,11 @@ rendering cannot be reported as fresh-cluster acceptance.
 
 The record locks the profile hash, all four repository revisions, every image
 digest and architecture, a nonempty expected resource set, field owners,
-readiness/API/metrics/traces, resync/restart, and the five required fail-closed
-negative cases. It also fixes cleanup to `new-sandbox-only` and requires
+readiness/API/metrics/traces, telemetry profile/Pod UID, actual DB role owner,
+resync/restart, DB-down recovery, old-image rollback, and six fail-closed
+negative cases. `live-acceptance-plan.md` fixes the fault targets and recovery
+requirements; the prior Account rollback digest remains an explicit PLAT-211
+input. It also fixes cleanup to `new-sandbox-only` and requires
 separate evidence that the current cluster and existing data were unchanged.
 
 ```text
