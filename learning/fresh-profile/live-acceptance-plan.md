@@ -11,17 +11,19 @@ approved run-scoped kubeconfig and explicit context
 1. G1 approves creation and the measured stop thresholds for exactly
    `learning-fresh-plat217-20261025`. Record host/Docker before values and stop
    without starting a new step if any approved threshold is crossed.
-2. G2 approves one immutable retained source for every image. Record an empty
-   fresh-node workload cache before import, then index digest, selected
+2. G2 first fixes host/archive provenance without requiring a cluster. After
+   cluster creation, record an empty fresh-node workload cache before import,
+   then index digest, selected
    `linux/amd64` child digest, config digest, and source type after import.
 3. Security approval covers only the AppProjects in `root/bootstrap.yaml`, the
-   three namespaced Role/RoleBinding pairs in `security/rbac.yaml`, and the two
+   three namespaced Role/RoleBinding pairs in `security/rbac.yaml`, and the three
    ValidatingAdmissionPolicy/Binding pairs in `security/admission.yaml`.
 4. G3 approves fresh-isolated credentials and fresh-sandbox CA creation. Record
    metadata/key names only. Existing Secret or CA read/export/transfer is a
    separate approval and is not part of this plan.
-5. Execute the 13-step `bootstrap-dag.yaml`, recording the materialized profile
-   digest, cluster UID, resource UIDs, input-reference digests, status, and
+5. Execute the 15-step `bootstrap-dag.yaml`, recording the materialized profile
+   digest, live-adapter input-set digest, cluster UID, resource UIDs,
+   input-reference digests, status, and
    timestamps after every step.
 
 ## Positive evidence
@@ -52,7 +54,7 @@ approved run-scoped kubeconfig and explicit context
 | Wrong profile identity | Supply a non-canonical profile label/attribute fixture to the new collector path | Restore `fresh-account`, restart the Rollout, prove accepted profile plus actual Pod UID |
 | DB down/recovery | Delete only `Pod/fresh-account/account-postgresql-0` after the role/migration evidence is sealed | StatefulSet recreates the Pod against `PVC/fresh-account/account-data`; prove schema owner, runtime role, API recovery, and persistent test row identity |
 | Workload restart | Restart only `Rollout/fresh-account/account-api` | Same image digest, repository SHAs, DB role, profile, new Pod UID, Ready/API/metrics/traces |
-| Old-image rollback | Set only `Rollout/fresh-account/account-api` to the separately supplied approved prior Account digest | Roll back to digest `746e9acb...`, prove revision/role/profile/readiness. **Blocked until PLAT-211 supplies the exact prior Account digest, source SHA, and retained G2 source.** |
+| Old-image rollback | Apply a separately approved retained prior image **and its matching prior config** pair | Prove revision/role/profile/readiness after the paired restore. **Blocked until the prior pair has an exact source, digest and retained G2 source; `746e9acb...` is not assumed fresh-profile compatible.** |
 | Healthy root / empty child | Use an offline/materialized empty-child fixture; do not mutate the existing cluster | Gate rejects the expected-resource mismatch, then canonical two-SHA input passes |
 | Wrong architecture | Use the preflight fixture only, before image import or resource apply | Gate rejects; restore canonical lock. No live resource recovery is needed |
 

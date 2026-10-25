@@ -148,6 +148,8 @@ class FreshProfileTests(unittest.TestCase):
 
     def test_approved_profile_rejects_pending_admission_secret_key_contract(self):
         value = copy.deepcopy(self.profile)
+        value["spec"]["freshRuntimeRequirement"]["admissionSecretKeyContract"] = \
+            "PENDING_EXACT_ADMISSION_SECRET_KEY_APPROVAL"
         value["spec"]["target"].update(clusterName="kind-platform-fresh-plat217",
                                         context="kind-platform-fresh-plat217")
         for gate in ("G1", "G2", "G3"):

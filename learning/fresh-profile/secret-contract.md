@@ -7,10 +7,10 @@ The `fresh-account` namespace uses exactly:
 
 - `Secret/account-db-bootstrap`, key `admin-password`, consumed only by
   `StatefulSet/account-postgresql` and `Job/account-db-role-bootstrap`.
-- `Secret/account-db-migration`, keys `username`, `password`, and `uri`,
+- `Secret/account-db-migration`, keys `username` and `password`,
   consumed only by `Job/account-db-role-bootstrap` and
   `Job/account-migration`.
-- `Secret/account-db-runtime`, keys `username`, `password`, and `uri`, consumed
+- `Secret/account-db-runtime`, keys `username` and `password`, consumed
   only by `Job/account-db-role-bootstrap` and `Rollout/account-api`.
 - `Secret/fresh-control/repository-read` only if public Git read fails.
 
@@ -21,9 +21,9 @@ CA is a separate approval. Evidence records metadata and key names only.
 
 The application source at `9e6ef64cf4e37eb52612daa7e4a35e48f3f39754`
 removes the `uri` fallback and consumes only `username` and `password` for the
-runtime and migration operations. The current Admission allowlist above has
-not been widened or rewritten under the Helm/Kustomize override approval.
-`profile.lock.yaml` therefore records
-`PENDING_EXACT_ADMISSION_SECRET_KEY_APPROVAL`; no live bundle may pass the gate
-until an exact local-code approval aligns this contract, the canonical
-security contract, fixtures, and policy together.
+runtime and migration operations. The local Admission allowlist now matches
+those exact operation-scoped keys: the migration Job cannot read
+bootstrap/runtime keys, the runtime Rollout cannot read migration/bootstrap
+keys, and `uri` is not an accepted fallback. This is code-only evidence;
+applying the policy and proving effective denial remain separately approved
+live work.

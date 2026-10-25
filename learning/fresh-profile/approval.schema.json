@@ -45,12 +45,13 @@
         "hashes": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["profileSha256", "materializationSha256", "sourceSetSha256", "liveAdapterPlanSha256"],
+          "required": ["profileSha256", "materializationSha256", "sourceSetSha256", "liveAdapterPlanSha256", "liveAdapterInputSetSha256"],
           "properties": {
             "profileSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
             "materializationSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
             "sourceSetSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-            "liveAdapterPlanSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+            "liveAdapterPlanSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "liveAdapterInputSetSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
           }
         },
         "scope": {

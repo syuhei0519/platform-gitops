@@ -177,18 +177,18 @@
       "Rollout/fresh-account/account-api": {
         "serviceAccountName": "account-runtime",
         "automountServiceAccountToken": false,
-        "allowedSecretKeys": {"account-db-runtime": ["uri"]}
+        "allowedSecretKeys": {"account-db-runtime": ["username", "password"]}
       },
       "Job/fresh-account/account-migration": {
         "serviceAccountName": "account-migration",
         "automountServiceAccountToken": false,
-        "allowedSecretKeys": {"account-db-migration": ["uri"]}
+        "allowedSecretKeys": {"account-db-migration": ["username", "password"]}
       }
     }
   },
   "retainedSemantics": {
     "secretObjectsInGit": false,
-    "secretReferences": ["account-db-bootstrap/admin-password", "account-db-migration/username", "account-db-migration/password", "account-db-migration/uri", "account-db-runtime/username", "account-db-runtime/password", "account-db-runtime/uri"],
+    "secretReferences": ["account-db-bootstrap/admin-password", "account-db-migration/username", "account-db-migration/password", "account-db-runtime/username", "account-db-runtime/password"],
     "persistentVolumeClaims": {
       "fresh-account/account-data": {
         "storageClassName": "standard",

@@ -94,8 +94,8 @@ def validate_canonical(contract):
                    for name, keys in controller["allowedSecretKeys"].items() for key in keys}
     require(secret_refs == {("account-db-bootstrap", "admin-password"),
                             ("account-db-migration", "username"), ("account-db-migration", "password"),
-                            ("account-db-migration", "uri"), ("account-db-runtime", "username"),
-                            ("account-db-runtime", "password"), ("account-db-runtime", "uri")},
+                            ("account-db-runtime", "username"),
+                            ("account-db-runtime", "password")},
             "canonical-secret-keys")
     require(contract.get("rbacRuleContract") == {
         "discoveryVerbs": ["get", "list", "watch"], "createVerbs": ["create"],
@@ -396,6 +396,8 @@ def validate_negatives(canonical, fixture):
                                                 "direct-pod", "fake-owner-direct-pod", "secret-volume",
                                                 "wrong-secret-key", "privileged-init-container",
                                                 "secret-backed-init-container", "ephemeralcontainers-subresource",
+                                                "runtime-uri-fallback", "migration-uri-fallback",
+                                                "migration-job-bootstrap-secret",
                                                 "arbitrary-managed-resource"},
             "negative-case-set")
     require(all(item.get("expected") == "deny" and

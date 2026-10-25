@@ -199,29 +199,53 @@ class RunnerTests(unittest.TestCase):
             "Deployment": "deployment", "Job": "job", "PersistentVolumeClaim": "pvc",
             "StatefulSet": "statefulset", "Rollout": "rollout", "Service": "service",
             "DestinationRule": "destinationrule", "VirtualService": "virtualservice",
+            "Application": "application",
+            "Node": "node",
         }
         def resource_spec(kind, name):
+            if kind == "Application":
+                return {"project": "fresh-account", "source": {"targetRevision": APPLICATION}}
             if kind == "Job":
                 return {"template": {"metadata": {"labels": {"step": name}}}}
             if kind == "PersistentVolumeClaim":
                 return {"accessModes": ["ReadWriteOnce"], "volumeName": "pvc-account-data"}
+            if kind == "Node":
+                return {"providerID": "kind://docker/" + name}
             if kind in {"Deployment", "StatefulSet", "Rollout"}:
                 return {"replicas": 1, "template": {"metadata": {"labels": {"step": name}}}}
             return {"selector": {"app": name}}
         def command(kind, namespace, name):
+            if kind == "Application":
+                return {"tool": "argocd", "args": ["--core", "--kube-context", target_context,
+                        "app", "get", name, "--output", "json"], "contentSha256": None}
+            if kind == "Node":
+                return {"tool": "kubectl", "args": ["--kubeconfig", kubeconfig,
+                        "--context", target_context, "get", "node", name,
+                        "--output", "json"], "contentSha256": None}
             return {"tool": "kubectl", "args": ["--kubeconfig", kubeconfig,
                     "--context", target_context, "get", resource_tokens[kind], name,
-                    "--namespace", namespace, "--output", "json"]}
+                    "--namespace", namespace, "--output", "json"], "contentSha256": None}
         def step_contract(step):
-            if step == "database":
+            if step in {"empty-node-cache", "image-import"}:
+                contracts = [("v1", "Node", "None",
+                              spec["target"]["clusterName"] + "-control-plane", "none",
+                              "node-cache-empty" if step == "empty-node-cache"
+                              else "node-images-present", {})]
+            elif step == "database":
                 contracts = [
+                    ("argoproj.io/v1alpha1", "Application", "fresh-control",
+                     "fresh-account-release", "none", "argocd-operation-succeeded", {}),
                     ("v1", "PersistentVolumeClaim", "fresh-account", "account-data",
                      "none", "pvc-bound", {}),
+                    ("v1", "Service", "fresh-account", "account-postgresql",
+                     "none", "none", {}),
                     ("apps/v1", "StatefulSet", "fresh-account", "account-postgresql",
                      "observed-current", "statefulset-ready", {}),
                 ]
             elif step == "application":
                 contracts = [
+                    ("argoproj.io/v1alpha1", "Application", "fresh-control",
+                     "fresh-account-release", "none", "argocd-application-ready", {}),
                     ("argoproj.io/v1alpha1", "Rollout", "fresh-account", "account-api",
                      "observed-current", "rollout-ready", {"Available": "True"}),
                     ("v1", "Service", "fresh-account", "account-api", "none", "none", {}),
@@ -232,11 +256,20 @@ class RunnerTests(unittest.TestCase):
                 ]
             elif step in {"role-bootstrap", "migration"}:
                 name = "account-db-role-bootstrap" if step == "role-bootstrap" else "account-migration"
-                contracts = [("batch/v1", "Job", "fresh-account", name,
-                              "none", "job-complete", {"Complete": "True"})]
+                contracts = [
+                    ("argoproj.io/v1alpha1", "Application", "fresh-control",
+                     "fresh-account-release", "none", "argocd-operation-succeeded", {}),
+                    ("batch/v1", "Job", "fresh-account", name,
+                     "none", "job-complete", {"Complete": "True"}),
+                ]
             else:
-                contracts = [("apps/v1", "Deployment", "fresh-control", step,
-                              "observed-current", "workload-ready", {"Available": "True"})]
+                if step == "acceptance":
+                    contracts = [("argoproj.io/v1alpha1", "Rollout", "fresh-account",
+                                  "account-api", "observed-current", "rollout-ready",
+                                  {"Available": "True"})]
+                else:
+                    contracts = [("apps/v1", "Deployment", "fresh-control", step,
+                                  "observed-current", "workload-ready", {"Available": "True"})]
             observations, identities, verify, manifests = [], [], [], []
             for api_version, kind, namespace, name, generation, health, conditions in contracts:
                 identity = f"{kind}/{namespace}/{name}"
@@ -250,6 +283,9 @@ class RunnerTests(unittest.TestCase):
                         desired, sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
                     "generationPolicy": generation, "healthPolicy": health,
                     "requiredConditions": conditions,
+                    "requiredImageDigests": ([item["ref"].rsplit("@", 1)[1]
+                                              for item in spec["images"]]
+                                             if kind == "Node" else []),
                 })
                 manifests.append({"apiVersion": api_version, "kind": kind,
                                   "metadata": {"namespace": namespace, "name": name},
@@ -257,24 +293,91 @@ class RunnerTests(unittest.TestCase):
             manifest_path = bundle / f"{step}-apply.json"
             manifest_path.write_text(json.dumps({"apiVersion": "v1", "kind": "List",
                                                   "items": manifests}), encoding="utf-8")
-            run = {"tool": "kubectl", "args": ["--kubeconfig", kubeconfig,
-                   "--context", target_context, "apply", "--filename",
-                   str(manifest_path.resolve())]}
-            return {"verify": verify, "reconcile": copy.deepcopy(verify), "run": [run],
-                    "resourceIdentities": identities, "observations": observations}
+            manifest_digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+            gitops_resources = {
+                "database": [":PersistentVolumeClaim:account-data", ":Service:account-postgresql",
+                             "apps:StatefulSet:account-postgresql"],
+                "role-bootstrap": ["batch:Job:account-db-role-bootstrap"],
+                "migration": ["batch:Job:account-migration"],
+                "application": ["argoproj.io:Rollout:account-api", ":Service:account-api",
+                                "networking.istio.io:DestinationRule:account-api",
+                                "networking.istio.io:VirtualService:account-api"],
+            }
+            if step in gitops_resources:
+                args = ["--core", "--kube-context", target_context,
+                        "app", "sync", "fresh-account-release"]
+                for resource in gitops_resources[step]:
+                    args.extend(["--resource", resource])
+                args.append("--prune=false")
+                run = {"tool": "argocd", "args": args, "contentSha256": None}
+            elif step == "cluster":
+                run = {"tool": "kind", "args": ["create", "cluster", "--name",
+                       spec["target"]["clusterName"], "--kubeconfig", kubeconfig, "--image",
+                       "kindest/node@sha256:" + "a" * 64], "contentSha256": None}
+            elif step == "image-import":
+                archive = bundle / "images.oci.tar"
+                archive.write_bytes(b"fixture-image-archive")
+                run = {"tool": "kind", "args": ["load", "image-archive", str(archive.resolve()),
+                       "--name", spec["target"]["clusterName"]],
+                       "contentSha256": hashlib.sha256(archive.read_bytes()).hexdigest()}
+            elif step == "empty-node-cache":
+                run = copy.deepcopy(verify[0])
+            elif step in {"crds", "controllers"}:
+                chart = bundle / "chart"
+                chart.mkdir(exist_ok=True)
+                release = "argo-rollouts-crds" if step == "crds" else "argo-cd"
+                run = {"tool": "helm", "args": ["--kubeconfig", kubeconfig,
+                       "--kube-context", target_context, "upgrade", "--install", release,
+                       str(chart.resolve()), "--namespace", "fresh-control", "--version", "1.0.0",
+                       "--atomic", "--wait", "--wait-for-jobs", "--create-namespace"],
+                       "contentSha256": runner._mapping_digest({})}
+            elif step == "acceptance":
+                run = {"tool": "rollouts", "args": ["--kubeconfig", kubeconfig,
+                       "--context", target_context, "restart", "rollout", "account-api",
+                       "--namespace", "fresh-account"], "contentSha256": None}
+            else:
+                run = {"tool": "kubectl", "args": ["--kubeconfig", kubeconfig,
+                       "--context", target_context, "apply", "--filename",
+                       str(manifest_path.resolve())], "contentSha256": manifest_digest}
+            return {"phase": "cluster-create" if step == "cluster" else "post-cluster",
+                    "verify": verify, "reconcile": copy.deepcopy(verify), "run": [run],
+                    "resourceIdentities": identities, "observations": observations,
+                    "hostArtifacts": []}
+        preflight_command = {"tool": "kind", "args": ["get", "clusters"],
+                             "contentSha256": None}
+        preflight = {"phase": "pre-cluster", "verify": [preflight_command],
+                     "reconcile": [copy.deepcopy(preflight_command)],
+                     "run": [copy.deepcopy(preflight_command)],
+                     "resourceIdentities": ["HostState/None/target-cluster-absent"],
+                     "observations": [], "hostArtifacts": []}
+        source_archive = bundle / "account-runtime.oci.tar"
+        source_archive.write_bytes(b"fixture-account-runtime-archive")
+        image_source = {"phase": "pre-cluster", "verify": [], "reconcile": [], "run": [],
+                        "resourceIdentities": ["HostArtifact/None/account-runtime-archive"],
+                        "observations": [], "hostArtifacts": [{
+                            "id": "account-runtime-archive", "path": str(source_archive.resolve()),
+                            "sha256": hashlib.sha256(source_archive.read_bytes()).hexdigest(),
+                            "sizeBytes": source_archive.stat().st_size,
+                            "sourceIdentity": "backend@" + APPLICATION,
+                        }]}
+        steps = {step: step_contract(step) for step in runner.STEPS
+                 if step not in {"preflight", "image-source"}}
+        steps = {"preflight": preflight, "image-source": image_source, **steps}
         adapter_plan = {
-            "schemaVersion": "platform.lab/approved-live-step-plan/v2",
+            "schemaVersion": "platform.lab/approved-live-step-plan/v3",
             "target": {"clusterName": spec["target"]["clusterName"],
                        "context": target_context, "kubeconfig": kubeconfig},
             "tools": tools,
             "identity": {"clusterUID": {"tool": "kubectl", "args": [
                 "--kubeconfig", kubeconfig, "--context", target_context,
                 "get", "namespace", "kube-system", "--output",
-                "jsonpath={.metadata.uid}"]}},
-            "steps": {step: step_contract(step) for step in runner.STEPS},
+                "jsonpath={.metadata.uid}"], "contentSha256": None}},
+            "steps": steps,
         }
         adapter_plan_path.write_text(json.dumps(adapter_plan) + "\n", encoding="utf-8")
         FakeExecutor.plan_sha256 = hashlib.sha256(adapter_plan_path.read_bytes()).hexdigest()
+        adapter_contract = runner._load_contract_module("approved_live_adapter")
+        adapter_input_set_digest = adapter_contract.plan_input_set_digest(adapter_plan)
         approval = {
             "apiVersion": "platform.lab/v1alpha1", "kind": "FreshExecutionApproval",
             "metadata": {"name": "account-lightweight-fresh", "approvedBy": "fixture-reviewer",
@@ -288,7 +391,8 @@ class RunnerTests(unittest.TestCase):
                 "hashes": {"profileSha256": profile_digest,
                            "materializationSha256": materialization_digest,
                            "sourceSetSha256": runner._mapping_digest(source_files),
-                           "liveAdapterPlanSha256": hashlib.sha256(adapter_plan_path.read_bytes()).hexdigest()},
+                           "liveAdapterPlanSha256": hashlib.sha256(adapter_plan_path.read_bytes()).hexdigest(),
+                           "liveAdapterInputSetSha256": adapter_input_set_digest},
                 "scope": copy.deepcopy(runner.SCOPE),
                 "gates": {gate: {"approved": True, "approvalId": f"fixture-{gate}"}
                           for gate in runner.GATES},
@@ -367,6 +471,20 @@ class RunnerTests(unittest.TestCase):
         with self.assertRaisesRegex(runner.RunnerRejected, "executor-plan-binding"):
             runner.execute("first", approval_path, materialization_path, profile_path,
                            journal_path, executor, platform_source, application_source, now=NOW)
+        self.assertEqual(executor.identity_calls, [])
+        self.assertEqual(executor.run_calls, [])
+
+    def test_approval_and_journal_bind_the_complete_live_input_byte_set(self):
+        (approval, approval_path, materialization_path, profile_path, journal_path,
+         platform_source, application_source) = self.fixture()
+        approval["spec"]["hashes"]["liveAdapterInputSetSha256"] = "0" * 64
+        self.rewrite_approval(approval_path, approval)
+        executor = FakeExecutor()
+        with self.assertRaisesRegex(runner.RunnerRejected,
+                                    "approval-live-adapter-input-set-hash"):
+            runner.execute("first", approval_path, materialization_path, profile_path,
+                           journal_path, executor, platform_source, application_source,
+                           now=NOW)
         self.assertEqual(executor.identity_calls, [])
         self.assertEqual(executor.run_calls, [])
 

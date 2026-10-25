@@ -75,7 +75,7 @@ spec:
   freshRuntimeRequirement:
     sourceAtOrAfter: d797fc285618dea3eb9f64b425793eaf1e2a7012
     requiredConfig: finite-fresh-account-operation-roles-exact-namespace-schema-and-Downward-API
-    admissionSecretKeyContract: PENDING_EXACT_ADMISSION_SECRET_KEY_APPROVAL
+    admissionSecretKeyContract: username-password-operation-key-allowlist-aligned
     requiredIdentity: immutable-digest-source-config-platform-user-entrypoint-and-retained-G2-source
     priorRuntimeImage: ghcr.io/syuhei0519/backend-app@sha256:746e9acb5e5a24dcd6644ab5e082f2d3dad79620ec2e00afa80aa39a7436cf9a
     priorRuntimeUse: comparison-and-paired-rollback-only-not-fresh-compatible

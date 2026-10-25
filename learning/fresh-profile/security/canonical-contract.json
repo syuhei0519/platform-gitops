@@ -50,10 +50,10 @@
       "allowedSecretKeys": {"account-db-bootstrap": ["admin-password"], "account-db-migration": ["username", "password"], "account-db-runtime": ["username", "password"]}
     },
     "Job/fresh-account/account-migration": {
-      "serviceAccountName": "account-migration", "allowedSecretKeys": {"account-db-migration": ["uri"]}
+      "serviceAccountName": "account-migration", "allowedSecretKeys": {"account-db-migration": ["username", "password"]}
     },
     "Rollout/fresh-account/account-api": {
-      "serviceAccountName": "account-runtime", "allowedSecretKeys": {"account-db-runtime": ["uri"]}
+      "serviceAccountName": "account-runtime", "allowedSecretKeys": {"account-db-runtime": ["username", "password"]}
     }
   },
   "resourceNames": {

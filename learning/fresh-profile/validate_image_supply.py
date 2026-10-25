@@ -55,7 +55,8 @@ def platform_parts(value: str) -> tuple[str, str]:
 
 
 def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
-             profile_override: Path | None = None):
+             profile_override: Path | None = None,
+             require_source_evidence: bool = False):
     lock = load_yaml(lock_path)
     schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
     errors = sorted(Draft7Validator(schema).iter_errors(lock), key=lambda error: list(error.path))
@@ -174,13 +175,18 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
         else:
             retrieval_digest = expected
 
-        if require_fresh_evidence:
+        if require_source_evidence or require_fresh_evidence:
             if pending:
                 raise SupplyError("approval-g2")
             if expected is None:
                 raise SupplyError("account-runtime-pending")
             if not source["freshEligible"]:
                 raise SupplyError("ineligible-source:" + name)
+            for check_name in REQUIRED_CHECKS:
+                check = checks[check_name]
+                if check["status"] != "passed" or check["evidenceRef"].startswith("PENDING_"):
+                    raise SupplyError(f"check-{check_name}:{name}")
+        if require_fresh_evidence:
             status = retrieval["status"]
             if status == "registry-unknown":
                 raise SupplyError("registry-unknown:" + name)
@@ -192,10 +198,6 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
                 raise SupplyError("observed-digest:" + name)
             if retrieval["observedArchitecture"] != spec["targetArchitecture"]:
                 raise SupplyError("observed-architecture:" + name)
-            for check_name in REQUIRED_CHECKS:
-                check = checks[check_name]
-                if check["status"] != "passed" or check["evidenceRef"].startswith("PENDING_"):
-                    raise SupplyError(f"check-{check_name}:{name}")
 
     return lock, profile
 
@@ -204,9 +206,11 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--lock", type=Path, default=LOCK)
     parser.add_argument("--require-fresh-evidence", action="store_true")
+    parser.add_argument("--require-source-evidence", action="store_true")
     args = parser.parse_args()
     try:
-        lock, profile = validate(args.lock, args.require_fresh_evidence)
+        lock, profile = validate(args.lock, args.require_fresh_evidence,
+                                 require_source_evidence=args.require_source_evidence)
     except (SupplyError, yaml.YAMLError, json.JSONDecodeError) as error:
         print(f"image supply rejected: {error}")
         return 1

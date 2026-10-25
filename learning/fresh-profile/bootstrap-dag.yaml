@@ -6,10 +6,10 @@ spec:
   steps:
   - id: preflight
     requires: []
-    readyWhen: profile-lock-materialized-gates-approved-and-budget-measured
+    readyWhen: host-budget-approved-and-target-cluster-name-proved-absent
   - id: image-source
     requires: [preflight]
-    readyWhen: every-approved-registry-or-archive-source-identity-is-fixed
+    readyWhen: every-host-registry-or-archive-source-byte-digest-and-provenance-is-fixed-without-node-evidence
   - id: cluster
     requires: [image-source]
     readyWhen: expected-new-cluster-uid-recorded
@@ -18,7 +18,7 @@ spec:
     readyWhen: every-target-node-proves-required-images-absent-before-import
   - id: image-import
     requires: [empty-node-cache]
-    readyWhen: every-image-imported-by-approved-source-and-digest
+    readyWhen: every-image-imported-from-approved-source-and-runtime-digest-proved-on-empty-cache-node
   - id: crds
     requires: [image-import]
     readyWhen: every-required-crd-established
@@ -36,7 +36,7 @@ spec:
     readyWhen: admitted-custom-resources-reconciled
   - id: database
     requires: [custom-resources]
-    readyWhen: database-ready-with-owned-empty-schema
+    readyWhen: argocd-application-operation-succeeded-and-database-pvc-service-statefulset-ready
   - id: role-bootstrap
     requires: [database]
     readyWhen: runtime-and-migration-role-boundaries-verified
@@ -45,7 +45,7 @@ spec:
     readyWhen: migration-job-succeeded-once-and-history-exact
   - id: application
     requires: [migration]
-    readyWhen: locked-image-digest-ready-and-api-serving
+    readyWhen: argocd-application-synced-healthy-and-locked-image-api-ready
   - id: acceptance
     requires: [application]
     readyWhen: api-observability-resync-rerun-and-resume-evidence-complete
@@ -55,6 +55,7 @@ spec:
     - profileDigest
     - materializationDigest
     - sourceSetDigest
+    - liveAdapterInputSetDigest
     - clusterUID
     - targetContext
     - step
@@ -69,6 +70,7 @@ spec:
       verifyProfileDigest: true
       verifyMaterializationDigest: true
       verifySourceSetDigest: true
+      verifyLiveAdapterInputSetDigest: true
       verifyInputReferenceDigests: true
       verifyClusterUID: true
       verifyCompletedResources: true

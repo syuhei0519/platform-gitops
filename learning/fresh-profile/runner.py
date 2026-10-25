@@ -231,6 +231,7 @@ def validate_dag(path: Path = DAG) -> dict:
         "verifyProfileDigest": True,
         "verifyMaterializationDigest": True,
         "verifySourceSetDigest": True,
+        "verifyLiveAdapterInputSetDigest": True,
         "verifyInputReferenceDigests": True,
         "verifyClusterUID": True,
         "verifyCompletedResources": True,
@@ -291,7 +292,8 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
         raise RunnerRejected("approval-repository-sha")
     hashes = spec["hashes"]
     _exact_keys(hashes, {"profileSha256", "materializationSha256", "sourceSetSha256",
-                         "liveAdapterPlanSha256"}, "approval-hashes")
+                         "liveAdapterPlanSha256", "liveAdapterInputSetSha256"},
+                "approval-hashes")
     if not all(SHA256.fullmatch(hashes[name] or "") for name in hashes):
         raise RunnerRejected("approval-hash-format")
     if hashes["profileSha256"] != _digest(profile_path):
@@ -352,7 +354,9 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
     image_supply_path = _safe_file(bundle_root, "image-supply.lock.yaml", "image-supply-file")
     try:
         supply_contract = _load_contract_module("validate_image_supply")
-        supply_contract.validate(image_supply_path, require_fresh_evidence=True,
+        # Before cluster creation only immutable source/archive provenance can
+        # exist. Empty-node-cache import/pull evidence is a post-cluster step.
+        supply_contract.validate(image_supply_path, require_source_evidence=True,
                                  profile_override=profile_path)
     except Exception as error:
         raise RunnerRejected("image-supply-contract:" + str(error)) from error
@@ -395,27 +399,34 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
     }
     try:
         adapter_contract = _load_contract_module("approved_live_adapter")
-        adapter_contract.validate_plan(
+        plan = adapter_contract.validate_plan(
             Path(adapter_plan_path),
             {"clusterName": target["clusterName"], "context": target["context"]},
             expected_versions,
+            {item["ref"].rsplit("@", 1)[1] for item in profile_spec["images"]},
         )
+        live_input_set_digest = adapter_contract.plan_input_set_digest(plan)
+        if hashes["liveAdapterInputSetSha256"] != live_input_set_digest:
+            raise RunnerRejected("approval-live-adapter-input-set-hash")
     except Exception as error:
         raise RunnerRejected("live-adapter-contract:" + str(error)) from error
     return {"approval": approval, "materialization": materialization, "profile": profile,
             "sourceSetSha256": source_set_digest, "inputDigests": input_digests,
-            "liveAdapterPlanSha256": hashes["liveAdapterPlanSha256"]}
+            "liveAdapterPlanSha256": hashes["liveAdapterPlanSha256"],
+            "liveAdapterInputSetSha256": live_input_set_digest}
 
 
 def _new_journal(profile_digest: str, materialization_digest: str, source_set_digest: str,
-                 live_adapter_plan_digest: str, input_digests: dict, target: dict,
+                 live_adapter_plan_digest: str, live_adapter_input_set_digest: str,
+                 input_digests: dict, target: dict,
                  cluster_uid: str | None) -> dict:
     return {
-        "schemaVersion": "platform.lab/fresh-run-journal/v2",
+        "schemaVersion": "platform.lab/fresh-run-journal/v3",
         "profileSha256": profile_digest,
         "materializationSha256": materialization_digest,
         "sourceSetSha256": source_set_digest,
         "liveAdapterPlanSha256": live_adapter_plan_digest,
+        "liveAdapterInputSetSha256": live_adapter_input_set_digest,
         "inputDigests": input_digests,
         "target": {"clusterName": target["clusterName"], "context": target["context"],
                    "clusterUID": cluster_uid},
@@ -427,16 +438,19 @@ def _new_journal(profile_digest: str, materialization_digest: str, source_set_di
 
 def _validate_journal(journal: dict, profile_digest: str, materialization_digest: str,
                       source_set_digest: str, live_adapter_plan_digest: str,
+                      live_adapter_input_set_digest: str,
                       input_digests: dict, target: dict, observed_identity: dict) -> None:
     _exact_keys(journal, {"schemaVersion", "profileSha256", "materializationSha256",
                           "sourceSetSha256", "liveAdapterPlanSha256", "inputDigests",
+                          "liveAdapterInputSetSha256",
                           "target", "steps"}, "journal")
-    if journal["schemaVersion"] != "platform.lab/fresh-run-journal/v2" or journal["profileSha256"] != profile_digest:
+    if journal["schemaVersion"] != "platform.lab/fresh-run-journal/v3" or journal["profileSha256"] != profile_digest:
         raise RunnerRejected("journal-profile")
     if journal["materializationSha256"] != materialization_digest:
         raise RunnerRejected("journal-materialization")
     if (journal["sourceSetSha256"] != source_set_digest
             or journal["liveAdapterPlanSha256"] != live_adapter_plan_digest
+            or journal["liveAdapterInputSetSha256"] != live_adapter_input_set_digest
             or journal["inputDigests"] != input_digests):
         raise RunnerRejected("journal-inputs")
     if journal["target"].get("clusterName") != target["clusterName"] or journal["target"].get("context") != target["context"]:
@@ -501,6 +515,7 @@ def execute(mode: str, approval_path: Path | None, materialization_path: Path | 
         journal = _load_json(journal_path)
         _validate_journal(journal, profile_digest, materialization_digest,
                           sealed["sourceSetSha256"], sealed["liveAdapterPlanSha256"],
+                          sealed["liveAdapterInputSetSha256"],
                           sealed["inputDigests"], target, observed_identity)
     else:
         if mode != "first":
@@ -509,6 +524,7 @@ def execute(mode: str, approval_path: Path | None, materialization_path: Path | 
             raise RunnerRejected("first-run-cluster-exists")
         journal = _new_journal(profile_digest, materialization_digest,
                                sealed["sourceSetSha256"], sealed["liveAdapterPlanSha256"],
+                               sealed["liveAdapterInputSetSha256"],
                                sealed["inputDigests"], target, None)
 
     if mode == "first" and any(state["status"] != "pending" for state in journal["steps"].values()):

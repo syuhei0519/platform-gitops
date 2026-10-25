@@ -185,17 +185,18 @@ spec:
       (request.resource.resource == 'pods' && object.spec.containers.all(c,
         (!has(c.envFrom) || c.envFrom.all(e, !has(e.secretRef))) && (!has(c.env) || c.env.all(e,
           !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef) ||
-          (object.spec.serviceAccountName == 'account-database' && e.valueFrom.secretKeyRef.name == 'account-db-bootstrap' && e.valueFrom.secretKeyRef.key == 'admin-password') ||
-          (object.spec.serviceAccountName == 'account-runtime' && e.valueFrom.secretKeyRef.name == 'account-db-runtime' && e.valueFrom.secretKeyRef.key == 'uri') ||
-          (object.spec.serviceAccountName == 'account-migration' && ((e.valueFrom.secretKeyRef.name == 'account-db-bootstrap' && e.valueFrom.secretKeyRef.key == 'admin-password') ||
-            (e.valueFrom.secretKeyRef.name == 'account-db-migration' && e.valueFrom.secretKeyRef.key in ['username', 'password', 'uri']) ||
+          (object.spec.serviceAccountName == 'account-database' && object.metadata.ownerReferences.exists(o, o.controller == true && o.kind == 'StatefulSet' && o.name == 'account-postgresql') && e.valueFrom.secretKeyRef.name == 'account-db-bootstrap' && e.valueFrom.secretKeyRef.key == 'admin-password') ||
+          (object.spec.serviceAccountName == 'account-runtime' && object.metadata.ownerReferences.exists(o, o.controller == true && o.kind == 'ReplicaSet' && o.name.startsWith('account-api-')) && e.valueFrom.secretKeyRef.name == 'account-db-runtime' && e.valueFrom.secretKeyRef.key in ['username', 'password']) ||
+          (object.spec.serviceAccountName == 'account-migration' && object.metadata.ownerReferences.exists(o, o.controller == true && o.kind == 'Job' && o.name == 'account-migration') && e.valueFrom.secretKeyRef.name == 'account-db-migration' && e.valueFrom.secretKeyRef.key in ['username', 'password']) ||
+          (object.spec.serviceAccountName == 'account-migration' && object.metadata.ownerReferences.exists(o, o.controller == true && o.kind == 'Job' && o.name == 'account-db-role-bootstrap') && ((e.valueFrom.secretKeyRef.name == 'account-db-bootstrap' && e.valueFrom.secretKeyRef.key == 'admin-password') ||
+            (e.valueFrom.secretKeyRef.name == 'account-db-migration' && e.valueFrom.secretKeyRef.key in ['username', 'password']) ||
             (e.valueFrom.secretKeyRef.name == 'account-db-runtime' && e.valueFrom.secretKeyRef.key in ['username', 'password']))))))) ||
       (request.resource.resource != 'pods' && object.spec.template.spec.containers.all(c,
         (!has(c.envFrom) || c.envFrom.all(e, !has(e.secretRef))) && (!has(c.env) || c.env.all(e,
           !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef) ||
           (object.kind == 'StatefulSet' && object.metadata.name == 'account-postgresql' && e.valueFrom.secretKeyRef.name == 'account-db-bootstrap' && e.valueFrom.secretKeyRef.key == 'admin-password') ||
-          (object.kind == 'Rollout' && object.metadata.name == 'account-api' && e.valueFrom.secretKeyRef.name == 'account-db-runtime' && e.valueFrom.secretKeyRef.key == 'uri') ||
-          (object.kind == 'Job' && object.metadata.name == 'account-migration' && e.valueFrom.secretKeyRef.name == 'account-db-migration' && e.valueFrom.secretKeyRef.key == 'uri') ||
+          (object.kind == 'Rollout' && object.metadata.name == 'account-api' && e.valueFrom.secretKeyRef.name == 'account-db-runtime' && e.valueFrom.secretKeyRef.key in ['username', 'password']) ||
+          (object.kind == 'Job' && object.metadata.name == 'account-migration' && e.valueFrom.secretKeyRef.name == 'account-db-migration' && e.valueFrom.secretKeyRef.key in ['username', 'password']) ||
           (object.kind == 'Job' && object.metadata.name == 'account-db-role-bootstrap' && ((e.valueFrom.secretKeyRef.name == 'account-db-bootstrap' && e.valueFrom.secretKeyRef.key == 'admin-password') ||
             (e.valueFrom.secretKeyRef.name == 'account-db-migration' && e.valueFrom.secretKeyRef.key in ['username', 'password']) ||
             (e.valueFrom.secretKeyRef.name == 'account-db-runtime' && e.valueFrom.secretKeyRef.key in ['username', 'password'])))))))

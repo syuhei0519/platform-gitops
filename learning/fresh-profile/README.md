@@ -53,18 +53,20 @@ as permission to reuse cache or retry blindly.
 
 `bootstrap-dag.yaml` fixes the dependency order:
 
-`preflight → cluster → CRD Established → controller/webhook Ready → custom
-resources → DB → migration → application → acceptance`.
+`preflight → host image-source provenance → cluster → empty node cache →
+image import → CRD Established → controller/webhook Ready → security →
+credentials → custom resources → DB → role bootstrap → migration →
+application → acceptance`.
 
-Every completed step writes a journal outside Git with the profile digest and
-cluster UID. Resume verifies those identities and completed resources, then
+Every completed step writes a journal outside Git with the profile, sealed
+materialization, source set, live-adapter input-set digest and cluster UID.
+Resume verifies those identities and completed resources, then
 retries only the failed/incomplete step. A succeeded migration Job is observed,
 not recreated. A rerun must be an idempotent verification of the same lock.
 
-The authoritative checked-in DAG has thirteen steps: preflight, image supply,
-cluster, CRDs, controllers/webhooks, security boundary, credential bootstrap,
-custom resources, database, role bootstrap, migration, application, and
-acceptance. This list supersedes the shorter historical sequence above.
+The authoritative checked-in DAG has fifteen steps, including separate
+pre-cluster image provenance and post-cluster empty-cache/import proof. This
+list supersedes the shorter historical sequence above.
 
 The declared Account and minimal observability requests are reproducibly
 measured with `measure_requests.py`. Control-plane overhead, archive bytes, and

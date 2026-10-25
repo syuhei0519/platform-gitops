@@ -21,7 +21,7 @@ class ImageSupplyTests(unittest.TestCase):
         self.profile = contract.load_yaml(contract.HERE / "profile.lock.yaml")
         self.profile_images = {item["name"]: item for item in self.profile["spec"]["images"]}
 
-    def validate_copy(self, lock, require=False, profile=None):
+    def validate_copy(self, lock, require=False, profile=None, require_source=False):
         with tempfile.TemporaryDirectory(dir=contract.HERE) as directory:
             path = Path(directory) / "supply.yaml"
             profile_path = Path(directory) / "profile.yaml"
@@ -38,7 +38,8 @@ class ImageSupplyTests(unittest.TestCase):
                 )
             profile_path.write_text(yaml.safe_dump(value, sort_keys=False), encoding="utf-8")
             return contract.validate(path, require_fresh_evidence=require,
-                                     profile_override=profile_path)
+                                     profile_override=profile_path,
+                                     require_source_evidence=require_source)
 
     def approve(self, mode="private-registry"):
         value = copy.deepcopy(self.lock)
@@ -113,6 +114,16 @@ class ImageSupplyTests(unittest.TestCase):
                      "public-upstream-plus-retained-account-archive"):
             with self.subTest(mode=mode):
                 self.validate_copy(self.approve(mode), require=True)
+
+    def test_precluster_source_provenance_does_not_require_postcluster_retrieval(self):
+        value = self.approve("retained-oci-archive")
+        for item in value["spec"]["images"]:
+            item["retrieval"] = {"status": "pending", "emptyNodeCache": False,
+                                 "observedDigest": "PENDING_POST_CLUSTER",
+                                 "observedArchitecture": "PENDING_POST_CLUSTER"}
+        self.validate_copy(value, require_source=True)
+        with self.assertRaisesRegex(contract.SupplyError, "fresh-retrieval"):
+            self.validate_copy(value, require=True)
 
     def test_supply_approval_must_match_profile_g2(self):
         value = self.approve()

@@ -44,7 +44,7 @@
       "kind": "Rollout", "namespace": "fresh-account", "name": "account-api",
       "podSpec": {
         "serviceAccountName": "account-runtime", "automountServiceAccountToken": false,
-        "containers": [{"name": "api", "securityContext": {"privileged": false, "allowPrivilegeEscalation": false}, "env": [{"name": "DATABASE_URL", "valueFrom": {"secretKeyRef": {"name": "account-db-runtime", "key": "uri"}}}]}],
+        "containers": [{"name": "api", "securityContext": {"privileged": false, "allowPrivilegeEscalation": false}, "env": [{"name": "PGUSER", "valueFrom": {"secretKeyRef": {"name": "account-db-runtime", "key": "username"}}}, {"name": "PGPASSWORD", "valueFrom": {"secretKeyRef": {"name": "account-db-runtime", "key": "password"}}}]}],
         "volumes": []
       }
     },
@@ -52,14 +52,14 @@
       "kind": "Job", "namespace": "fresh-account", "name": "account-migration",
       "podSpec": {
         "serviceAccountName": "account-migration", "automountServiceAccountToken": false, "restartPolicy": "Never",
-        "containers": [{"name": "migration", "securityContext": {"privileged": false, "allowPrivilegeEscalation": false}, "env": [{"name": "DATABASE_URL", "valueFrom": {"secretKeyRef": {"name": "account-db-migration", "key": "uri"}}}]}],
+        "containers": [{"name": "migration", "securityContext": {"privileged": false, "allowPrivilegeEscalation": false}, "env": [{"name": "PGUSER", "valueFrom": {"secretKeyRef": {"name": "account-db-migration", "key": "username"}}}, {"name": "PGPASSWORD", "valueFrom": {"secretKeyRef": {"name": "account-db-migration", "key": "password"}}}]}],
         "volumes": []
       }
     }
   ],
   "retained": {
     "secretObjectsInGit": false,
-    "secretReferences": ["account-db-bootstrap/admin-password", "account-db-migration/username", "account-db-migration/password", "account-db-migration/uri", "account-db-runtime/username", "account-db-runtime/password", "account-db-runtime/uri"],
+    "secretReferences": ["account-db-bootstrap/admin-password", "account-db-migration/username", "account-db-migration/password", "account-db-runtime/username", "account-db-runtime/password"],
     "persistentVolumeClaims": {"fresh-account/account-data": {"storageClassName": "standard", "accessModes": ["ReadWriteOnce"], "syncOptions": ["Prune=false", "Delete=false"]}},
     "jobs": {"fresh-account/account-db-role-bootstrap": "sync-wave-10-retained-on-success-never-recreated-by-resume", "fresh-account/account-migration": "sync-wave-20-retained-on-success-never-recreated-by-rerun-or-resume"},
     "fieldOwners": {
