@@ -4,11 +4,11 @@
   "metadata": {"name": "account-lightweight-fresh", "recordedAt": null, "liveEvidence": false},
   "profile": {
     "lockPath": "learning/fresh-profile/profile.lock.yaml",
-    "sha256": "2a8c6d8bcedf8a8808fcfdcba3f885b0f4697c5e88dcf5e87cd2839c39cab589",
+    "sha256": "c3e66e4dce62ad03d53565f2c8bdea93619952f415fb64fd6c6473b69b14ee43",
     "repositories": {
-      "backend-app": "527b9bccf4ae56244d134ae384564ec1cccea815",
+      "backend-app": "d797fc285618dea3eb9f64b425793eaf1e2a7012",
       "frontend-app": "aecccce46295714645387854a4dad37bdd0cd3c3",
-      "application-manifest": "d9150a4de69d2447c1b767823fc23784edea0abc",
+      "application-manifest": "0fc2ae19300af32f86643152e65597b022dcdc0f",
       "platform-gitops": "__PLATFORM_GITOPS_SHA__"
     }
   },
@@ -33,7 +33,7 @@
       {"name": "istio-pilot", "expectedDigest": "sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "istio-proxy", "expectedDigest": "sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "postgres", "expectedDigest": "sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
-      {"name": "account-runtime", "expectedDigest": "sha256:746e9acb5e5a24dcd6644ab5e082f2d3dad79620ec2e00afa80aa39a7436cf9a", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
+      {"name": "account-runtime", "expectedDigest": "PENDING_PLAT211_VERIFIED_IMAGE", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "prometheus", "expectedDigest": "sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "otel-collector", "expectedDigest": "sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "grafana", "expectedDigest": "sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"}
@@ -44,6 +44,7 @@
         "fresh-control/Application/account-lightweight-root",
         "fresh-control/Application/fresh-release-definitions",
         "fresh-control/Application/fresh-account-release",
+        "fresh-account/PersistentVolumeClaim/account-data",
         "fresh-account/StatefulSet/account-postgresql",
         "fresh-account/Job/account-db-role-bootstrap",
         "fresh-account/Job/account-migration",
@@ -57,9 +58,9 @@
     "revisions": {
       "status": "unrun",
       "desired": {
-        "backend-app": "527b9bccf4ae56244d134ae384564ec1cccea815",
+        "backend-app": "d797fc285618dea3eb9f64b425793eaf1e2a7012",
         "frontend-app": "aecccce46295714645387854a4dad37bdd0cd3c3",
-        "application-manifest": "d9150a4de69d2447c1b767823fc23784edea0abc",
+        "application-manifest": "0fc2ae19300af32f86643152e65597b022dcdc0f",
         "platform-gitops": "__PLATFORM_GITOPS_SHA__"
       },
       "actual": {}
@@ -84,6 +85,34 @@
       {"id": "workload-restart", "status": "unrun", "detail": null},
       {"id": "db-down-recovery", "status": "unrun", "detail": null},
       {"id": "old-image-rollback", "status": "unrun", "detail": null}
+    ],
+    "progressiveDelivery": [
+      {"id": "weighted-traffic", "status": "unrun", "detail": null},
+      {"id": "abort", "status": "unrun", "detail": null},
+      {"id": "restore", "status": "unrun", "detail": null},
+      {"id": "routing-metrics", "status": "unrun", "detail": null}
+    ],
+    "databaseAuthorization": [
+      {"id": "migration-ddl-owned-schema", "role": "account_migrator", "operation": "DDL", "target": "account", "expected": "allow", "status": "unrun", "observed": null, "detail": null},
+      {"id": "runtime-dml-owned-schema", "role": "account_runtime", "operation": "DML", "target": "account", "expected": "allow", "status": "unrun", "observed": null, "detail": null},
+      {"id": "runtime-ddl-owned-schema", "role": "account_runtime", "operation": "DDL", "target": "account", "expected": "deny", "status": "unrun", "observed": null, "detail": null},
+      {"id": "runtime-other-schema", "role": "account_runtime", "operation": "DML", "target": "other_service", "expected": "deny", "status": "unrun", "observed": null, "detail": null},
+      {"id": "migration-other-schema", "role": "account_migrator", "operation": "DDL", "target": "other_service", "expected": "deny", "status": "unrun", "observed": null, "detail": null}
+    ],
+    "temporaryBindings": {
+      "status": "unrun",
+      "expectedRemoved": [
+        "RoleBinding/fresh-control/fresh-bootstrap-temporary",
+        "RoleBinding/fresh-account/fresh-fault-injection-temporary"
+      ],
+      "observedRemoved": [],
+      "detail": null
+    },
+    "processCleanup": [
+      {"id": "port-forwards-stopped", "status": "unrun", "detail": null},
+      {"id": "log-followers-stopped", "status": "unrun", "detail": null},
+      {"id": "temporary-credentials-removed", "status": "unrun", "detail": null},
+      {"id": "temporary-rbac-bindings-removed", "status": "unrun", "detail": null}
     ]
   },
   "negativeCases": [

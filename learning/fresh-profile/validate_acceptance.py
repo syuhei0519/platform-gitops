@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -20,7 +21,7 @@ PROFILE = HERE / "profile.lock.yaml"
 CURRENT_CLUSTER = "kind-learning-20261018-69c763"
 RUN_MODES = ["first", "rerun", "resume-after-interruption"]
 STEPS = [
-    "preflight", "image-supply", "cluster", "crds", "controllers",
+    "preflight", "image-source", "cluster", "empty-node-cache", "image-import", "crds", "controllers",
     "security-boundary", "credential-bootstrap", "custom-resources",
     "database", "role-bootstrap", "migration", "application", "acceptance",
 ]
@@ -29,6 +30,23 @@ READINESS = {
     "metrics", "traces", "telemetry-profile-and-pod-uid", "actual-db-role-owner",
 }
 RESYNC_RESTART = {"argocd-resync", "workload-restart", "db-down-recovery", "old-image-rollback"}
+PROGRESSIVE_DELIVERY = {"weighted-traffic", "abort", "restore", "routing-metrics"}
+PROCESS_CLEANUP = {
+    "port-forwards-stopped", "log-followers-stopped",
+    "temporary-credentials-removed", "temporary-rbac-bindings-removed",
+}
+DATABASE_CASES = {
+    "migration-ddl-owned-schema": ("account_migrator", "DDL", "account", "allow"),
+    "runtime-dml-owned-schema": ("account_runtime", "DML", "account", "allow"),
+    "runtime-ddl-owned-schema": ("account_runtime", "DDL", "account", "deny"),
+    "runtime-other-schema": ("account_runtime", "DML", "other_service", "deny"),
+    "migration-other-schema": ("account_migrator", "DDL", "other_service", "deny"),
+}
+TEMPORARY_BINDINGS = {
+    "RoleBinding/fresh-control/fresh-bootstrap-temporary",
+    "RoleBinding/fresh-account/fresh-fault-injection-temporary",
+}
+EXPECTED_PVC = "fresh-account/PersistentVolumeClaim/account-data"
 NEGATIVE_CASES = {
     "missing-secret", "wrong-secret", "wrong-architecture",
     "unready-dependency", "healthy-root-empty-child", "wrong-profile-identity",
@@ -80,6 +98,22 @@ def exact_ids(items, expected, error):
 def require_passed(checks, error):
     if any(item["status"] != "passed" or not item["detail"] for item in checks):
         raise AcceptanceError(error)
+
+
+def validate_database_cases(cases, require_complete):
+    ids = [item["id"] for item in cases]
+    if len(ids) != len(set(ids)) or set(ids) != set(DATABASE_CASES):
+        raise AcceptanceError("database-authorization-set")
+    for item in cases:
+        expected = DATABASE_CASES[item["id"]]
+        if (item["role"], item["operation"], item["target"], item["expected"]) != expected:
+            raise AcceptanceError("database-authorization-contract")
+        if item["status"] == "passed" and (item["observed"] != item["expected"] or not item["detail"]):
+            raise AcceptanceError("database-authorization-result")
+        if item["status"] == "unrun" and (item["observed"] is not None or item["detail"] is not None):
+            raise AcceptanceError("database-authorization-unrun")
+        if require_complete and (item["status"] != "passed" or item["observed"] != item["expected"] or not item["detail"]):
+            raise AcceptanceError("database-authorization-incomplete")
 
 
 def validate_runs(runs, complete):
@@ -141,8 +175,10 @@ def validate(record_path: Path = RECORD, require_complete: bool = False,
 
     expected_images = {}
     for item in spec["images"]:
+        ref = item["ref"]
+        expected_digest = (ref.rsplit("@", 1)[1] if "@" in ref else ref)
         expected_images[item["name"]] = {
-            "digest": item["ref"].rsplit("@", 1)[1],
+            "digest": expected_digest,
             "architecture": item["architecture"],
         }
     images = record["evidence"]["images"]
@@ -158,6 +194,14 @@ def validate(record_path: Path = RECORD, require_complete: bool = False,
         raise AcceptanceError("desired-revisions")
     exact_ids(evidence["readiness"], READINESS, "readiness-set")
     exact_ids(evidence["resyncRestart"], RESYNC_RESTART, "resync-restart-set")
+    exact_ids(evidence["progressiveDelivery"], PROGRESSIVE_DELIVERY, "progressive-delivery-set")
+    exact_ids(evidence["processCleanup"], PROCESS_CLEANUP, "process-cleanup-set")
+    validate_database_cases(evidence["databaseAuthorization"], require_complete)
+    bindings = evidence["temporaryBindings"]
+    if set(bindings["expectedRemoved"]) != TEMPORARY_BINDINGS:
+        raise AcceptanceError("temporary-binding-set")
+    if EXPECTED_PVC not in evidence["resources"]["expected"]:
+        raise AcceptanceError("pvc-resource-required")
     exact_ids(record["negativeCases"], NEGATIVE_CASES, "negative-case-set")
     if record["preservation"]["currentCluster"]["id"] != "existing-cluster-unchanged":
         raise AcceptanceError("current-preservation-id")
@@ -172,7 +216,7 @@ def validate(record_path: Path = RECORD, require_complete: bool = False,
         if item["status"] == "passed" and (
                 item["retrievedDigest"] != item["expectedDigest"]
                 or item["actualArchitecture"] != item["expectedArchitecture"]
-                or item["sourceType"] not in {"private-registry", "retained-oci-archive"}):
+                or item["sourceType"] not in {"private-registry", "public-registry", "retained-oci-archive"}):
             raise AcceptanceError("image-observed")
     resources = evidence["resources"]
     if resources["status"] == "passed" and set(resources["observed"]) != set(resources["expected"]):
@@ -183,9 +227,16 @@ def validate(record_path: Path = RECORD, require_complete: bool = False,
     ownership = evidence["fieldOwnership"]
     if ownership["status"] == "passed" and set(ownership["observed"]) != set(ownership["expected"]):
         raise AcceptanceError("field-ownership")
-    for item in evidence["readiness"] + evidence["resyncRestart"]:
+    for item in (evidence["readiness"] + evidence["resyncRestart"] +
+                 evidence["progressiveDelivery"] + evidence["processCleanup"]):
         if item["status"] == "passed" and not item["detail"]:
             raise AcceptanceError("passed-check-without-detail")
+    if bindings["status"] == "passed" and (
+            set(bindings["observedRemoved"]) != set(bindings["expectedRemoved"])
+            or not bindings["detail"]):
+        raise AcceptanceError("temporary-binding-result")
+    if bindings["status"] == "unrun" and (bindings["observedRemoved"] or bindings["detail"] is not None):
+        raise AcceptanceError("temporary-binding-unrun")
     for item in record["negativeCases"]:
         if item["status"] == "passed" and item["observedClass"] != item["expectedClass"]:
             raise AcceptanceError("negative-result")
@@ -200,7 +251,10 @@ def validate(record_path: Path = RECORD, require_complete: bool = False,
         statuses = [run["status"] for run in record["runs"]]
         statuses += [item["status"] for item in images]
         statuses += [evidence["resources"]["status"], evidence["revisions"]["status"], evidence["fieldOwnership"]["status"]]
-        statuses += [item["status"] for item in evidence["readiness"] + evidence["resyncRestart"]]
+        statuses += [item["status"] for item in (evidence["readiness"] + evidence["resyncRestart"] +
+                                                 evidence["progressiveDelivery"] + evidence["processCleanup"])]
+        statuses += [item["status"] for item in evidence["databaseAuthorization"]]
+        statuses += [bindings["status"]]
         statuses += [item["status"] for item in record["negativeCases"]]
         statuses += [record["preservation"]["currentCluster"]["status"], record["preservation"]["existingData"]["status"]]
         if any(status != "unrun" for status in statuses):
@@ -211,8 +265,11 @@ def validate(record_path: Path = RECORD, require_complete: bool = False,
             raise AcceptanceError("unrun-claims-observation")
         if any(item["retrievedDigest"] or item["actualArchitecture"] or item["sourceType"] != "unrun" for item in images):
             raise AcceptanceError("unrun-claims-image")
-        if any(item["detail"] for item in evidence["readiness"] + evidence["resyncRestart"]):
+        if any(item["detail"] for item in (evidence["readiness"] + evidence["resyncRestart"] +
+                                           evidence["progressiveDelivery"] + evidence["processCleanup"])):
             raise AcceptanceError("unrun-claims-detail")
+        if bindings["observedRemoved"] or bindings["detail"]:
+            raise AcceptanceError("unrun-claims-cleanup")
         if any(item["observedClass"] for item in record["negativeCases"]):
             raise AcceptanceError("unrun-claims-negative")
 
@@ -226,9 +283,10 @@ def validate(record_path: Path = RECORD, require_complete: bool = False,
         except ValueError as error:
             raise AcceptanceError("recorded-at") from error
         for item in images:
-            if (item["status"] != "passed" or item["retrievedDigest"] != item["expectedDigest"]
+            if (not re.fullmatch(r"sha256:[0-9a-f]{64}", item["expectedDigest"])
+                    or item["status"] != "passed" or item["retrievedDigest"] != item["expectedDigest"]
                     or item["actualArchitecture"] != item["expectedArchitecture"]
-                    or item["sourceType"] not in {"private-registry", "retained-oci-archive"}):
+                    or item["sourceType"] not in {"private-registry", "public-registry", "retained-oci-archive"}):
                 raise AcceptanceError("image-observed")
         if resources["status"] != "passed" or set(resources["observed"]) != set(resources["expected"]):
             raise AcceptanceError("resources-observed")
@@ -238,6 +296,10 @@ def validate(record_path: Path = RECORD, require_complete: bool = False,
         if ownership["status"] != "passed" or set(ownership["observed"]) != set(ownership["expected"]):
             raise AcceptanceError("field-ownership")
         require_passed(evidence["resyncRestart"], "resync-restart-incomplete")
+        require_passed(evidence["progressiveDelivery"], "progressive-delivery-incomplete")
+        require_passed(evidence["processCleanup"], "process-cleanup-incomplete")
+        if bindings["status"] != "passed" or set(bindings["observedRemoved"]) != TEMPORARY_BINDINGS or not bindings["detail"]:
+            raise AcceptanceError("temporary-binding-incomplete")
         for item in record["negativeCases"]:
             if item["status"] != "passed" or item["observedClass"] != item["expectedClass"]:
                 raise AcceptanceError("negative-result")

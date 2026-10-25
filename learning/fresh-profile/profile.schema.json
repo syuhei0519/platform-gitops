@@ -13,7 +13,7 @@
     },
     "spec": {
       "type": "object", "additionalProperties": false,
-      "required": ["profileVersion", "scope", "target", "repositories", "tools", "images", "imageSupply", "inputs", "budget", "bootstrap", "contracts", "decisions"],
+      "required": ["profileVersion", "scope", "target", "repositories", "tools", "images", "freshRuntimeRequirement", "imageSupply", "inputs", "budget", "bootstrap", "contracts", "decisions"],
       "properties": {
         "profileVersion": {"const": 1},
         "scope": {
@@ -51,6 +51,20 @@
           }
         },
         "images": {"type": "array", "minItems": 8, "items": {"$ref": "#/definitions/image"}},
+        "freshRuntimeRequirement": {
+          "type": "object", "additionalProperties": false,
+          "required": ["sourceAtOrAfter", "requiredConfig", "requiredIdentity", "priorRuntimeImage", "priorRuntimeUse", "priorRollbackImage", "priorRollbackSource", "rollbackRule"],
+          "properties": {
+            "sourceAtOrAfter": {"const": "d797fc285618dea3eb9f64b425793eaf1e2a7012"},
+            "requiredConfig": {"const": "PLAT-211-dual-profile-namespace-and-Downward-API"},
+            "requiredIdentity": {"const": "immutable-digest-source-config-platform-user-entrypoint-and-retained-G2-source"},
+            "priorRuntimeImage": {"const": "ghcr.io/syuhei0519/backend-app@sha256:746e9acb5e5a24dcd6644ab5e082f2d3dad79620ec2e00afa80aa39a7436cf9a"},
+            "priorRuntimeUse": {"const": "comparison-and-paired-rollback-only-not-fresh-compatible"},
+            "priorRollbackImage": {"const": "ghcr.io/syuhei0519/backend-app@sha256:09155da800dfe1620124cb5e49b03f9e30c737d3e67ebd5c71dc47a452b967c0"},
+            "priorRollbackSource": {"const": "46ef1419c11363e263e1f1c254ca9096ea2b5835"},
+            "rollbackRule": {"const": "image-and-compatible-config-are-one-atomic-pair"}
+          }
+        },
         "imageSupply": {
           "type": "object", "additionalProperties": false,
           "required": ["decision", "immutable", "retentionUntil", "restoreOwner", "cacheIsEvidence", "requiredProof"],
@@ -102,7 +116,7 @@
     },
     "image": {
       "type": "object", "additionalProperties": false, "required": ["name", "ref", "architecture"],
-      "properties": {"name": {"type": "string", "pattern": "^[a-z0-9-]+$"}, "ref": {"type": "string", "pattern": "^.+@sha256:[0-9a-f]{64}$"}, "architecture": {"const": "linux/amd64"}}
+      "properties": {"name": {"type": "string", "pattern": "^[a-z0-9-]+$"}, "ref": {"type": "string", "pattern": "^(.+@sha256:[0-9a-f]{64}|PENDING_PLAT211_VERIFIED_IMAGE)$"}, "architecture": {"const": "linux/amd64"}}
     },
     "secretReference": {
       "type": "object", "additionalProperties": false,
@@ -118,8 +132,8 @@
       "required": ["capturedAt", "logicalCpu", "installedMemoryGiB", "availableMemoryGiB", "freeDiskGiB", "dockerCpuLimit", "dockerMemoryLimitGiB", "dockerImagesGiB", "dockerVolumesGiB", "dockerBuildCacheGiB", "existingRunningContainers"],
       "properties": {
         "capturedAt": {"type": "string"}, "logicalCpu": {"const": 20},
-        "installedMemoryGiB": {"const": 31.84}, "availableMemoryGiB": {"const": 6.6},
-        "freeDiskGiB": {"const": 440.56}, "dockerCpuLimit": {"const": 20},
+        "installedMemoryGiB": {"const": 31.84}, "availableMemoryGiB": {"const": 5.83},
+        "freeDiskGiB": {"const": 440.13}, "dockerCpuLimit": {"const": 20},
         "dockerMemoryLimitGiB": {"const": 15.53}, "dockerImagesGiB": {"const": 10.86},
         "dockerVolumesGiB": {"const": 11.21}, "dockerBuildCacheGiB": {"const": 2.847},
         "existingRunningContainers": {"const": 1}
@@ -134,7 +148,7 @@
           "required": ["cpuMilli", "memoryMiB", "applicationManifestInputSha256", "platformObservabilityInputSha256", "includes", "excludes"],
           "properties": {
             "cpuMilli": {"const": 475}, "memoryMiB": {"const": 960},
-            "applicationManifestInputSha256": {"const": "b4620a74e38c968f56975c4f5253e79b04fa34302aa27afd19666a5838383ada"},
+            "applicationManifestInputSha256": {"const": "62b01c44a0d03e389d032d72ded0db71ac0dc9ba4b0dc976736fe23bb8979451"},
             "platformObservabilityInputSha256": {"const": "a7af14c5615d14de698c6c8fbc529faa02aa1e4f92c6644359c98f8e6e1ee512"},
             "includes": {"type": "string"}, "excludes": {"type": "string"}
           }

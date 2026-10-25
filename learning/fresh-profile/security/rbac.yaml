@@ -2,58 +2,69 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata: {name: argocd-fresh-control-writer, namespace: fresh-control}
 rules:
+- {apiGroups: [argoproj.io], resources: [applications], verbs: [get, list, watch]}
+- {apiGroups: [argoproj.io], resources: [applications], verbs: [create]}
 - apiGroups: [argoproj.io]
   resources: [applications]
-  verbs: [get, list, watch, create, update, patch]
+  verbs: [get, update, patch]
+  resourceNames: [account-lightweight-root, fresh-account-release, fresh-observability, fresh-release-definitions]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata: {name: argocd-fresh-control-writer, namespace: fresh-control}
-subjects:
-- {kind: ServiceAccount, name: argocd-application-controller, namespace: fresh-control}
+subjects: [{kind: ServiceAccount, name: argocd-application-controller, namespace: fresh-control}]
 roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: argocd-fresh-control-writer}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata: {name: argocd-fresh-account-writer, namespace: fresh-account}
 rules:
-- apiGroups: ['']
-  resources: [configmaps, persistentvolumeclaims, services, serviceaccounts]
-  verbs: [get, list, watch, create, update, patch]
-- apiGroups: [apps]
-  resources: [statefulsets]
-  verbs: [get, list, watch, create, update, patch]
-- apiGroups: [batch]
-  resources: [jobs]
-  verbs: [get, list, watch, create, update, patch]
-- apiGroups: [argoproj.io]
-  resources: [rollouts]
-  verbs: [get, list, watch, create, update, patch]
-- apiGroups: [networking.istio.io]
-  resources: [destinationrules, virtualservices]
-  verbs: [get, list, watch, create, update, patch]
+- {apiGroups: [''], resources: [configmaps, persistentvolumeclaims, services, serviceaccounts], verbs: [get, list, watch]}
+- {apiGroups: [''], resources: [configmaps, persistentvolumeclaims, services, serviceaccounts], verbs: [create]}
+- {apiGroups: [''], resources: [configmaps], verbs: [get, update, patch], resourceNames: [account-role-bootstrap]}
+- {apiGroups: [''], resources: [persistentvolumeclaims], verbs: [get, update, patch], resourceNames: [account-data]}
+- {apiGroups: [''], resources: [services], verbs: [get, update, patch], resourceNames: [account-api, account-postgresql]}
+- {apiGroups: [''], resources: [serviceaccounts], verbs: [get, update, patch], resourceNames: [account-database, account-migration, account-runtime]}
+- {apiGroups: [apps], resources: [statefulsets], verbs: [get, list, watch]}
+- {apiGroups: [apps], resources: [statefulsets], verbs: [create]}
+- {apiGroups: [apps], resources: [statefulsets], verbs: [get, update, patch], resourceNames: [account-postgresql]}
+- {apiGroups: [batch], resources: [jobs], verbs: [get, list, watch]}
+- {apiGroups: [batch], resources: [jobs], verbs: [create]}
+- {apiGroups: [batch], resources: [jobs], verbs: [get, update, patch], resourceNames: [account-db-role-bootstrap, account-migration]}
+- {apiGroups: [argoproj.io], resources: [rollouts], verbs: [get, list, watch]}
+- {apiGroups: [argoproj.io], resources: [rollouts], verbs: [create]}
+- {apiGroups: [argoproj.io], resources: [rollouts], verbs: [get, update, patch], resourceNames: [account-api]}
+- {apiGroups: [networking.istio.io], resources: [destinationrules], verbs: [get, list, watch]}
+- {apiGroups: [networking.istio.io], resources: [destinationrules], verbs: [create]}
+- {apiGroups: [networking.istio.io], resources: [destinationrules], verbs: [get, update, patch], resourceNames: [account-api]}
+- {apiGroups: [networking.istio.io], resources: [virtualservices], verbs: [get, list, watch]}
+- {apiGroups: [networking.istio.io], resources: [virtualservices], verbs: [create]}
+- {apiGroups: [networking.istio.io], resources: [virtualservices], verbs: [get, update, patch], resourceNames: [account-api]}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata: {name: argocd-fresh-account-writer, namespace: fresh-account}
-subjects:
-- {kind: ServiceAccount, name: argocd-application-controller, namespace: fresh-control}
+subjects: [{kind: ServiceAccount, name: argocd-application-controller, namespace: fresh-control}]
 roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: argocd-fresh-account-writer}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata: {name: argocd-fresh-observability-writer, namespace: fresh-observability}
 rules:
-- apiGroups: ['']
-  resources: [configmaps, services, serviceaccounts]
-  verbs: [get, list, watch, create, update, patch]
-- apiGroups: [apps]
-  resources: [deployments, statefulsets]
-  verbs: [get, list, watch, create, update, patch]
+- {apiGroups: [''], resources: [configmaps, services, serviceaccounts], verbs: [get, list, watch]}
+- {apiGroups: [''], resources: [configmaps, services, serviceaccounts], verbs: [create]}
+- {apiGroups: [''], resources: [configmaps], verbs: [get, update, patch], resourceNames: [otel-collector, prometheus]}
+- {apiGroups: [''], resources: [services], verbs: [get, update, patch], resourceNames: [grafana, otel-collector, prometheus]}
+- {apiGroups: [''], resources: [serviceaccounts], verbs: [get, update, patch], resourceNames: [grafana, otel-collector, prometheus]}
+- {apiGroups: [apps], resources: [deployments], verbs: [get, list, watch]}
+- {apiGroups: [apps], resources: [deployments], verbs: [create]}
+- {apiGroups: [apps], resources: [deployments], verbs: [get, update, patch], resourceNames: [grafana, otel-collector]}
+- {apiGroups: [apps], resources: [statefulsets], verbs: [get, list, watch]}
+- {apiGroups: [apps], resources: [statefulsets], verbs: [create]}
+- {apiGroups: [apps], resources: [statefulsets], verbs: [get, update, patch], resourceNames: [prometheus]}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata: {name: argocd-fresh-observability-writer, namespace: fresh-observability}
-subjects:
-- {kind: ServiceAccount, name: argocd-application-controller, namespace: fresh-control}
+subjects: [{kind: ServiceAccount, name: argocd-application-controller, namespace: fresh-control}]
 roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: argocd-fresh-observability-writer}

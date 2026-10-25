@@ -25,7 +25,7 @@ class FreshManifestTests(unittest.TestCase):
     def test_checked_manifests_are_finite(self):
         root, children, observability, rbac, admission = contract.validate()
         self.assertEqual((len(root), len(children), len(observability), len(rbac), len(admission)),
-                         (3, 2, 11, 6, 4))
+                         (7, 1, 11, 6, 6))
 
     def test_cluster_rbac_is_rejected(self):
         rbac = contract.load(contract.RBAC)
@@ -36,12 +36,26 @@ class FreshManifestTests(unittest.TestCase):
     def test_floating_root_revision_and_sonar_are_rejected(self):
         root = contract.load(contract.ROOT)
         next(item for item in root if item["kind"] == "Application")["spec"]["source"]["targetRevision"] = "main"
-        with self.assertRaisesRegex(contract.Rejected, "root-revision"):
+        with self.assertRaisesRegex(contract.Rejected, "application-revision:account-lightweight-root"):
             contract.validate(root_path=self.temp(root))
         observability = contract.load(contract.OBSERVABILITY)
         observability[0]["metadata"]["name"] = "sonarqube"
         with self.assertRaisesRegex(contract.Rejected, "sonar-duplicated"):
             contract.validate(observability_path=self.temp(observability))
+
+    def test_namespace_security_labels_are_required(self):
+        root = contract.load(contract.ROOT)
+        namespace = next(item for item in root if item["kind"] == "Namespace" and
+                         item["metadata"]["name"] == "fresh-account")
+        namespace["metadata"]["labels"].pop("platform.lab/security-boundary", None)
+        with self.assertRaisesRegex(contract.Rejected, "namespace-labels:fresh-account"):
+            contract.validate(root_path=self.temp(root))
+
+    def test_child_project_and_destination_are_exact(self):
+        children = contract.load(contract.CHILDREN)
+        children[0]["spec"]["project"] = "default"
+        with self.assertRaisesRegex(contract.Rejected, "application-project:fresh-release-definitions"):
+            contract.validate(children_path=self.temp(children))
 
 
 if __name__ == "__main__":

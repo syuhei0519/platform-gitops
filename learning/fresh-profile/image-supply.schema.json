@@ -25,7 +25,7 @@
           "required": ["status", "selectedMode", "restoreOwner", "retentionUntil", "restoreProcedureRef"],
           "properties": {
             "status": {"enum": ["pending-approval", "approved"]},
-            "selectedMode": {"enum": ["PENDING_G2", "private-registry", "retained-oci-archive"]},
+            "selectedMode": {"enum": ["PENDING_G2", "private-registry", "retained-oci-archive", "public-upstream-plus-retained-account-archive"]},
             "restoreOwner": {"type": "string", "pattern": "^(PENDING_G2|[a-z0-9][a-z0-9-]{2,63})$"},
             "retentionUntil": {"type": "string", "pattern": "^(PENDING_G2|[0-9]{4}-[0-9]{2}-[0-9]{2})$"},
             "restoreProcedureRef": {"type": "string", "pattern": "^(PENDING_G2|runbook:[a-z0-9-]+)$"}
@@ -53,6 +53,16 @@
   "definitions": {
     "source": {
       "oneOf": [
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "published", "immutable", "freshEligible", "location", "manifest"],
+          "properties": {
+            "kind": {"const": "public-registry"}, "published": {"const": true},
+            "immutable": {"const": true}, "freshEligible": {"const": true},
+            "location": {"type": "string", "pattern": "^oci://.+@sha256:[0-9a-f]{64}$"},
+            "manifest": {"$ref": "#/definitions/manifest"}
+          }
+        },
         {
           "type": "object", "additionalProperties": false,
           "required": ["kind", "published", "immutable", "freshEligible", "location"],

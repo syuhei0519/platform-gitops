@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "platform.lab/fresh-security-contract/v1",
+  "profile": "account-lightweight-fresh",
+  "destinationServer": "https://kubernetes.default.svc",
+  "namespaces": {
+    "fresh-control": {"platform.lab/profile": "account-lightweight-fresh", "platform.lab/security-boundary": "control"},
+    "fresh-account": {"platform.lab/profile": "account-lightweight-fresh", "platform.lab/security-boundary": "account", "istio.io/rev": "fresh-1-31-2"},
+    "fresh-observability": {"platform.lab/profile": "account-lightweight-fresh", "platform.lab/security-boundary": "observability"}
+  },
+  "applications": {
+    "account-lightweight-root": {
+      "namespace": "fresh-control", "project": "fresh-platform",
+      "repository": "https://github.com/syuhei0519/platform-gitops.git",
+      "revision": "__PLATFORM_GITOPS_SHA__", "path": "learning/fresh-profile/root/children",
+      "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}
+    },
+    "fresh-release-definitions": {
+      "namespace": "fresh-control", "project": "fresh-platform",
+      "repository": "https://github.com/syuhei0519/application-manifest.git",
+      "revision": "0fc2ae19300af32f86643152e65597b022dcdc0f", "path": "learning/fresh-profile/release-definition",
+      "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}
+    },
+    "fresh-observability": {
+      "namespace": "fresh-control", "project": "fresh-platform",
+      "repository": "https://github.com/syuhei0519/platform-gitops.git",
+      "revision": "__PLATFORM_GITOPS_SHA__", "path": "learning/fresh-profile/observability",
+      "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-observability"}
+    },
+    "fresh-account-release": {
+      "namespace": "fresh-control", "project": "fresh-account",
+      "repository": "https://github.com/syuhei0519/application-manifest.git",
+      "revision": "0fc2ae19300af32f86643152e65597b022dcdc0f", "path": "learning/fresh-profile/workload",
+      "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-account"}
+    }
+  },
+  "controllers": {
+    "StatefulSet/fresh-account/account-postgresql": {
+      "serviceAccountName": "account-database", "allowedSecretKeys": {"account-db-bootstrap": ["admin-password"]}
+    },
+    "Job/fresh-account/account-db-role-bootstrap": {
+      "serviceAccountName": "account-migration",
+      "allowedSecretKeys": {"account-db-bootstrap": ["admin-password"], "account-db-migration": ["username", "password"], "account-db-runtime": ["username", "password"]}
+    },
+    "Job/fresh-account/account-migration": {
+      "serviceAccountName": "account-migration", "allowedSecretKeys": {"account-db-migration": ["uri"]}
+    },
+    "Rollout/fresh-account/account-api": {
+      "serviceAccountName": "account-runtime", "allowedSecretKeys": {"account-db-runtime": ["uri"]}
+    }
+  },
+  "resourceNames": {
+    "fresh-control": {"argoproj.io/applications": ["account-lightweight-root", "fresh-account-release", "fresh-observability", "fresh-release-definitions"]},
+    "fresh-account": {
+      "/configmaps": ["account-role-bootstrap"], "/persistentvolumeclaims": ["account-data"],
+      "/services": ["account-api", "account-postgresql"], "/serviceaccounts": ["account-database", "account-migration", "account-runtime"],
+      "apps/statefulsets": ["account-postgresql"], "batch/jobs": ["account-db-role-bootstrap", "account-migration"],
+      "argoproj.io/rollouts": ["account-api"], "networking.istio.io/destinationrules": ["account-api"],
+      "networking.istio.io/virtualservices": ["account-api"]
+    },
+    "fresh-observability": {
+      "/configmaps": ["otel-collector", "prometheus"], "/services": ["grafana", "otel-collector", "prometheus"],
+      "/serviceaccounts": ["grafana", "otel-collector", "prometheus"],
+      "apps/deployments": ["grafana", "otel-collector"], "apps/statefulsets": ["prometheus"]
+    }
+  },
+  "bootstrapResourceNames": {
+    "fresh-control": {"argoproj.io/appprojects": ["fresh-account", "fresh-platform"]}
+  },
+  "rbacRuleContract": {
+    "discoveryVerbs": ["get", "list", "watch"], "createVerbs": ["create"],
+    "namedMutationVerbs": ["get", "update", "patch"], "deleteVerbs": [],
+    "createIsBoundedByFailClosedAdmission": true
+  },
+  "liveEvidence": {
+    "required": ["kubectl-auth-can-i-positive", "kubectl-auth-can-i-negative", "admission-positive", "admission-negative"],
+    "status": "required-unrun"
+  }
+}

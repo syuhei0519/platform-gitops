@@ -1,3 +1,28 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fresh-control
+  labels:
+    platform.lab/profile: account-lightweight-fresh
+    platform.lab/security-boundary: control
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fresh-account
+  labels:
+    platform.lab/profile: account-lightweight-fresh
+    platform.lab/security-boundary: account
+    istio.io/rev: fresh-1-31-2
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fresh-observability
+  labels:
+    platform.lab/profile: account-lightweight-fresh
+    platform.lab/security-boundary: observability
+---
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
@@ -21,7 +46,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: fresh-workload
+  name: fresh-account
   namespace: fresh-control
 spec:
   sourceRepos:
@@ -58,3 +83,23 @@ spec:
     namespace: fresh-control
   syncPolicy:
     syncOptions: [ApplyOutOfSyncOnly=true, Prune=false]
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fresh-observability
+  namespace: fresh-control
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false
+spec:
+  project: fresh-platform
+  source:
+    repoURL: https://github.com/syuhei0519/platform-gitops.git
+    targetRevision: __PLATFORM_GITOPS_SHA__
+    path: learning/fresh-profile/observability
+    directory: {recurse: true}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fresh-observability
+  syncPolicy:
+    syncOptions: [CreateNamespace=false, ApplyOutOfSyncOnly=true, Prune=false]

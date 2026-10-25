@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the offline PLAT-215 authority proposal; never contact Kubernetes."""
+"""Validate PLAT-215's canonical offline authority and admission contract."""
 
 from __future__ import annotations
 
@@ -12,13 +12,17 @@ import yaml
 
 
 HERE = Path(__file__).resolve().parent
+REPOSITORY = HERE.parents[1]
 MATRIX = HERE / "authority-matrix.json"
 EVIDENCE = HERE / "fixtures" / "canonical-two-sha.json"
+NEGATIVE = HERE / "fixtures" / "security-negative-fixtures.json"
+CANONICAL = HERE / "security" / "canonical-contract.json"
+RBAC = HERE / "security" / "rbac.yaml"
+ADMISSION = HERE / "security" / "admission.yaml"
 ACTORS = {"platform", "workload", "release-definition"}
-DANGEROUS_VERBS = {"delete", "deletecollection", "bind", "escalate", "impersonate"}
+DANGEROUS_VERBS = {"delete", "deletecollection", "bind", "escalate", "impersonate", "*"}
 SHA = re.compile(r"[0-9a-f]{40}")
 PLATFORM_TOKEN = "__PLATFORM_GITOPS_SHA__"
-REPOSITORY = HERE.parents[1]
 
 
 class ContractError(ValueError):
@@ -31,81 +35,126 @@ def require(value, reason):
 
 
 def load(path: Path):
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
-def validate_matrix(matrix):
+def load_yaml(path: Path):
+    return list(yaml.safe_load_all(Path(path).read_text(encoding="utf-8")))
+
+
+def validate_canonical(contract):
+    require(contract.get("schemaVersion") == "platform.lab/fresh-security-contract/v1", "canonical-version")
+    require(contract.get("destinationServer") == "https://kubernetes.default.svc", "canonical-destination-server")
+    namespaces = contract.get("namespaces", {})
+    require(set(namespaces) == {"fresh-control", "fresh-account", "fresh-observability"}, "canonical-namespaces")
+    for namespace, boundary in (("fresh-control", "control"), ("fresh-account", "account"),
+                                ("fresh-observability", "observability")):
+        require(namespaces[namespace].get("platform.lab/profile") == "account-lightweight-fresh",
+                f"namespace-profile:{namespace}")
+        require(namespaces[namespace].get("platform.lab/security-boundary") == boundary,
+                f"namespace-boundary:{namespace}")
+    require(namespaces["fresh-account"].get("istio.io/rev") == "fresh-1-31-2", "namespace-istio-revision")
+
+    applications = contract.get("applications", {})
+    require(set(applications) == {"account-lightweight-root", "fresh-release-definitions",
+                                  "fresh-observability", "fresh-account-release"}, "canonical-applications")
+    for name, application in applications.items():
+        require(application["namespace"] == "fresh-control", f"application-namespace:{name}")
+        require(application["repository"].endswith(".git"), f"application-repository:{name}")
+        require(SHA.fullmatch(application["revision"]) or application["revision"] == PLATFORM_TOKEN,
+                f"application-revision:{name}")
+        require(application["destination"]["server"] == contract["destinationServer"],
+                f"application-server:{name}")
+        require(application["destination"]["namespace"] in namespaces, f"application-destination:{name}")
+        require(application.get("project") in {"fresh-platform", "fresh-account"}, f"application-project:{name}")
+
+    controllers = contract.get("controllers", {})
+    require(set(controllers) == {"StatefulSet/fresh-account/account-postgresql",
+                                 "Job/fresh-account/account-db-role-bootstrap",
+                                 "Job/fresh-account/account-migration",
+                                 "Rollout/fresh-account/account-api"}, "canonical-controllers")
+    secret_refs = {(name, key) for controller in controllers.values()
+                   for name, keys in controller["allowedSecretKeys"].items() for key in keys}
+    require(secret_refs == {("account-db-bootstrap", "admin-password"),
+                            ("account-db-migration", "username"), ("account-db-migration", "password"),
+                            ("account-db-migration", "uri"), ("account-db-runtime", "username"),
+                            ("account-db-runtime", "password"), ("account-db-runtime", "uri")},
+            "canonical-secret-keys")
+    require(contract.get("rbacRuleContract") == {
+        "discoveryVerbs": ["get", "list", "watch"], "createVerbs": ["create"],
+        "namedMutationVerbs": ["get", "update", "patch"], "deleteVerbs": [],
+        "createIsBoundedByFailClosedAdmission": True}, "canonical-rbac-contract")
+    require(contract.get("liveEvidence", {}).get("status") == "required-unrun", "canonical-live-boundary")
+    return contract
+
+
+def validate_matrix(matrix, canonical=None):
+    canonical = validate_canonical(canonical or load(CANONICAL))
     require(matrix.get("version") == 1 and matrix.get("mode") == "offline-proposal", "matrix-version")
+    require(matrix.get("canonicalContract") == "learning/fresh-profile/security/canonical-contract.json",
+            "matrix-canonical-path")
     live = matrix.get("liveEvidence", {})
     require(live.get("required") is True and live.get("status") == "not-run", "live-evidence-boundary")
     require(set(matrix.get("sources", {})) == ACTORS, "source-actors")
     for actor, source in matrix["sources"].items():
         revision = source.get("commit", "")
-        require(SHA.fullmatch(revision) or (actor == "platform" and revision == PLATFORM_TOKEN),
-                f"source-sha:{actor}")
+        require(SHA.fullmatch(revision) or (actor == "platform" and revision == PLATFORM_TOKEN), f"source-sha:{actor}")
         require(source.get("repository", "").endswith(".git"), f"source-repository:{actor}")
         require(source.get("paths") and source.get("destinations") and source.get("kinds"), f"source-finite:{actor}")
         require(not any("*" in item for key in ("paths", "destinations", "kinds") for item in source[key]),
                 f"source-wildcard:{actor}")
+    for name, application in canonical["applications"].items():
+        actors = [actor for actor, source in matrix["sources"].items()
+                  if application["repository"] == source["repository"] and
+                  application["revision"] == source["commit"] and application["path"] in source["paths"]]
+        require(len(actors) == 1, f"canonical-source:{name}")
 
     identities = matrix.get("identities", {})
     require(identities.get("gitops-controller") ==
             "system:serviceaccount:fresh-control:argocd-application-controller", "gitops-identity")
-    require({identities.get(name) for name in ("database", "migration", "runtime")} == {
-        "system:serviceaccount:fresh-account:account-database",
-        "system:serviceaccount:fresh-account:account-migration",
-        "system:serviceaccount:fresh-account:account-runtime"}, "workload-identities")
     require(matrix.get("rbac", {}).get("workloadServiceAccountApiVerbs") == [], "workload-api-verbs")
     require(matrix.get("admission", {}).get("policies") ==
-            ["fresh-application-boundary", "fresh-account-pod-boundary"], "admission-policies")
-    for field in ("rbac", "admission"):
-        path = (REPOSITORY / matrix[field]["manifest"]).resolve()
-        require(path.is_relative_to(REPOSITORY.resolve()) and path.is_file(), f"{field}-manifest")
+            ["fresh-application-boundary", "fresh-managed-resource-boundary",
+             "fresh-account-pod-boundary"], "admission-policies")
 
     permissions = matrix.get("permissions", [])
     require(permissions, "permissions-empty")
     for permission in permissions:
         actor = permission.get("actor")
-        require(actor in ACTORS, "permission-actor")
-        require(permission.get("scope") in {"cluster", "namespace"}, "permission-scope")
+        require(actor in ACTORS and permission.get("scope") == "namespace", "permission-scope")
         require(permission.get("resource") and permission.get("resource") != "*", "permission-resource")
         verbs = set(permission.get("verbs", []))
         names = permission.get("resourceNames", [])
-        require(verbs and not verbs.intersection(DANGEROUS_VERBS | {"*"}), "permission-verb")
+        require(verbs and not verbs.intersection(DANGEROUS_VERBS), "permission-verb")
         require(names and not any(name == "*" for name in names), "permission-resource-names")
-        if permission["scope"] == "cluster":
-            require("namespace" not in permission, "cluster-namespace")
-        else:
-            require(permission.get("namespace") in matrix["sources"][actor]["destinations"],
-                    "permission-destination")
-
-    release_permissions = [item for item in permissions if item["actor"] == "release-definition"]
-    require(release_permissions and all(item["apiGroup"] == "argoproj.io" and
-                                        item["resource"] == "applications"
-                                        for item in release_permissions), "release-definition-scope")
+        require(permission.get("namespace") in matrix["sources"][actor]["destinations"], "permission-destination")
+        key = f"{permission.get('apiGroup', '')}/{permission['resource']}"
+        canonical_names = canonical["resourceNames"].get(permission["namespace"], {}).get(key, [])
+        bootstrap_names = canonical.get("bootstrapResourceNames", {}).get(permission["namespace"], {}).get(key, [])
+        require(set(names).issubset(set(canonical_names) | set(bootstrap_names)),
+                "permission-canonical-name")
     require(not any(item["actor"] == "workload" and item["scope"] == "cluster" for item in permissions),
             "workload-cluster-authority")
 
     boundary = matrix.get("podBoundary", {})
-    require(boundary.get("enforcement") == "trusted-namespace-plus-admission-required", "pod-enforcement")
-    require(boundary.get("liveStatus") == "pending-separate-approval", "pod-live-status")
-    require(boundary.get("directPodsAllowed") is False, "direct-pods")
-    require(boundary.get("controllers"), "pod-controllers")
+    require(boundary.get("namespace") == "fresh-account" and boundary.get("directPodsAllowed") is False,
+            "pod-boundary")
+    require(set(boundary.get("controllers", {})) == set(canonical["controllers"]), "pod-controller-set")
+    for identity, expected in canonical["controllers"].items():
+        actual = boundary["controllers"][identity]
+        require(actual.get("serviceAccountName") == expected["serviceAccountName"] and
+                actual.get("allowedSecretKeys") == expected["allowedSecretKeys"], f"pod-controller-contract:{identity}")
     return matrix
 
 
 def matching_permission(matrix, operation):
     for permission in matrix["permissions"]:
-        if any(permission.get(field) != operation.get(field)
-               for field in ("actor", "scope", "apiGroup", "resource")):
+        if any(permission.get(field) != operation.get(field) for field in ("actor", "scope", "apiGroup", "resource")):
             continue
-        if permission["scope"] == "namespace" and permission.get("namespace") != operation.get("namespace"):
+        if permission.get("namespace") != operation.get("namespace"):
             continue
-        if operation.get("verb") not in permission["verbs"]:
-            continue
-        if operation.get("name") not in permission["resourceNames"]:
-            continue
-        return permission
+        if operation.get("verb") in permission["verbs"] and operation.get("name") in permission["resourceNames"]:
+            return permission
     return None
 
 
@@ -114,6 +163,9 @@ def secret_key_refs(value, result):
         ref = value.get("secretKeyRef")
         if isinstance(ref, dict):
             result.add((ref.get("name"), ref.get("key")))
+        ref = value.get("secretRef")
+        if isinstance(ref, dict):
+            result.add((ref.get("name"), None))
         secret = value.get("secret")
         if isinstance(secret, dict):
             result.add((secret.get("secretName"), None))
@@ -124,18 +176,18 @@ def secret_key_refs(value, result):
             secret_key_refs(child, result)
 
 
-def validate_controller(matrix, controller):
-    boundary = matrix["podBoundary"]
+def validate_controller(canonical, controller, exact_secrets=True):
     identity = f"{controller.get('kind')}/{controller.get('namespace')}/{controller.get('name')}"
-    expected = boundary["controllers"].get(identity)
+    expected = canonical["controllers"].get(identity)
     require(expected is not None, f"controller-identity:{identity}")
-    require(controller.get("namespace") == boundary["namespace"], f"controller-namespace:{identity}")
     pod = controller.get("podSpec", {})
     require(pod.get("serviceAccountName") == expected["serviceAccountName"], f"controller-service-account:{identity}")
     require(pod.get("automountServiceAccountToken") is False, f"controller-automount:{identity}")
     require(not pod.get("hostNetwork", False), f"controller-host-network:{identity}")
     for volume in pod.get("volumes", []):
-        require("hostPath" not in volume and "projected" not in volume, f"controller-volume:{identity}")
+        require("hostPath" not in volume and "secret" not in volume and
+                not any("secret" in source for source in volume.get("projected", {}).get("sources", [])),
+                f"controller-volume:{identity}")
     for container in pod.get("initContainers", []) + pod.get("containers", []):
         security = container.get("securityContext", {})
         require(security.get("privileged") is not True, f"controller-privileged:{identity}")
@@ -143,48 +195,152 @@ def validate_controller(matrix, controller):
     found = set()
     secret_key_refs(pod, found)
     allowed = {(name, key) for name, keys in expected["allowedSecretKeys"].items() for key in keys}
-    require(found == allowed, f"controller-secret-keys:{identity}")
+    require(found == allowed if exact_secrets else found.issubset(allowed), f"controller-secret-keys:{identity}")
 
 
-def validate_evidence(matrix, evidence):
+def validate_rbac(canonical, documents):
+    require(not any(item["kind"] in {"ClusterRole", "ClusterRoleBinding"} for item in documents), "cluster-rbac")
+    roles = {item["metadata"]["namespace"]: item for item in documents if item["kind"] == "Role"}
+    require(set(roles) == set(canonical["resourceNames"]), "rbac-role-namespaces")
+    bindings = [item for item in documents if item["kind"] == "RoleBinding"]
+    require({item["metadata"]["namespace"] for item in bindings} == set(roles), "rbac-binding-namespaces")
+    for binding in bindings:
+        require(binding["subjects"] == [{"kind": "ServiceAccount", "name": "argocd-application-controller",
+                                         "namespace": "fresh-control"}], "rolebinding-subject")
+
+    actual = set()
+    for namespace, role in roles.items():
+        for rule in role["rules"]:
+            require(not set(rule["verbs"]).intersection(DANGEROUS_VERBS), "rbac-dangerous-verb")
+            names = tuple(sorted(rule.get("resourceNames", [])))
+            for group in rule["apiGroups"]:
+                for resource in rule["resources"]:
+                    for verb in rule["verbs"]:
+                        actual.add((namespace, group, resource, verb, names))
+    expected = set()
+    for namespace, resources in canonical["resourceNames"].items():
+        for compound, names in resources.items():
+            group, resource = compound.split("/", 1)
+            for verb in ("get", "list", "watch", "create"):
+                expected.add((namespace, group, resource, verb, ()))
+            for verb in ("get", "update", "patch"):
+                expected.add((namespace, group, resource, verb, tuple(sorted(names))))
+    require(actual == expected, "rbac-canonical-rules")
+
+
+def validate_admission(canonical, documents):
+    policies = {item["metadata"]["name"]: item for item in documents if item["kind"] == "ValidatingAdmissionPolicy"}
+    bindings = {item["metadata"]["name"]: item for item in documents if item["kind"] == "ValidatingAdmissionPolicyBinding"}
+    expected = {"fresh-application-boundary", "fresh-managed-resource-boundary", "fresh-account-pod-boundary"}
+    require(set(policies) == expected and set(bindings) == expected, "admission-inventory")
+    require(all(item["spec"].get("failurePolicy") == "Fail" for item in policies.values()), "admission-fail-open")
+    app_expression = " ".join(item["expression"] for item in policies["fresh-application-boundary"]["spec"]["validations"])
+    for name, app in canonical["applications"].items():
+        for value in (name, app["project"], app["repository"], app["revision"], app["path"],
+                      app["destination"]["server"], app["destination"]["namespace"]):
+            require(value in app_expression, f"admission-application:{name}")
+    managed_expression = " ".join(item["expression"] for item in policies["fresh-managed-resource-boundary"]["spec"]["validations"])
+    for namespace, resources in canonical["resourceNames"].items():
+        if namespace == "fresh-control":
+            continue
+        require(namespace in managed_expression, f"admission-namespace:{namespace}")
+        for names in resources.values():
+            require(all(name in managed_expression for name in names), f"admission-managed-name:{namespace}")
+    pod_expression = " ".join(item["expression"] for item in policies["fresh-account-pod-boundary"]["spec"]["validations"])
+    for fragment in ("ownerReferences", "initContainers", "secretRef", "secretKeyRef", "projected", "hostPath",
+                     "account-db-bootstrap", "account-db-migration", "account-db-runtime"):
+        require(fragment in pod_expression, f"admission-pod-fragment:{fragment}")
+    require(bindings["fresh-application-boundary"]["spec"]["matchResources"]["namespaceSelector"] ==
+            {"matchLabels": {"platform.lab/security-boundary": "control"}}, "application-binding-label")
+    require(bindings["fresh-account-pod-boundary"]["spec"]["matchResources"]["namespaceSelector"] ==
+            {"matchLabels": {"platform.lab/security-boundary": "account"}}, "pod-binding-label")
+
+
+def validate_evidence(matrix, evidence, canonical=None):
+    canonical = validate_canonical(canonical or load(CANONICAL))
     require(set(evidence.get("sources", {})) == ACTORS, "evidence-source-actors")
     for actor, actual in evidence["sources"].items():
         expected = matrix["sources"][actor]
         require(actual.get("repository") == expected["repository"], f"evidence-repository:{actor}")
         require(actual.get("commit") == expected["commit"], f"evidence-sha:{actor}")
         require(actual.get("path") in expected["paths"], f"evidence-path:{actor}")
-
-    identities = set()
-    for application in evidence.get("applications", []):
-        actor = application.get("actor")
-        source = matrix["sources"].get(actor, {})
-        identity = f"{application.get('namespace')}/{application.get('name')}"
-        require(identity not in identities, "application-duplicate")
-        identities.add(identity)
-        require(application.get("repository") == source.get("repository"), f"application-repository:{identity}")
-        require(application.get("revision") == source.get("commit"), f"application-revision:{identity}")
-        require(application.get("path") in source.get("paths", []), f"application-path:{identity}")
-        require(application.get("namespace") in source.get("destinations", []), f"application-namespace:{identity}")
-    require(identities == {"fresh-control/account-lightweight-root", "fresh-control/fresh-account-release"},
-            "application-set")
-    release = next(item for item in evidence["applications"] if item["actor"] == "release-definition")
-    require(release["destination"] == "fresh-account", "release-destination")
-
-    operations = evidence.get("operations", [])
-    require(operations and all(matching_permission(matrix, operation) for operation in operations),
+    applications = {item["name"]: item for item in evidence.get("applications", [])}
+    require(set(applications) == set(canonical["applications"]), "application-set")
+    for name, expected in canonical["applications"].items():
+        actual = applications[name]
+        for actual_key, expected_key in (("namespace", "namespace"), ("project", "project"),
+                                         ("repository", "repository"), ("revision", "revision"),
+                                         ("path", "path"), ("destination", "destination")):
+            require(actual.get(actual_key) == expected[expected_key], f"application-{actual_key}:{name}")
+    require(evidence.get("operations") and all(matching_permission(matrix, item) for item in evidence["operations"]),
             "operation-authority")
     controllers = evidence.get("controllers", [])
     require({f"{item['kind']}/{item['namespace']}/{item['name']}" for item in controllers} ==
-            set(matrix["podBoundary"]["controllers"]), "controller-set")
+            set(canonical["controllers"]), "controller-set")
     for controller in controllers:
-        validate_controller(matrix, controller)
+        validate_controller(canonical, controller)
     require(evidence.get("retained") == matrix.get("retainedSemantics"), "retained-semantics")
     return matrix, evidence
 
 
-def validate(matrix_path: Path = MATRIX, evidence_path: Path = EVIDENCE):
-    matrix = validate_matrix(load(matrix_path))
-    return validate_evidence(matrix, load(evidence_path))
+def negative_denied(canonical, obj):
+    kind = obj.get("kind")
+    metadata = obj.get("metadata", {})
+    if kind == "Application":
+        expected = canonical["applications"].get(metadata.get("name"))
+        if not expected:
+            return True
+        spec = obj.get("spec", {})
+        source = spec.get("source", {})
+        return not (metadata.get("namespace") == expected["namespace"] and spec.get("project") == expected["project"] and
+                    source.get("repoURL") == expected["repository"] and source.get("targetRevision") == expected["revision"] and
+                    source.get("path") == expected["path"] and spec.get("destination") == expected["destination"])
+    if kind == "Pod":
+        owners = metadata.get("ownerReferences", [])
+        if not any(owner.get("controller") is True and
+                   ((owner.get("kind") == "StatefulSet" and owner.get("name") == "account-postgresql") or
+                    (owner.get("kind") == "Job" and owner.get("name") in {"account-db-role-bootstrap", "account-migration"}) or
+                    (owner.get("kind") == "ReplicaSet" and owner.get("name", "").startswith("account-api-")))
+                   for owner in owners):
+            return True
+        pod = obj.get("spec", {})
+        if any("secret" in volume or "hostPath" in volume or
+               any("secret" in source for source in volume.get("projected", {}).get("sources", []))
+               for volume in pod.get("volumes", [])):
+            return True
+        return False
+    if kind in {"StatefulSet", "Job", "Rollout"} and "podSpec" in obj:
+        try:
+            validate_controller(canonical, {"kind": kind, "namespace": metadata.get("namespace"),
+                                             "name": metadata.get("name"), "podSpec": obj["podSpec"]})
+            return False
+        except ContractError:
+            return True
+    namespace = metadata.get("namespace")
+    api_version = obj.get("apiVersion", "")
+    group = api_version.split("/", 1)[0] if "/" in api_version else ""
+    key = f"{group}/{kind.lower()}s"
+    return metadata.get("name") not in canonical["resourceNames"].get(namespace, {}).get(key, [])
+
+
+def validate_negatives(canonical, fixture):
+    require(fixture.get("schemaVersion") == "platform.lab/security-negative-fixtures/v1", "negative-version")
+    cases = fixture.get("cases", [])
+    require({item["id"] for item in cases} == {"wrong-application-project", "direct-pod", "secret-volume",
+                                                "wrong-secret-key", "privileged-init-container",
+                                                "arbitrary-managed-resource"}, "negative-case-set")
+    require(all(item.get("expected") == "deny" and negative_denied(canonical, item["object"]) for item in cases),
+            "negative-not-denied")
+
+
+def validate(matrix_path=MATRIX, evidence_path=EVIDENCE, canonical_path=CANONICAL,
+             rbac_path=RBAC, admission_path=ADMISSION, negative_path=NEGATIVE):
+    canonical = validate_canonical(load(canonical_path))
+    matrix = validate_matrix(load(matrix_path), canonical)
+    validate_rbac(canonical, load_yaml(rbac_path))
+    validate_admission(canonical, load_yaml(admission_path))
+    validate_negatives(canonical, load(negative_path))
+    return validate_evidence(matrix, load(evidence_path), canonical)
 
 
 def main():
@@ -194,14 +350,12 @@ def main():
     args = parser.parse_args()
     try:
         matrix, evidence = validate(args.matrix, args.evidence)
-    except (ContractError, json.JSONDecodeError) as error:
+    except (ContractError, json.JSONDecodeError, yaml.YAMLError) as error:
         print(f"authority proposal rejected: {error}")
         return 1
-    print("authority proposal valid",
-          f"actors={len(matrix['sources'])}",
-          f"permissions={len(matrix['permissions'])}",
-          f"controllers={len(evidence['controllers'])}")
-    print("offline only; live can-i, admission denial and sync evidence remain not-run")
+    print("authority proposal valid", f"permissions={len(matrix['permissions'])}",
+          f"applications={len(evidence['applications'])}", "negative=6")
+    print("offline only; live can-i and admission observations remain required-unrun")
     return 0
 
 

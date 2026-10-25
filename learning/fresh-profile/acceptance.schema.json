@@ -50,7 +50,7 @@
     },
     "evidence": {
       "type": "object", "additionalProperties": false,
-      "required": ["images", "resources", "revisions", "readiness", "fieldOwnership", "resyncRestart"],
+      "required": ["images", "resources", "revisions", "readiness", "fieldOwnership", "resyncRestart", "progressiveDelivery", "databaseAuthorization", "temporaryBindings", "processCleanup"],
       "properties": {
         "images": {"type": "array", "minItems": 1, "items": {"$ref": "#/definitions/imageEvidence"}},
         "resources": {
@@ -81,7 +81,20 @@
             "observed": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
           }
         },
-        "resyncRestart": {"type": "array", "minItems": 2, "items": {"$ref": "#/definitions/check"}}
+        "resyncRestart": {"type": "array", "minItems": 2, "items": {"$ref": "#/definitions/check"}},
+        "progressiveDelivery": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "#/definitions/check"}},
+        "databaseAuthorization": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"$ref": "#/definitions/databaseCase"}},
+        "temporaryBindings": {
+          "type": "object", "additionalProperties": false,
+          "required": ["status", "expectedRemoved", "observedRemoved", "detail"],
+          "properties": {
+            "status": {"$ref": "#/definitions/status"},
+            "expectedRemoved": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string"}},
+            "observedRemoved": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+            "detail": {"type": ["string", "null"]}
+          }
+        },
+        "processCleanup": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"$ref": "#/definitions/check"}}
       }
     },
     "negativeCases": {"type": "array", "minItems": 5, "items": {"$ref": "#/definitions/negative"}},
@@ -127,12 +140,26 @@
       "required": ["name", "expectedDigest", "expectedArchitecture", "status", "retrievedDigest", "actualArchitecture", "sourceType"],
       "properties": {
         "name": {"type": "string", "pattern": "^[a-z0-9-]+$"},
-        "expectedDigest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "expectedDigest": {"type": "string", "pattern": "^(sha256:[0-9a-f]{64}|PENDING_PLAT211_VERIFIED_IMAGE)$"},
         "expectedArchitecture": {"const": "linux/amd64"},
         "status": {"$ref": "#/definitions/status"},
         "retrievedDigest": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
         "actualArchitecture": {"type": ["string", "null"]},
-        "sourceType": {"enum": ["unrun", "private-registry", "retained-oci-archive"]}
+        "sourceType": {"enum": ["unrun", "private-registry", "public-registry", "retained-oci-archive"]}
+      }
+    },
+    "databaseCase": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "role", "operation", "target", "expected", "status", "observed", "detail"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+        "role": {"enum": ["account_migrator", "account_runtime"]},
+        "operation": {"enum": ["DDL", "DML"]},
+        "target": {"enum": ["account", "other_service"]},
+        "expected": {"enum": ["allow", "deny"]},
+        "status": {"$ref": "#/definitions/status"},
+        "observed": {"enum": [null, "allow", "deny"]},
+        "detail": {"type": ["string", "null"]}
       }
     },
     "negative": {

@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import hashlib
-import re
+import importlib.util
 from pathlib import Path
 
 import yaml
@@ -17,7 +17,11 @@ CHILDREN = HERE / "root" / "children" / "applications.yaml"
 OBSERVABILITY = HERE / "observability" / "resources.yaml"
 RBAC = HERE / "security" / "rbac.yaml"
 ADMISSION = HERE / "security" / "admission.yaml"
-REVISION = re.compile(r"([0-9a-f]{40}|__PLATFORM_GITOPS_SHA__)")
+CANONICAL = HERE / "security" / "canonical-contract.json"
+
+AUTHORITY_SPEC = importlib.util.spec_from_file_location("fresh_authority", HERE / "validate_authority.py")
+authority = importlib.util.module_from_spec(AUTHORITY_SPEC)
+AUTHORITY_SPEC.loader.exec_module(authority)
 
 
 class Rejected(ValueError):
@@ -38,44 +42,67 @@ def identity(item):
     return f"{item.get('kind')}/{metadata.get('namespace')}/{metadata.get('name')}"
 
 
+def validate_application(application, expected):
+    name = application["metadata"]["name"]
+    spec = application["spec"]
+    source = spec["source"]
+    require(application["metadata"].get("namespace") == expected["namespace"], f"application-namespace:{name}")
+    require(spec.get("project") == expected["project"], f"application-project:{name}")
+    require(source.get("repoURL") == expected["repository"], f"application-repository:{name}")
+    require(source.get("targetRevision") == expected["revision"], f"application-revision:{name}")
+    require(source.get("path") == expected["path"], f"application-path:{name}")
+    require(spec.get("destination") == expected["destination"], f"application-destination:{name}")
+
+
 def validate(root_path=ROOT, children_path=CHILDREN, observability_path=OBSERVABILITY,
-             rbac_path=RBAC, admission_path=ADMISSION):
+             rbac_path=RBAC, admission_path=ADMISSION, canonical_path=CANONICAL):
     profile = yaml.safe_load(PROFILE.read_text(encoding="utf-8"))["spec"]
+    canonical = authority.validate_canonical(authority.load(canonical_path))
     root = load(root_path)
     require({identity(item) for item in root} == {
-        "AppProject/fresh-control/fresh-platform",
-        "AppProject/fresh-control/fresh-workload",
-        "Application/fresh-control/account-lightweight-root",
+        "Namespace/None/fresh-control", "Namespace/None/fresh-account", "Namespace/None/fresh-observability",
+        "AppProject/fresh-control/fresh-platform", "AppProject/fresh-control/fresh-account",
+        "Application/fresh-control/account-lightweight-root", "Application/fresh-control/fresh-observability",
     }, "root-inventory")
-    root_app = next(item for item in root if item["kind"] == "Application")
-    require(REVISION.fullmatch(root_app["spec"]["source"]["targetRevision"]), "root-revision")
-    require(root_app["spec"]["source"]["path"] == "learning/fresh-profile/root/children", "root-path")
+    for namespace in (item for item in root if item["kind"] == "Namespace"):
+        name = namespace["metadata"]["name"]
+        require(namespace["metadata"].get("labels") == canonical["namespaces"][name], f"namespace-labels:{name}")
+
+    projects = {item["metadata"]["name"]: item for item in root if item["kind"] == "AppProject"}
+    require(projects["fresh-platform"]["spec"]["sourceRepos"] == [
+        "https://github.com/syuhei0519/platform-gitops.git",
+        "https://github.com/syuhei0519/application-manifest.git"], "platform-project-repositories")
+    require(projects["fresh-account"]["spec"]["sourceRepos"] ==
+            ["https://github.com/syuhei0519/application-manifest.git"], "account-project-repositories")
+    require(projects["fresh-account"]["spec"]["destinations"] ==
+            [{"server": canonical["destinationServer"], "namespace": "fresh-account"}],
+            "account-project-destination")
+
+    applications = {item["metadata"]["name"]: item for item in root if item["kind"] == "Application"}
+    for name in ("account-lightweight-root", "fresh-observability"):
+        validate_application(applications[name], canonical["applications"][name])
 
     children = load(children_path)
-    require({identity(item) for item in children} == {
-        "Application/fresh-control/fresh-release-definitions",
-        "Application/fresh-control/fresh-observability",
-    }, "child-inventory")
-    releases = next(item for item in children if item["metadata"]["name"] == "fresh-release-definitions")
-    require(releases["spec"]["source"]["targetRevision"] ==
-            profile["repositories"]["application-manifest"]["commit"], "application-revision")
-    observability_app = next(item for item in children if item["metadata"]["name"] == "fresh-observability")
-    require(REVISION.fullmatch(observability_app["spec"]["source"]["targetRevision"]), "observability-revision")
+    require({identity(item) for item in children} ==
+            {"Application/fresh-control/fresh-release-definitions"}, "child-inventory")
+    release = children[0]
+    validate_application(release, canonical["applications"]["fresh-release-definitions"])
+    parameters = {item["name"]: item["value"] for item in release["spec"]["source"]["helm"]["parameters"]}
+    require(parameters == {"workloadRevision": canonical["applications"]["fresh-account-release"]["revision"],
+                           "accountRuntimeImage": "PENDING_PLAT211_VERIFIED_IMAGE"},
+            "release-helm-parameters")
+    require(profile["repositories"]["application-manifest"]["commit"] ==
+            canonical["applications"]["fresh-account-release"]["revision"], "profile-application-revision")
 
     observability = load(observability_path)
     require(not any(item.get("kind") == "Secret" for item in observability), "observability-secret")
     require(not any("sonar" in identity(item).lower() for item in observability), "sonar-duplicated")
     expected_observability = {
-        "ServiceAccount/fresh-observability/otel-collector",
-        "ConfigMap/fresh-observability/otel-collector",
-        "Deployment/fresh-observability/otel-collector",
-        "Service/fresh-observability/otel-collector",
-        "ServiceAccount/fresh-observability/prometheus",
-        "StatefulSet/fresh-observability/prometheus",
-        "ConfigMap/fresh-observability/prometheus",
-        "Service/fresh-observability/prometheus",
-        "ServiceAccount/fresh-observability/grafana",
-        "Deployment/fresh-observability/grafana",
+        "ServiceAccount/fresh-observability/otel-collector", "ConfigMap/fresh-observability/otel-collector",
+        "Deployment/fresh-observability/otel-collector", "Service/fresh-observability/otel-collector",
+        "ServiceAccount/fresh-observability/prometheus", "StatefulSet/fresh-observability/prometheus",
+        "ConfigMap/fresh-observability/prometheus", "Service/fresh-observability/prometheus",
+        "ServiceAccount/fresh-observability/grafana", "Deployment/fresh-observability/grafana",
         "Service/fresh-observability/grafana",
     }
     require({identity(item) for item in observability} == expected_observability, "observability-inventory")
@@ -83,42 +110,21 @@ def validate(root_path=ROOT, children_path=CHILDREN, observability_path=OBSERVAB
     images = {container["name"]: container["image"] for item in observability
               if item.get("kind") in {"Deployment", "StatefulSet"}
               for container in item["spec"]["template"]["spec"]["containers"]}
-    require(images == {"collector": profile_images["otel-collector"],
-                       "prometheus": profile_images["prometheus"],
+    require(images == {"collector": profile_images["otel-collector"], "prometheus": profile_images["prometheus"],
                        "grafana": profile_images["grafana"]}, "observability-images")
     observed_hash = hashlib.sha256(Path(observability_path).read_bytes()).hexdigest()
     require(observed_hash == profile["budget"]["estimates"]["renderedRequestTotals"]
             ["platformObservabilityInputSha256"], "observability-measurement-input")
 
-    rbac = load(rbac_path)
-    require(not any(item["kind"] in {"ClusterRole", "ClusterRoleBinding"} for item in rbac), "cluster-rbac")
-    roles = {identity(item) for item in rbac if item["kind"] == "Role"}
-    require(roles == {
-        "Role/fresh-control/argocd-fresh-control-writer",
-        "Role/fresh-account/argocd-fresh-account-writer",
-        "Role/fresh-observability/argocd-fresh-observability-writer",
-    }, "role-inventory")
-    for binding in (item for item in rbac if item["kind"] == "RoleBinding"):
-        require(binding["subjects"] == [{"kind": "ServiceAccount", "name": "argocd-application-controller",
-                                         "namespace": "fresh-control"}], "rolebinding-subject")
-    require(not any("delete" in rule["verbs"] or "*" in rule["verbs"]
-                    for role in rbac if role["kind"] == "Role" for rule in role["rules"]), "rbac-verb")
-
-    admission = load(admission_path)
-    require({identity(item) for item in admission} == {
-        "ValidatingAdmissionPolicy/None/fresh-application-boundary",
-        "ValidatingAdmissionPolicyBinding/None/fresh-application-boundary",
-        "ValidatingAdmissionPolicy/None/fresh-account-pod-boundary",
-        "ValidatingAdmissionPolicyBinding/None/fresh-account-pod-boundary",
-    }, "admission-inventory")
-    require(all(item.get("spec", {}).get("failurePolicy") == "Fail"
-                for item in admission if item["kind"] == "ValidatingAdmissionPolicy"), "admission-fail-open")
-    return root, children, observability, rbac, admission
+    try:
+        authority.validate_rbac(canonical, load(rbac_path))
+        authority.validate_admission(canonical, load(admission_path))
+    except authority.ContractError as error:
+        raise Rejected(str(error)) from error
+    return root, children, observability, load(rbac_path), load(admission_path)
 
 
 if __name__ == "__main__":
     result = validate()
-    print("fresh platform manifests valid",
-          f"root={len(result[0])}", f"children={len(result[1])}",
-          f"observability={len(result[2])}", f"rbac={len(result[3])}",
-          f"admission={len(result[4])}")
+    print("fresh platform manifests valid", f"root={len(result[0])}", f"children={len(result[1])}",
+          f"observability={len(result[2])}", f"rbac={len(result[3])}", f"admission={len(result[4])}")

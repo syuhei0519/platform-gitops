@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "platform.lab/security-negative-fixtures/v1",
+  "cases": [
+    {
+      "id": "wrong-application-project",
+      "expected": "deny",
+      "object": {"kind": "Application", "metadata": {"name": "fresh-account-release", "namespace": "fresh-control"}, "spec": {"project": "default", "source": {"repoURL": "https://github.com/syuhei0519/application-manifest.git", "targetRevision": "0fc2ae19300af32f86643152e65597b022dcdc0f", "path": "learning/fresh-profile/workload"}, "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-account"}}}
+    },
+    {
+      "id": "direct-pod",
+      "expected": "deny",
+      "object": {"kind": "Pod", "metadata": {"name": "direct", "namespace": "fresh-account"}, "spec": {"serviceAccountName": "account-runtime", "automountServiceAccountToken": false, "containers": [{"name": "api", "securityContext": {"allowPrivilegeEscalation": false}}]}}
+    },
+    {
+      "id": "secret-volume",
+      "expected": "deny",
+      "object": {"kind": "Pod", "metadata": {"name": "owned", "namespace": "fresh-account", "ownerReferences": [{"kind": "ReplicaSet", "name": "account-api-abc", "controller": true}]}, "spec": {"serviceAccountName": "account-runtime", "automountServiceAccountToken": false, "containers": [{"name": "api", "securityContext": {"allowPrivilegeEscalation": false}}], "volumes": [{"name": "credential", "secret": {"secretName": "account-db-runtime"}}]}}
+    },
+    {
+      "id": "wrong-secret-key",
+      "expected": "deny",
+      "object": {"kind": "Rollout", "metadata": {"name": "account-api", "namespace": "fresh-account"}, "podSpec": {"serviceAccountName": "account-runtime", "automountServiceAccountToken": false, "containers": [{"name": "api", "securityContext": {"allowPrivilegeEscalation": false}, "env": [{"name": "ROOT", "valueFrom": {"secretKeyRef": {"name": "account-db-runtime", "key": "root"}}}]}], "volumes": []}}
+    },
+    {
+      "id": "privileged-init-container",
+      "expected": "deny",
+      "object": {"kind": "Job", "metadata": {"name": "account-migration", "namespace": "fresh-account"}, "podSpec": {"serviceAccountName": "account-migration", "automountServiceAccountToken": false, "initContainers": [{"name": "init", "securityContext": {"privileged": true}}], "containers": [{"name": "migration", "securityContext": {"allowPrivilegeEscalation": false}, "env": [{"name": "DATABASE_URL", "valueFrom": {"secretKeyRef": {"name": "account-db-migration", "key": "uri"}}}]}], "volumes": []}}
+    },
+    {
+      "id": "arbitrary-managed-resource",
+      "expected": "deny",
+      "object": {"apiVersion": "v1", "kind": "ConfigMap", "metadata": {"name": "unreviewed", "namespace": "fresh-account"}}
+    }
+  ]
+}

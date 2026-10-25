@@ -42,6 +42,8 @@ class ImageSupplyTests(unittest.TestCase):
 
     def approve(self, mode="private-registry"):
         value = copy.deepcopy(self.lock)
+        next(item for item in self.profile["spec"]["images"] if item["name"] == "account-runtime")["ref"] = (
+            "ghcr.io/syuhei0519/backend-app@sha256:" + "b" * 64)
         value["spec"]["decision"] = {
             "status": "approved", "selectedMode": mode,
             "restoreOwner": "personal-platform-owner",
@@ -54,16 +56,18 @@ class ImageSupplyTests(unittest.TestCase):
                 "kind": "single-platform", "manifestDigest": expected,
                 "os": "linux", "architecture": "amd64",
             }
-            if mode == "private-registry":
+            selected_source = ("retained-oci-archive" if item["name"] == "account-runtime" else "public-registry") \
+                if mode == "public-upstream-plus-retained-account-archive" else mode
+            if selected_source in {"private-registry", "public-registry"}:
                 item["source"] = {
-                    "kind": mode, "published": True, "immutable": True,
+                    "kind": selected_source, "published": True, "immutable": True,
                     "freshEligible": True,
                     "location": "oci://" + self.profile_images[item["name"]]["ref"],
                     "manifest": manifest,
                 }
             else:
                 item["source"] = {
-                    "kind": mode, "published": False, "immutable": True,
+                    "kind": selected_source, "published": False, "immutable": True,
                     "freshEligible": True,
                     "location": "archive-ref:fresh/" + item["name"] + ".oci.tar",
                     "archiveSha256": "sha256:" + "a" * 64,
@@ -83,24 +87,30 @@ class ImageSupplyTests(unittest.TestCase):
         lock, _ = contract.validate()
         self.assertEqual(len(lock["spec"]["images"]), 11)
         account = next(item for item in lock["spec"]["images"] if item["name"] == "account-runtime")
-        self.assertEqual(account["source"]["kind"], "checked-local-artifact")
+        self.assertEqual(account["source"]["kind"], "pending-g2")
         self.assertFalse(account["source"]["published"])
         self.assertFalse(account["source"]["freshEligible"])
-        self.assertEqual(account["source"]["entrypoint"], ["/server"])
-        self.assertEqual(account["source"]["user"], "10001:10001")
+        self.assertEqual(self.profile_images["account-runtime"]["ref"], "PENDING_PLAT211_VERIFIED_IMAGE")
         with self.assertRaisesRegex(contract.SupplyError, "approval-g2"):
             contract.validate(require_fresh_evidence=True)
 
     def test_account_artifact_is_not_rollouts_and_comparison_is_not_supply(self):
         value = copy.deepcopy(self.lock)
         account = next(item for item in value["spec"]["images"] if item["name"] == "account-runtime")
-        account["source"]["manifestDigest"] = "sha256:966adba896524519bd1653b31ade97b624dd5cbf83623f7cdeb5c5708aaa69e0"
-        account["source"]["entrypoint"] = ["/bin/rollouts-controller"]
-        with self.assertRaisesRegex(contract.SupplyError, "schema|account-artifact-identity"):
+        account["source"] = {"kind": "checked-local-artifact", "published": False, "immutable": True,
+            "freshEligible": False, "location": "checked-artifact:account-runtime", "retentionHours": 0,
+            "sourceCommit": "527b9bccf4ae56244d134ae384564ec1cccea815",
+            "manifestDigest": "sha256:966adba896524519bd1653b31ade97b624dd5cbf83623f7cdeb5c5708aaa69e0",
+            "configDigest": "sha256:5062ed82987c361535a339f6ee30c67d3fca5c8190989aa404f5bda13dd72822",
+            "archiveSha256": "sha256:9e9b4b12315c9efa665f82dd43975668b738bb65f6f2434f8350f0d4e9a9ba37",
+            "ciRunId": 40145897432, "artifactId": 12580417539,
+            "entrypoint": ["/bin/rollouts-controller"], "user": "10001:10001"}
+        with self.assertRaisesRegex(contract.SupplyError, "schema|account-runtime-pending"):
             self.validate_copy(value)
 
     def test_registry_and_retained_archive_are_finite_approved_modes(self):
-        for mode in ("private-registry", "retained-oci-archive"):
+        for mode in ("private-registry", "retained-oci-archive",
+                     "public-upstream-plus-retained-account-archive"):
             with self.subTest(mode=mode):
                 self.validate_copy(self.approve(mode), require=True)
 
@@ -112,10 +122,9 @@ class ImageSupplyTests(unittest.TestCase):
     def test_checked_artifact_and_node_cache_cannot_unlock_fresh(self):
         value = self.approve()
         account = next(item for item in value["spec"]["images"] if item["name"] == "account-runtime")
-        account["source"] = copy.deepcopy(next(
-            item["source"] for item in self.lock["spec"]["images"] if item["name"] == "account-runtime"
-        ))
-        with self.assertRaisesRegex(contract.SupplyError, "approved-source-mode:account-runtime"):
+        account["source"] = {"kind": "pending-g2", "published": False, "immutable": False,
+                             "freshEligible": False, "location": "PENDING_G2"}
+        with self.assertRaisesRegex(contract.SupplyError, "approved-pending-source:account-runtime"):
             self.validate_copy(value, require=True)
         value = copy.deepcopy(self.lock)
         value["spec"]["prohibitedEvidence"].remove("old-node-cache")

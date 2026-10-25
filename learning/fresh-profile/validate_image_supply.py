@@ -85,7 +85,8 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
         if decision["selectedMode"] != "PENDING_G2":
             raise SupplyError("pending-mode")
     else:
-        if decision["selectedMode"] not in {"private-registry", "retained-oci-archive"}:
+        if decision["selectedMode"] not in {"private-registry", "retained-oci-archive",
+                                             "public-upstream-plus-retained-account-archive"}:
             raise SupplyError("approved-mode")
         for field in ("restoreOwner", "retentionUntil", "restoreProcedureRef"):
             if decision[field].startswith("PENDING_"):
@@ -112,7 +113,13 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
     os_name, architecture = platform_parts(spec["targetArchitecture"])
     for item in supplied:
         name = item["name"]
-        expected = image_digest(profile_images[name]["ref"])
+        profile_ref = profile_images[name]["ref"]
+        if profile_ref == "PENDING_PLAT211_VERIFIED_IMAGE":
+            if name != "account-runtime" or not pending or item["source"]["kind"] != "pending-g2":
+                raise SupplyError("account-runtime-pending")
+            expected = None
+        else:
+            expected = image_digest(profile_ref)
         source = item["source"]
         retrieval = item["retrieval"]
         checks = item["checks"]
@@ -134,12 +141,18 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
 
         if source["kind"] == "pending-g2" and not pending:
             raise SupplyError("approved-pending-source:" + name)
-        if not pending and source["kind"] != decision["selectedMode"]:
-            raise SupplyError("approved-source-mode:" + name)
+        if not pending:
+            if decision["selectedMode"] == "public-upstream-plus-retained-account-archive":
+                expected_kind = "retained-oci-archive" if name == "account-runtime" else "public-registry"
+            else:
+                expected_kind = decision["selectedMode"]
+            if source["kind"] != expected_kind:
+                raise SupplyError("approved-source-mode:" + name)
         if source["kind"] == "checked-local-artifact" and source["freshEligible"]:
             raise SupplyError("checked-artifact-eligible:" + name)
-        if source["kind"] in {"private-registry", "retained-oci-archive"}:
-            if source["kind"] != decision["selectedMode"]:
+        if source["kind"] in {"private-registry", "public-registry", "retained-oci-archive"}:
+            if (decision["selectedMode"] != "public-upstream-plus-retained-account-archive"
+                    and source["kind"] != decision["selectedMode"]):
                 raise SupplyError("mixed-approved-mode:" + name)
             manifest = source["manifest"]
             if manifest["os"] != os_name or manifest["architecture"] != architecture:
@@ -154,7 +167,7 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
                 if manifest["childScanRef"] == manifest["childSbomRef"]:
                     raise SupplyError("index-child-evidence:" + name)
                 retrieval_digest = manifest["childDigest"]
-            if source["kind"] == "private-registry":
+            if source["kind"] in {"private-registry", "public-registry"}:
                 location_digest = DIGEST.search(source["location"])
                 if location_digest is None or location_digest.group(0) != expected:
                     raise SupplyError("registry-digest:" + name)
@@ -164,6 +177,8 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
         if require_fresh_evidence:
             if pending:
                 raise SupplyError("approval-g2")
+            if expected is None:
+                raise SupplyError("account-runtime-pending")
             if not source["freshEligible"]:
                 raise SupplyError("ineligible-source:" + name)
             status = retrieval["status"]

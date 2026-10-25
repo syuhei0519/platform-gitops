@@ -9,33 +9,15 @@ spec:
   project: fresh-platform
   source:
     repoURL: https://github.com/syuhei0519/application-manifest.git
-    targetRevision: d9150a4de69d2447c1b767823fc23784edea0abc
+    targetRevision: 0fc2ae19300af32f86643152e65597b022dcdc0f
     path: learning/fresh-profile/release-definition
-    directory: {recurse: true}
+    helm:
+      releaseName: fresh-account-release-definition
+      parameters:
+      - {name: workloadRevision, value: 0fc2ae19300af32f86643152e65597b022dcdc0f}
+      - {name: accountRuntimeImage, value: PENDING_PLAT211_VERIFIED_IMAGE}
   destination:
     server: https://kubernetes.default.svc
     namespace: fresh-control
   syncPolicy:
     syncOptions: [ApplyOutOfSyncOnly=true, Prune=false]
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: fresh-observability
-  namespace: fresh-control
-  annotations:
-    argocd.argoproj.io/sync-options: Prune=false
-spec:
-  project: fresh-platform
-  source:
-    repoURL: https://github.com/syuhei0519/platform-gitops.git
-    targetRevision: __PLATFORM_GITOPS_SHA__
-    path: learning/fresh-profile/observability
-    directory: {recurse: true}
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: fresh-observability
-  syncPolicy:
-    managedNamespaceMetadata:
-      labels: {platform.lab/profile: account-lightweight-fresh}
-    syncOptions: [CreateNamespace=true, ApplyOutOfSyncOnly=true, Prune=false]

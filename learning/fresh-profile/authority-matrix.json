@@ -1,6 +1,7 @@
 {
   "version": 1,
   "mode": "offline-proposal",
+  "canonicalContract": "learning/fresh-profile/security/canonical-contract.json",
   "liveEvidence": {
     "required": true,
     "status": "not-run",
@@ -29,33 +30,33 @@
   },
   "admission": {
     "manifest": "learning/fresh-profile/security/admission.yaml",
-    "policies": ["fresh-application-boundary", "fresh-account-pod-boundary"],
-    "bindings": ["fresh-application-boundary", "fresh-account-pod-boundary"],
+    "policies": ["fresh-application-boundary", "fresh-managed-resource-boundary", "fresh-account-pod-boundary"],
+    "bindings": ["fresh-application-boundary", "fresh-managed-resource-boundary", "fresh-account-pod-boundary"],
     "liveStatus": "pending-separate-approval"
   },
   "bootstrapOperations": [
     {"actor": "bootstrap-operator", "kind": "CustomResourceDefinition", "names": ["applications.argoproj.io", "appprojects.argoproj.io", "rollouts.argoproj.io", "analysistemplates.argoproj.io"], "approval": "G1"},
-    {"actor": "bootstrap-operator", "kind": "AppProject", "namespace": "fresh-control", "names": ["fresh-platform", "fresh-workload"], "approval": "security"},
+    {"actor": "bootstrap-operator", "kind": "AppProject", "namespace": "fresh-control", "names": ["fresh-platform", "fresh-account"], "approval": "security"},
     {"actor": "bootstrap-operator", "kind": "Role|RoleBinding|ValidatingAdmissionPolicy|ValidatingAdmissionPolicyBinding", "manifest": "learning/fresh-profile/security", "approval": "security"}
   ],
   "sources": {
     "platform": {
       "repository": "https://github.com/syuhei0519/platform-gitops.git",
       "commit": "__PLATFORM_GITOPS_SHA__",
-      "paths": ["learning/fresh-profile/root"],
+      "paths": ["learning/fresh-profile/root/children", "learning/fresh-profile/observability"],
       "destinations": ["fresh-control", "fresh-observability"],
       "kinds": ["Application", "ConfigMap", "Deployment", "Service", "ServiceAccount", "StatefulSet"]
     },
     "workload": {
       "repository": "https://github.com/syuhei0519/application-manifest.git",
-      "commit": "d9150a4de69d2447c1b767823fc23784edea0abc",
+      "commit": "0fc2ae19300af32f86643152e65597b022dcdc0f",
       "paths": ["learning/fresh-profile/workload"],
       "destinations": ["fresh-account"],
       "kinds": ["ConfigMap", "DestinationRule", "Job", "PersistentVolumeClaim", "Rollout", "Service", "ServiceAccount", "StatefulSet", "VirtualService"]
     },
     "release-definition": {
       "repository": "https://github.com/syuhei0519/application-manifest.git",
-      "commit": "d9150a4de69d2447c1b767823fc23784edea0abc",
+      "commit": "0fc2ae19300af32f86643152e65597b022dcdc0f",
       "paths": ["learning/fresh-profile/release-definition"],
       "destinations": ["fresh-control"],
       "kinds": ["Application"]
@@ -65,7 +66,7 @@
     {
       "actor": "platform", "scope": "namespace", "namespace": "fresh-control",
       "apiGroup": "argoproj.io", "resource": "appprojects", "verbs": ["create", "get", "patch"],
-      "resourceNames": ["fresh-platform", "fresh-workload"]
+      "resourceNames": ["fresh-platform", "fresh-account"]
     },
     {
       "actor": "platform", "scope": "namespace", "namespace": "fresh-control",
@@ -191,8 +192,8 @@
       }
     },
     "jobs": {
-      "fresh-account/account-db-role-bootstrap": "idempotent-hook-verified-before-migration",
-      "fresh-account/account-migration": "mutable-until-first-success-then-frozen"
+      "fresh-account/account-db-role-bootstrap": "sync-wave-10-retained-on-success-never-recreated-by-resume",
+      "fresh-account/account-migration": "sync-wave-20-retained-on-success-never-recreated-by-rerun-or-resume"
     },
     "fieldOwners": {
       "Application/fresh-control/account-lightweight-root": "platform",

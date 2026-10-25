@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": {"const": "platform.lab/v1alpha1"},
+    "kind": {"const": "FreshExecutionApproval"},
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "approvedBy", "approvedAt", "expiresAt"],
+      "properties": {
+        "name": {"const": "account-lightweight-fresh"},
+        "approvedBy": {"type": "string", "minLength": 1},
+        "approvedAt": {"type": "string", "format": "date-time"},
+        "expiresAt": {"type": "string", "format": "date-time"}
+      }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approved", "target", "repositories", "hashes", "scope", "gates", "allowedSteps"],
+      "properties": {
+        "approved": {"type": "boolean"},
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["clusterName", "context", "profileName"],
+          "properties": {
+            "clusterName": {"type": "string", "minLength": 1},
+            "context": {"type": "string", "minLength": 1},
+            "profileName": {"const": "account-lightweight-fresh"}
+          }
+        },
+        "repositories": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["platformGitops", "applicationManifest"],
+          "properties": {
+            "platformGitops": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+            "applicationManifest": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+          }
+        },
+        "hashes": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["profileSha256", "materializationSha256"],
+          "properties": {
+            "profileSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "materializationSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+          }
+        },
+        "scope": {
+          "const": {
+            "environment": "fresh-isolated-sandbox",
+            "existingCluster": "preserve-excluded",
+            "existingData": "preserve-excluded",
+            "cutover": false
+          }
+        },
+        "gates": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["G1", "G2", "G3", "security"],
+          "properties": {
+            "G1": {"$ref": "#/definitions/gate"},
+            "G2": {"$ref": "#/definitions/gate"},
+            "G3": {"$ref": "#/definitions/gate"},
+            "security": {"$ref": "#/definitions/gate"}
+          }
+        },
+        "allowedSteps": {
+          "const": ["preflight", "image-source", "cluster", "empty-node-cache", "image-import", "crds", "controllers", "security-boundary", "credential-bootstrap", "custom-resources", "database", "role-bootstrap", "migration", "application", "acceptance"]
+        }
+      }
+    }
+  },
+  "definitions": {
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approved", "approvalId"],
+      "properties": {
+        "approved": {"type": "boolean"},
+        "approvalId": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}
+

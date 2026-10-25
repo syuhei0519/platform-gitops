@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Seal self-referential fresh-profile inputs outside Git; no cluster I/O."""
+"""Seal external bootstrap inputs and prove Git-fetched sources are immutable."""
 
 from __future__ import annotations
 
@@ -23,6 +23,15 @@ PLATFORM_FILES = (
     "root/bootstrap.yaml",
     "root/children/applications.yaml",
 )
+GIT_FETCHED_PLATFORM_FILES = (
+    "root/children/applications.yaml",
+    "observability/resources.yaml",
+)
+APPLICATION_RELEASE_FILES = (
+    "Chart.yaml",
+    "values.yaml",
+    "templates/application.yaml",
+)
 
 
 class MaterializationError(ValueError):
@@ -40,11 +49,22 @@ def materialize(platform_sha: str, application_sha: str, application_release: Pa
     output = output.resolve()
     if output == REPOSITORY.resolve() or output.is_relative_to(REPOSITORY.resolve()):
         raise MaterializationError("output-must-be-outside-repository")
-    release_text = Path(application_release).read_text(encoding="utf-8")
-    if APPLICATION_TOKEN not in release_text:
-        raise MaterializationError("application-release-token")
-    if application_sha not in (HERE / "profile.lock.yaml").read_text(encoding="utf-8"):
+    release_root = Path(application_release)
+    if not release_root.is_dir() or any(not (release_root / relative).is_file()
+                                        for relative in APPLICATION_RELEASE_FILES):
+        raise MaterializationError("application-release-chart")
+    profile_text = (HERE / "profile.lock.yaml").read_text(encoding="utf-8")
+    children_text = (HERE / "root/children/applications.yaml").read_text(encoding="utf-8")
+    if application_sha not in profile_text or application_sha not in children_text:
         raise MaterializationError("application-sha-not-locked")
+    for relative in GIT_FETCHED_PLATFORM_FILES:
+        text = (HERE / relative).read_text(encoding="utf-8")
+        if PLATFORM_TOKEN in text or APPLICATION_TOKEN in text:
+            raise MaterializationError("git-source-revision-token:" + relative)
+    for relative in APPLICATION_RELEASE_FILES:
+        text = (release_root / relative).read_text(encoding="utf-8")
+        if PLATFORM_TOKEN in text or APPLICATION_TOKEN in text:
+            raise MaterializationError("application-source-revision-token:" + relative)
 
     output.mkdir(parents=True, exist_ok=False)
     produced = []
@@ -53,13 +73,11 @@ def materialize(platform_sha: str, application_sha: str, application_release: Pa
         text = source.read_text(encoding="utf-8")
         target = output / relative
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(text.replace(PLATFORM_TOKEN, platform_sha), encoding="utf-8")
+        if PLATFORM_TOKEN in text:
+            target.write_text(text.replace(PLATFORM_TOKEN, platform_sha), encoding="utf-8")
+        else:
+            target.write_bytes(source.read_bytes())
         produced.append(target)
-
-    sealed_release = output / "application-manifest" / "fresh-account-release.yaml"
-    sealed_release.parent.mkdir(parents=True, exist_ok=True)
-    sealed_release.write_text(release_text.replace(APPLICATION_TOKEN, application_sha), encoding="utf-8")
-    produced.append(sealed_release)
 
     sealed_profile = output / "profile.lock.yaml"
     sealed_acceptance = output / "acceptance.pending.json"
@@ -70,6 +88,18 @@ def materialize(platform_sha: str, application_sha: str, application_release: Pa
     if any(PLATFORM_TOKEN in path.read_text(encoding="utf-8") or
            APPLICATION_TOKEN in path.read_text(encoding="utf-8") for path in produced):
         raise MaterializationError("unresolved-revision-token")
+    sealed_children = output / "root/children/applications.yaml"
+    if sealed_children.read_bytes() != (HERE / "root/children/applications.yaml").read_bytes():
+        raise MaterializationError("git-source-sealed-drift")
+    source_files = {
+        f"platform-gitops@{platform_sha}:{relative}": digest(HERE / relative)
+        for relative in GIT_FETCHED_PLATFORM_FILES
+    }
+    source_files.update({
+        f"application-manifest@{application_sha}:learning/fresh-profile/release-definition/{relative}":
+            digest(release_root / relative)
+        for relative in APPLICATION_RELEASE_FILES
+    })
     manifest = {
         "schemaVersion": "platform.lab/materialization/v1alpha1",
         "platformGitops": platform_sha,
@@ -77,6 +107,7 @@ def materialize(platform_sha: str, application_sha: str, application_release: Pa
         "liveApproved": False,
         "files": {str(path.relative_to(output)).replace("\\", "/"): digest(path)
                   for path in sorted(produced)},
+        "sourceFiles": source_files,
     }
     manifest_path = output / "materialization.json"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
@@ -87,7 +118,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--platform-sha", required=True)
     parser.add_argument("--application-sha", required=True)
-    parser.add_argument("--application-release", type=Path, required=True)
+    parser.add_argument("--application-release", type=Path, required=True,
+                        help="Path to the immutable application release-definition chart")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     try:

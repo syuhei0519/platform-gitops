@@ -31,7 +31,7 @@ class FreshProfileTests(unittest.TestCase):
         profile, dag, equivalence = contract.validate()
         self.assertEqual(len(profile["spec"]["repositories"]), 4)
         self.assertEqual(len(profile["spec"]["images"]), 11)
-        self.assertEqual(len(dag["spec"]["steps"]), 13)
+        self.assertEqual(len(dag["spec"]["steps"]), 15)
         self.assertEqual(len(equivalence["mappings"]), 8)
         with self.assertRaisesRegex(contract.ContractError, "approval-g1"):
             contract.validate(require_approved=True)
@@ -114,12 +114,31 @@ class FreshProfileTests(unittest.TestCase):
             item["owner"] = "personal-platform-owner"
             item["expiry"] = "2026-11-25"
         value["spec"]["repositories"]["platform-gitops"]["commit"] = "1" * 40
+        next(item for item in value["spec"]["images"] if item["name"] == "account-runtime")["ref"] = (
+            "ghcr.io/syuhei0519/backend-app@sha256:" + "2" * 64)
         limits = value["spec"]["budget"]["approvalLimits"]
         limits.update(elapsedMaxMinutes=45, hostAvailableMemoryMinGiB=4,
                       hostFreeDiskMinGiB=20, dockerAdditionalDiskMaxGiB=15,
                       workloadCPURequestsMaxMilli=2000, workloadMemoryRequestsMaxMiB=4096,
                       imageBytesMaxGiB=15, podPendingMaxSeconds=60)
         self.validate_copy(value, require_approved=True)
+
+    def test_approved_profile_rejects_unverified_plat211_image(self):
+        value = copy.deepcopy(self.profile)
+        value["spec"]["target"].update(clusterName="kind-platform-fresh-plat217", context="kind-platform-fresh-plat217")
+        for gate in ("G1", "G2", "G3"):
+            value["spec"]["decisions"][gate] = {"status": "approved", "choice": "approved-fixture-choice"}
+        value["spec"]["imageSupply"].update(decision="retained-oci-archive", immutable=True,
+                                             retentionUntil="2027-10-25", restoreOwner="personal-platform-owner")
+        for item in value["spec"]["inputs"]["secrets"]:
+            item.update(owner="personal-platform-owner", expiry="2026-11-25")
+        value["spec"]["repositories"]["platform-gitops"]["commit"] = "1" * 40
+        value["spec"]["budget"]["approvalLimits"].update(
+            elapsedMaxMinutes=45, hostAvailableMemoryMinGiB=4, hostFreeDiskMinGiB=20,
+            dockerAdditionalDiskMaxGiB=15, workloadCPURequestsMaxMilli=2000,
+            workloadMemoryRequestsMaxMiB=4096, imageBytesMaxGiB=15, podPendingMaxSeconds=60)
+        with self.assertRaisesRegex(contract.ContractError, "approved-account-runtime-pending"):
+            self.validate_copy(value, require_approved=True)
 
 
 if __name__ == "__main__":

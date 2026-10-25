@@ -50,14 +50,17 @@ class AcceptanceTests(unittest.TestCase):
             item["owner"] = "personal-platform-owner"
             item["expiry"] = "2026-11-25"
         profile["spec"]["repositories"]["platform-gitops"]["commit"] = "1" * 40
+        runtime = next(item for item in profile["spec"]["images"] if item["name"] == "account-runtime")
+        runtime["ref"] = "ghcr.io/syuhei0519/backend-app@sha256:" + "3" * 64
         limits = profile["spec"]["budget"]["approvalLimits"]
         limits.update(elapsedMaxMinutes=45, hostAvailableMemoryMinGiB=4,
                       hostFreeDiskMinGiB=20, dockerAdditionalDiskMaxGiB=15,
                       workloadCPURequestsMaxMilli=2000, workloadMemoryRequestsMaxMiB=4096,
                       imageBytesMaxGiB=15, podPendingMaxSeconds=60)
         record = copy.deepcopy(self.pending)
-        record["profile"]["repositories"]["platform-gitops"] = "1" * 40
-        record["evidence"]["revisions"]["desired"]["platform-gitops"] = "1" * 40
+        repositories = {name: value["commit"] for name, value in profile["spec"]["repositories"].items()}
+        record["profile"]["repositories"] = copy.deepcopy(repositories)
+        record["evidence"]["revisions"]["desired"] = copy.deepcopy(repositories)
         record["metadata"].update(recordedAt="2026-10-25T21:00:00Z", liveEvidence=True)
         record["target"].update(
             clusterName="kind-platform-fresh-plat217",
@@ -65,6 +68,8 @@ class AcceptanceTests(unittest.TestCase):
             clusterUID="fixture-cluster-uid",
         )
         for image in record["evidence"]["images"]:
+            if image["name"] == "account-runtime":
+                image["expectedDigest"] = "sha256:" + "3" * 64
             image.update(
                 status="passed", retrievedDigest=image["expectedDigest"],
                 actualArchitecture=image["expectedArchitecture"],
@@ -74,8 +79,14 @@ class AcceptanceTests(unittest.TestCase):
         resources.update(status="passed", observed=list(resources["expected"]))
         revisions = record["evidence"]["revisions"]
         revisions.update(status="passed", actual=copy.deepcopy(revisions["desired"]))
-        for item in record["evidence"]["readiness"] + record["evidence"]["resyncRestart"]:
+        for item in (record["evidence"]["readiness"] + record["evidence"]["resyncRestart"] +
+                     record["evidence"]["progressiveDelivery"] + record["evidence"]["processCleanup"]):
             item.update(status="passed", detail="synthetic unit fixture")
+        for item in record["evidence"]["databaseAuthorization"]:
+            item.update(status="passed", observed=item["expected"], detail="synthetic isolated database fixture")
+        bindings = record["evidence"]["temporaryBindings"]
+        bindings.update(status="passed", observedRemoved=list(bindings["expectedRemoved"]),
+                        detail="synthetic no-binding observation")
         ownership = record["evidence"]["fieldOwnership"]
         ownership.update(status="passed", observed=list(ownership["expected"]))
         for item in record["negativeCases"]:
@@ -142,6 +153,54 @@ class AcceptanceTests(unittest.TestCase):
         record["evidence"]["resources"]["observed"] = []
         with self.assertRaisesRegex(contract.AcceptanceError, "resources-observed"):
             self.validate_complete(record, profile)
+
+    def test_pvc_is_a_required_observed_resource(self):
+        self.assertIn(contract.EXPECTED_PVC, self.pending["evidence"]["resources"]["expected"])
+        record, profile = self.approved()
+        record["evidence"]["resources"]["expected"].remove(contract.EXPECTED_PVC)
+        record["evidence"]["resources"]["observed"].remove(contract.EXPECTED_PVC)
+        with self.assertRaisesRegex(contract.AcceptanceError, "pvc-resource-required"):
+            self.validate_complete(record, profile)
+
+    def test_progressive_delivery_requires_every_live_result(self):
+        for check_id in contract.PROGRESSIVE_DELIVERY:
+            record, profile = self.approved()
+            check = next(item for item in record["evidence"]["progressiveDelivery"] if item["id"] == check_id)
+            check.update(status="failed", detail=f"synthetic {check_id} failure")
+            with self.subTest(check_id=check_id), self.assertRaisesRegex(
+                    contract.AcceptanceError, "progressive-delivery-incomplete"):
+                self.validate_complete(record, profile)
+
+    def test_database_authorization_missing_false_and_inconsistent_reject(self):
+        record, profile = self.approved()
+        record["evidence"]["databaseAuthorization"].pop()
+        with self.assertRaisesRegex(contract.AcceptanceError, "schema:|database-authorization-set"):
+            self.validate_complete(record, profile)
+        record, profile = self.approved()
+        runtime_ddl = next(item for item in record["evidence"]["databaseAuthorization"]
+                           if item["id"] == "runtime-ddl-owned-schema")
+        runtime_ddl.update(status="failed", observed="allow", detail="synthetic privilege escape")
+        with self.assertRaisesRegex(contract.AcceptanceError, "database-authorization-incomplete"):
+            self.validate_complete(record, profile)
+        record, profile = self.approved()
+        runtime_ddl = next(item for item in record["evidence"]["databaseAuthorization"]
+                           if item["id"] == "runtime-ddl-owned-schema")
+        runtime_ddl["expected"] = "allow"
+        with self.assertRaisesRegex(contract.AcceptanceError, "database-authorization-contract"):
+            self.validate_complete(record, profile)
+
+    def test_temporary_binding_and_process_cleanup_are_mandatory(self):
+        record, profile = self.approved()
+        record["evidence"]["temporaryBindings"]["observedRemoved"].pop()
+        with self.assertRaisesRegex(contract.AcceptanceError, "temporary-binding-result"):
+            self.validate_complete(record, profile)
+        for check_id in contract.PROCESS_CLEANUP:
+            record, profile = self.approved()
+            check = next(item for item in record["evidence"]["processCleanup"] if item["id"] == check_id)
+            check.update(status="failed", detail=f"synthetic {check_id} remained")
+            with self.subTest(check_id=check_id), self.assertRaisesRegex(
+                    contract.AcceptanceError, "process-cleanup-incomplete"):
+                self.validate_complete(record, profile)
 
     def test_fixed_revisions_and_profile_digest_are_required(self):
         value = copy.deepcopy(self.pending)

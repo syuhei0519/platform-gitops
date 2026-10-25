@@ -5,15 +5,32 @@ spec:
   failurePolicy: Fail
   matchConstraints:
     resourceRules:
-    - apiGroups: [argoproj.io]
-      apiVersions: [v1alpha1]
-      operations: [CREATE, UPDATE]
-      resources: [applications]
+    - {apiGroups: [argoproj.io], apiVersions: [v1alpha1], operations: [CREATE, UPDATE], resources: [applications]}
   validations:
-  - expression: "object.metadata.namespace == 'fresh-control' && object.metadata.name in ['account-lightweight-root', 'fresh-release-definitions', 'fresh-account-release', 'fresh-observability']"
-    message: only canonical fresh-profile Applications are admitted
-  - expression: "object.spec.source.targetRevision.matches('^[0-9a-f]{40}$')"
-    message: Application targetRevision must be a materialized commit SHA
+  - expression: >-
+      object.metadata.namespace == 'fresh-control' && (
+        (object.metadata.name == 'account-lightweight-root' && object.spec.project == 'fresh-platform' &&
+         object.spec.source.repoURL == 'https://github.com/syuhei0519/platform-gitops.git' &&
+         object.spec.source.targetRevision == '__PLATFORM_GITOPS_SHA__' &&
+         object.spec.source.path == 'learning/fresh-profile/root/children' &&
+         object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-control') ||
+        (object.metadata.name == 'fresh-release-definitions' && object.spec.project == 'fresh-platform' &&
+         object.spec.source.repoURL == 'https://github.com/syuhei0519/application-manifest.git' &&
+         object.spec.source.targetRevision == '0fc2ae19300af32f86643152e65597b022dcdc0f' &&
+         object.spec.source.path == 'learning/fresh-profile/release-definition' &&
+         object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-control') ||
+        (object.metadata.name == 'fresh-observability' && object.spec.project == 'fresh-platform' &&
+         object.spec.source.repoURL == 'https://github.com/syuhei0519/platform-gitops.git' &&
+         object.spec.source.targetRevision == '__PLATFORM_GITOPS_SHA__' &&
+         object.spec.source.path == 'learning/fresh-profile/observability' &&
+         object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-observability') ||
+        (object.metadata.name == 'fresh-account-release' && object.spec.project == 'fresh-account' &&
+         object.spec.source.repoURL == 'https://github.com/syuhei0519/application-manifest.git' &&
+         object.spec.source.targetRevision == '0fc2ae19300af32f86643152e65597b022dcdc0f' &&
+         object.spec.source.path == 'learning/fresh-profile/workload' &&
+         object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-account')
+      )
+    message: Application name, repository, path, revision, project and destination must match the canonical contract
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicyBinding
@@ -23,7 +40,51 @@ spec:
   validationActions: [Deny]
   matchResources:
     namespaceSelector:
-      matchLabels: {platform.lab/profile: account-lightweight-fresh}
+      matchLabels: {platform.lab/security-boundary: control}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata: {name: fresh-managed-resource-boundary}
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - {apiGroups: [''], apiVersions: [v1], operations: [CREATE, UPDATE], resources: [configmaps, persistentvolumeclaims, services, serviceaccounts]}
+    - {apiGroups: [apps], apiVersions: [v1], operations: [CREATE, UPDATE], resources: [deployments, statefulsets]}
+    - {apiGroups: [batch], apiVersions: [v1], operations: [CREATE, UPDATE], resources: [jobs]}
+    - {apiGroups: [argoproj.io], apiVersions: [v1alpha1], operations: [CREATE, UPDATE], resources: [rollouts]}
+    - {apiGroups: [networking.istio.io], apiVersions: [v1beta1], operations: [CREATE, UPDATE], resources: [destinationrules, virtualservices]}
+  validations:
+  - expression: >-
+      (object.metadata.namespace == 'fresh-account' && (
+        (object.kind == 'ConfigMap' && object.metadata.name == 'account-role-bootstrap') ||
+        (object.kind == 'PersistentVolumeClaim' && object.metadata.name == 'account-data') ||
+        (object.kind == 'Service' && object.metadata.name in ['account-api', 'account-postgresql']) ||
+        (object.kind == 'ServiceAccount' && object.metadata.name in ['account-database', 'account-migration', 'account-runtime']) ||
+        (object.kind == 'StatefulSet' && object.metadata.name == 'account-postgresql') ||
+        (object.kind == 'Job' && object.metadata.name in ['account-db-role-bootstrap', 'account-migration']) ||
+        (object.kind == 'Rollout' && object.metadata.name == 'account-api') ||
+        (object.kind == 'DestinationRule' && object.metadata.name == 'account-api') ||
+        (object.kind == 'VirtualService' && object.metadata.name == 'account-api')
+      )) || (object.metadata.namespace == 'fresh-observability' && (
+        (object.kind == 'ConfigMap' && object.metadata.name in ['otel-collector', 'prometheus']) ||
+        (object.kind == 'Service' && object.metadata.name in ['grafana', 'otel-collector', 'prometheus']) ||
+        (object.kind == 'ServiceAccount' && object.metadata.name in ['grafana', 'otel-collector', 'prometheus']) ||
+        (object.kind == 'Deployment' && object.metadata.name in ['grafana', 'otel-collector']) ||
+        (object.kind == 'StatefulSet' && object.metadata.name == 'prometheus')
+      ))
+    message: only canonical kind/name/namespace resources are admitted
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata: {name: fresh-managed-resource-boundary}
+spec:
+  policyName: fresh-managed-resource-boundary
+  validationActions: [Deny]
+  matchResources:
+    namespaceSelector:
+      matchExpressions:
+      - {key: platform.lab/security-boundary, operator: In, values: [account, observability]}
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
@@ -32,21 +93,60 @@ spec:
   failurePolicy: Fail
   matchConstraints:
     resourceRules:
-    - apiGroups: [apps, batch, argoproj.io]
-      apiVersions: [v1, v1alpha1]
-      operations: [CREATE, UPDATE]
-      resources: [statefulsets, jobs, rollouts]
+    - {apiGroups: [''], apiVersions: [v1], operations: [CREATE, UPDATE], resources: [pods]}
+    - {apiGroups: [apps], apiVersions: [v1], operations: [CREATE, UPDATE], resources: [statefulsets]}
+    - {apiGroups: [batch], apiVersions: [v1], operations: [CREATE, UPDATE], resources: [jobs]}
+    - {apiGroups: [argoproj.io], apiVersions: [v1alpha1], operations: [CREATE, UPDATE], resources: [rollouts]}
   validations:
-  - expression: "object.spec.template.spec.serviceAccountName in ['account-database', 'account-migration', 'account-runtime']"
-    message: workload controller must use a canonical service account
-  - expression: "object.spec.template.spec.automountServiceAccountToken == false"
+  - expression: >-
+      request.resource.resource == 'pods' ||
+      (object.kind == 'StatefulSet' && object.metadata.name == 'account-postgresql' && object.spec.template.spec.serviceAccountName == 'account-database') ||
+      (object.kind == 'Job' && object.metadata.name in ['account-db-role-bootstrap', 'account-migration'] && object.spec.template.spec.serviceAccountName == 'account-migration') ||
+      (object.kind == 'Rollout' && object.metadata.name == 'account-api' && object.spec.template.spec.serviceAccountName == 'account-runtime')
+    message: controller kind/name/serviceAccountName must match the canonical contract
+  - expression: >-
+      request.resource.resource != 'pods' || (has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o,
+        o.controller == true && ((o.kind == 'StatefulSet' && o.name == 'account-postgresql') ||
+        (o.kind == 'Job' && o.name in ['account-db-role-bootstrap', 'account-migration']) ||
+        (o.kind == 'ReplicaSet' && o.name.startsWith('account-api-')))))
+    message: direct Pods are forbidden; every Pod must have a canonical controller owner
+  - expression: >-
+      (request.resource.resource == 'pods' && object.spec.automountServiceAccountToken == false) ||
+      (request.resource.resource != 'pods' && object.spec.template.spec.automountServiceAccountToken == false)
     message: service account token automount is forbidden
-  - expression: "!has(object.spec.template.spec.hostNetwork) || object.spec.template.spec.hostNetwork == false"
-    message: host networking is forbidden
-  - expression: "!has(object.spec.template.spec.volumes) || object.spec.template.spec.volumes.all(v, !has(v.hostPath))"
-    message: hostPath is forbidden
-  - expression: "object.spec.template.spec.containers.all(c, !has(c.securityContext) || ((!has(c.securityContext.privileged) || c.securityContext.privileged == false) && (!has(c.securityContext.allowPrivilegeEscalation) || c.securityContext.allowPrivilegeEscalation == false)))"
-    message: privileged containers and privilege escalation are forbidden
+  - expression: >-
+      (request.resource.resource == 'pods' && (!has(object.spec.hostNetwork) || object.spec.hostNetwork == false) &&
+       (!has(object.spec.volumes) || object.spec.volumes.all(v, !has(v.hostPath) && !has(v.secret) && (!has(v.projected) || v.projected.sources.all(s, !has(s.secret)))))) ||
+      (request.resource.resource != 'pods' && (!has(object.spec.template.spec.hostNetwork) || object.spec.template.spec.hostNetwork == false) &&
+       (!has(object.spec.template.spec.volumes) || object.spec.template.spec.volumes.all(v, !has(v.hostPath) && !has(v.secret) && (!has(v.projected) || v.projected.sources.all(s, !has(s.secret))))))
+    message: host networking, hostPath and every Secret volume form are forbidden
+  - expression: >-
+      (request.resource.resource == 'pods' &&
+       (!has(object.spec.initContainers) || object.spec.initContainers.all(c, (!has(c.securityContext.privileged) || c.securityContext.privileged == false) && (!has(c.securityContext.allowPrivilegeEscalation) || c.securityContext.allowPrivilegeEscalation == false))) &&
+       object.spec.containers.all(c, (!has(c.securityContext.privileged) || c.securityContext.privileged == false) && (!has(c.securityContext.allowPrivilegeEscalation) || c.securityContext.allowPrivilegeEscalation == false))) ||
+      (request.resource.resource != 'pods' &&
+       (!has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c, (!has(c.securityContext.privileged) || c.securityContext.privileged == false) && (!has(c.securityContext.allowPrivilegeEscalation) || c.securityContext.allowPrivilegeEscalation == false))) &&
+       object.spec.template.spec.containers.all(c, (!has(c.securityContext.privileged) || c.securityContext.privileged == false) && (!has(c.securityContext.allowPrivilegeEscalation) || c.securityContext.allowPrivilegeEscalation == false)))
+    message: privileged or privilege-escalating regular and init containers are forbidden
+  - expression: >-
+      (request.resource.resource == 'pods' && object.spec.containers.all(c,
+        (!has(c.envFrom) || c.envFrom.all(e, !has(e.secretRef))) && (!has(c.env) || c.env.all(e,
+          !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef) ||
+          (object.spec.serviceAccountName == 'account-database' && e.valueFrom.secretKeyRef.name == 'account-db-bootstrap' && e.valueFrom.secretKeyRef.key == 'admin-password') ||
+          (object.spec.serviceAccountName == 'account-runtime' && e.valueFrom.secretKeyRef.name == 'account-db-runtime' && e.valueFrom.secretKeyRef.key == 'uri') ||
+          (object.spec.serviceAccountName == 'account-migration' && ((e.valueFrom.secretKeyRef.name == 'account-db-bootstrap' && e.valueFrom.secretKeyRef.key == 'admin-password') ||
+            (e.valueFrom.secretKeyRef.name == 'account-db-migration' && e.valueFrom.secretKeyRef.key in ['username', 'password', 'uri']) ||
+            (e.valueFrom.secretKeyRef.name == 'account-db-runtime' && e.valueFrom.secretKeyRef.key in ['username', 'password']))))))) ||
+      (request.resource.resource != 'pods' && object.spec.template.spec.containers.all(c,
+        (!has(c.envFrom) || c.envFrom.all(e, !has(e.secretRef))) && (!has(c.env) || c.env.all(e,
+          !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef) ||
+          (object.kind == 'StatefulSet' && object.metadata.name == 'account-postgresql' && e.valueFrom.secretKeyRef.name == 'account-db-bootstrap' && e.valueFrom.secretKeyRef.key == 'admin-password') ||
+          (object.kind == 'Rollout' && object.metadata.name == 'account-api' && e.valueFrom.secretKeyRef.name == 'account-db-runtime' && e.valueFrom.secretKeyRef.key == 'uri') ||
+          (object.kind == 'Job' && object.metadata.name == 'account-migration' && e.valueFrom.secretKeyRef.name == 'account-db-migration' && e.valueFrom.secretKeyRef.key == 'uri') ||
+          (object.kind == 'Job' && object.metadata.name == 'account-db-role-bootstrap' && ((e.valueFrom.secretKeyRef.name == 'account-db-bootstrap' && e.valueFrom.secretKeyRef.key == 'admin-password') ||
+            (e.valueFrom.secretKeyRef.name == 'account-db-migration' && e.valueFrom.secretKeyRef.key in ['username', 'password']) ||
+            (e.valueFrom.secretKeyRef.name == 'account-db-runtime' && e.valueFrom.secretKeyRef.key in ['username', 'password'])))))))
+    message: Secret envFrom and every non-canonical Secret/key reference are forbidden
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicyBinding
@@ -56,4 +156,4 @@ spec:
   validationActions: [Deny]
   matchResources:
     namespaceSelector:
-      matchLabels: {platform.lab/profile: account-lightweight-fresh}
+      matchLabels: {platform.lab/security-boundary: account}

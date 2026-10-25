@@ -26,13 +26,14 @@ REQUIRED_IMAGES = {
     "otel-collector", "grafana",
 }
 STEPS = [
-    "preflight", "image-supply", "cluster", "crds", "controllers",
+    "preflight", "image-source", "cluster", "empty-node-cache", "image-import", "crds", "controllers",
     "security-boundary", "credential-bootstrap", "custom-resources",
     "database", "role-bootstrap", "migration", "application", "acceptance",
 ]
 REQUIRES = {
-    "preflight": [], "image-supply": ["preflight"], "cluster": ["image-supply"],
-    "crds": ["cluster"], "controllers": ["crds"],
+    "preflight": [], "image-source": ["preflight"], "cluster": ["image-source"],
+    "empty-node-cache": ["cluster"], "image-import": ["empty-node-cache"],
+    "crds": ["image-import"], "controllers": ["crds"],
     "security-boundary": ["controllers"], "credential-bootstrap": ["security-boundary"],
     "custom-resources": ["credential-bootstrap"], "database": ["custom-resources"],
     "role-bootstrap": ["database"], "migration": ["role-bootstrap"],
@@ -84,7 +85,9 @@ def validate_dag(dag):
     if any(step["requires"] != REQUIRES[step["id"]] for step in steps):
         raise ContractError("dag-dependency")
     checkpoint = dag["spec"]["checkpoint"]
-    if not checkpoint["recordAfterEveryStep"] or not checkpoint["resume"]["neverRecreateSucceededMigrationJob"]:
+    if (not checkpoint["recordAfterEveryStep"]
+            or not checkpoint["resume"]["neverRecreateSucceededRoleBootstrapJob"]
+            or not checkpoint["resume"]["neverRecreateSucceededMigrationJob"]):
         raise ContractError("checkpoint-resume")
 
 
@@ -123,12 +126,17 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
         raise ContractError("image-set")
     if any(image["architecture"] != target["architecture"] for image in spec["images"]):
         raise ContractError("image-architecture")
+    pending_runtime = next(image for image in spec["images"] if image["name"] == "account-runtime")["ref"]
+    if pending_runtime != "PENDING_PLAT211_VERIFIED_IMAGE" and not re.fullmatch(
+            r"ghcr\.io/syuhei0519/backend-app@sha256:[0-9a-f]{64}", pending_runtime):
+        raise ContractError("account-runtime-image")
 
     supply = spec["imageSupply"]
     if spec["decisions"]["G2"]["status"] == "pending-approval":
         if supply["decision"] != "PENDING_G2" or supply["immutable"]:
             raise ContractError("pending-g2-supply")
-    elif supply["decision"] not in {"private-registry", "retained-oci-archive"} or not supply["immutable"]:
+    elif supply["decision"] not in {"private-registry", "retained-oci-archive",
+                                    "public-upstream-plus-retained-account-archive"} or not supply["immutable"]:
         raise ContractError("approved-g2-supply")
 
     if set(spec["budget"]["stopOn"]) != STOP_CONDITIONS:
@@ -157,6 +165,8 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
             raise ContractError("approved-profile-placeholder")
         if revisions["platform-gitops"] == "__PLATFORM_GITOPS_SHA__":
             raise ContractError("approved-profile-revision-token")
+        if pending_runtime == "PENDING_PLAT211_VERIFIED_IMAGE":
+            raise ContractError("approved-account-runtime-pending")
         if any(str(value).startswith("PENDING_") for value in limits.values()):
             raise ContractError("approved-budget-placeholder")
 

@@ -7,14 +7,20 @@ spec:
   - id: preflight
     requires: []
     readyWhen: profile-lock-materialized-gates-approved-and-budget-measured
-  - id: image-supply
+  - id: image-source
     requires: [preflight]
-    readyWhen: every-image-retrieved-by-digest-and-empty-node-cache-proved
+    readyWhen: every-approved-registry-or-archive-source-identity-is-fixed
   - id: cluster
-    requires: [image-supply]
-    readyWhen: expected-cluster-uid-and-empty-node-cache-recorded
-  - id: crds
+    requires: [image-source]
+    readyWhen: expected-new-cluster-uid-recorded
+  - id: empty-node-cache
     requires: [cluster]
+    readyWhen: every-target-node-proves-required-images-absent-before-import
+  - id: image-import
+    requires: [empty-node-cache]
+    readyWhen: every-image-imported-by-approved-source-and-digest
+  - id: crds
+    requires: [image-import]
     readyWhen: every-required-crd-established
   - id: controllers
     requires: [crds]
@@ -60,4 +66,5 @@ spec:
       verifyClusterUID: true
       verifyCompletedResources: true
       retryOnlyFailedOrIncompleteStep: true
+      neverRecreateSucceededRoleBootstrapJob: true
       neverRecreateSucceededMigrationJob: true

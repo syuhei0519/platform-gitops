@@ -1,0 +1,56 @@
+{
+  "apiVersion": "platform.lab/v1alpha1",
+  "kind": "FreshExecutionApproval",
+  "metadata": {
+    "name": "account-lightweight-fresh",
+    "approvedBy": "PENDING",
+    "approvedAt": "1970-01-01T00:00:00Z",
+    "expiresAt": "1970-01-01T00:00:00Z"
+  },
+  "spec": {
+    "approved": false,
+    "target": {
+      "clusterName": "learning-fresh-plat217-20261025",
+      "context": "kind-learning-fresh-plat217-20261025",
+      "profileName": "account-lightweight-fresh"
+    },
+    "repositories": {
+      "platformGitops": "0000000000000000000000000000000000000000",
+      "applicationManifest": "0fc2ae19300af32f86643152e65597b022dcdc0f"
+    },
+    "hashes": {
+      "profileSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "materializationSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "scope": {
+      "environment": "fresh-isolated-sandbox",
+      "existingCluster": "preserve-excluded",
+      "existingData": "preserve-excluded",
+      "cutover": false
+    },
+    "gates": {
+      "G1": {"approved": false, "approvalId": "PENDING"},
+      "G2": {"approved": false, "approvalId": "PENDING"},
+      "G3": {"approved": false, "approvalId": "PENDING"},
+      "security": {"approved": false, "approvalId": "PENDING"}
+    },
+    "allowedSteps": [
+      "preflight",
+      "image-source",
+      "cluster",
+      "empty-node-cache",
+      "image-import",
+      "crds",
+      "controllers",
+      "security-boundary",
+      "credential-bootstrap",
+      "custom-resources",
+      "database",
+      "role-bootstrap",
+      "migration",
+      "application",
+      "acceptance"
+    ]
+  }
+}
+

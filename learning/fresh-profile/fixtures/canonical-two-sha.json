@@ -1,12 +1,14 @@
 {
   "sources": {
-    "platform": {"repository": "https://github.com/syuhei0519/platform-gitops.git", "commit": "__PLATFORM_GITOPS_SHA__", "path": "learning/fresh-profile/root"},
-    "workload": {"repository": "https://github.com/syuhei0519/application-manifest.git", "commit": "d9150a4de69d2447c1b767823fc23784edea0abc", "path": "learning/fresh-profile/workload"},
-    "release-definition": {"repository": "https://github.com/syuhei0519/application-manifest.git", "commit": "d9150a4de69d2447c1b767823fc23784edea0abc", "path": "learning/fresh-profile/release-definition"}
+    "platform": {"repository": "https://github.com/syuhei0519/platform-gitops.git", "commit": "__PLATFORM_GITOPS_SHA__", "path": "learning/fresh-profile/root/children"},
+    "workload": {"repository": "https://github.com/syuhei0519/application-manifest.git", "commit": "0fc2ae19300af32f86643152e65597b022dcdc0f", "path": "learning/fresh-profile/workload"},
+    "release-definition": {"repository": "https://github.com/syuhei0519/application-manifest.git", "commit": "0fc2ae19300af32f86643152e65597b022dcdc0f", "path": "learning/fresh-profile/release-definition"}
   },
   "applications": [
-    {"actor": "platform", "name": "account-lightweight-root", "namespace": "fresh-control", "repository": "https://github.com/syuhei0519/platform-gitops.git", "revision": "__PLATFORM_GITOPS_SHA__", "path": "learning/fresh-profile/root", "destination": "fresh-control"},
-    {"actor": "release-definition", "name": "fresh-account-release", "namespace": "fresh-control", "repository": "https://github.com/syuhei0519/application-manifest.git", "revision": "d9150a4de69d2447c1b767823fc23784edea0abc", "path": "learning/fresh-profile/release-definition", "destination": "fresh-account"}
+    {"actor": "platform", "name": "account-lightweight-root", "namespace": "fresh-control", "project": "fresh-platform", "repository": "https://github.com/syuhei0519/platform-gitops.git", "revision": "__PLATFORM_GITOPS_SHA__", "path": "learning/fresh-profile/root/children", "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}},
+    {"actor": "release-definition", "name": "fresh-release-definitions", "namespace": "fresh-control", "project": "fresh-platform", "repository": "https://github.com/syuhei0519/application-manifest.git", "revision": "0fc2ae19300af32f86643152e65597b022dcdc0f", "path": "learning/fresh-profile/release-definition", "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}},
+    {"actor": "platform", "name": "fresh-observability", "namespace": "fresh-control", "project": "fresh-platform", "repository": "https://github.com/syuhei0519/platform-gitops.git", "revision": "__PLATFORM_GITOPS_SHA__", "path": "learning/fresh-profile/observability", "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-observability"}},
+    {"actor": "workload", "name": "fresh-account-release", "namespace": "fresh-control", "project": "fresh-account", "repository": "https://github.com/syuhei0519/application-manifest.git", "revision": "0fc2ae19300af32f86643152e65597b022dcdc0f", "path": "learning/fresh-profile/workload", "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-account"}}
   ],
   "operations": [
     {"actor": "platform", "verb": "create", "scope": "namespace", "namespace": "fresh-control", "apiGroup": "argoproj.io", "resource": "applications", "name": "account-lightweight-root"},
@@ -59,7 +61,7 @@
     "secretObjectsInGit": false,
     "secretReferences": ["account-db-bootstrap/admin-password", "account-db-migration/username", "account-db-migration/password", "account-db-migration/uri", "account-db-runtime/username", "account-db-runtime/password", "account-db-runtime/uri"],
     "persistentVolumeClaims": {"fresh-account/account-data": {"storageClassName": "standard", "accessModes": ["ReadWriteOnce"], "syncOptions": ["Prune=false", "Delete=false"]}},
-    "jobs": {"fresh-account/account-db-role-bootstrap": "idempotent-hook-verified-before-migration", "fresh-account/account-migration": "mutable-until-first-success-then-frozen"},
+    "jobs": {"fresh-account/account-db-role-bootstrap": "sync-wave-10-retained-on-success-never-recreated-by-resume", "fresh-account/account-migration": "sync-wave-20-retained-on-success-never-recreated-by-rerun-or-resume"},
     "fieldOwners": {
       "Application/fresh-control/account-lightweight-root": "platform",
       "Application/fresh-control/fresh-release-definitions": "platform",
