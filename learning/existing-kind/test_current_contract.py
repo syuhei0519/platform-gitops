@@ -4,10 +4,12 @@ import copy
 import json
 import os
 from pathlib import Path
+import shutil
+import tempfile
 import unittest
 
 from current_contract import (ContractError, document_file, validate,
-                              validate_resources)
+                              render_definition_chart, validate_resources)
 
 
 HERE = Path(__file__).resolve().parent
@@ -92,6 +94,26 @@ class CurrentContractTests(unittest.TestCase):
         with self.assertRaisesRegex(ContractError, 'pvc-immutable-contract'):
             validate_resources(resources, self.contract)
 
+    def test_pvc_volume_mode_mutation_fails(self):
+        resources = copy.deepcopy(self.resources)
+        pvc = next(doc for doc in resources['lab-learning-services']
+                   if doc['kind'] == 'PersistentVolumeClaim')
+        pvc['spec']['volumeMode'] = 'Block'
+        with self.assertRaisesRegex(ContractError, 'pvc-immutable-contract'):
+            validate_resources(resources, self.contract)
+
+    def test_definition_chart_zero_output_fails(self):
+        source = MANIFEST / self.contract['applications']['account-release-definition']['path']
+        with tempfile.TemporaryDirectory(dir=PLATFORM) as temporary:
+            target = Path(temporary) / 'application-chart'
+            shutil.copytree(source, target)
+            shutil.copy2(source.parent / 'runtime-profile.yaml', target.parent / 'runtime-profile.yaml')
+            (target / 'templates' / 'application.yaml').write_text(
+                '{{- if false }}\napiVersion: argoproj.io/v1alpha1\nkind: Application\n{{- end }}\n',
+                encoding='utf-8')
+            with self.assertRaisesRegex(ContractError, 'definition-render-count:0'):
+                render_definition_chart(target, self.contract)
+
     def test_duplicate_identity_fails(self):
         resources = copy.deepcopy(self.resources)
         docs = resources['lab-learning-observability']
@@ -114,6 +136,23 @@ class CurrentContractTests(unittest.TestCase):
                    if doc.get('kind') == 'CustomResourceDefinition')
         crd['spec']['versions'][0].pop('schema', None)
         with self.assertRaisesRegex(ContractError, 'crd-schema'):
+            validate_resources(resources, self.contract)
+
+    def test_crd_served_version_drift_fails(self):
+        resources = copy.deepcopy(self.resources)
+        crd = next(doc for docs in resources.values() for doc in docs
+                   if doc.get('kind') == 'CustomResourceDefinition')
+        crd['spec']['versions'][0]['served'] = False
+        with self.assertRaisesRegex(ContractError, 'crd-schema|crd-spec-digest-contract'):
+            validate_resources(resources, self.contract)
+
+    def test_crd_internal_schema_drift_fails(self):
+        resources = copy.deepcopy(self.resources)
+        crd = next(doc for docs in resources.values() for doc in docs
+                   if doc.get('kind') == 'CustomResourceDefinition')
+        schema = crd['spec']['versions'][0]['schema']['openAPIV3Schema']
+        schema['description'] = 'unreviewed schema drift'
+        with self.assertRaisesRegex(ContractError, 'crd-spec-digest-contract'):
             validate_resources(resources, self.contract)
 
     def test_duplicate_root_identity_fails_before_mapping(self):
@@ -170,6 +209,42 @@ class CurrentContractTests(unittest.TestCase):
         config['synthetic'] = {'secretKeyRef': {'name': 'unapproved-secret', 'key': 'value'}}
         with self.assertRaisesRegex(ContractError, 'secret-reference-set'):
             validate_resources(resources, self.contract)
+
+    def test_all_standard_pod_secret_reference_forms_fail(self):
+        cases = ('env-secretKeyRef', 'envFrom-secretRef', 'volume-secretName',
+                 'projected-secret-name', 'imagePullSecrets-name')
+        for case in cases:
+            with self.subTest(case=case):
+                resources = copy.deepcopy(self.resources)
+                deployment = next(doc for docs in resources.values() for doc in docs
+                                  if doc.get('kind') == 'Deployment')
+                pod = deployment['spec']['template']['spec']
+                container = pod['containers'][0]
+                if case == 'env-secretKeyRef':
+                    container.setdefault('env', []).append({
+                        'name': 'FIXTURE',
+                        'valueFrom': {'secretKeyRef': {'name': 'unapproved-secret', 'key': 'value'}}})
+                elif case == 'envFrom-secretRef':
+                    container.setdefault('envFrom', []).append({
+                        'secretRef': {'name': 'unapproved-secret'}})
+                elif case == 'volume-secretName':
+                    pod.setdefault('volumes', []).append({
+                        'name': 'fixture', 'secret': {'secretName': 'unapproved-secret'}})
+                elif case == 'projected-secret-name':
+                    pod.setdefault('volumes', []).append({
+                        'name': 'fixture', 'projected': {'sources': [
+                            {'secret': {'name': 'unapproved-secret'}}]}})
+                else:
+                    pod.setdefault('imagePullSecrets', []).append({'name': 'unapproved-secret'})
+                with self.assertRaisesRegex(ContractError, 'secret-reference-set'):
+                    validate_resources(resources, self.contract)
+
+    def test_unrelated_name_field_is_not_a_secret_reference(self):
+        resources = copy.deepcopy(self.resources)
+        deployment = next(doc for docs in resources.values() for doc in docs
+                          if doc.get('kind') == 'Deployment')
+        deployment['spec']['template']['metadata'].setdefault('labels', {})['name'] = 'unapproved-secret'
+        validate_resources(resources, self.contract)
 
 
 if __name__ == '__main__':

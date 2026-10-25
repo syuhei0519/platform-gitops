@@ -78,14 +78,14 @@ jobs:
         run: |
           python3 -m venv .build/monitoring-venv
           .build/monitoring-venv/bin/python -m pip install PyYAML==6.0.3 jsonschema==4.26.0
-          PAIRED_APPLICATION_MANIFEST="$PWD/.build/current-manifest" \
+          docker run --rm --entrypoint cat alpine/helm:4.2.4@sha256:76c375eed56144c68d6197c55bc5a4552fb42002190b796729901cbab3ae6e51 /usr/bin/helm > .build/helm
+          chmod +x .build/helm
+          PATH="$PWD/.build:$PATH" PAIRED_APPLICATION_MANIFEST="$PWD/.build/current-manifest" \
             .build/monitoring-venv/bin/python learning/existing-kind/test_current_contract.py
-          .build/monitoring-venv/bin/python learning/existing-kind/current_contract.py \
+          PATH="$PWD/.build:$PATH" .build/monitoring-venv/bin/python learning/existing-kind/current_contract.py \
             --application-manifest "$PWD/.build/current-manifest" \
             --output .rendered/current-resources.yaml \
             --schema-output .rendered/current-schema-resources.yaml
-          docker run --rm --entrypoint cat alpine/helm:4.2.4@sha256:76c375eed56144c68d6197c55bc5a4552fb42002190b796729901cbab3ae6e51 /usr/bin/helm > .build/helm
-          chmod +x .build/helm
           PATH="$PWD/.build:$PATH" .build/monitoring-venv/bin/python learning/monitoring/validate.py --output .rendered/learning-monitoring
           sh learning/monitoring/check-tools.sh .rendered/learning-monitoring
           PATH="$PWD/.build:$PATH" .build/monitoring-venv/bin/python learning/monitoring/alerting/validate.py .rendered/learning-alerting

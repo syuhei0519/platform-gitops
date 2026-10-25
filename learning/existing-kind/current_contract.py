@@ -5,8 +5,11 @@ This is an offline source contract.  It does not contact Kubernetes, infer live
 health, or replay frozen bootstrap Jobs.
 """
 import argparse
+import hashlib
 import json
+import os
 from pathlib import Path
+import subprocess
 
 import yaml
 
@@ -22,6 +25,7 @@ CLUSTER_SCOPED = {
     'ValidatingWebhookConfiguration',
 }
 RBAC = {'Role', 'RoleBinding', 'ClusterRole', 'ClusterRoleBinding'}
+DEFINITION_REVISION = '1111111111111111111111111111111111111111'
 
 
 class ContractError(ValueError):
@@ -85,18 +89,22 @@ def ignore_contract(items, reason):
     return sorted(result)
 
 
-def secret_references(value, found):
+def secret_references(value, found, parent_key=None):
     if isinstance(value, dict):
+        if parent_key in {'secretKeyRef', 'secretRef', 'secret'} and isinstance(value.get('name'), str):
+            found.add(value['name'])
         if isinstance(value.get('secretName'), str):
             found.add(value['secretName'])
-        ref = value.get('secretKeyRef')
-        if isinstance(ref, dict) and isinstance(ref.get('name'), str):
-            found.add(ref['name'])
-        for child in value.values():
-            secret_references(child, found)
+        pulls = value.get('imagePullSecrets')
+        if isinstance(pulls, list):
+            for item in pulls:
+                if isinstance(item, dict) and isinstance(item.get('name'), str):
+                    found.add(item['name'])
+        for key, child in value.items():
+            secret_references(child, found, key)
     elif isinstance(value, list):
         for child in value:
-            secret_references(child, found)
+            secret_references(child, found, parent_key)
 
 
 def validate_crd(doc, application):
@@ -115,6 +123,69 @@ def validate_crd(doc, application):
                 version['name'] and version.get('served') is True, reason)
         schema = version.get('schema', {}).get('openAPIV3Schema')
         require(isinstance(schema, dict) and schema.get('type') == 'object', reason)
+
+
+def crd_spec_digest(doc):
+    encoded = json.dumps(doc.get('spec'), sort_keys=True, separators=(',', ':'),
+                         ensure_ascii=False).encode('utf-8')
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def render_definition_chart(path, contract, helm_binary=None, runner=subprocess.run):
+    """Render and validate the one chart-backed child without contacting a cluster."""
+    helm = helm_binary or os.environ.get('HELM_BINARY', 'helm')
+    profile = path.parent / 'runtime-profile.yaml'
+    completed = runner([
+        str(helm), 'template', 'account-release-definition', str(path),
+        '--namespace', contract['controlNamespace'], '--values', str(profile),
+        '--set-string', f'manifestRevision={DEFINITION_REVISION}',
+    ], capture_output=True, text=True, check=False)
+    require(completed.returncode == 0, 'definition-chart-render')
+    rendered = [doc for doc in yaml.safe_load_all(completed.stdout) if doc]
+    require(len(rendered) == 1, f'definition-render-count:{len(rendered)}')
+    doc = rendered[0]
+    require(set(doc) == {'apiVersion', 'kind', 'metadata', 'spec'}, 'definition-document-fields')
+    require(doc.get('apiVersion') == 'argoproj.io/v1alpha1', 'definition-api-version')
+    require(doc.get('kind') == 'Application', 'definition-kind')
+    require(doc.get('metadata') == {
+        'name': 'account-release',
+        'namespace': contract['controlNamespace'],
+        'annotations': {'argocd.argoproj.io/sync-options': PROTECTED},
+    }, 'definition-metadata')
+    spec = doc.get('spec') or {}
+    require(set(spec) == {'project', 'source', 'destination', 'syncPolicy', 'ignoreDifferences'},
+            'definition-spec-fields')
+    require(spec.get('project') == 'account-release', 'definition-project')
+    require(spec.get('source') == {
+        'repoURL': 'https://github.com/syuhei0519/application-manifest.git',
+        'targetRevision': DEFINITION_REVISION,
+        'path': 'learning/account-release/chart',
+        'helm': {
+            'releaseName': 'account-release',
+            'valueFiles': ['../runtime-profile.yaml'],
+        },
+    }, 'definition-source')
+    require(spec.get('destination') == {
+        'server': contract['server'], 'namespace': 'learning-account-release'},
+        'definition-destination')
+    require(spec.get('syncPolicy') == {'syncOptions': ['RespectIgnoreDifferences=true']},
+            'definition-sync-policy')
+    require(spec.get('ignoreDifferences') == [
+        {
+            'group': 'networking.istio.io', 'kind': 'VirtualService',
+            'name': 'account-release', 'namespace': 'learning-account-release',
+            'jsonPointers': ['/spec/http/0/route/0/weight', '/spec/http/0/route/1/weight'],
+        },
+        {
+            'group': 'networking.istio.io', 'kind': 'DestinationRule',
+            'name': 'account-release', 'namespace': 'learning-account-release',
+            'jsonPointers': [
+                '/spec/subsets/0/labels/rollouts-pod-template-hash',
+                '/spec/subsets/1/labels/rollouts-pod-template-hash',
+            ],
+        },
+    ], 'definition-ignore')
+    return rendered
 
 
 def validate_project(doc, name, expected, contract):
@@ -195,6 +266,7 @@ def validate_resources(resources, contract):
     secrets = set()
     pvcs = {}
     jobs = {}
+    crd_digests = {}
     observed_kinds = set()
     expected_identities = contract['_resourceIdentities']
     require(set(resources) == set(expected_identities), f'resource-identity-children:{sorted(resources)}')
@@ -220,6 +292,7 @@ def validate_resources(resources, contract):
             require(doc['kind'] not in RBAC, f'child-rbac-object:{application}:{key}')
             if doc['kind'] == 'CustomResourceDefinition':
                 validate_crd(doc, application)
+                crd_digests[metadata['name']] = crd_spec_digest(doc)
             secret_references(doc, secrets)
             if doc['kind'] == 'PersistentVolumeClaim':
                 require(metadata.get('annotations', {}).get('argocd.argoproj.io/sync-options') == PROTECTED,
@@ -230,6 +303,10 @@ def validate_resources(resources, contract):
                     'storageClassName': spec.get('storageClassName'),
                     'accessModes': spec.get('accessModes'),
                     'volumeName': spec.get('volumeName'),
+                    'volumeMode': spec.get('volumeMode'),
+                    'selector': spec.get('selector'),
+                    'dataSource': spec.get('dataSource'),
+                    'dataSourceRef': spec.get('dataSourceRef'),
                 }
             if doc['kind'] == 'Job':
                 require(metadata.get('annotations', {}).get('argocd.argoproj.io/sync-options') == PROTECTED,
@@ -244,6 +321,7 @@ def validate_resources(resources, contract):
     require(all(jobs[name] == 'lab-learning-account-foundation' for name in jobs), 'job-owner')
     require(observed_kinds == set(contract['apiVersions']),
             f'api-version-kind-set:{sorted(observed_kinds)}')
+    require(crd_digests == contract['_crdSpecDigests'], 'crd-spec-digest-contract')
 
 
 def load_resources(repositories, contract):
@@ -255,9 +333,9 @@ def load_resources(repositories, contract):
             require((path / 'Chart.yaml').is_file(), f'missing-chart:{name}')
             templates = sorted((path / 'templates').glob('*.yaml'))
             require(len(templates) == expected['chartTemplateCount'], f'chart-template-count:{name}')
-            kinds = {line.split(':', 1)[1].strip() for template in templates
-                     for line in template.read_text(encoding='utf-8').splitlines() if line.startswith('kind:')}
-            require(kinds == set(expected['allowedKinds']), f'chart-kinds:{name}')
+            rendered = render_definition_chart(path, contract)
+            require({doc.get('kind') for doc in rendered} == set(expected['allowedKinds']),
+                    f'chart-kinds:{name}')
             continue
         result[name] = documents(path)
     return result
@@ -267,6 +345,8 @@ def validate(platform, manifest, entry_docs=None, root_docs=None, resources=None
     contract = json.loads((platform / 'learning/existing-kind/current-contract.json').read_text(encoding='utf-8'))
     identity_path = platform / contract['resourceIdentityContract']
     contract['_resourceIdentities'] = json.loads(identity_path.read_text(encoding='utf-8'))
+    crd_path = platform / contract['crdSpecContract']
+    contract['_crdSpecDigests'] = json.loads(crd_path.read_text(encoding='utf-8'))
     repositories = {'platform-gitops': platform, 'application-manifest': manifest}
     entry = document_file(platform / contract['entry']) if entry_docs is None else entry_docs
     entry_index = indexed_documents(entry, {

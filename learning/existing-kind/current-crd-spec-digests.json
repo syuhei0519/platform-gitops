@@ -1,0 +1,23 @@
+{
+  "analysisruns.argoproj.io": "f075138b513c1513cee1378a4b234c45f21681e68a8b60b3a28035cb8f557a6f",
+  "analysistemplates.argoproj.io": "300335630a8439d6cbb3ba232d98de3d46825f7131dbfbea87f9f892e0818e11",
+  "applications.argoproj.io": "cde6a14514684b27eccb01f2dceb4b6cfdd311b7e29fc7c69d7881de0d206617",
+  "appprojects.argoproj.io": "fd92304b48f3677058f471525b4b8d22c4d47219c5dfc5ea72171db485aee3e4",
+  "authorizationpolicies.security.istio.io": "c1c9ff09f0728b0e39bc924ea3384a3c6f16fe0f8a406dd1d01f5cc0657dd1ac",
+  "destinationrules.networking.istio.io": "73332b6b37c5816276607f88a1603cda1ac0b8d04b34e8dcaa373bfa201911b4",
+  "envoyfilters.networking.istio.io": "399362f894dbeaf46a32b33b70d44f7f48b8281c3961610ab0e64eb65d8c81f9",
+  "experiments.argoproj.io": "8078b94f11b377fafbae057c1eeaf3eb1003a7e8239e79ad01a48308ec5c32ef",
+  "gateways.networking.istio.io": "59fabb2714f6df125deac3ae7dac9083df01a716795526f2fde60fa6d83ddb5d",
+  "peerauthentications.security.istio.io": "4dc847cbc3d5e68fed96473a6d472f0f8c02d4f3f94414ba5b045fd094cd5c92",
+  "proxyconfigs.networking.istio.io": "37d89aca1393358b19dc652f0b36a4272e71c42d11ad1735f1feed24578f7abf",
+  "requestauthentications.security.istio.io": "1cf8aaf8f64129ad4479f947ade076dd88770d8a7270ed369b83eeeedacaeca7",
+  "rollouts.argoproj.io": "52549c66cfcce4f5f977e2531caf5539a50479712f0060815d2be842d9002b79",
+  "serviceentries.networking.istio.io": "57d0fb579da1ef415d9e487d806940e94c7e885d5e5951702a2b62e7341d60b5",
+  "sidecars.networking.istio.io": "f14fd9f8ffc5128b8d89ac933612c871e47a1dd70af9817a6471b4cd8012d66a",
+  "telemetries.telemetry.istio.io": "655de48ee181b8c7e582420e46acec10931b35d7bb25b6a0e09576ac5c0c7b62",
+  "trafficextensions.extensions.istio.io": "52992f63d2905317c266c5b22ebae06ba4f412bc33f59a7b9d663f223604aef8",
+  "virtualservices.networking.istio.io": "3067c09b14f87dc2d8998fd7ada8155cf4102350296b1484a6212db087f896bb",
+  "wasmplugins.extensions.istio.io": "b263349d1ed44c89db41fff550bb8465495b5464798cea1a844ef5f1d5f73728",
+  "workloadentries.networking.istio.io": "a53fc0bd5876bc85ec124ad2510e929567f3b350166e731e7dbf420362e2e0e3",
+  "workloadgroups.networking.istio.io": "d375104cde1448f5b6192e57f3e313678eafe6a00d6797b784ad7f9f6cd7ed47"
+}
