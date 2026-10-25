@@ -8,6 +8,7 @@
 
 | 場所 | 役割 |
 | --- | --- |
+| [learning-guides/](learning-guides/README.md) | 4 repo をまたぐ変更の追跡、障害復旧、検証結果の読み方を学ぶ教材。 |
 | [implementation/](implementation/README.md) | 実装時の判断、受入結果、未確認点を残す記録。 |
 | [operations/](operations) | 適用・復旧・最終確認で守る運用上の手順と前提。 |
 

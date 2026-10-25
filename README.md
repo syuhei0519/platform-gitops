@@ -1,5 +1,7 @@
 # platform-gitops
 
+変更から配備までの流れ、障害時の復旧、検証の合否は [4 repository 共通の学習ガイド](docs/learning-guides/README.md) にまとめています。確認済みの結果と未完了部分、読み取りと状態変更を分けて説明します。
+
 ## Existing kind deployment (PLAT-195/198)
 
 For `kind-learning-20261018-69c763`, the ordinary deployment entry is a reviewed
