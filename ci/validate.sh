@@ -64,10 +64,3 @@ grep -q 'moby/buildkit:v0.30.0-rootless@sha256:d76eb1caecac5733ef7553c1e90a1b21f
 sh ci/validate-runner-pod-profile.sh .rendered/gitlab-runner.yaml
 sh ci/extract-kind.sh Application .rendered/root-enabled.yaml .rendered/platform-observability.yaml .rendered/workloads.yaml .rendered/workloads-order-fixture.yaml > .rendered/applications.yaml
 sh ci/extract-kind.sh AppProject .rendered/root-enabled.yaml > .rendered/projects.yaml
-python3 -I learning/fresh-profile/test_validate_profile.py -v
-python3 -I learning/fresh-profile/test_validate_image_supply.py -v
-python3 -I learning/fresh-profile/test_validate_authority.py -v
-python3 -I learning/fresh-profile/test_validate_acceptance.py -v
-python3 -I learning/fresh-profile/test_validate_manifests.py -v
-python3 -I learning/fresh-profile/test_measure_requests.py -v
-python3 -I learning/fresh-profile/test_materialize.py -v

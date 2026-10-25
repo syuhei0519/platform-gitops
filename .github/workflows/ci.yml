@@ -63,6 +63,8 @@ jobs:
           modules: scan-gate
       - name: Policy and boundary tests
         run: bash ci/github/test.sh
+      - name: Fresh profile contract tests
+        run: python3 -m unittest discover -s learning/fresh-profile -p 'test_*.py' -v
       - name: Render, policy and checksum checks
         run: |
           mkdir -p .security/public
