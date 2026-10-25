@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# 管理を引き継ぐ既存リソースを読み取り、レビュー用の宣言と識別情報を保存します。
 """Read-only public parent declaration capture for this exact existing kind.
 
 No Secret request, apply, token issuance, Pod/RS capture or status declaration.

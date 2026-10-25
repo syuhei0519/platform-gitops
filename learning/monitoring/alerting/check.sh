@@ -1,4 +1,5 @@
 #!/bin/sh
+# Account のアラート定義について、生成内容と規則の検査をまとめて実行する入口です。
 # Offline rule/config fixtures followed by internal-network Docker integration.
 set -eu
 config_dir=$(cd "${1:?render output required}" && pwd)

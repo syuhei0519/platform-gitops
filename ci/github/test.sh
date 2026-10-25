@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# GitHub CI で実行する単体テストと境界検査を順に呼び出す入口です。
 set -euo pipefail
 mkdir -p .security .build
 sh ci/test-docs-check.sh

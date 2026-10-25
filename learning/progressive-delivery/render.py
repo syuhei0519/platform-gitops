@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# 固定版の Rollouts と関連する権限・設定を、レビュー用 YAML として生成します。
 """Render a proposed, bounded learning install. Never contacts a Kubernetes API."""
 import argparse
 import copy

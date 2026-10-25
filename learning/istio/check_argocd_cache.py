@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# 固定版 Argo CD のソースで fake client を使う回帰試験を動かし、cache の読み取り範囲を確認します。
 """Run a narrow fake-client regression inside a disposable fixed-source archive."""
 import argparse
 import json

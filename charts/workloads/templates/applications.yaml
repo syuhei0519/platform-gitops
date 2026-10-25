@@ -7,23 +7,5 @@ application-manifestのchartsとenvironments/local valuesを参照。backend内�
 {{- if $index }}
 ---
 {{- end }}
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: lab-local-{{ $app.name }}
-  namespace: argocd
-  annotations: {argocd.argoproj.io/sync-wave: {{ $app.wave | quote }}, argocd.argoproj.io/sync-options: Prune=confirm}
-spec:
-  project: lab-account
-  source:
-    repoURL: {{ $.Values.applicationRepository }}
-    targetRevision: {{ $.Values.targetRevision }}
-    path: charts/{{ $app.name }}
-    helm:
-      releaseName: {{ $app.name }}
-      valueFiles: [../../environments/local/{{ $app.name }}.yaml]
-  destination: {server: https://kubernetes.default.svc, namespace: account}
-  syncPolicy:
-    automated: {prune: true, selfHeal: true, allowEmpty: false}
-    syncOptions: [PruneLast=true, FailOnSharedResource=true]
+{{ include "workloads.application" (dict "app" $app "repository" $.Values.applicationRepository "revision" $.Values.targetRevision) }}
 {{- end }}

@@ -1,3 +1,4 @@
+# Account と Order の子 Applicationの Chart 名と版を Helm に伝えるメタデータです。
 apiVersion: v2
 name: workloads
 description: Account workload Applications

@@ -1,4 +1,4 @@
-{{- if ne .Release.Namespace "sonarqube" }}{{ fail "This lab chart is restricted to namespace sonarqube" }}{{ end }}
+{{/* SonarQube と DB の設定・永続領域・Pod・接続口・通信制限を出力します。 */}}{{- if ne .Release.Namespace "sonarqube" }}{{ fail "This lab chart is restricted to namespace sonarqube" }}{{ end }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

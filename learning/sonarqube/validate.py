@@ -1,3 +1,4 @@
+# SonarQube の Chart とアクセス定義を静的に検査し、配備と権限の境界を確認します。
 """Offline official-chart pin, render and lab isolation contract checks."""
 from collections import Counter
 import hashlib

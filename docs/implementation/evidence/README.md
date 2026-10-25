@@ -10,3 +10,11 @@
 再現は repo root で `bash ci/github/test.sh` と `sh ci/validate.sh`。
 runtime の観察は隣接する実装 Markdown を参照する。これらの静的チェックは実 cluster の再試験ではない。
 PE019 の original-failures、attempt ごとの記録、最終監査も上記履歴に残る。
+
+## 構成と入口
+
+この階層のディレクトリと役割は次のとおりです。末端のファイルは親の説明から追えます。
+
+| 場所 | 役割 |
+| --- | --- |
+| [PE019/](PE019) | PE019 の受入時に確認した結果と未確認点の保存記録。 |

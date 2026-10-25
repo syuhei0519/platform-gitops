@@ -1,3 +1,4 @@
+# Account 学習環境の監視と通知の Chart 名と版を Helm に伝えるメタデータです。
 apiVersion: v2
 name: learning-monitoring
 description: Account-only local learning metrics, without cluster discovery

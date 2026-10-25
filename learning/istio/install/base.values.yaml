@@ -1,3 +1,4 @@
+# 固定版 Istio の基盤 Chart に渡す、学習環境向けの設定です。
 defaultRevision: learning-1-31-2
 global:
   istioNamespace: istio-learning-system

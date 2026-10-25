@@ -1,3 +1,4 @@
+// Order の配備定義と既存 Account の境界を、入力ごとのテストで確認します。
 // Synthetic observations and fake kubectl only; no cluster operations.
 package main
 

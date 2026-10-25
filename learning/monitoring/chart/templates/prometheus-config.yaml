@@ -1,4 +1,4 @@
-apiVersion: v1
+{{/* Prometheus の収集先と計測・通知ルールを設定として出力します。 */}}apiVersion: v1
 kind: ConfigMap
 metadata:
   name: learning-prometheus-config

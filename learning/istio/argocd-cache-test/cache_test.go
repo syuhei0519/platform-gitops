@@ -1,3 +1,4 @@
+// Argo CD の cache 読み取りに必要な範囲と、禁止したアクセスの境界を確認します。
 // Injected only into the fixed upstream GitOps Engine checkout by check_argocd_cache.py.
 package cache
 

@@ -1,3 +1,4 @@
+# SonarQube 登録で、対象・権限・資格情報の扱いが決めた範囲を守ることを確認します。
 """Offline configuration checks with a fake public CA, no credential or API."""
 import base64
 import json

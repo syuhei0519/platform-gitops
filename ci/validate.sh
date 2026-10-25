@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# CI/運用検証の入口。.github/workflows/ci.yml が指定する固定入力と検証器を使用する。
+# CI で基盤 Chart を描画し、Application・権限・監視・Runner の構成契約を検査する入口です。
 # 非成功終了は後続の検査を止める。成功してもcluster変更・merge権限を自動付与するものではない。
 set -eu
 mkdir -p .rendered

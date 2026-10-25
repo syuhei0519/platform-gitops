@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Account の配備版を分けて評価する PromQL を生成し、Canary の判定側と共有します。
 """Generate the Account 10% inline gate queries. No network or cluster access."""
 import argparse
 import json

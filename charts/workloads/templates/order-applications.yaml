@@ -1,4 +1,4 @@
-{{/* Order registration preparation. A synthetic fixture SHA is never a live revision. */}}
+{{/* Order を有効にするときだけ追加する。テスト用 SHA を実環境の参照先として使わない。 */}}
 {{- if .Values.orderEnabled }}
 {{- $revision := required "orderTargetRevision is required when orderEnabled=true" .Values.orderTargetRevision }}
 {{- if not (regexMatch "^[0-9a-f]{40}$" $revision) }}
@@ -8,24 +8,6 @@
 {{- if $index }}
 ---
 {{- end }}
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: lab-local-{{ $app.name }}
-  namespace: argocd
-  annotations: {argocd.argoproj.io/sync-wave: {{ $app.wave | quote }}, argocd.argoproj.io/sync-options: Prune=confirm}
-spec:
-  project: lab-account
-  source:
-    repoURL: {{ $.Values.applicationRepository }}
-    targetRevision: {{ $revision | quote }}
-    path: charts/{{ $app.name }}
-    helm:
-      releaseName: {{ $app.name }}
-      valueFiles: [../../environments/local/{{ $app.name }}.yaml]
-  destination: {server: https://kubernetes.default.svc, namespace: account}
-  syncPolicy:
-    automated: {prune: true, selfHeal: true, allowEmpty: false}
-    syncOptions: [PruneLast=true, FailOnSharedResource=true]
+{{ include "workloads.application" (dict "app" $app "repository" $.Values.applicationRepository "revision" ($revision | quote)) }}
 {{- end }}
 {{- end }}

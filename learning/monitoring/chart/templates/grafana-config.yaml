@@ -1,4 +1,4 @@
-apiVersion: v1
+{{/* Grafana の接続先と dashboard を ConfigMap として出力します。 */}}apiVersion: v1
 kind: ConfigMap
 metadata:
   name: learning-grafana-config

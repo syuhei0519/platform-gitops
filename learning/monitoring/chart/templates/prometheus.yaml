@@ -1,4 +1,4 @@
-apiVersion: v1
+{{/* Prometheus の実行主体・Pod・問い合わせ用の接続口を出力します。 */}}apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: learning-prometheus

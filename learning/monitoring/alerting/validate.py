@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# 生成したアラートの閾値・対象・通知条件を、実環境へ送信せずに検査します。
 """Validate opt-in rendering and generate minimal alert acceptance fixtures."""
 import copy
 import json

@@ -1,3 +1,4 @@
+# 検証済みの公開 CA を入力として、既存 Argo CD Core への登録用アクセス設定を生成します。実環境への適用はしません。
 """Render only public access configuration. Never reads a projected token.
 
 The operator must supply the already verified public CA from the exact live kind.

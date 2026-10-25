@@ -1,3 +1,4 @@
+# Istio の通信試験用サーバーが、版の表示と失敗シナリオを正しく返すことを確認します。
 """Accounting boundaries only; synthetic responses are not mesh runtime evidence."""
 import importlib.util
 from pathlib import Path

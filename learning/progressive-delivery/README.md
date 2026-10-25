@@ -200,3 +200,25 @@ python3 learning/progressive-delivery/test_application.py --manifest-repo ../app
 provider/準備pauseと、生成資源kindがAppProject許可の集合と一致することを確認する。
 CIはmanifest `a817e00f42a659d1dcd8a9766ad2727cc4beee18` のchartを固定checkoutして同じ検査を実行する。
 queryのreset条件とCollector権限はこの修正では変更していない。
+
+## 構成と入口
+
+[render.py](render.py) が導入案、[application.py](application.py) が Account Application を生成し、[validate.py](validate.py) が境界を検査します。
+
+
+主なファイルの入口です。
+
+| ファイル | 役割 |
+| --- | --- |
+| [application.py](application.py) | 学習用の段階配備を管理する Argo CD Application を生成し、固定版と対象範囲を検証します。 |
+| [render.py](render.py) | 固定版の Rollouts と関連する権限・設定を、レビュー用 YAML として生成します。 |
+| [test_application.py](test_application.py) | 段階配備の Application 生成で、許可した対象と固定版の条件を守ることを確認します。 |
+| [validate.py](validate.py) | 段階配備用の描画結果を検査し、権限と配備先が学習用の範囲を外れないことを確認します。 |
+
+### 本文にコメントを入れないファイル
+
+JSON などの形式、埋め込み・checksum、既存 reader の文字コードの前提を保つため、役割はここで説明します。
+
+| ファイル | 役割 |
+| --- | --- |
+| [health.lua](health.lua) | Argo CD が Rollout の状態を評価する処理です。構成へ埋め込まれるため、説明は README に置きます。 |

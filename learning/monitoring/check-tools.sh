@@ -1,4 +1,5 @@
 #!/bin/sh
+# 監視の検証前に、使うツールの版と利用可能な状態を確認します。
 # Run after validate.py --output <directory>; Docker only, no Kubernetes calls.
 set -eu
 config_dir=$(cd "${1:?synthetic configuration directory required}" && pwd)

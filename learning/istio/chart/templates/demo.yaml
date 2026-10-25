@@ -1,4 +1,4 @@
-{{- if ne .Release.Namespace "learning-istio-demo" }}
+{{/* 版を返す試験サーバーと通信クライアント、必要な設定と接続口を出力します。 */}}{{- if ne .Release.Namespace "learning-istio-demo" }}
 {{- fail "only the planned learning-istio-demo namespace is allowed" }}
 {{- end }}
 apiVersion: v1

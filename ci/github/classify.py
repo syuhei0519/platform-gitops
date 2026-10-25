@@ -1,3 +1,4 @@
+# GitHub の比較元を確定し、文書だけの検査でよいか通常の CI が必要かを判定します。
 """Documentation-only classification: unknown/missing base always means full CI."""
 import json, os, re, subprocess
 from pathlib import Path

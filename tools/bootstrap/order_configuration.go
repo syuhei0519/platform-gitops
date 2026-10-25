@@ -1,3 +1,4 @@
+// Order の Application と設定値を照合し、無効時や有効化時の配備条件を検証します。
 package main
 
 import (

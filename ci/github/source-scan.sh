@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# GitHub CI から固定版の検査環境を起動し、追跡対象ソースのセキュリティ検査を実行します。
 set -euo pipefail
 # Checkout credentials are not persisted. Only the work tree is mounted.
 docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \

@@ -1,4 +1,4 @@
-# Pod metadata only, in the explicitly selected application namespace.
+{{/* Collector が計測対象の Pod 情報を読むための権限を定義します。 */}}# Pod metadata only, in the explicitly selected application namespace.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# 監視 Chart・dashboard・クエリのつながりと、計測対象や閾値の契約を静的に確認します。
 """Small offline schema/render/config/dashboard boundary check. No cluster calls."""
 import argparse
 import configparser

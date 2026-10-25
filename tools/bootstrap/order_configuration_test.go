@@ -1,3 +1,4 @@
+// Order 設定の固定版・対象・有効化条件について、不正な組み合わせを拒否することを確認します。
 // Synthetic Argo Application observations only. No cluster API calls.
 package main
 

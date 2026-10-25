@@ -130,3 +130,18 @@ namespace作成権限がない場合は管理者に専用namespaceを用意し�
 
 実Podでの受信・鮮度・負荷・回復・runtime権限は別担当の検証対象。
 Cloud成功は実kindのAC受入や独立Reviewを意味しない。
+
+## 構成と入口
+
+[rules.py](rules.py) がルールを生成し、[validate.py](validate.py) と [check.sh](check.sh) が内容を検査します。
+
+
+主なファイルの入口です。
+
+| ファイル | 役割 |
+| --- | --- |
+| [check.sh](check.sh) | Account のアラート定義について、生成内容と規則の検査をまとめて実行する入口です。 |
+| [fixture_server.py](fixture_server.py) | 成功・失敗の計測値を人工的に返す exporter です。通知試験で使い、Account API には接続しません。 |
+| [integration.py](integration.py) | 隔離した監視構成で、異常の発生から通知までのつながりを確かめる試験を組み立てます。 |
+| [rules.py](rules.py) | Account の可用性低下を検出する Prometheus の記録・通知ルールを生成します。 |
+| [validate.py](validate.py) | 生成したアラートの閾値・対象・通知条件を、実環境へ送信せずに検査します。 |

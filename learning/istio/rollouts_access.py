@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Rollouts が Istio の経路を扱うために必要な権限を、学習用の範囲に限定して生成します。
 """Render an isolated demo controller and namespace access proposal; never apply."""
 import argparse
 import copy

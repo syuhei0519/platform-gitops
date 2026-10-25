@@ -1,3 +1,4 @@
+# Istio の通信比率を確かめる試験アプリの Chart 名と版を Helm に伝えるメタデータです。
 apiVersion: v2
 name: istio-learning-demo
 description: Dedicated DB-free client and two /version fixtures; offline preparation

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# 版ごとの計測クエリを試すため、成功・失敗・データ不足の入力を生成します。
 """Materialize deterministic promtool fixtures for the exact retained queries."""
 import json
 from pathlib import Path

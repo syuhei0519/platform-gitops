@@ -1,3 +1,4 @@
+# 基盤サービスを管理する子 Applicationの Chart 名と版を Helm に伝えるメタデータです。
 apiVersion: v2
 name: platform
 description: Runner foundation and official Runner Applications

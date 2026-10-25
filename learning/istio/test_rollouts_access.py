@@ -1,3 +1,4 @@
+# 生成した Rollouts 用の権限が、必要な操作だけを許可し対象外へ広がらないことを確認します。
 """Effective authorization checks for the unapplied demo proposal."""
 import tempfile
 import unittest

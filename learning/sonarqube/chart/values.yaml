@@ -1,3 +1,4 @@
+# 共有 SonarQube と DB・通信制限を描画する既定値です。環境別の値は呼び出し側から上書きします。
 sonarqube:
   fullnameOverride: sonarqube
   deploymentType: StatefulSet

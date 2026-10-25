@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# 段階配備の Application 生成で、許可した対象と固定版の条件を守ることを確認します。
 """Render the Account chart with the generated Application's actual Helm inputs."""
 import argparse
 import copy

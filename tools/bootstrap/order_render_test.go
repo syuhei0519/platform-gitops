@@ -1,3 +1,4 @@
+// 描画済みの Order Application が、配備先や参照設定の契約を満たすことを確認します。
 package main
 
 import (

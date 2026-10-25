@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# 固定した Istio の依存 Chart と値から、レビュー・静的検査用の YAML を生成します。
 """Offline rendering only. No Kubernetes client, apply, registry, or cluster access."""
 import argparse
 import hashlib

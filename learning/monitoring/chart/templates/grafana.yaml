@@ -1,4 +1,4 @@
-apiVersion: v1
+{{/* Grafana の実行主体・Pod・画面の接続口を出力します。 */}}apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: learning-grafana
