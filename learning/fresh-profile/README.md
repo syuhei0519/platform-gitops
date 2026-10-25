@@ -1,0 +1,67 @@
+# Fresh profile lock (PLAT-213)
+
+This directory is an offline design and validation boundary for one lightweight,
+empty-data Account profile. It is not an installation procedure and grants no
+authority to create a cluster, retrieve/publish an image, issue a credential, or
+apply RBAC/admission/network changes.
+
+The current `kind-learning-20261018-69c763` environment, its DB/PVC/CA/Sonar,
+the maintained Core UI, and every historical PLAT-170 session are explicitly
+outside this profile. The legacy `platform-lab` topology is not a reconstruction
+source. `learning/existing-kind/current-contract.json` is comparison input only.
+
+## Locked inputs
+
+`profile.lock.yaml` records all four repository commits as 40-character SHAs,
+the tool/controller versions, every image required by this profile, the target
+architecture, external input references, measurement limits and stop
+conditions. Secret references contain metadata only; values and private key
+material are forbidden by the validator.
+
+The checked-in lock intentionally leaves these action-time decisions pending:
+
+- **G1**: exact new cluster name/context, host budget and sandbox retention or
+  cleanup boundary;
+- **G2**: private registry or retained immutable OCI archive, owner, retention
+  horizon, restore procedure and actual `linux/amd64` retrieval proof;
+- **G3**: credential owner, initial distribution/recovery source and expiry;
+- **G4**: cutover remains pending and is not required for isolated acceptance.
+
+Pending values are valid for offline review. They fail `--require-approved`, so
+this file cannot be mistaken for permission to run PLAT-217. A node cache or
+expiring CI artifact is never supply evidence.
+
+## Bootstrap and resume contract
+
+`bootstrap-dag.yaml` fixes the dependency order:
+
+`preflight → cluster → CRD Established → controller/webhook Ready → custom
+resources → DB → migration → application → acceptance`.
+
+Every completed step writes a journal outside Git with the profile digest and
+cluster UID. Resume verifies those identities and completed resources, then
+retries only the failed/incomplete step. A succeeded migration Job is observed,
+not recreated. A rerun must be an idempotent verification of the same lock.
+
+The budget is measured before, at peak and after. Crossing a memory, disk,
+elapsed, Pending or unexpected-restart limit stops the batch; it does not
+silently enlarge the host or omit a component.
+
+## Prior evidence
+
+`equivalence.json` maps PLAT-177 and PLAT-193–199 to the checks that must be
+repeated. Previous evidence is a comparison oracle only. Fresh resource/field
+ownership, API, observability, Secret, DB, resync, rerun/resume and sandbox-only
+cleanup evidence remains required.
+
+## Offline validation
+
+```text
+python learning/fresh-profile/validate_profile.py
+python learning/fresh-profile/test_validate_profile.py
+python learning/fresh-profile/validate_profile.py --require-approved
+```
+
+The first two commands must pass in CI. The third is expected to reject the
+checked-in pending profile until the user separately approves G1–G3 and the
+lock is updated by review.

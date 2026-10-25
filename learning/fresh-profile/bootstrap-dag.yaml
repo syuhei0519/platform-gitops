@@ -1,0 +1,51 @@
+apiVersion: platform.lab/v1alpha1
+kind: FreshBootstrapDAG
+metadata:
+  name: account-lightweight-fresh
+spec:
+  steps:
+  - id: preflight
+    requires: []
+    readyWhen: profile-lock-valid-and-budget-measured
+  - id: cluster
+    requires: [preflight]
+    readyWhen: expected-cluster-uid-and-empty-node-cache-recorded
+  - id: crds
+    requires: [cluster]
+    readyWhen: every-required-crd-established
+  - id: controllers
+    requires: [crds]
+    readyWhen: controllers-and-webhooks-ready
+  - id: custom-resources
+    requires: [controllers]
+    readyWhen: admitted-custom-resources-reconciled
+  - id: database
+    requires: [custom-resources]
+    readyWhen: database-ready-with-owned-empty-schema
+  - id: migration
+    requires: [database]
+    readyWhen: migration-job-succeeded-once-and-history-exact
+  - id: application
+    requires: [migration]
+    readyWhen: locked-image-digest-ready-and-api-serving
+  - id: acceptance
+    requires: [application]
+    readyWhen: api-observability-resync-rerun-and-resume-evidence-complete
+  checkpoint:
+    recordAfterEveryStep: true
+    fields:
+    - profileDigest
+    - clusterUID
+    - step
+    - status
+    - startedAt
+    - completedAt
+    - observedResourceIdentities
+    - inputReferenceDigests
+    - errorClass
+    resume:
+      verifyProfileDigest: true
+      verifyClusterUID: true
+      verifyCompletedResources: true
+      retryOnlyFailedOrIncompleteStep: true
+      neverRecreateSucceededMigrationJob: true

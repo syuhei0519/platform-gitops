@@ -1,0 +1,143 @@
+apiVersion: platform.lab/v1alpha1
+kind: FreshProfileLock
+metadata:
+  name: account-lightweight-fresh
+  purpose: PLAT-213-offline-design
+spec:
+  profileVersion: 1
+  scope:
+    mode: empty-data-build
+    workload: account-only
+    currentClusterExcluded: kind-learning-20261018-69c763
+    legacyPlatformLabExcluded: true
+    cutoverIncluded: false
+  target:
+    clusterName: PENDING_G1
+    context: PENDING_G1
+    architecture: linux/amd64
+    isolation: separate-named-sandbox
+  repositories:
+    backend-app:
+      url: https://github.com/syuhei0519/backend-app.git
+      commit: 90ae1cc966ac37af72eb6fb440f3125a1363a98b
+    frontend-app:
+      url: https://github.com/syuhei0519/frontend-app.git
+      commit: d507abff492c1842b9afc705cc439348e85ec35c
+    application-manifest:
+      url: https://github.com/syuhei0519/application-manifest.git
+      commit: 9441c696fc6fece4b431b832b7d7099539210081
+    platform-gitops:
+      url: https://github.com/syuhei0519/platform-gitops.git
+      commit: 4a40c64a58105cc91fa1d48940707d09d003dcc6
+  tools:
+    kind: v0.33.0
+    kubernetes: v1.36.4
+    kubectl: v1.36.4
+    helm: v4.2.4
+    argoCdChart: 10.8.2
+    argoCd: v3.5.2
+    rollouts: v1.10.1
+    istio: 1.31.2
+  images:
+  - name: kind-node
+    ref: kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed
+    architecture: linux/amd64
+  - name: argocd
+    ref: quay.io/argoproj/argocd:v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68
+    architecture: linux/amd64
+  - name: argocd-redis
+    ref: ecr-public.aws.com/docker/library/redis:8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1
+    architecture: linux/amd64
+  - name: argo-rollouts
+    ref: quay.io/argoproj/argo-rollouts:v1.10.1@sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396
+    architecture: linux/amd64
+  - name: istio-pilot
+    ref: docker.io/istio/pilot@sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330
+    architecture: linux/amd64
+  - name: istio-proxy
+    ref: docker.io/istio/proxyv2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1
+    architecture: linux/amd64
+  - name: postgres
+    ref: postgres:18.6-bookworm@sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc
+    architecture: linux/amd64
+  - name: account-runtime
+    ref: learning.local/account-rollouts@sha256:966adba896524519bd1653b31ade97b624dd5cbf83623f7cdeb5c5708aaa69e0
+    architecture: linux/amd64
+  - name: prometheus
+    ref: quay.io/prometheus/prometheus:v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
+    architecture: linux/amd64
+  - name: otel-collector
+    ref: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc
+    architecture: linux/amd64
+  - name: grafana
+    ref: docker.io/grafana/grafana:13.2.3@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4
+    architecture: linux/amd64
+  imageSupply:
+    decision: PENDING_G2
+    immutable: false
+    retentionUntil: PENDING_G2
+    restoreOwner: PENDING_G2
+    cacheIsEvidence: false
+    requiredProof: retrieve-hash-architecture-entrypoint-user-args-migration-smoke
+  inputs:
+    clusterKubeconfigRef: <operator-input:G1-kubeconfig>
+    imageSupplyRef: <operator-input:G2-image-supply>
+    secrets:
+    - name: account-db-runtime
+      purpose: Account runtime DML
+      destination: fresh-account/account-runtime-db
+      owner: PENDING_G3
+      expiry: PENDING_G3
+      sourceRef: <operator-input:G3-account-runtime-db>
+    - name: account-db-migration
+      purpose: Account owned-schema migration
+      destination: fresh-account/account-migration-db
+      owner: PENDING_G3
+      expiry: PENDING_G3
+      sourceRef: <operator-input:G3-account-migration-db>
+    - name: repository-read
+      purpose: Argo read-only Git access when public access is unavailable
+      destination: fresh-control/repository-read
+      owner: PENDING_G3
+      expiry: PENDING_G3
+      sourceRef: <operator-input:G3-repository-read>
+  budget:
+    measureAt: [before, peak, after]
+    elapsedMaxMinutes: 45
+    hostAvailableMemoryMinGiB: 6
+    hostFreeDiskMinGiB: 20
+    dockerAdditionalDiskMaxGiB: 20
+    workloadCPURequestsMaxMilli: 3000
+    workloadMemoryRequestsMaxMiB: 6144
+    imageBytesMaxGiB: 15
+    podPendingMaxSeconds: 60
+    unexpectedRestartsMax: 0
+    stopOn:
+    - host-memory-below-minimum
+    - host-disk-below-minimum
+    - docker-disk-above-maximum
+    - elapsed-budget-exceeded
+    - pod-pending-budget-exceeded
+    - unexpected-restart
+  bootstrap:
+    dagFile: learning/fresh-profile/bootstrap-dag.yaml
+    checkpointJournalRef: <operator-output:fresh-profile-checkpoints.json>
+    resumePolicy: verify-completed-then-continue
+    rerunPolicy: idempotent-no-completed-job-recreate
+  contracts:
+    currentComparison: learning/existing-kind/current-contract.json
+    equivalence: learning/fresh-profile/equivalence.json
+    secretContract: docs/secret-contract.md
+  decisions:
+    G1:
+      status: pending-approval
+      choice: separate-named-sandbox-on-existing-personal-host
+    G2:
+      status: pending-approval
+      choice: registry-or-retained-oci-archive
+    G3:
+      status: pending-approval
+      choice: finite-existing-manual-bootstrap-or-approved-provider
+    G4:
+      status: pending-cutover
+      choice: not-required-for-fresh-acceptance

@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "metadata", "spec"],
+  "properties": {
+    "apiVersion": {"const": "platform.lab/v1alpha1"},
+    "kind": {"const": "FreshProfileLock"},
+    "metadata": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "purpose"],
+      "properties": {"name": {"const": "account-lightweight-fresh"}, "purpose": {"const": "PLAT-213-offline-design"}}
+    },
+    "spec": {
+      "type": "object", "additionalProperties": false,
+      "required": ["profileVersion", "scope", "target", "repositories", "tools", "images", "imageSupply", "inputs", "budget", "bootstrap", "contracts", "decisions"],
+      "properties": {
+        "profileVersion": {"const": 1},
+        "scope": {
+          "type": "object", "additionalProperties": false,
+          "required": ["mode", "workload", "currentClusterExcluded", "legacyPlatformLabExcluded", "cutoverIncluded"],
+          "properties": {
+            "mode": {"const": "empty-data-build"}, "workload": {"const": "account-only"},
+            "currentClusterExcluded": {"const": "kind-learning-20261018-69c763"},
+            "legacyPlatformLabExcluded": {"const": true}, "cutoverIncluded": {"const": false}
+          }
+        },
+        "target": {
+          "type": "object", "additionalProperties": false,
+          "required": ["clusterName", "context", "architecture", "isolation"],
+          "properties": {
+            "clusterName": {"type": "string", "minLength": 1}, "context": {"type": "string", "minLength": 1},
+            "architecture": {"const": "linux/amd64"}, "isolation": {"const": "separate-named-sandbox"}
+          }
+        },
+        "repositories": {
+          "type": "object", "additionalProperties": false,
+          "required": ["backend-app", "frontend-app", "application-manifest", "platform-gitops"],
+          "properties": {
+            "backend-app": {"$ref": "#/definitions/repository"}, "frontend-app": {"$ref": "#/definitions/repository"},
+            "application-manifest": {"$ref": "#/definitions/repository"}, "platform-gitops": {"$ref": "#/definitions/repository"}
+          }
+        },
+        "tools": {
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "kubernetes", "kubectl", "helm", "argoCdChart", "argoCd", "rollouts", "istio"],
+          "properties": {
+            "kind": {"type": "string"}, "kubernetes": {"type": "string"}, "kubectl": {"type": "string"},
+            "helm": {"type": "string"}, "argoCdChart": {"type": "string"}, "argoCd": {"type": "string"},
+            "rollouts": {"type": "string"}, "istio": {"type": "string"}
+          }
+        },
+        "images": {"type": "array", "minItems": 8, "items": {"$ref": "#/definitions/image"}},
+        "imageSupply": {
+          "type": "object", "additionalProperties": false,
+          "required": ["decision", "immutable", "retentionUntil", "restoreOwner", "cacheIsEvidence", "requiredProof"],
+          "properties": {
+            "decision": {"type": "string"}, "immutable": {"type": "boolean"}, "retentionUntil": {"type": "string"},
+            "restoreOwner": {"type": "string"}, "cacheIsEvidence": {"const": false}, "requiredProof": {"type": "string"}
+          }
+        },
+        "inputs": {
+          "type": "object", "additionalProperties": false,
+          "required": ["clusterKubeconfigRef", "imageSupplyRef", "secrets"],
+          "properties": {
+            "clusterKubeconfigRef": {"type": "string"}, "imageSupplyRef": {"type": "string"},
+            "secrets": {"type": "array", "minItems": 2, "items": {"$ref": "#/definitions/secretReference"}}
+          }
+        },
+        "budget": {
+          "type": "object", "additionalProperties": false,
+          "required": ["measureAt", "elapsedMaxMinutes", "hostAvailableMemoryMinGiB", "hostFreeDiskMinGiB", "dockerAdditionalDiskMaxGiB", "workloadCPURequestsMaxMilli", "workloadMemoryRequestsMaxMiB", "imageBytesMaxGiB", "podPendingMaxSeconds", "unexpectedRestartsMax", "stopOn"],
+          "properties": {
+            "measureAt": {"const": ["before", "peak", "after"]},
+            "elapsedMaxMinutes": {"type": "integer", "minimum": 1, "maximum": 60},
+            "hostAvailableMemoryMinGiB": {"type": "integer", "minimum": 1}, "hostFreeDiskMinGiB": {"type": "integer", "minimum": 1},
+            "dockerAdditionalDiskMaxGiB": {"type": "integer", "minimum": 1}, "workloadCPURequestsMaxMilli": {"type": "integer", "minimum": 1},
+            "workloadMemoryRequestsMaxMiB": {"type": "integer", "minimum": 1}, "imageBytesMaxGiB": {"type": "integer", "minimum": 1},
+            "podPendingMaxSeconds": {"type": "integer", "minimum": 1, "maximum": 120}, "unexpectedRestartsMax": {"const": 0},
+            "stopOn": {"type": "array", "minItems": 6, "uniqueItems": true, "items": {"type": "string"}}
+          }
+        },
+        "bootstrap": {
+          "type": "object", "additionalProperties": false,
+          "required": ["dagFile", "checkpointJournalRef", "resumePolicy", "rerunPolicy"],
+          "properties": {"dagFile": {"type": "string"}, "checkpointJournalRef": {"type": "string"}, "resumePolicy": {"type": "string"}, "rerunPolicy": {"type": "string"}}
+        },
+        "contracts": {
+          "type": "object", "additionalProperties": false,
+          "required": ["currentComparison", "equivalence", "secretContract"],
+          "properties": {"currentComparison": {"type": "string"}, "equivalence": {"type": "string"}, "secretContract": {"type": "string"}}
+        },
+        "decisions": {
+          "type": "object", "additionalProperties": false, "required": ["G1", "G2", "G3", "G4"],
+          "properties": {"G1": {"$ref": "#/definitions/decision"}, "G2": {"$ref": "#/definitions/decision"}, "G3": {"$ref": "#/definitions/decision"}, "G4": {"$ref": "#/definitions/decision"}}
+        }
+      }
+    }
+  },
+  "definitions": {
+    "repository": {
+      "type": "object", "additionalProperties": false, "required": ["url", "commit"],
+      "properties": {"url": {"type": "string", "pattern": "^https://github.com/syuhei0519/[a-z-]+\\.git$"}, "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}}
+    },
+    "image": {
+      "type": "object", "additionalProperties": false, "required": ["name", "ref", "architecture"],
+      "properties": {"name": {"type": "string", "pattern": "^[a-z0-9-]+$"}, "ref": {"type": "string", "pattern": "^.+@sha256:[0-9a-f]{64}$"}, "architecture": {"const": "linux/amd64"}}
+    },
+    "secretReference": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "purpose", "destination", "owner", "expiry", "sourceRef"],
+      "properties": {"name": {"type": "string"}, "purpose": {"type": "string"}, "destination": {"type": "string"}, "owner": {"type": "string"}, "expiry": {"type": "string"}, "sourceRef": {"type": "string", "pattern": "^<operator-input:G3-[a-z-]+>$"}}
+    },
+    "decision": {
+      "type": "object", "additionalProperties": false, "required": ["status", "choice"],
+      "properties": {"status": {"enum": ["pending-approval", "approved", "pending-cutover"]}, "choice": {"type": "string", "minLength": 1}}
+    }
+  }
+}
