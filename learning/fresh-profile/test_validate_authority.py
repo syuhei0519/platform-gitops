@@ -98,7 +98,7 @@ class AuthorityTests(unittest.TestCase):
         with self.assertRaisesRegex(contract.ContractError, "rbac-canonical-rules"):
             contract.validate_rbac(self.canonical, documents)
 
-    def test_admission_expression_covers_direct_pods_secret_mounts_and_init_containers(self):
+    def test_admission_expression_covers_direct_pods_secret_mounts_init_and_ephemeral_containers(self):
         documents = contract.load_yaml(contract.ADMISSION)
         contract.validate_admission(self.canonical, documents)
         pod_policy = next(item for item in documents if item.get("metadata", {}).get("name") ==
@@ -106,6 +106,14 @@ class AuthorityTests(unittest.TestCase):
         pod_policy["spec"]["validations"] = [item for item in pod_policy["spec"]["validations"]
                                                if "initContainers" not in item["expression"]]
         with self.assertRaisesRegex(contract.ContractError, "admission-pod-fragment:initContainers"):
+            contract.validate_admission(self.canonical, documents)
+
+        documents = contract.load_yaml(contract.ADMISSION)
+        pod_policy = next(item for item in documents if item.get("metadata", {}).get("name") ==
+                          "fresh-account-pod-boundary" and item["kind"] == "ValidatingAdmissionPolicy")
+        pod_policy["spec"]["validations"] = [item for item in pod_policy["spec"]["validations"]
+                                               if "ephemeralContainers" not in item["expression"]]
+        with self.assertRaisesRegex(contract.ContractError, "admission-pod-fragment:ephemeralContainers"):
             contract.validate_admission(self.canonical, documents)
 
     def test_all_named_negative_fixtures_are_denied(self):

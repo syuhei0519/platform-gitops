@@ -192,6 +192,9 @@ def validate_controller(canonical, controller, exact_secrets=True):
         security = container.get("securityContext", {})
         require(security.get("privileged") is not True, f"controller-privileged:{identity}")
         require(security.get("allowPrivilegeEscalation") is not True, f"controller-escalation:{identity}")
+    init_secret_refs = set()
+    secret_key_refs(pod.get("initContainers", []), init_secret_refs)
+    require(not init_secret_refs, f"controller-init-secret:{identity}")
     found = set()
     secret_key_refs(pod, found)
     allowed = {(name, key) for name, keys in expected["allowedSecretKeys"].items() for key in keys}
@@ -247,7 +250,7 @@ def validate_admission(canonical, documents):
         for names in resources.values():
             require(all(name in managed_expression for name in names), f"admission-managed-name:{namespace}")
     pod_expression = " ".join(item["expression"] for item in policies["fresh-account-pod-boundary"]["spec"]["validations"])
-    for fragment in ("ownerReferences", "initContainers", "secretRef", "secretKeyRef", "projected", "hostPath",
+    for fragment in ("ownerReferences", "initContainers", "ephemeralContainers", "secretRef", "secretKeyRef", "projected", "hostPath",
                      "account-db-bootstrap", "account-db-migration", "account-db-runtime"):
         require(fragment in pod_expression, f"admission-pod-fragment:{fragment}")
     require(bindings["fresh-application-boundary"]["spec"]["matchResources"]["namespaceSelector"] ==
@@ -328,7 +331,8 @@ def validate_negatives(canonical, fixture):
     cases = fixture.get("cases", [])
     require({item["id"] for item in cases} == {"wrong-application-project", "direct-pod", "secret-volume",
                                                 "wrong-secret-key", "privileged-init-container",
-                                                "arbitrary-managed-resource"}, "negative-case-set")
+                                                "secret-backed-init-container", "arbitrary-managed-resource"},
+            "negative-case-set")
     require(all(item.get("expected") == "deny" and negative_denied(canonical, item["object"]) for item in cases),
             "negative-not-denied")
 
@@ -359,7 +363,7 @@ def main():
         print(f"authority proposal rejected: {error}")
         return 1
     print("authority proposal valid", f"permissions={len(matrix['permissions'])}",
-          f"applications={len(evidence['applications'])}", "negative=6")
+          f"applications={len(evidence['applications'])}", "negative=7")
     print("offline only; live can-i and admission observations remain required-unrun")
     return 0
 

@@ -27,6 +27,11 @@
       "object": {"kind": "Job", "metadata": {"name": "account-migration", "namespace": "fresh-account"}, "podSpec": {"serviceAccountName": "account-migration", "automountServiceAccountToken": false, "initContainers": [{"name": "init", "securityContext": {"privileged": true}}], "containers": [{"name": "migration", "securityContext": {"allowPrivilegeEscalation": false}, "env": [{"name": "DATABASE_URL", "valueFrom": {"secretKeyRef": {"name": "account-db-migration", "key": "uri"}}}]}], "volumes": []}}
     },
     {
+      "id": "secret-backed-init-container",
+      "expected": "deny",
+      "object": {"kind": "Job", "metadata": {"name": "account-migration", "namespace": "fresh-account"}, "podSpec": {"serviceAccountName": "account-migration", "automountServiceAccountToken": false, "initContainers": [{"name": "init", "securityContext": {"allowPrivilegeEscalation": false}, "env": [{"name": "DATABASE_URL", "valueFrom": {"secretKeyRef": {"name": "account-db-migration", "key": "uri"}}}]}], "containers": [{"name": "migration", "securityContext": {"allowPrivilegeEscalation": false}, "env": [{"name": "DATABASE_URL", "valueFrom": {"secretKeyRef": {"name": "account-db-migration", "key": "uri"}}}]}], "volumes": []}}
+    },
+    {
       "id": "arbitrary-managed-resource",
       "expected": "deny",
       "object": {"apiVersion": "v1", "kind": "ConfigMap", "metadata": {"name": "unreviewed", "namespace": "fresh-account"}}
