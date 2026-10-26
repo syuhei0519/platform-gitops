@@ -18,13 +18,27 @@ runtime-declared protected cluster is never a target.
 3. Security approval covers only the AppProjects in `root/bootstrap.yaml`, the
    three namespaced Role/RoleBinding pairs in `security/rbac.yaml`, and the three
    ValidatingAdmissionPolicy/Binding pairs in `security/admission.yaml`.
-4. G3 approves fresh-isolated credentials and fresh-sandbox CA creation. Record
-   metadata/key names only. Existing Secret or CA read/export/transfer is a
-   separate approval and is not part of this plan.
+4. G3-P approves the exact non-secret issuance plan and authority for
+   fresh-isolated credentials and a fresh-sandbox CA. G3-R is produced only at
+   `credential-bootstrap`: record non-secret issuance receipt hashes,
+   metadata/key names and fresh UIDs. Existing Secret or CA
+   read/export/transfer is a separate approval and is not part of this plan.
 5. Execute the 15-step `bootstrap-dag.yaml`, recording the materialized profile
    digest, live-adapter input-set digest, cluster UID, resource UIDs,
    input-reference digests, status, and
    timestamps after every step.
+
+A separately hash-approved partial prefix may end at `controllers`. It does
+not issue credentials or apply the security boundary, RBAC, admission, custom
+resources, DB or workloads. Its journal is partial evidence, not full G2 or
+PLAT-217 acceptance. Full resume remains blocked unless G3-R is safely
+observed; the current adapter does not yet provide that metadata-only
+Secret/CA receipt path.
+
+The prefix is an offline contract only until native G2 is satisfied. Its live
+gate continues to require applicable raw G2 checks to be `passed`; the runner
+does not translate an external exception disposition into a raw pass. Current
+raw `failed`/`unrun` inputs therefore reject the prefix before mutation.
 
 ## Positive evidence
 

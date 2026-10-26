@@ -45,8 +45,17 @@ spec:
       entrypoint: {status: pending, evidenceRef: PENDING_G2}
       user: {status: pending, evidenceRef: PENDING_G2}
       args: {status: pending, evidenceRef: PENDING_G2}
-      migration: {status: pending, evidenceRef: PENDING_G2}
-      smoke: {status: pending, evidenceRef: PENDING_G2}
+      migration:
+        applicability: not-applicable
+        rawResult: not-applicable
+        evidenceRef: N-A
+        evidenceScope: not-applicable
+        reason: image-does-not-own-account-schema-migration
+      smoke:
+        applicability: required
+        rawResult: pending
+        evidenceRef: PENDING_G2
+        evidenceScope: selected-architecture-isolated-image
       scan: {status: pending, evidenceRef: PENDING_G2}
       sbom: {status: pending, evidenceRef: PENDING_G2}
   - name: argocd
@@ -76,7 +85,25 @@ spec:
   - name: account-runtime
     source: *pending
     retrieval: *pendingRetrieval
-    checks: *pendingChecks
+    checks:
+      digest: {status: pending, evidenceRef: PENDING_G2}
+      architecture: {status: pending, evidenceRef: PENDING_G2}
+      entrypoint: {status: pending, evidenceRef: PENDING_G2}
+      user: {status: pending, evidenceRef: PENDING_G2}
+      args: {status: pending, evidenceRef: PENDING_G2}
+      migration:
+        applicability: required
+        rawResult: pending
+        evidenceRef: PENDING_G2
+        evidenceScope: selected-architecture-isolated-image
+        reason: account-runtime-owns-account-schema-migration
+      smoke:
+        applicability: required
+        rawResult: pending
+        evidenceRef: PENDING_G2
+        evidenceScope: selected-architecture-isolated-image
+      scan: {status: pending, evidenceRef: PENDING_G2}
+      sbom: {status: pending, evidenceRef: PENDING_G2}
   - name: prometheus
     source: *pending
     retrieval: *pendingRetrieval

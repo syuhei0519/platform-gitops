@@ -40,9 +40,14 @@ class RuntimeEvidenceSeparationTests(unittest.TestCase):
         observation = spec["budget"]["hostObservation"]
         self.assertTrue(all(isinstance(value, str) and value.startswith(PLACEHOLDER_PREFIX)
                             for value in observation.values()))
-        for item in spec["inputs"]["secrets"]:
-            for field in ("name", "destination", "owner", "expiry", "sourceRef"):
+        plan = spec["inputs"]["credentialIssuancePlan"]
+        for field in ("planId", "procedureRef", "procedureSha256"):
+            self.assertTrue(plan[field].startswith(PLACEHOLDER_PREFIX), (field, plan[field]))
+        for item in [*plan["secrets"], plan["ca"]]:
+            for field in ("owner", "expiry", "issuerRef", "cleanupOwner"):
                 self.assertTrue(item[field].startswith(PLACEHOLDER_PREFIX), (field, item[field]))
+            self.assertNotIn("sourceRef", item)
+            self.assertNotIn("uid", item)
 
     def test_public_supply_and_records_contain_no_runtime_instance(self):
         supply = load_yaml("image-supply.template.yaml")

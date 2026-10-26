@@ -44,22 +44,20 @@ class AcceptanceTests(unittest.TestCase):
             clusterName="kind-platform-fresh-plat217",
             context="kind-platform-fresh-plat217",
         )
-        for gate in ("G1", "G2", "G3"):
+        for gate in ("G1", "G2", "G3Precondition"):
             profile["spec"]["decisions"][gate] = {"status": "approved", "choice": "approved-test-fixture"}
         profile["spec"]["imageSupply"].update(
             decision="retained-oci-archive", immutable=True,
             retentionUntil="2027-10-25", restoreOwner="fixture-owner",
         )
-        secret_contract = (
-            ("account-db-bootstrap", "fresh-account/account-db-bootstrap"),
-            ("account-db-runtime", "fresh-account/account-db-runtime"),
-            ("account-db-migration", "fresh-account/account-db-migration"),
-        )
-        for item, (name, destination) in zip(
-                profile["spec"]["inputs"]["secrets"], secret_contract):
-            item.update(name=name, destination=destination,
-                        owner="fixture-owner", expiry="2026-11-25",
-                        sourceRef="sealed-input:sha256:" + "3" * 64)
+        plan = profile["spec"]["inputs"]["credentialIssuancePlan"]
+        plan.update(planId="fixture-g3-plan",
+                    procedureRef="runbook:fixture-g3-issuance",
+                    procedureSha256="3" * 64)
+        for item in [*plan["secrets"], plan["ca"]]:
+            item.update(owner="fixture-owner", expiry="2026-11-25",
+                        issuerRef="issuer:fixture", cleanupOwner="fixture-cleanup")
+        plan["ca"]["name"] = "fixture-fresh-ca"
         profile["spec"]["repositories"]["platform-gitops"]["commit"] = "1" * 40
         runtime = next(item for item in profile["spec"]["images"] if item["name"] == "account-runtime")
         runtime["ref"] = "ghcr.io/syuhei0519/backend-app@sha256:" + "3" * 64

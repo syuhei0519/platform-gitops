@@ -49,6 +49,20 @@ STOP_CONDITIONS = {
 FORBIDDEN_SECRET_KEYS = {
     "data", "stringData", "password", "token", "secretValue", "privateKey",
 }
+CREDENTIAL_TARGETS = {
+    "account-db-bootstrap": {
+        "purpose": "bootstrap-role", "destination": "fresh-account/account-db-bootstrap",
+        "secretType": "Opaque", "keyNames": ["admin-password"],
+    },
+    "account-db-runtime": {
+        "purpose": "runtime-role", "destination": "fresh-account/account-db-runtime",
+        "secretType": "Opaque", "keyNames": ["username", "password"],
+    },
+    "account-db-migration": {
+        "purpose": "migration-role", "destination": "fresh-account/account-db-migration",
+        "secretType": "Opaque", "keyNames": ["username", "password"],
+    },
+}
 
 
 class ContractError(ValueError):
@@ -171,6 +185,39 @@ def validate_equivalence(equivalence):
         raise ContractError("equivalence-empty")
 
 
+def validate_credential_issuance_plan(plan, require_approved=False):
+    """Validate only non-secret G3-P intent; issuance proof is journal evidence."""
+    if not isinstance(plan, dict):
+        raise ContractError("g3-precondition-plan")
+    secrets = plan.get("secrets")
+    if (not isinstance(secrets, list) or len(secrets) != len(CREDENTIAL_TARGETS)
+            or len({item.get("name") for item in secrets if isinstance(item, dict)})
+            != len(CREDENTIAL_TARGETS)):
+        raise ContractError("g3-precondition-secret-set")
+    by_name = {item.get("name"): item for item in secrets if isinstance(item, dict)}
+    if set(by_name) != set(CREDENTIAL_TARGETS):
+        raise ContractError("g3-precondition-secret-set")
+    for name, expected in CREDENTIAL_TARGETS.items():
+        item = by_name[name]
+        if any(item.get(field) != value for field, value in expected.items()):
+            raise ContractError("g3-precondition-secret-contract:" + name)
+    if plan.get("runtimeProofPolicy") != \
+            "metadata-uid-and-non-secret-issuance-receipt-before-custom-resources":
+        raise ContractError("g3-runtime-proof-policy")
+    if plan.get("ca", {}).get("scope") != "fresh-sandbox-only":
+        raise ContractError("g3-precondition-ca-scope")
+    if require_approved:
+        if not re.fullmatch(r"[0-9a-f]{64}", plan.get("procedureSha256", "")):
+            raise ContractError("g3-precondition-procedure-hash")
+        for item in [*secrets, plan["ca"]]:
+            for field in ("owner", "expiry", "issuerRef", "cleanupOwner"):
+                if (not isinstance(item.get(field), str) or not item[field]
+                        or item[field].startswith(("PENDING_", "<runtime-input:"))):
+                    raise ContractError("g3-precondition-field:" + field)
+            if not re.fullmatch(r"issuer:[a-z0-9-]+", item["issuerRef"]):
+                raise ContractError("g3-precondition-issuer")
+
+
 def validate(profile_path: Path = PROFILE, require_approved: bool = False):
     contract = public_contract()
     profile = load_yaml(profile_path)
@@ -180,6 +227,8 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
         raise ContractError("schema:" + "/".join(map(str, errors[0].path)))
     spec = profile["spec"]
     reject_secret_material(profile)
+    validate_credential_issuance_plan(
+        spec["inputs"]["credentialIssuancePlan"], require_approved=False)
 
     if set(spec["repositories"]) != REQUIRED_REPOSITORIES:
         raise ContractError("repository-set")
@@ -245,7 +294,9 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
     if require_approved:
         if any(runtime_placeholders(profile)):
             raise ContractError("runtime-evidence-placeholder")
-        for gate in ("G1", "G2", "G3"):
+        validate_credential_issuance_plan(
+            spec["inputs"]["credentialIssuancePlan"], require_approved=True)
+        for gate in ("G1", "G2", "G3Precondition"):
             if spec["decisions"][gate]["status"] != "approved":
                 raise ContractError("approval-" + gate.lower())
         if spec["freshRuntimeRequirement"]["admissionSecretKeyContract"] != \
@@ -253,13 +304,12 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
             raise ContractError("approved-admission-secret-key-contract")
         pending_fields = [target["clusterName"], target["context"], supply["decision"],
                           supply["retentionUntil"], supply["restoreOwner"]]
-        pending_fields += [item[field] for item in spec["inputs"]["secrets"]
-                           for field in ("owner", "expiry", "sourceRef")]
+        plan = spec["inputs"]["credentialIssuancePlan"]
+        pending_fields += [plan["planId"], plan["procedureRef"], plan["procedureSha256"]]
+        pending_fields += [item[field] for item in [*plan["secrets"], plan["ca"]]
+                           for field in ("owner", "expiry", "issuerRef", "cleanupOwner")]
         if any(str(value).startswith("PENDING_") for value in pending_fields):
             raise ContractError("approved-profile-placeholder")
-        if any(not item["sourceRef"].startswith("sealed-input:sha256:")
-               for item in spec["inputs"]["secrets"]):
-            raise ContractError("approved-secret-source-ref")
         if revisions["platform-gitops"] == "__PLATFORM_GITOPS_SHA__":
             raise ContractError("approved-profile-revision-token")
         if pending_runtime == "PENDING_PLAT211_VERIFIED_IMAGE":

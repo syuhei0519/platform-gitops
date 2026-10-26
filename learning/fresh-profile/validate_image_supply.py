@@ -22,6 +22,15 @@ REQUIRED_CHECKS = {
     "digest", "architecture", "entrypoint", "user", "args",
     "migration", "smoke", "scan", "sbom",
 }
+MIGRATION_REQUIRED_IMAGE = "account-runtime"
+MIGRATION_REQUIRED_REASON = "account-runtime-owns-account-schema-migration"
+MIGRATION_NOT_APPLICABLE = {
+    "applicability": "not-applicable",
+    "rawResult": "not-applicable",
+    "evidenceRef": "N-A",
+    "evidenceScope": "not-applicable",
+    "reason": "image-does-not-own-account-schema-migration",
+}
 DIGEST = re.compile(r"sha256:[0-9a-f]{64}")
 
 
@@ -125,6 +134,17 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
         retrieval = item["retrieval"]
         checks = item["checks"]
 
+        migration = checks["migration"]
+        if name == MIGRATION_REQUIRED_IMAGE:
+            if (migration.get("applicability") != "required"
+                    or migration.get("reason") != MIGRATION_REQUIRED_REASON):
+                raise SupplyError("migration-required:" + name)
+        elif migration != MIGRATION_NOT_APPLICABLE:
+            # PLAT-212's migration check means the application image's schema
+            # migration execution capability.  PostgreSQL is the server and
+            # the remaining platform images do not own Account migrations.
+            raise SupplyError("migration-not-applicable:" + name)
+
         comparison = item.get("comparisonOnly")
         if comparison and (comparison["source"] != "old-node-cache" or comparison["architecture"] != architecture):
             raise SupplyError("comparison-boundary:" + name)
@@ -176,7 +196,10 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
                 raise SupplyError("ineligible-source:" + name)
             for check_name in REQUIRED_CHECKS:
                 check = checks[check_name]
-                if check["status"] != "passed" or check["evidenceRef"].startswith("PENDING_"):
+                if check_name == "migration" and check["applicability"] == "not-applicable":
+                    continue
+                raw_result = check.get("rawResult", check.get("status"))
+                if raw_result != "passed" or check["evidenceRef"].startswith("PENDING_"):
                     raise SupplyError(f"check-{check_name}:{name}")
         if require_fresh_evidence:
             status = retrieval["status"]

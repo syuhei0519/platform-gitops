@@ -65,11 +65,11 @@
         "gates": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["G1", "G2", "G3", "security"],
+          "required": ["G1", "G2", "G3Precondition", "security"],
           "properties": {
             "G1": {"$ref": "#/definitions/gate"},
             "G2": {"$ref": "#/definitions/gate"},
-            "G3": {"$ref": "#/definitions/gate"},
+            "G3Precondition": {"$ref": "#/definitions/gate"},
             "security": {"$ref": "#/definitions/gate"}
           }
         },
@@ -79,7 +79,10 @@
           "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
         },
         "allowedSteps": {
-          "const": ["preflight", "image-source", "cluster", "empty-node-cache", "image-import", "crds", "controllers", "security-boundary", "credential-bootstrap", "custom-resources", "database", "role-bootstrap", "migration", "application", "acceptance"]
+          "oneOf": [
+            {"const": ["preflight", "image-source", "cluster", "empty-node-cache", "image-import", "crds", "controllers"]},
+            {"const": ["preflight", "image-source", "cluster", "empty-node-cache", "image-import", "crds", "controllers", "security-boundary", "credential-bootstrap", "custom-resources", "database", "role-bootstrap", "migration", "application", "acceptance"]}
+          ]
         }
       }
     }

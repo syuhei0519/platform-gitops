@@ -172,10 +172,46 @@
       "properties": {
         "digest": {"$ref": "#/definitions/check"}, "architecture": {"$ref": "#/definitions/check"},
         "entrypoint": {"$ref": "#/definitions/check"}, "user": {"$ref": "#/definitions/check"},
-        "args": {"$ref": "#/definitions/check"}, "migration": {"$ref": "#/definitions/check"},
-        "smoke": {"$ref": "#/definitions/check"}, "scan": {"$ref": "#/definitions/check"},
+        "args": {"$ref": "#/definitions/check"}, "migration": {"$ref": "#/definitions/migrationCheck"},
+        "smoke": {"$ref": "#/definitions/isolatedSmokeCheck"}, "scan": {"$ref": "#/definitions/check"},
         "sbom": {"$ref": "#/definitions/check"}
       }
+    },
+    "isolatedSmokeCheck": {
+      "type": "object", "additionalProperties": false,
+      "required": ["applicability", "rawResult", "evidenceRef", "evidenceScope"],
+      "properties": {
+        "applicability": {"const": "required"},
+        "rawResult": {"enum": ["pending", "passed", "failed", "unrun"]},
+        "evidenceRef": {"type": "string", "minLength": 1},
+        "evidenceScope": {"const": "selected-architecture-isolated-image"}
+      }
+    },
+    "migrationCheck": {
+      "oneOf": [
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["applicability", "rawResult", "evidenceRef", "evidenceScope", "reason"],
+          "properties": {
+            "applicability": {"const": "required"},
+            "rawResult": {"enum": ["pending", "passed", "failed", "unrun"]},
+            "evidenceRef": {"type": "string", "minLength": 1},
+            "evidenceScope": {"const": "selected-architecture-isolated-image"},
+            "reason": {"const": "account-runtime-owns-account-schema-migration"}
+          }
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "required": ["applicability", "rawResult", "evidenceRef", "evidenceScope", "reason"],
+          "properties": {
+            "applicability": {"const": "not-applicable"},
+            "rawResult": {"const": "not-applicable"},
+            "evidenceRef": {"const": "N-A"},
+            "evidenceScope": {"const": "not-applicable"},
+            "reason": {"const": "image-does-not-own-account-schema-migration"}
+          }
+        }
+      ]
     }
   }
 }

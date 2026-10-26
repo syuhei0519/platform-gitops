@@ -42,8 +42,13 @@ STEPS = (
     "application",
     "acceptance",
 )
-NON_RECREATABLE_JOBS = {"role-bootstrap", "migration"}
-GATES = ("G1", "G2", "G3", "security")
+# Credential issuance may have succeeded before its metadata receipt was
+# journaled.  Treat that ambiguity like the one-shot bootstrap/migration Jobs:
+# read-only reconciliation is required; automatic replay is forbidden.
+NON_RECREATABLE_JOBS = {"credential-bootstrap", "role-bootstrap", "migration"}
+CONTROLLER_STAGE_STEPS = STEPS[:STEPS.index("controllers") + 1]
+ALLOWED_STEP_SETS = (CONTROLLER_STAGE_STEPS, STEPS)
+GATES = ("G1", "G2", "G3Precondition", "security")
 SCOPE = {
     "environment": "fresh-isolated-sandbox",
     "existingCluster": "preserve-excluded",
@@ -88,6 +93,7 @@ class StepExecutor(Protocol):
     """Approved live adapter. Methods may mutate only from ``run``."""
 
     plan_sha256: str
+    supports_credential_runtime_proof: bool
     def identity(self, target: dict) -> dict: ...
     def verify(self, step: str, checkpoint: dict) -> dict: ...
     def reconcile(self, step: str, checkpoint: dict) -> dict: ...
@@ -154,6 +160,72 @@ def _operator_inputs(value, found=None):
 def _mapping_digest(value: dict) -> str:
     encoded = json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
+
+
+def _validate_credential_runtime_proof(evidence: dict, plan: dict, cluster_uid: str | None,
+                                       approved_at: datetime, now: datetime) -> dict:
+    """Validate G3-R without ever accepting a credential value.
+
+    G3-P is sealed in the profile before the run.  G3-R is deliberately born
+    at ``credential-bootstrap`` and remains journal evidence, avoiding a
+    profile/approval/journal digest cycle.
+    """
+    proof = evidence.get("credentialRuntimeProof") if isinstance(evidence, dict) else None
+    _exact_keys(proof, {"schemaVersion", "observedAt", "clusterUID", "secrets", "ca"},
+                "g3-runtime-proof")
+    if proof["schemaVersion"] != "platform.lab/g3-runtime-proof/v1":
+        raise RunnerRejected("g3-runtime-proof-version")
+    observed_at = _parse_time(proof["observedAt"], "g3-runtime-observed-at")
+    if observed_at < approved_at or observed_at > now:
+        raise RunnerRejected("g3-runtime-proof-time")
+    if not isinstance(cluster_uid, str) or not cluster_uid or proof["clusterUID"] != cluster_uid:
+        raise RunnerRejected("g3-runtime-proof-cluster")
+
+    planned = plan["secrets"]
+    actual = proof["secrets"]
+    if (not isinstance(actual, list) or len(actual) != len(planned)
+            or len({item.get("name") for item in actual if isinstance(item, dict)}) != len(planned)):
+        raise RunnerRejected("g3-runtime-proof-secret-set")
+    by_name = {item.get("name"): item for item in actual if isinstance(item, dict)}
+    if set(by_name) != {item["name"] for item in planned}:
+        raise RunnerRejected("g3-runtime-proof-secret-set")
+    proof_fields = {"name", "destination", "uid", "secretType", "keyNames", "owner",
+                    "expiry", "issuerRef", "cleanupOwner", "issuanceReceiptSha256"}
+    matched_plan_fields = ("name", "destination", "secretType", "keyNames", "owner",
+                           "expiry", "issuerRef", "cleanupOwner")
+    for expected in planned:
+        observed = by_name[expected["name"]]
+        _exact_keys(observed, proof_fields, "g3-runtime-proof-secret")
+        if any(observed[field] != expected[field] for field in matched_plan_fields):
+            raise RunnerRejected("g3-runtime-proof-secret-contract:" + expected["name"])
+        if (not isinstance(observed["uid"], str) or not observed["uid"]
+                or not SHA256.fullmatch(observed["issuanceReceiptSha256"] or "")):
+            raise RunnerRejected("g3-runtime-proof-secret-identity:" + expected["name"])
+        try:
+            expiry = datetime.fromisoformat(expected["expiry"] + "T23:59:59+00:00")
+        except (TypeError, ValueError) as error:
+            raise RunnerRejected("g3-runtime-proof-expiry") from error
+        if expiry <= now:
+            raise RunnerRejected("g3-runtime-proof-expired:" + expected["name"])
+
+    expected_ca = plan["ca"]
+    observed_ca = proof["ca"]
+    ca_fields = {"name", "scope", "uid", "owner", "expiry", "issuerRef", "cleanupOwner",
+                 "issuanceReceiptSha256"}
+    _exact_keys(observed_ca, ca_fields, "g3-runtime-proof-ca")
+    for field in ("name", "scope", "owner", "expiry", "issuerRef", "cleanupOwner"):
+        if observed_ca[field] != expected_ca[field]:
+            raise RunnerRejected("g3-runtime-proof-ca-contract")
+    if (not isinstance(observed_ca["uid"], str) or not observed_ca["uid"]
+            or not SHA256.fullmatch(observed_ca["issuanceReceiptSha256"] or "")):
+        raise RunnerRejected("g3-runtime-proof-ca-identity")
+    try:
+        ca_expiry = datetime.fromisoformat(expected_ca["expiry"] + "T23:59:59+00:00")
+    except (TypeError, ValueError) as error:
+        raise RunnerRejected("g3-runtime-proof-ca-expiry") from error
+    if ca_expiry <= now:
+        raise RunnerRejected("g3-runtime-proof-ca-expired")
+    return proof
 
 
 def _node_import_image_digests(supply_lock: dict) -> set[str]:
@@ -298,7 +370,10 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
         raise RunnerRejected("approval-not-granted")
     if spec["scope"] != SCOPE:
         raise RunnerRejected("approval-scope")
-    if spec["allowedSteps"] != list(STEPS):
+    if not isinstance(spec["allowedSteps"], list):
+        raise RunnerRejected("approval-steps")
+    allowed_steps = tuple(spec["allowedSteps"])
+    if allowed_steps not in ALLOWED_STEP_SETS:
         raise RunnerRejected("approval-steps")
     _exact_keys(spec["gates"], set(GATES), "approval-gates")
     for gate in GATES:
@@ -370,8 +445,21 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
     if locked.get("platform-gitops", {}).get("commit") != repositories["platformGitops"] or locked.get("application-manifest", {}).get("commit") != repositories["applicationManifest"]:
         raise RunnerRejected("profile-repositories")
     decisions = profile_spec.get("decisions", {})
-    if any(decisions.get(gate, {}).get("status") != "approved" for gate in ("G1", "G2", "G3")):
+    if any(decisions.get(gate, {}).get("status") != "approved"
+           for gate in ("G1", "G2", "G3Precondition")):
         raise RunnerRejected("profile-gates")
+    if decisions.get("G3RuntimeProof") != {
+            "status": "required-at-runtime",
+            "choice": "credential-bootstrap-journal-before-custom-resources"}:
+        raise RunnerRejected("profile-g3-runtime-proof-policy")
+    credential_plan = profile_spec.get("inputs", {}).get("credentialIssuancePlan", {})
+    for item in [*credential_plan.get("secrets", []), credential_plan.get("ca", {})]:
+        try:
+            expiry = datetime.fromisoformat(item["expiry"] + "T23:59:59+00:00")
+        except (KeyError, TypeError, ValueError) as error:
+            raise RunnerRejected("g3-precondition-expiry") from error
+        if expiry <= now:
+            raise RunnerRejected("g3-precondition-expired")
     image_supply = profile_spec.get("imageSupply", {})
     if image_supply.get("immutable") is not True or image_supply.get("decision") == "PENDING_G2":
         raise RunnerRejected("profile-image-supply")
@@ -386,30 +474,8 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
     except Exception as error:
         raise RunnerRejected("image-supply-contract:" + str(error)) from error
 
-    secrets = profile_spec.get("inputs", {}).get("secrets", [])
-    expected_secrets = {
-        ("account-db-bootstrap", "fresh-account/account-db-bootstrap"),
-        ("account-db-runtime", "fresh-account/account-db-runtime"),
-        ("account-db-migration", "fresh-account/account-db-migration"),
-    }
-    if {(item.get("name"), item.get("destination")) for item in secrets} != expected_secrets:
-        raise RunnerRejected("g3-secret-set")
-    for item in secrets:
-        if (not isinstance(item.get("owner"), str) or not item["owner"].strip()
-                or item["owner"].startswith("PENDING_")):
-            raise RunnerRejected("g3-owner")
-        try:
-            expiry = datetime.fromisoformat(item["expiry"] + "T23:59:59+00:00")
-        except (KeyError, TypeError, ValueError) as error:
-            raise RunnerRejected("g3-expiry") from error
-        if expiry <= now:
-            raise RunnerRejected("g3-expired")
-        if not re.fullmatch(r"sealed-input:sha256:[0-9a-f]{64}", item.get("sourceRef", "")):
-            raise RunnerRejected("g3-source-ref")
-
     inputs = profile_spec.get("inputs", {})
     expected_input_refs = {inputs.get("clusterKubeconfigRef"), inputs.get("imageSupplyRef")}
-    expected_input_refs.update(item["sourceRef"] for item in secrets)
     input_digests = spec["inputDigests"]
     if (None in expected_input_refs or not isinstance(input_digests, dict)
             or set(input_digests) != expected_input_refs
@@ -438,6 +504,8 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
         raise RunnerRejected("live-adapter-contract:" + str(error)) from error
     return {"approval": approval, "materialization": materialization, "profile": profile,
             "sourceSetSha256": source_set_digest, "inputDigests": input_digests,
+            "allowedSteps": allowed_steps,
+            "approvedAt": approved_at,
             "liveAdapterPlanSha256": hashes["liveAdapterPlanSha256"],
             "liveAdapterInputSetSha256": live_input_set_digest}
 
@@ -521,11 +589,20 @@ def execute(mode: str, approval_path: Path | None, materialization_path: Path | 
             or adapter_plan_path is None):
         raise RunnerRejected("live-inputs-required")
 
+    execution_now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     sealed = validate_live_gate(approval_path, materialization_path, profile_path,
                                 platform_source_root, application_source_root,
-                                adapter_plan_path, now=now)
+                                adapter_plan_path, now=execution_now)
     if getattr(executor, "plan_sha256", None) != sealed["liveAdapterPlanSha256"]:
         raise RunnerRejected("executor-plan-binding")
+    # G3-R is not a post-hoc decoration on credential issuance.  A full plan
+    # may reach credential-bootstrap only through an adapter that can produce
+    # its metadata-only, receipt-bound proof.  Reject an unsupported adapter
+    # before identity, reconciliation, or mutation rather than allowing the
+    # issuance command to run and discovering the missing proof afterwards.
+    if ("credential-bootstrap" in sealed["allowedSteps"]
+            and getattr(executor, "supports_credential_runtime_proof", False) is not True):
+        raise RunnerRejected("adapter-g3-runtime-proof-unsupported")
     profile_digest = _digest(Path(profile_path))
     materialization_digest = _digest(Path(materialization_path))
     target = sealed["profile"]["spec"]["target"]
@@ -555,10 +632,25 @@ def execute(mode: str, approval_path: Path | None, materialization_path: Path | 
 
     if mode == "first" and any(state["status"] != "pending" for state in journal["steps"].values()):
         raise RunnerRejected("first-run-existing-state")
+    unauthorized_tail = STEPS[len(sealed["allowedSteps"]):]
+    if any(journal["steps"][step]["status"] != "pending" for step in unauthorized_tail):
+        raise RunnerRejected("approval-steps-do-not-cover-journal")
 
-    for step in STEPS:
+    credential_plan = sealed["profile"]["spec"]["inputs"]["credentialIssuancePlan"]
+    for step in sealed["allowedSteps"]:
+        if STEPS.index(step) > STEPS.index("credential-bootstrap"):
+            credential_state = journal["steps"]["credential-bootstrap"]
+            if credential_state["status"] != "succeeded":
+                raise RunnerRejected("g3-runtime-proof-required")
+            _validate_credential_runtime_proof(
+                credential_state["evidence"], credential_plan,
+                journal["target"]["clusterUID"], sealed["approvedAt"], execution_now)
         state = journal["steps"][step]
         if state["status"] == "succeeded":
+            if step == "credential-bootstrap":
+                _validate_credential_runtime_proof(
+                    state["evidence"], credential_plan, journal["target"]["clusterUID"],
+                    sealed["approvedAt"], execution_now)
             try:
                 observed = executor.verify(step, state)
             except Exception as error:
@@ -571,6 +663,10 @@ def execute(mode: str, approval_path: Path | None, materialization_path: Path | 
                 raise RunnerRejected(f"completed-step-verification:{step}")
             if observed.get("resourceDigest") != state["resourceDigest"]:
                 raise RunnerRejected(f"completed-step-digest:{step}")
+            if step == "credential-bootstrap":
+                _validate_credential_runtime_proof(
+                    observed, credential_plan, journal["target"]["clusterUID"],
+                    sealed["approvedAt"], execution_now)
             continue
         must_reconcile = state["status"] in {"running", "uncertain"} or (
             step in NON_RECREATABLE_JOBS and state["attempts"] > 0)
@@ -585,6 +681,10 @@ def execute(mode: str, approval_path: Path | None, materialization_path: Path | 
                 digest_value = reconciled.get("resourceDigest")
                 if not SHA256.fullmatch(digest_value or "") or not isinstance(reconciled.get("evidence"), dict):
                     raise RunnerRejected(f"uncertain-step-evidence:{step}")
+                if step == "credential-bootstrap":
+                    _validate_credential_runtime_proof(
+                        reconciled["evidence"], credential_plan,
+                        journal["target"]["clusterUID"], sealed["approvedAt"], execution_now)
                 state.update(status="succeeded", evidence=reconciled["evidence"],
                              resourceDigest=digest_value, errorClass=None)
                 if step == "cluster":
@@ -607,6 +707,10 @@ def execute(mode: str, approval_path: Path | None, materialization_path: Path | 
             if (not isinstance(evidence, dict) or evidence.get("succeeded") is not True
                     or not SHA256.fullmatch(evidence.get("resourceDigest") or "")):
                 raise RunnerRejected(f"step-evidence:{step}")
+            if step == "credential-bootstrap":
+                _validate_credential_runtime_proof(
+                    evidence, credential_plan, journal["target"]["clusterUID"],
+                    sealed["approvedAt"], execution_now)
         except Exception as error:
             state["status"] = "uncertain" if step in NON_RECREATABLE_JOBS else "failed"
             state["errorClass"] = type(error).__name__

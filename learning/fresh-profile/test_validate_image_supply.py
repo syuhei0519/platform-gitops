@@ -80,8 +80,20 @@ class ImageSupplyTests(unittest.TestCase):
             }
             item["checks"] = {
                 check: {"status": "passed", "evidenceRef": f"evidence:{item['name']}:{check}"}
-                for check in contract.REQUIRED_CHECKS
+                for check in contract.REQUIRED_CHECKS - {"migration", "smoke"}
             }
+            item["checks"]["smoke"] = {
+                "applicability": "required", "rawResult": "passed",
+                "evidenceRef": f"evidence:{item['name']}:smoke",
+                "evidenceScope": "selected-architecture-isolated-image",
+            }
+            item["checks"]["migration"] = (
+                {"applicability": "required", "rawResult": "passed",
+                 "evidenceRef": "evidence:account-runtime:migration",
+                 "evidenceScope": "selected-architecture-isolated-image",
+                 "reason": contract.MIGRATION_REQUIRED_REASON}
+                if item["name"] == contract.MIGRATION_REQUIRED_IMAGE
+                else copy.deepcopy(contract.MIGRATION_NOT_APPLICABLE))
         return value
 
     def test_public_template_contains_no_runtime_supply_evidence(self):
@@ -163,9 +175,60 @@ class ImageSupplyTests(unittest.TestCase):
         with self.assertRaisesRegex(contract.SupplyError, "check-entrypoint"):
             self.validate_copy(value, require=True)
         value = self.approve()
-        value["spec"]["images"][0]["source"]["manifest"]["manifestDigest"] = "sha256:" + "f" * 64
+        value["spec"]["images"][0]["source"]["manifest"]["manifestDigest"] = \
+            "sha256:" + "f" * 64
         with self.assertRaisesRegex(contract.SupplyError, "manifest-digest"):
             self.validate_copy(value, require=True)
+
+    def test_migration_applicability_is_role_fixed(self):
+        value = self.approve()
+        account = next(item for item in value["spec"]["images"]
+                       if item["name"] == "account-runtime")
+        account["checks"]["migration"] = copy.deepcopy(
+            contract.MIGRATION_NOT_APPLICABLE)
+        with self.assertRaisesRegex(contract.SupplyError,
+                                    "migration-required:account-runtime"):
+            self.validate_copy(value)
+
+        value = self.approve()
+        postgres = next(item for item in value["spec"]["images"]
+                        if item["name"] == "postgres")
+        postgres["checks"]["migration"] = {
+            "applicability": "required", "rawResult": "passed",
+            "evidenceRef": "evidence:postgres:migration",
+            "evidenceScope": "selected-architecture-isolated-image",
+            "reason": contract.MIGRATION_REQUIRED_REASON,
+        }
+        with self.assertRaisesRegex(contract.SupplyError,
+                                    "migration-not-applicable:postgres"):
+            self.validate_copy(value)
+
+    def test_failed_or_unrun_required_checks_never_satisfy_source_gate(self):
+        for image_name, check_name in (("kind-node", "smoke"),
+                                       ("account-runtime", "migration")):
+            for raw_result in ("failed", "unrun"):
+                value = self.approve()
+                item = next(item for item in value["spec"]["images"]
+                            if item["name"] == image_name)
+                item["checks"][check_name]["rawResult"] = raw_result
+                item["checks"][check_name]["evidenceRef"] = "evidence:real-but-not-passed"
+                with self.subTest(image=image_name, check=check_name, raw=raw_result), \
+                        self.assertRaisesRegex(contract.SupplyError,
+                                               f"check-{check_name}:{image_name}"):
+                    self.validate_copy(value, require_source=True)
+
+        value = self.approve()
+        value["spec"]["images"][0]["checks"]["scan"] = {
+            "status": "failed", "evidenceRef": "external:bounded-lab-disposition"}
+        with self.assertRaisesRegex(contract.SupplyError, "check-scan:kind-node"):
+            self.validate_copy(value, require_source=True)
+
+    def test_smoke_scope_cannot_be_live_integration(self):
+        value = self.approve()
+        value["spec"]["images"][0]["checks"]["smoke"]["evidenceScope"] = \
+            "live-integration"
+        with self.assertRaisesRegex(contract.SupplyError, "schema"):
+            self.validate_copy(value)
 
     def test_multiarch_binds_index_child_scan_and_sbom(self):
         value = self.approve()

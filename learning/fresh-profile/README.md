@@ -38,7 +38,12 @@ The checked-in templates intentionally leave these action-time decisions pending
   evidence; public start/stop limits remain fixed by the public contract;
 - **G2**: private registry or retained immutable OCI archive, owner, retention
   horizon, restore procedure and actual `linux/amd64` retrieval proof;
-- **G3**: credential owner, initial distribution/recovery source and expiry;
+- **G3-P**: the non-secret exact issuance plan (Secret target/type/key names,
+  owner, expiry, issuer, cleanup owner and a procedure reference/hash) and the
+  authority to use that plan. The current validator checks the hash's format
+  and seals its value; it does not read or hash the referenced runbook bytes;
+- **G3-R**: the later issuance receipt plus fresh Secret/CA metadata and UIDs,
+  recorded at `credential-bootstrap` before `custom-resources`;
 - **G4**: cutover remains pending and is not required for isolated acceptance.
 
 Pending values are valid for offline review. They fail `--require-approved`, so
@@ -54,10 +59,20 @@ An approved lock selects exactly one finite supply mode: an authenticated privat
 immutable registry reference, or an immutable retained OCI archive with its own
 archive hash. For every image it records cache-empty retrieval, the observed
 digest and architecture, entrypoint, user, args, migration/smoke,
-scan and SBOM evidence. A multi-platform image binds both the index digest and
+scan and SBOM evidence. `smoke` is a selected-architecture isolated image
+check, not Kubernetes integration. `migration` is the Account application
+image's schema-migration capability: only `account-runtime` is required; the
+other ten fixed roles are `not-applicable` because they do not own it.
+PostgreSQL is the server, not the migration client. Its compatibility,
+initialization, restart/PVC behavior and the actual migration result remain
+mandatory later DAG evidence. A multi-platform image binds both the index digest and
 the selected child digest to child-specific scan/SBOM references. Retrieval
 classifies `registry-unknown` separately from `image-absent`; neither is treated
 as permission to reuse cache or retry blindly.
+
+Check status is raw evidence. `failed` or `unrun` is never rewritten to
+`passed`. A bounded lab scan disposition is separate external evidence and
+cannot satisfy native full G2 by changing the raw scan field.
 
 ## Bootstrap and resume contract
 
@@ -77,6 +92,29 @@ not recreated. A rerun must be an idempotent verification of the same lock.
 The authoritative checked-in DAG has fifteen steps, including separate
 pre-cluster image provenance and post-cluster empty-cache/import proof. This
 list supersedes the shorter historical sequence above.
+
+An approval may authorize only the fixed prefix ending at `controllers`, or
+the complete fifteen-step DAG. The prefix still requires exact target,
+G1/G2/G3-P/security approval and every sealed hash; it only avoids requiring
+not-yet-created G3-R. A later full resume requires a new unexpired approval and
+typed G3-R before any dependent step. The current adapter has no safe
+metadata-only Secret/CA receipt transport, so the full path remains fail-closed
+at that point. A Deployment observation is not credential proof. The prefix is
+partial evidence, not full G2 or PLAT-217 completion.
+
+This change defines that prefix contract for offline review; it does not make
+the current runtime inputs live-ready. The same native G2 validator still
+requires every applicable raw source check to be `passed` for both the prefix
+and the full DAG. It does not consume an external scan-exception disposition.
+Consequently any current raw scan `failed` or source check `unrun` stops the
+prefix before executor identity or mutation. A separately supervised manual
+experiment is not execution of this runner prefix and must not be recorded as
+native G2 or PLAT-217 completion.
+
+This is a fail-closed contract migration within `v1alpha1`: runtime profile,
+image-supply and approval files made from the earlier templates must be
+regenerated and re-approved. They must not be edited under or used to resume an
+existing runner journal because the sealed profile/input digests differ.
 
 Argo Rollouts uses exactly one official `argo-rollouts` chart (`2.43.7`, app
 `v1.10.1`). `render_rollouts_bootstrap.py` verifies the retained chart archive
@@ -135,7 +173,7 @@ The renderer performs no cluster operation.
 
 The offline commands shown here must pass in CI. The `--require-*` commands are
 expected to reject the checked-in templates until the user separately approves
-G1-G3 and ignored runtime evidence is sealed by review.
+G1, G2 and G3-P and ignored runtime evidence is sealed by review.
 
 ## Authority proposal (PLAT-215)
 
@@ -185,6 +223,7 @@ python learning/fresh-profile/validate_acceptance.py --record <ignored-runtime-a
 ```
 
 The first two commands are offline CI checks. The final command is expected to
-fail until G1-G3 are approved and real observations are recorded only in the
+fail until G1, G2 and G3-P are approved, G3-R exists at its runtime step, and
+real observations are recorded only in the
 ignored runtime evidence. It performs no cluster, image, Secret, fault or
 cleanup operation.
