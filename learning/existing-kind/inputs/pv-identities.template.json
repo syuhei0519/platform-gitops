@@ -1,0 +1,44 @@
+[
+  {
+    "synthetic": true,
+    "name": "<runtime-input:pv-name:payment>",
+    "claimRef": {"apiVersion": "v1", "kind": "PersistentVolumeClaim", "name": "learning-payment-data", "namespace": "synthetic-services"},
+    "reclaimPolicy": "<runtime-input:reclaim-policy>",
+    "storageClassName": "<runtime-input:storage-class>"
+  },
+  {
+    "synthetic": true,
+    "name": "<runtime-input:pv-name:notification>",
+    "claimRef": {"apiVersion": "v1", "kind": "PersistentVolumeClaim", "name": "learning-notification-data", "namespace": "synthetic-services"},
+    "reclaimPolicy": "<runtime-input:reclaim-policy>",
+    "storageClassName": "<runtime-input:storage-class>"
+  },
+  {
+    "synthetic": true,
+    "name": "<runtime-input:pv-name:order>",
+    "claimRef": {"apiVersion": "v1", "kind": "PersistentVolumeClaim", "name": "learning-order-data", "namespace": "synthetic-services"},
+    "reclaimPolicy": "<runtime-input:reclaim-policy>",
+    "storageClassName": "<runtime-input:storage-class>"
+  },
+  {
+    "synthetic": true,
+    "name": "<runtime-input:pv-name:account>",
+    "claimRef": {"apiVersion": "v1", "kind": "PersistentVolumeClaim", "name": "learning-account-data", "namespace": "synthetic-services"},
+    "reclaimPolicy": "<runtime-input:reclaim-policy>",
+    "storageClassName": "<runtime-input:storage-class>"
+  },
+  {
+    "synthetic": true,
+    "name": "<runtime-input:pv-name:sonarqube-postgresql>",
+    "claimRef": {"apiVersion": "v1", "kind": "PersistentVolumeClaim", "name": "sonarqube-postgresql", "namespace": "sonarqube"},
+    "reclaimPolicy": "<runtime-input:reclaim-policy>",
+    "storageClassName": "<runtime-input:storage-class>"
+  },
+  {
+    "synthetic": true,
+    "name": "<runtime-input:pv-name:sonarqube>",
+    "claimRef": {"apiVersion": "v1", "kind": "PersistentVolumeClaim", "name": "sonarqube", "namespace": "sonarqube"},
+    "reclaimPolicy": "<runtime-input:reclaim-policy>",
+    "storageClassName": "<runtime-input:storage-class>"
+  }
+]

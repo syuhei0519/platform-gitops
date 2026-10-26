@@ -4,8 +4,10 @@
 
 ## Existing kind deployment (PLAT-195/198)
 
-For `kind-learning-20261018-69c763`, the ordinary deployment entry is a reviewed
-Git commit/PR followed by Argo CD sync. Follow the [current deployment contract](https://github.com/syuhei0519/platform-gitops/blob/main/learning/existing-kind/DEPLOYMENT.md).
+For an explicitly selected existing-kind target, the ordinary deployment entry
+is a reviewed Git commit/PR followed by Argo CD sync. Target identity and live
+observations are runtime evidence and are not published in this repository.
+Follow the [current deployment contract](https://github.com/syuhei0519/platform-gitops/blob/main/learning/existing-kind/DEPLOYMENT.md).
 Manual workload apply, image mutation and rollout restart from historical learning
 instructions are retired. Existing Argo Core is reused; the old platform-lab and
 isolated Account trial instructions are not the current cluster's deployment route.

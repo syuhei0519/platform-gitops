@@ -11,7 +11,7 @@ metadata:
 data:
   account-overview.json: "{\n  \"id\": null,\n  \"uid\": \"learning-account-overview\"\
     ,\n  \"title\": \"Learning Account Overview\",\n  \"description\": \"\u30ED\u30FC\
-    \u30AB\u30EB\u5B66\u7FD2Account\u5C02\u7528\u3002\u5B9Fnamespace: learning-services-20261018\u3002\
+    \u30AB\u30EB\u5B66\u7FD2Account\u5C02\u7528\u3002\u5B9Fnamespace: synthetic-services\u3002\
     SDK\u306Elegacy\u4E92\u63DB\u5024\u306F\u5B9Fnamespace\u8868\u793A\u306B\u4F7F\
     \u3044\u307E\u305B\u3093\u3002\u5358\u4E00instance\u3001SDK\u9BAE\u5EA690\u79D2\
     \u3002\u5C65\u6B74\u306F\u518D\u8D77\u52D5\u3067\u6D88\u5931\u3002 / \u5B66\u7FD2\
@@ -432,7 +432,7 @@ data:
   prometheus.yml: "global:\n  scrape_interval: 30s\n  scrape_timeout: 10s\n  evaluation_interval:\
     \ 30s\nscrape_configs:\n  - job_name: otel-application\n    honor_labels: true\n\
     \    honor_timestamps: true\n    static_configs:\n      - targets: [otel-collector.observability.svc.cluster.local:8889]\n\
-    \        labels: {account_namespace: \"learning-services-20261018\"}\n  - job_name:\
+    \        labels: {account_namespace: \"synthetic-services\"}\n  - job_name:\
     \ prometheus\n    static_configs:\n      - targets: [localhost:9090]\n"
 ---
 apiVersion: v1
@@ -452,12 +452,11 @@ data:
     \ SDK identity checks, not sender authentication. Only Account metrics.\n  filter/account:\n\
     \    error_mode: propagate\n    metrics:\n      metric:\n        - 'resource.attributes[\"\
     service.name\"] != \"account-backend\"'\n        - 'resource.attributes[\"deployment.environment.name\"\
-    ] != \"local\"'\n        - 'resource.attributes[\"k8s.namespace.name\"] != \"\
-    account\"'\n  resource/real_namespace:\n    attributes:\n      - key: k8s.namespace.name\n\
-    \        value: \"learning-services-20261018\"\n        action: upsert\n  # Associate\
+    ] != \"local\"'\n        - 'resource.attributes[\"k8s.namespace.name\"] != \"account\" and resource.attributes[\"k8s.namespace.name\"] != \"synthetic-services\"'\n  resource/real_namespace:\n    attributes:\n      - key: k8s.namespace.name\n\
+    \        value: \"synthetic-services\"\n        action: upsert\n  # Associate\
     \ only the SDK's Pod UID; never fall back to source IP.\n  k8sattributes/account:\n\
     \    auth_type: serviceAccount\n    passthrough: false\n    filter:\n      namespace:\
-    \ \"learning-services-20261018\"\n    pod_association:\n      - sources: [{from:\
+    \ \"synthetic-services\"\n    pod_association:\n      - sources: [{from:\
     \ resource_attribute, name: k8s.pod.uid}]\n    extract:\n      metadata: [k8s.pod.uid]\n\
     \      labels:\n        - {tag_name: rollout_revision, key: rollouts-pod-template-hash,\
     \ from: pod}\n        - {tag_name: learning_service, key: learning.local/service,\

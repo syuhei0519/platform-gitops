@@ -1,23 +1,23 @@
 {
   "namespaces.yaml": {
-    "sha256": "009928f23f2c8bf8b028d6477a374eab9d6b247b93b21f2c8d6220c5a0866596",
-    "bytes": 3159
+    "sha256": "124c1a15f7df512ec94a6bcc99265a0cf3eb0ecc32b00683087ffaf63eaf7ec2",
+    "bytes": 3130
   },
   "argocd-access.yaml": {
-    "sha256": "a596ce891a10cce48d9b8696ebf13c9e44131434a1395fd3314010f327c5ba42",
-    "bytes": 13154
+    "sha256": "91ea975cb4e659b197bb8286707cb8c7f16ad4ed659342ddb247d1a250f177e9",
+    "bytes": 13130
   },
   "istiod.yaml": {
-    "sha256": "6b7714d7549b87086dabb4737018e8b88b43643e1fe1c4069cac57fe71199c67",
-    "bytes": 156183
+    "sha256": "46752d074db2a95a00e458444142dce8508e501a85de1162e2261fb1f30d1b1d",
+    "bytes": 157674
   },
   "istiod-values.yaml": {
-    "sha256": "8c3edaf306e6ee0e4144da5f99b292822379dd842b53c7893e4c86bf076b4f29",
-    "bytes": 1240
+    "sha256": "2f8d8ab52f5bc4080532b99ac6aaf5d2162ba8ef0cdbc13abd33ae77fc32a8f5",
+    "bytes": 1290
   },
   "rollouts.yaml": {
-    "sha256": "ab782f12c71b1f75862db6429c2dbb68da806d4aa7272ab909ef8708a684397c",
-    "bytes": 4919
+    "sha256": "4541675625b34b06143d396989cd326de91211d2209c87658c35d42e47c1506e",
+    "bytes": 4895
   },
   "backstage-access.yaml": {
     "sha256": "bd98f3708e68506be3550a0c08a421a5009896ffc9a2af1bd5c5ab1cf57dde8d",
@@ -32,16 +32,16 @@
     "bytes": 4077
   },
   "account-initialization.yaml": {
-    "sha256": "f05347639904335b1ef3ed0a31a3f38a77cf1fcbdef0c588282956cc1872f6b2",
-    "bytes": 2582
+    "sha256": "c5fecbe4aca15065e9a75d1230d49b341bf8784a0e343248e5243d26e2e5411a",
+    "bytes": 2644
   },
-  "account-client.yaml": {
-    "sha256": "62e61e74be2189b9a6200f6ddc821026e94de9897c07e672541e4e7ccc976ee8",
-    "bytes": 15925
+  "account-client.template.yaml": {
+    "sha256": "6db6e663f91450011b89bf61b74ec55a02113266607c6a73877c6017ac8ada6a",
+    "bytes": 817
   },
-  "existing-pv-decision.json": {
-    "sha256": "9b3f7a80ec7045a1b01949ce37653ef636bf87d96aaa939da7437906b09fc340",
-    "bytes": 3204
+  "existing-pv-decision.template.json": {
+    "sha256": "f71cc767d937865d31713ae10363bb536346b5eb5766c1b5c7c579f53ada79b2",
+    "bytes": 2510
   },
   "argocd-config.yaml": {
     "sha256": "9ede4b50d89c7e90c6707336c2e76529b05d7b1cb6367426bf3549398a48c9d7",
@@ -52,27 +52,27 @@
     "bytes": 757
   },
   "managed/observability/resources.yaml": {
-    "sha256": "1339d67f1018180ceccf9f49b6381bfbac54f044885b1dcb0b6a50af98cc1c3d",
-    "bytes": 57636
+    "sha256": "1c51860ca72f713ec9784c4a9c697316ec4ff1b288389eb8d5745d19a82cb3b0",
+    "bytes": 73412
   },
   "adoption/mesh-fixture/resources.yaml": {
     "sha256": "22015acc9a041b49e4607a1747df754cc3d0ed1be430611b7e1c3e908588a632",
     "bytes": 9714
   },
   "managed/foundation/resources.yaml": {
-    "sha256": "6456c6816db1ef9d7b3881159e92d5531ca1ffdeba3ad4b9bea1fb1651b2e6f6",
-    "bytes": 4429801
+    "sha256": "6d3e2dee423f6644a9f0e8c37261d9c6c553bfe3dccefad33e6bca30fd1117c7",
+    "bytes": 4430176
   },
   "managed/rollouts/resources.yaml": {
-    "sha256": "be3b65444fab4b8e22b2124b0ffc7695023629cc27c061c762b85592c05d9af9",
-    "bytes": 2962
+    "sha256": "7bf22b8bbd7ef18ada336c307bd04587815a55573ce1b15380d1b7942bd5242e",
+    "bytes": 2946
   },
   "root/children.yaml": {
-    "sha256": "66e672894f3fef29bee118251738ad2097cefa76e9c672b41bf955e69ab64705",
-    "bytes": 7525
+    "sha256": "e4324a9f510a13b8dfb798c46ae2db4bf7404a0032f422aa786a0e2aecf5d6bc",
+    "bytes": 7501
   },
   "bootstrap-root.yaml": {
-    "sha256": "6cf6b020342826d32248a4257e79a6acd00c4ccaeb47e0864ba05d6a569e533e",
-    "bytes": 2597
+    "sha256": "cc578f6f986e5acddad163ed484ed87be4897ed3cdc614b462569196606f1a35",
+    "bytes": 2589
   }
 }

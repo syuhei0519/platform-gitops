@@ -14,9 +14,10 @@ from jsonschema import Draft7Validator
 
 HERE = Path(__file__).resolve().parent
 REPOSITORY = HERE.parents[1]
-PROFILE = HERE / "profile.lock.yaml"
+PROFILE = HERE / "profile.template.yaml"
 SCHEMA = HERE / "profile.schema.json"
-CURRENT_CLUSTER = "kind-learning-20261018-69c763"
+PUBLIC_CONTRACT = HERE / "bootstrap.contract.yaml"
+RUNTIME_PLACEHOLDER = re.compile(r"^<runtime-input:[a-z0-9-]+>$")
 REQUIRED_REPOSITORIES = {
     "backend-app", "frontend-app", "application-manifest", "platform-gitops"
 }
@@ -90,6 +91,65 @@ def reject_secret_material(value, path=()):
             raise ContractError("secret-material-value")
 
 
+def runtime_placeholders(value):
+    if isinstance(value, dict):
+        for child in value.values():
+            yield from runtime_placeholders(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from runtime_placeholders(child)
+    elif isinstance(value, str) and RUNTIME_PLACEHOLDER.fullmatch(value):
+        yield value
+
+
+def public_contract():
+    contract = load_yaml(PUBLIC_CONTRACT)
+    try:
+        spec = contract["spec"]
+        runtime = spec["runtimeEvidence"]
+        rollouts = spec["rollouts"]
+        limits = spec["safetyLimits"]
+    except (KeyError, TypeError) as error:
+        raise ContractError("public-contract-shape") from error
+    expected_runtime = {
+        "profilePath": "learning/fresh-profile/.runtime/profile.runtime.local.yaml",
+        "imageSupplyPath": "learning/fresh-profile/.runtime/image-supply.runtime.local.yaml",
+        "acceptancePath": "learning/fresh-profile/.runtime/acceptance.runtime.local.json",
+        "approvalPath": "learning/fresh-profile/.runtime/approval.runtime.local.json",
+        "mustBeGitIgnored": True,
+    }
+    if runtime != expected_runtime:
+        raise ContractError("public-contract-runtime")
+    if spec.get("platform") != {
+            "architecture": "linux/amd64",
+            "isolation": "separate-named-sandbox",
+            "preserveExistingEnvironment": True,
+            "cutoverIncluded": False}:
+        raise ContractError("public-contract-platform")
+    if (rollouts.get("chart") != "argo-rollouts" or rollouts.get("crdCount") != 5
+            or rollouts.get("controllerInstallCRDs") is not False):
+        raise ContractError("public-contract-rollouts")
+    expected_limits = {
+        "runMaxMinutes": 60,
+        "credentialLifetimeMaxMinutes": 120,
+        "hostAvailableMemoryStartMinGiB": 8,
+        "hostAvailableMemoryStopBelowGiB": 3,
+        "hostFreeDiskMinGiB": 400,
+        "dockerAdditionalDiskMaxGiB": 10,
+        "freshMemoryMaxGiB": 4.5,
+        "combinedDockerMemoryStopAboveGiB": 11,
+        "podPendingMaxSeconds": 120,
+        "controllerReadyMaxSeconds": 300,
+        "unexpectedRestartsMax": 0,
+    }
+    if limits != expected_limits:
+        raise ContractError("public-contract-limits")
+    ignore = (REPOSITORY / ".gitignore").read_text(encoding="utf-8").splitlines()
+    if "learning/fresh-profile/.runtime/" not in ignore:
+        raise ContractError("runtime-evidence-not-ignored")
+    return contract
+
+
 def validate_dag(dag):
     steps = dag["spec"]["steps"]
     if [step["id"] for step in steps] != STEPS:
@@ -112,6 +172,7 @@ def validate_equivalence(equivalence):
 
 
 def validate(profile_path: Path = PROFILE, require_approved: bool = False):
+    contract = public_contract()
     profile = load_yaml(profile_path)
     schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
     errors = sorted(Draft7Validator(schema).iter_errors(profile), key=lambda e: list(e.path))
@@ -131,7 +192,11 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
         raise ContractError("repository-sha")
 
     target = spec["target"]
-    if target["clusterName"] == CURRENT_CLUSTER or target["context"] == "kind-" + CURRENT_CLUSTER.removeprefix("kind-"):
+    protected_cluster = spec["scope"]["currentClusterExcluded"]
+    if (not RUNTIME_PLACEHOLDER.fullmatch(protected_cluster)
+            and (target["clusterName"] == protected_cluster
+                 or target["context"] == protected_cluster
+                 or target["context"] == "kind-" + protected_cluster.removeprefix("kind-"))):
         raise ContractError("current-cluster-target")
     names = [image["name"] for image in spec["images"]]
     if len(names) != len(set(names)) or set(names) != REQUIRED_IMAGES:
@@ -154,10 +219,22 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
     if set(spec["budget"]["stopOn"]) != STOP_CONDITIONS:
         raise ContractError("stop-budget")
     limits = spec["budget"]["approvalLimits"]
-    if spec["decisions"]["G1"]["status"] == "pending-approval":
-        if any(value != "PENDING_G1" for key, value in limits.items()
-               if key not in {"imageBytesMaxGiB", "unexpectedRestartsMax"}):
-            raise ContractError("pending-g1-budget")
+    safety = contract["spec"]["safetyLimits"]
+    fixed_limits = {
+        "elapsedMaxMinutes": safety["runMaxMinutes"],
+        "hostAvailableMemoryMinGiB": safety["hostAvailableMemoryStartMinGiB"],
+        "hostAvailableMemoryStopBelowGiB": safety["hostAvailableMemoryStopBelowGiB"],
+        "hostFreeDiskMinGiB": safety["hostFreeDiskMinGiB"],
+        "dockerAdditionalDiskMaxGiB": safety["dockerAdditionalDiskMaxGiB"],
+        "freshMemoryMaxGiB": safety["freshMemoryMaxGiB"],
+        "combinedDockerMemoryStopAboveGiB": safety["combinedDockerMemoryStopAboveGiB"],
+        "podPendingMaxSeconds": safety["podPendingMaxSeconds"],
+        "controllerReadyMaxSeconds": safety["controllerReadyMaxSeconds"],
+        "credentialLifetimeMaxMinutes": safety["credentialLifetimeMaxMinutes"],
+        "unexpectedRestartsMax": safety["unexpectedRestartsMax"],
+    }
+    if any(limits[key] != value for key, value in fixed_limits.items()):
+        raise ContractError("public-safety-limit")
     if spec["decisions"]["G2"]["status"] == "pending-approval" and limits["imageBytesMaxGiB"] != "PENDING_G2":
         raise ContractError("pending-g2-budget")
     if spec["decisions"]["G4"] != {
@@ -166,6 +243,8 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
         raise ContractError("g4-boundary")
 
     if require_approved:
+        if any(runtime_placeholders(profile)):
+            raise ContractError("runtime-evidence-placeholder")
         for gate in ("G1", "G2", "G3"):
             if spec["decisions"][gate]["status"] != "approved":
                 raise ContractError("approval-" + gate.lower())
@@ -187,6 +266,14 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
             raise ContractError("approved-account-runtime-pending")
         if any(str(value).startswith("PENDING_") for value in limits.values()):
             raise ContractError("approved-budget-placeholder")
+        observation = spec["budget"]["hostObservation"]
+        numeric_observations = [value for key, value in observation.items() if key != "capturedAt"]
+        if any(not isinstance(value, (int, float)) for value in numeric_observations):
+            raise ContractError("runtime-host-observation")
+        if observation["availableMemoryGiB"] < safety["hostAvailableMemoryStartMinGiB"]:
+            raise ContractError("runtime-host-memory")
+        if observation["freeDiskGiB"] < safety["hostFreeDiskMinGiB"]:
+            raise ContractError("runtime-host-disk")
 
     dag = load_yaml(checked_path(spec["bootstrap"]["dagFile"]))
     validate_dag(dag)
@@ -195,7 +282,9 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
     validate_equivalence(equivalence)
     checked_path(spec["contracts"]["currentComparison"])
     checked_path(spec["contracts"]["secretContract"])
-    checked_path(spec["contracts"]["imageSupply"])
+    if spec["contracts"]["imageSupply"] not in {
+            contract["spec"]["runtimeEvidence"]["imageSupplyPath"], "image-supply.lock.yaml"}:
+        raise ContractError("image-supply-runtime-ref")
 
     version_lock = load_yaml(REPOSITORY / "bootstrap" / "versions.lock.yaml")["spec"]
     expected = {
@@ -213,9 +302,16 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
         "kind": version_lock["kind"]["version"], "kubectl": version_lock["kubectl"],
         "helm": version_lock["helm"], "argoCdChart": version_lock["argoCd"]["version"],
         "argoCd": version_lock["argoCd"]["appVersion"],
+        "rollouts": version_lock["argoRollouts"]["appVersion"],
     }
     if any(spec["tools"][name] != version for name, version in tool_pairs.items()):
         raise ContractError("version-lock-tool")
+    rollouts = contract["spec"]["rollouts"]
+    if (rollouts["chartVersion"] != version_lock["argoRollouts"]["version"]
+            or "sha256:" + rollouts["packageSha256"] != version_lock["argoRollouts"]["packageDigest"]
+            or "sha256:" + rollouts["crdListSha256"] != version_lock["argoRollouts"]["crdListDigest"]
+            or rollouts["appVersion"] != version_lock["argoRollouts"]["appVersion"]):
+        raise ContractError("public-rollouts-version-lock")
     return profile, dag, equivalence
 
 

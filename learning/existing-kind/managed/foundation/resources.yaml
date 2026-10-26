@@ -76275,11 +76275,11 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: learning-services-20261018
+  name: synthetic-services
   labels:
     app.kubernetes.io/part-of: learning-only
-    kubernetes.io/metadata.name: learning-services-20261018
-    lab-run: 20261018-69c763
+    kubernetes.io/metadata.name: synthetic-services
+    lab-run: synthetic-fixture
     learning.local/owner: codex-local-learning
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,Delete=false
@@ -76321,7 +76321,7 @@ metadata:
   labels:
     app.kubernetes.io/part-of: plat-3-5-sonarqube
     kubernetes.io/metadata.name: sonarqube
-    sast.platform.local/run: 9228e92ecb6047f99d3645c19aba2b1d
+    sast.platform.local/run: synthetic-fixture
   annotations:
     argocd.argoproj.io/sync-options: Prune=false,Delete=false
 ---

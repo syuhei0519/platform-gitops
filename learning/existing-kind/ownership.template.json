@@ -1,0 +1,7 @@
+{
+  "synthetic": true,
+  "description": "Schema-only example; not a live ownership record.",
+  "collectedAt": null,
+  "context": "<runtime-input:kube-context>",
+  "resources": []
+}

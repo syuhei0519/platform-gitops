@@ -1,7 +1,9 @@
 # Existing kind deployment contract
 
-Target: `kind-learning-20261018-69c763`, existing Core in
-`learning-progressive-control`. Never select a different cluster implicitly.
+Target identity is a required runtime input. Record the approved kubeconfig,
+context, cluster UID and existing Core namespace under the Git-ignored
+`learning/existing-kind/.runtime/` directory. Never infer a target from the
+current context, a public example or a checked-in namespace.
 
 ## Ordinary changes
 
@@ -21,7 +23,8 @@ Target: `kind-learning-20261018-69c763`, existing Core in
 Backstage proposes profile changes through reviewed Git PRs and requests bounded
 Argo operations. It does not patch workload/Application desired-state spec, bypass
 main review, use the deleted trial cluster, or mount an unrestricted kubeconfig.
-Read-only kubectl inspection is permitted. Manual workload apply/set image/rollout
+Separately authorized read-only inspection must still pass an explicit
+`--kubeconfig` and `--context`. Manual workload apply/set image/rollout
 restart is not an ordinary release or drift-repair entrance. Generated Pods/RS,
 Rollouts weights/status/subset hashes, serving leaf certificates and projected
 credentials stay with their owning controllers, rather than being frozen in Git.

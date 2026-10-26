@@ -18,7 +18,7 @@
       "type": "object", "additionalProperties": false,
       "required": ["profileRef", "targetArchitecture", "decision", "prohibitedEvidence", "requiredChecks", "images"],
       "properties": {
-        "profileRef": {"const": "learning/fresh-profile/profile.lock.yaml"},
+        "profileRef": {"enum": ["learning/fresh-profile/profile.template.yaml", "learning/fresh-profile/.runtime/profile.runtime.local.yaml", "profile.lock.yaml"]},
         "targetArchitecture": {"enum": ["linux/amd64", "linux/arm64"]},
         "decision": {
           "type": "object", "additionalProperties": false,

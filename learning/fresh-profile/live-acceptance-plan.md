@@ -2,14 +2,14 @@
 
 Status: **offline design only; every live action below is unrun**. This file is
 not an approval and must not be treated as evidence. Every command must use the
-approved run-scoped kubeconfig and explicit context
-`kind-learning-fresh-plat217-20261025`. The existing
-`learning-20261018-69c763` cluster is never a target.
+approved run-scoped kubeconfig and explicit context for the runtime-approved
+fresh sandbox. The existing
+runtime-declared protected cluster is never a target.
 
 ## Ordered gates
 
 1. G1 approves creation and the measured stop thresholds for exactly
-   `learning-fresh-plat217-20261025`. Record host/Docker before values and stop
+   runtime-approved cluster name. Record host/Docker before values and stop
    without starting a new step if any approved threshold is crossed.
 2. G2 first fixes host/archive provenance without requiring a cluster. After
    cluster creation, record an empty fresh-node workload cache before import,
@@ -67,7 +67,7 @@ old-cluster Pod, PVC, Secret, CA, RBAC, CNI, or NetworkPolicy.
 Stop run-scoped port-forwards/log followers. Securely remove the run-scoped
 kubeconfig and any temporary credential input file. Cluster deletion is a
 separate cleanup approval targeting only
-`learning-fresh-plat217-20261025`; its disposable empty-data PVC is recovered by
+the runtime-approved sandbox; its disposable empty-data PVC is recovered by
 recreating the sandbox from the materialized locks and retained G2 archives,
 not by reading the existing environment. Retain redacted journals and hashes
 until the independent GPT-6 review disposition, then let the named G2 owner

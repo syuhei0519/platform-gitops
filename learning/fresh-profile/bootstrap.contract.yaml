@@ -1,0 +1,37 @@
+apiVersion: platform.lab/v1alpha1
+kind: FreshBootstrapPublicContract
+metadata:
+  name: account-lightweight-fresh
+spec:
+  runtimeEvidence:
+    profilePath: learning/fresh-profile/.runtime/profile.runtime.local.yaml
+    imageSupplyPath: learning/fresh-profile/.runtime/image-supply.runtime.local.yaml
+    acceptancePath: learning/fresh-profile/.runtime/acceptance.runtime.local.json
+    approvalPath: learning/fresh-profile/.runtime/approval.runtime.local.json
+    mustBeGitIgnored: true
+  platform:
+    architecture: linux/amd64
+    isolation: separate-named-sandbox
+    preserveExistingEnvironment: true
+    cutoverIncluded: false
+  rollouts:
+    chart: argo-rollouts
+    chartVersion: 2.43.7
+    appVersion: v1.10.1
+    packageBytes: 68002
+    packageSha256: 166506174f4be91ed2758fccbca340e209cba35aa72ac08b5863a7b797942487
+    crdListSha256: 9c4794e462b522f45077f0dabaf39df1ba3a35d29ec28787f6007ea989ddf07b
+    crdCount: 5
+    controllerInstallCRDs: false
+  safetyLimits:
+    runMaxMinutes: 60
+    credentialLifetimeMaxMinutes: 120
+    hostAvailableMemoryStartMinGiB: 8
+    hostAvailableMemoryStopBelowGiB: 3
+    hostFreeDiskMinGiB: 400
+    dockerAdditionalDiskMaxGiB: 10
+    freshMemoryMaxGiB: 4.5
+    combinedDockerMemoryStopAboveGiB: 11
+    podPendingMaxSeconds: 120
+    controllerReadyMaxSeconds: 300
+    unexpectedRestartsMax: 0

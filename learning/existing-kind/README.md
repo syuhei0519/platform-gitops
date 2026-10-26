@@ -4,20 +4,28 @@ This directory defines the ownership and operating contract for adopting an
 existing learning cluster into reviewed Git and Argo CD. It is not a live
 inventory or an acceptance-status report. Runtime identities, endpoints, capacity
 measurements and detailed acceptance evidence stay in the local execution record.
+The checked-in `*.template.json` files are empty synthetic schemas. Copy them to
+`.runtime/*.runtime.local.json` and populate them only through an approved,
+read-only capture. `.runtime/` is Git-ignored and missing runtime evidence fails
+closed.
 
 ## Sources and operation
 
 * [Current entry ADR](../../docs/architecture/ADR-0001-current-platform-entry.md)
-  and `current-contract.json`: the one current root, paired repository paths,
-  resource identities, PVC retention and Secret-reference boundary enforced by CI.
+  and `current-contract.json`: a public, synthetic source contract for the one
+  current root, paired repository paths, PVC shape and Secret-reference boundary.
+  Exact namespace, PVC/PV and object identities are runtime evidence, not Git data.
 * [Ownership contract](CURRENT-OWNERSHIP.md): authoritative repository sources,
   generated resources, bootstrap boundaries and recreation checks.
 * [Deployment contract](DEPLOYMENT.md): ordinary Git review and Argo sync, safe
   recovery and the explicit limits on bootstrap and incident exceptions.
-* `root` and `managed`: Application relationships and platform parent declarations.
-  Files under `adoption` are historical captures, not a second current root.
+* `root` and `managed`: synthetic Application relationships and platform parent
+  declarations. Files under `adoption` are public schemas or generalized source
+  material, never a second current root or proof of a live capture.
 * `render.py`, `bootstrap-root.yaml` and reviewed access proposals: preparation of
   the minimum operator bootstrap; preparation does not authorize live execution.
+  `proposal/account-client.template.yaml` is synthetic and cannot be applied as
+  a live manifest without separately approved runtime target inputs.
 
 Application/API/DB parents belong to application-manifest; shared platform parents
 and Application relationships belong to platform-gitops. Source code and checked

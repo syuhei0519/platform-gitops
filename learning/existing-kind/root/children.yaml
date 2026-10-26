@@ -11,7 +11,7 @@ spec:
   - https://github.com/syuhei0519/application-manifest.git
   destinations:
   - server: https://kubernetes.default.svc.cluster.local:443
-    namespace: learning-services-20261018
+    namespace: synthetic-services
   - server: https://kubernetes.default.svc.cluster.local:443
     namespace: learning-progressive-control
   - server: https://kubernetes.default.svc.cluster.local:443
@@ -138,7 +138,7 @@ spec:
     path: learning/existing-kind/services
   destination:
     server: https://kubernetes.default.svc.cluster.local:443
-    namespace: learning-services-20261018
+    namespace: synthetic-services
   syncPolicy:
     syncOptions:
     - RespectIgnoreDifferences=true
@@ -198,7 +198,7 @@ spec:
     path: learning/existing-kind/managed/rollouts
   destination:
     server: https://kubernetes.default.svc.cluster.local:443
-    namespace: learning-services-20261018
+    namespace: synthetic-services
   syncPolicy:
     syncOptions:
     - RespectIgnoreDifferences=true

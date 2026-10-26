@@ -17,8 +17,8 @@ spec:
       annotations:
         sidecar.istio.io/inject: 'false'
         proxy.istio.io/config: '{"holdApplicationUntilProxyStarts":true}'
-        learning.local/source-commit: f0425a9c0a70c200fbeb5a549bc8b631bf5a1906
-        learning.local/image: ghcr.io/syuhei0519/backend-app@sha256:f9a3dfd69853050d72647609eb2ee1493ed41bf17fb7c6c2abbf068361cc88df
+        learning.local/source-commit: 527b9bccf4ae56244d134ae384564ec1cccea815
+        learning.local/image: ghcr.io/syuhei0519/backend-app@sha256:746e9acb5e5a24dcd6644ab5e082f2d3dad79620ec2e00afa80aa39a7436cf9a
     spec:
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 30
@@ -31,7 +31,7 @@ spec:
           type: RuntimeDefault
       containers:
       - name: api
-        image: ghcr.io/syuhei0519/backend-app@sha256:f9a3dfd69853050d72647609eb2ee1493ed41bf17fb7c6c2abbf068361cc88df
+        image: ghcr.io/syuhei0519/backend-app@sha256:746e9acb5e5a24dcd6644ab5e082f2d3dad79620ec2e00afa80aa39a7436cf9a
         imagePullPolicy: IfNotPresent
         ports:
         - name: http
@@ -58,7 +58,9 @@ spec:
         - name: DEPLOYMENT_ENVIRONMENT
           value: local
         - name: POD_NAMESPACE
-          value: account
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
         - name: POD_UID
           valueFrom:
             fieldRef:

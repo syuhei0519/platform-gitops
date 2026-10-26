@@ -1,5 +1,7 @@
 {
   "version": 1,
+  "synthetic": true,
+  "description": "Public reproducible source contract. Exact environment identities are required from Git-ignored runtime evidence before live use.",
   "entry": "learning/existing-kind/bootstrap-root.yaml",
   "root": "learning/existing-kind/root/children.yaml",
   "server": "https://kubernetes.default.svc.cluster.local:443",
@@ -32,7 +34,7 @@
         "learning-account-release",
         "learning-istio-demo",
         "learning-progressive-control",
-        "learning-services-20261018",
+        "synthetic-services",
         "observability"
       ],
       "namespaceResourceWhitelist": [
@@ -116,7 +118,7 @@
       "repo": "application-manifest",
       "path": "learning/existing-kind/services",
       "project": "learning-existing",
-      "destination": "learning-services-20261018",
+      "destination": "synthetic-services",
       "resourceCount": 24,
       "allowedKinds": ["ConfigMap", "Deployment", "PersistentVolumeClaim", "Service", "StatefulSet"]
     },
@@ -140,7 +142,7 @@
       "repo": "platform-gitops",
       "path": "learning/existing-kind/managed/rollouts",
       "project": "learning-existing",
-      "destination": "learning-services-20261018",
+      "destination": "synthetic-services",
       "resourceCount": 2,
       "allowedKinds": ["ConfigMap", "Deployment"]
     },
@@ -194,37 +196,37 @@
       "dataSource": null,
       "dataSourceRef": null
     },
-    "learning-services-20261018/learning-account-data": {
+    "synthetic-services/learning-account-data": {
       "storageClassName": "standard",
       "accessModes": ["ReadWriteOnce"],
-      "volumeName": "pvc-9ea2064f-271a-4a97-af7f-110750dc3af6",
+      "volumeName": "<runtime-input:pvc-volume-name>",
       "volumeMode": "Filesystem",
       "selector": null,
       "dataSource": null,
       "dataSourceRef": null
     },
-    "learning-services-20261018/learning-notification-data": {
+    "synthetic-services/learning-notification-data": {
       "storageClassName": "standard",
       "accessModes": ["ReadWriteOnce"],
-      "volumeName": "pvc-3b432a3c-2f56-427d-bc93-ddabd02d0d73",
+      "volumeName": "<runtime-input:pvc-volume-name>",
       "volumeMode": "Filesystem",
       "selector": null,
       "dataSource": null,
       "dataSourceRef": null
     },
-    "learning-services-20261018/learning-order-data": {
+    "synthetic-services/learning-order-data": {
       "storageClassName": "standard",
       "accessModes": ["ReadWriteOnce"],
-      "volumeName": "pvc-9cc73725-b2a9-4aff-81ee-e48bb75d732c",
+      "volumeName": "<runtime-input:pvc-volume-name>",
       "volumeMode": "Filesystem",
       "selector": null,
       "dataSource": null,
       "dataSourceRef": null
     },
-    "learning-services-20261018/learning-payment-data": {
+    "synthetic-services/learning-payment-data": {
       "storageClassName": "standard",
       "accessModes": ["ReadWriteOnce"],
-      "volumeName": "pvc-247463c7-eec2-4942-b50a-25ca810f0387",
+      "volumeName": "<runtime-input:pvc-volume-name>",
       "volumeMode": "Filesystem",
       "selector": null,
       "dataSource": null,

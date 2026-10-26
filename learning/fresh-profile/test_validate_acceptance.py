@@ -36,6 +36,8 @@ class AcceptanceTests(unittest.TestCase):
 
     def approved(self):
         profile = copy.deepcopy(self.profile)
+        profile["metadata"]["purpose"] = "runtime-evidence"
+        profile["spec"]["scope"]["currentClusterExcluded"] = "kind-protected-existing"
         profile["spec"]["freshRuntimeRequirement"]["admissionSecretKeyContract"] = \
             "username-password-operation-key-allowlist-aligned"
         profile["spec"]["target"].update(
@@ -46,20 +48,33 @@ class AcceptanceTests(unittest.TestCase):
             profile["spec"]["decisions"][gate] = {"status": "approved", "choice": "approved-test-fixture"}
         profile["spec"]["imageSupply"].update(
             decision="retained-oci-archive", immutable=True,
-            retentionUntil="2027-10-25", restoreOwner="personal-platform-owner",
+            retentionUntil="2027-10-25", restoreOwner="fixture-owner",
         )
-        for item in profile["spec"]["inputs"]["secrets"]:
-            item["owner"] = "personal-platform-owner"
-            item["expiry"] = "2026-11-25"
-            item["sourceRef"] = "sealed-input:sha256:" + "3" * 64
+        secret_contract = (
+            ("account-db-bootstrap", "fresh-account/account-db-bootstrap"),
+            ("account-db-runtime", "fresh-account/account-db-runtime"),
+            ("account-db-migration", "fresh-account/account-db-migration"),
+        )
+        for item, (name, destination) in zip(
+                profile["spec"]["inputs"]["secrets"], secret_contract):
+            item.update(name=name, destination=destination,
+                        owner="fixture-owner", expiry="2026-11-25",
+                        sourceRef="sealed-input:sha256:" + "3" * 64)
         profile["spec"]["repositories"]["platform-gitops"]["commit"] = "1" * 40
         runtime = next(item for item in profile["spec"]["images"] if item["name"] == "account-runtime")
         runtime["ref"] = "ghcr.io/syuhei0519/backend-app@sha256:" + "3" * 64
-        limits = profile["spec"]["budget"]["approvalLimits"]
-        limits.update(elapsedMaxMinutes=45, hostAvailableMemoryMinGiB=4,
-                      hostFreeDiskMinGiB=20, dockerAdditionalDiskMaxGiB=15,
-                      workloadCPURequestsMaxMilli=2000, workloadMemoryRequestsMaxMiB=4096,
-                      imageBytesMaxGiB=15, podPendingMaxSeconds=60)
+        profile["spec"]["budget"]["hostObservation"] = {
+            "capturedAt": "2026-10-26T00:00:00Z", "logicalCpu": 8,
+            "installedMemoryGiB": 16, "availableMemoryGiB": 9,
+            "freeDiskGiB": 401, "dockerCpuLimit": 8,
+            "dockerMemoryLimitGiB": 12, "dockerImagesGiB": 1,
+            "dockerVolumesGiB": 1, "dockerBuildCacheGiB": 1,
+            "existingRunningContainers": 0,
+        }
+        profile["spec"]["budget"]["approvalLimits"].update(
+            workloadCPURequestsMaxMilli=2000, workloadMemoryRequestsMaxMiB=4096,
+            imageBytesMaxGiB=15)
+        profile["spec"]["contracts"]["imageSupply"] = "image-supply.lock.yaml"
         record = copy.deepcopy(self.pending)
         repositories = {name: value["commit"] for name, value in profile["spec"]["repositories"].items()}
         record["profile"]["repositories"] = copy.deepcopy(repositories)
@@ -234,8 +249,9 @@ class AcceptanceTests(unittest.TestCase):
 
     def test_current_cluster_and_secret_material_are_rejected(self):
         record, profile = self.approved()
-        profile["spec"]["target"].update(clusterName=contract.CURRENT_CLUSTER, context=contract.CURRENT_CLUSTER)
-        record["target"].update(clusterName=contract.CURRENT_CLUSTER, context=contract.CURRENT_CLUSTER)
+        protected = profile["spec"]["scope"]["currentClusterExcluded"]
+        profile["spec"]["target"].update(clusterName=protected, context=protected)
+        record["target"].update(clusterName=protected, context=protected)
         with self.assertRaises((contract.AcceptanceError, contract.profile_contract.ContractError)):
             self.validate_complete(record, profile)
         value = copy.deepcopy(self.pending)

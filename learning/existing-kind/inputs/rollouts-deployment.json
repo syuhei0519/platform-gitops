@@ -3,7 +3,7 @@
   "kind": "Deployment",
   "metadata": {
     "name": "learning-rollouts",
-    "namespace": "learning-services-20261018",
+    "namespace": "synthetic-services",
     "labels": {
       "app.kubernetes.io/component": "rollouts-controller",
       "app.kubernetes.io/name": "argo-rollouts",
@@ -39,7 +39,7 @@
             "args": [
               "--namespaced",
               "--namespace",
-              "learning-services-20261018",
+              "synthetic-services",
               "--leader-elect=true"
             ],
             "image": "quay.io/argoproj/argo-rollouts:v1.10.1@sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396",

@@ -17,7 +17,7 @@ direct Secret API permission and no delete verb. The old roles are not replaced.
 
 | Namespace | New authority | Why / risk |
 | --- | --- | --- |
-| learning-services-20261018 | ConfigMap, PVC, StatefulSet, Deployment get/list/watch/create/update/patch | adopt four API/DB parents and init configuration; can change API code/config, restart workloads and alter claim requests; adds no PVC delete or direct Secret API permission, but workload mutation enables indirect Secret use/access |
+| synthetic-services | ConfigMap, PVC, StatefulSet, Deployment get/list/watch/create/update/patch | adopt four API/DB parents and init configuration; can change API code/config, restart workloads and alter claim requests; adds no PVC delete or direct Secret API permission, but workload mutation enables indirect Secret use/access |
 | observability | ConfigMap, Service, ServiceAccount, Deployment get/list/watch/create/update/patch; Pod/ReplicaSet read | adopt existing collector/Prometheus/Grafana; configuration could affect collection or expose data, so initial manifests must be identical |
 | learning-istio-demo | same ordinary namespace kinds as observability | adopt plain existing mesh fixtures; does not install mesh or change injection |
 | learning-progressive-control | Application/AppProject create | root must create child Applications/projects; existing update/patch authority is retained; a malicious allowed Git source could change child targets, so projects/repositories/destinations must remain explicit |
@@ -56,7 +56,7 @@ to conceal metadata loss.
 
 Proposed isolated cache URL: `https://kubernetes.default.svc.cluster.local:443`,
 name `learning-gitops-in-cluster`, project `learning-existing`, namespace list
-`learning-services-20261018,observability,learning-istio-demo,learning-progressive-control` and
+`synthetic-services,observability,learning-istio-demo,learning-progressive-control` and
 `clusterResources=false`. Verify this alias resolves to the same API/CA and
 verify TLS using `serverName=kubernetes.default.svc` before registration.
 Append URL-scoped inclusions for ConfigMap/PVC/ServiceAccount/StatefulSet and

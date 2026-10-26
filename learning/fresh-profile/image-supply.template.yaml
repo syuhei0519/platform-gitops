@@ -4,7 +4,7 @@ metadata:
   name: account-lightweight-fresh-images
   purpose: PLAT-212-offline-contract
 spec:
-  profileRef: learning/fresh-profile/profile.lock.yaml
+  profileRef: learning/fresh-profile/profile.template.yaml
   targetArchitecture: linux/amd64
   decision:
     status: pending-approval
@@ -61,12 +61,6 @@ spec:
     source: *pending
     retrieval: *pendingRetrieval
     checks: *pendingChecks
-    comparisonOnly:
-      source: old-node-cache
-      indexDigest: sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396
-      childDigest: sha256:109c5d6cf7f1aa79d2c116f2acc994180a3bec8f583f6b24f6ddc7498fbd7a78
-      os: linux
-      architecture: amd64
   - name: istio-pilot
     source: *pending
     retrieval: *pendingRetrieval
@@ -79,28 +73,8 @@ spec:
     source: *pending
     retrieval: *pendingRetrieval
     checks: *pendingChecks
-    comparisonOnly:
-      source: old-node-cache
-      indexDigest: sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc
-      childDigest: sha256:6b38fe68f2c02cafffbbce7496f76d110d8a947c039bd22c067e9a43c2250240
-      os: linux
-      architecture: amd64
   - name: account-runtime
-    source:
-      kind: checked-local-artifact
-      published: false
-      immutable: true
-      freshEligible: false
-      location: checked-artifact:account-runtime-main-635814
-      retentionHours: 168
-      sourceCommit: 635814f5354f0fe238694d35137b283576a9127f
-      manifestDigest: sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd
-      configDigest: sha256:ef442084e2b900ce842504ab5b05f2ae21dbb334ecf6295e70037dbb02420306
-      archiveSha256: sha256:d98c960e2eaf68f5fb4e36b909d30b88c24492ae62d0f1f8fb91324d375ef6f8
-      ciRunId: 40210608840
-      artifactId: 12606240607
-      entrypoint: [/server]
-      user: 10001:10001
+    source: *pending
     retrieval: *pendingRetrieval
     checks: *pendingChecks
   - name: prometheus

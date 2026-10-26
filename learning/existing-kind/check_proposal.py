@@ -18,7 +18,8 @@ def main():
                 raise ValueError('unapproved Argo authority')
             if d['kind']=='ClusterRole' and set(r['verbs'])&{'create','update','patch'} and not r.get('resourceNames'):
                 raise ValueError('unbounded cluster write')
-    crd_names={x['name'] for x in json.loads((ROOT/'inputs/crd-contracts.json').read_text())}
+    crd_names={x['name'] for x in json.loads(
+        (ROOT/'inputs/crd-contracts.template.json').read_text())}
     grants=[r for d in access if d['kind']=='ClusterRole' for r in d['rules'] if r['resources']==['customresourcedefinitions'] and 'patch' in r['verbs']]
     if len(grants)!=1 or set(grants[0]['resourceNames'])!=crd_names:raise ValueError('CRD authority mismatch')
     istio=docs('istiod.yaml');hooks=[d for d in istio if d['kind'].endswith('WebhookConfiguration')]

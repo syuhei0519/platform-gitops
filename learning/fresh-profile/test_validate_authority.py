@@ -160,7 +160,7 @@ class AuthorityTests(unittest.TestCase):
         bypass = next(item for item in fixture["cases"] if item["id"] == "direct-pod")
         bypass["object"]["metadata"]["ownerReferences"] = [
             {"kind": "ReplicaSet", "name": "account-api-fixture",
-             "uid": "33333333-3333-3333-3333-333333333333", "controller": True}]
+             "uid": "synthetic-test-controller", "controller": True}]
         with self.assertRaisesRegex(contract.ContractError, "negative-not-denied"):
             contract.validate_negatives(self.canonical, fixture)
 

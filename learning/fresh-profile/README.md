@@ -5,40 +5,50 @@ empty-data Account profile. It is not an installation procedure and grants no
 authority to create a cluster, retrieve/publish an image, issue a credential, or
 apply RBAC/admission/network changes.
 
-The current `kind-learning-20261018-69c763` environment, its DB/PVC/CA/Sonar,
+The runtime-declared protected environment, its DB/PVC/CA/Sonar,
 the maintained Core UI, and every historical PLAT-170 session are explicitly
 outside this profile. The legacy `platform-lab` topology is not a reconstruction
 source. `learning/existing-kind/current-contract.json` is comparison input only.
 
-## Locked inputs
+## Public contract and private runtime evidence
 
-`profile.lock.yaml` records three external repository commits as 40-character
-SHAs. The platform repository uses the explicit self-reference token
-`__PLATFORM_GITOPS_SHA__`; `materialize.py` seals it to the final commit outside
-Git and re-hashes the pending acceptance record before any approval request.
-the tool/controller versions, every image required by this profile, the target
-architecture, external input references, measurement limits and stop
-conditions. Secret references contain metadata only; values and private key
-material are forbidden by the validator.
+`bootstrap.contract.yaml` is the public, reproducible contract. It contains the
+official Rollouts chart/app versions, package and five-CRD List hashes, and
+general fail-closed safety limits. `profile.template.yaml`,
+`image-supply.template.yaml`, `acceptance.template.json`, and
+`approval.template.json` contain placeholders only for environment-specific
+inputs.
 
-The checked-in lock intentionally leaves these action-time decisions pending:
+Before an approved run, an operator copies the templates into
+`learning/fresh-profile/.runtime/` and records the target cluster/context, host
+and Docker observations, immutable image supply evidence, credential-reference
+metadata, approval and acceptance record there. That directory and every
+`*.runtime.local.*` file are Git-ignored. Secret values and private key material
+remain forbidden. `materialize.py` accepts those runtime files explicitly,
+refuses tracked files as runtime evidence, seals copies outside Git, and binds
+their hashes before any executor can run.
 
-- **G1**: the proposed exact cluster/context are locked, while host thresholds,
-  run window, sandbox retention and cleanup authority remain pending;
+The platform repository uses the explicit self-reference token
+`__PLATFORM_GITOPS_SHA__`; materialization replaces it only in the sealed
+runtime copy.
+
+The checked-in templates intentionally leave these action-time decisions pending:
+
+- **G1**: cluster/context and current-host observations exist only in runtime
+  evidence; public start/stop limits remain fixed by the public contract;
 - **G2**: private registry or retained immutable OCI archive, owner, retention
   horizon, restore procedure and actual `linux/amd64` retrieval proof;
 - **G3**: credential owner, initial distribution/recovery source and expiry;
 - **G4**: cutover remains pending and is not required for isolated acceptance.
 
 Pending values are valid for offline review. They fail `--require-approved`, so
-this file cannot be mistaken for permission to run PLAT-217. A node cache or
+the templates cannot be mistaken for permission to run PLAT-217. A node cache or
 expiring CI artifact is never supply evidence.
 
-`image-supply.lock.yaml` makes that boundary executable. The Account runtime is
-fixed to backend source `527b9bcc...`, manifest `746e9acb...`, entrypoint
-`/server`, and user `10001:10001`. Its CI artifact metadata was checked, but it
-is neither published nor retained for a cacheless fresh build. The remaining
-images stay `pending-g2` until their real retrieval evidence is recorded.
+`image-supply.template.yaml` keeps every source at `pending-g2`. Source/archive
+locations, CI identifiers, retention ownership and observed digests belong only
+in the ignored runtime evidence. The validator still binds runtime evidence to
+the profile's immutable image identities before it can unlock a run.
 
 An approved lock selects exactly one finite supply mode: an authenticated private
 immutable registry reference, or an immutable retained OCI archive with its own
@@ -58,7 +68,7 @@ image import → CRD Established → controller/webhook Ready → security →
 credentials → custom resources → DB → role bootstrap → migration →
 application → acceptance`.
 
-Every completed step writes a journal outside Git with the profile, sealed
+Every completed step writes a journal outside Git with the runtime profile, sealed
 materialization, source set, live-adapter input-set digest and cluster UID.
 Resume verifies those identities and completed resources, then
 retries only the failed/incomplete step. A succeeded migration Job is observed,
@@ -68,10 +78,24 @@ The authoritative checked-in DAG has fifteen steps, including separate
 pre-cluster image provenance and post-cluster empty-cache/import proof. This
 list supersedes the shorter historical sequence above.
 
+Argo Rollouts uses exactly one official `argo-rollouts` chart (`2.43.7`, app
+`v1.10.1`). `render_rollouts_bootstrap.py` verifies the retained chart archive
+size and SHA-256, renders only the five pinned CRDs to a deterministic JSON
+`List`, and proves a second render with `installCRDs=false` contains no CRD.
+The `crds` step applies that hash-bound list and requires every CRD to report
+`Established=True`; the `controllers` step installs exactly one
+`argo-rollouts` Helm release with `installCRDs=false`. There is no separate
+`argo-rollouts-crds` chart or release. The canonical CRD List SHA-256 is
+`9c4794e462b522f45077f0dabaf39df1ba3a35d29ec28787f6007ea989ddf07b`;
+neither the plan's content hash nor per-resource desired hashes can replace it.
+During resume, CRD reads use `--ignore-not-found=true`: only an absent CRD is
+an incomplete step, while authorization, context and connectivity failures
+remain fatal.
+
 The declared Account and minimal observability requests are reproducibly
-measured with `measure_requests.py`. Control-plane overhead, archive bytes, and
-all stop thresholds remain pending rather than guessed. The budget is measured
-before, at peak and after. Crossing an approved memory, disk,
+measured with `measure_requests.py`. Host observations, control-plane overhead
+and archive bytes remain runtime evidence rather than public machine data. The
+budget is measured before, at peak and after. Crossing the public memory, disk,
 elapsed, Pending or unexpected-restart limit stops the batch; it does not
 silently enlarge the host or omit a component.
 
@@ -92,13 +116,26 @@ python learning/fresh-profile/test_validate_image_supply.py
 python learning/fresh-profile/test_validate_manifests.py
 python learning/fresh-profile/test_measure_requests.py
 python learning/fresh-profile/test_materialize.py
-python learning/fresh-profile/validate_profile.py --require-approved
-python learning/fresh-profile/validate_image_supply.py --require-fresh-evidence
+python learning/fresh-profile/test_render_rollouts_bootstrap.py
+python learning/fresh-profile/test_runtime_evidence_separation.py
+python learning/fresh-profile/validate_profile.py --profile <ignored-runtime-profile> --require-approved
+python learning/fresh-profile/validate_image_supply.py --lock <ignored-runtime-supply> --require-fresh-evidence
 ```
 
+Given an already retained official chart and Helm executable, the offline
+render is:
+
+```text
+python learning/fresh-profile/render_rollouts_bootstrap.py --helm <helm> --chart <argo-rollouts-2.43.7.tgz> --output <rollouts-crds.json>
+```
+
+The expected chart is 68,002 bytes with SHA-256
+`166506174f4be91ed2758fccbca340e209cba35aa72ac08b5863a7b797942487`.
+The renderer performs no cluster operation.
+
 The offline commands shown here must pass in CI. The `--require-*` commands are
-expected to reject the checked-in pending profile until the user separately
-approves G1-G3 and the lock is updated by review.
+expected to reject the checked-in templates until the user separately approves
+G1-G3 and ignored runtime evidence is sealed by review.
 
 ## Authority proposal (PLAT-215)
 
@@ -125,7 +162,7 @@ fresh cluster. The offline fixture must never be reported as live effectiveness.
 
 ## PLAT-217 acceptance record
 
-`acceptance.pending.json` and `acceptance.schema.json` define the evidence that
+`acceptance.template.json` and `acceptance.schema.json` define the evidence that
 must be produced by a separately approved live run. The checked-in record is
 deliberately `liveEvidence: false`: every observation, negative case, first
 run, idempotent rerun and interrupted-resume result is `unrun`. The offline
@@ -144,9 +181,10 @@ separate evidence that the current cluster and existing data were unchanged.
 ```text
 python learning/fresh-profile/validate_acceptance.py
 python learning/fresh-profile/test_validate_acceptance.py
-python learning/fresh-profile/validate_acceptance.py --require-complete
+python learning/fresh-profile/validate_acceptance.py --record <ignored-runtime-acceptance> --profile <ignored-runtime-profile> --require-complete
 ```
 
 The first two commands are offline CI checks. The final command is expected to
-fail until G1-G3 are approved, the lock is updated, and real observations are
-recorded. It performs no cluster, image, Secret, fault or cleanup operation.
+fail until G1-G3 are approved and real observations are recorded only in the
+ignored runtime evidence. It performs no cluster, image, Secret, fault or
+cleanup operation.

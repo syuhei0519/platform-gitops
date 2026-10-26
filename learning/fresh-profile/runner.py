@@ -25,7 +25,6 @@ DAG = HERE / "bootstrap-dag.yaml"
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 SOURCE_KEY = re.compile(r"^(platform-gitops|application-manifest)@([0-9a-f]{40}):(.+)$")
-CURRENT_CLUSTER = "kind-learning-20261018-69c763"
 STEPS = (
     "preflight",
     "image-source",
@@ -52,7 +51,8 @@ SCOPE = {
     "cutover": False,
 }
 REQUIRED_SEALED_FILES = {
-    "profile.lock.yaml", "image-supply.lock.yaml", "bootstrap-dag.yaml",
+    "profile.lock.yaml", "image-supply.lock.yaml", "bootstrap.contract.yaml",
+    "bootstrap-dag.yaml",
     "acceptance.pending.json",
     "authority-matrix.json", "fixtures/canonical-two-sha.json",
     "fixtures/security-negative-fixtures.json", "root/bootstrap.yaml",
@@ -134,7 +134,8 @@ def _contains_pending(value) -> bool:
         return any(_contains_pending(item) for item in value.values())
     if isinstance(value, list):
         return any(_contains_pending(item) for item in value)
-    return isinstance(value, str) and "PENDING_" in value
+    return isinstance(value, str) and (
+        "PENDING_" in value or value.startswith("<runtime-input:"))
 
 
 def _operator_inputs(value, found=None):
@@ -338,7 +339,10 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
     if spec["target"] != {"clusterName": target.get("clusterName"), "context": target.get("context"),
                           "profileName": "account-lightweight-fresh"}:
         raise RunnerRejected("approval-target")
-    if target.get("clusterName") == CURRENT_CLUSTER or target.get("context") == CURRENT_CLUSTER:
+    protected_cluster = profile_spec.get("scope", {}).get("currentClusterExcluded")
+    if (target.get("clusterName") == protected_cluster
+            or target.get("context") == protected_cluster
+            or target.get("context") == "kind-" + str(protected_cluster).removeprefix("kind-")):
         raise RunnerRejected("current-cluster-target")
     if target.get("isolation") != "separate-named-sandbox" or profile_spec.get("scope", {}).get("cutoverIncluded") is not False:
         raise RunnerRejected("profile-scope")
@@ -607,7 +611,8 @@ def main() -> int:
     parser.add_argument("--mode", choices=("dry-run", "first", "rerun", "resume"), required=True)
     parser.add_argument("--approval", type=Path)
     parser.add_argument("--materialization", type=Path)
-    parser.add_argument("--profile", type=Path, default=HERE / "profile.lock.yaml")
+    parser.add_argument("--profile", type=Path,
+                        default=HERE / ".runtime" / "profile.runtime.local.yaml")
     parser.add_argument("--journal", type=Path, default=Path("fresh-profile-checkpoints.json"))
     parser.add_argument("--platform-source-root", type=Path)
     parser.add_argument("--application-source-root", type=Path)

@@ -23,12 +23,16 @@ SPEC.loader.exec_module(adapter)
 
 class FakeTransport:
     def __init__(self, identity_missing=False, observation_mutation=None,
-                 observation_stdout=None):
+                 observation_stdout=None, missing_crds=None, crd_error=None,
+                 crd_returncode=1):
         self.calls = []
         self.environments = []
         self.identity_missing = identity_missing
         self.observation_mutation = observation_mutation
         self.observation_stdout = observation_stdout
+        self.missing_crds = set(missing_crds or ())
+        self.crd_error = crd_error
+        self.crd_returncode = crd_returncode
         self.images_loaded = False
 
     def run(self, argv, env):
@@ -46,6 +50,15 @@ class FakeTransport:
                 self.images_loaded = True
             stdout = "applied\n"
         else:
+            if ("get" in argv and "customresourcedefinition" in argv
+                    and self.crd_error is not None):
+                return SimpleNamespace(returncode=self.crd_returncode, stdout="",
+                                       stderr=self.crd_error)
+            if ("get" in argv and "customresourcedefinition" in argv
+                    and argv[argv.index("customresourcedefinition") + 1] in self.missing_crds):
+                if "--ignore-not-found=true" in argv:
+                    return SimpleNamespace(returncode=0, stdout="", stderr="")
+                return SimpleNamespace(returncode=1, stdout="", stderr="NotFound")
             if self.observation_stdout is not None:
                 stdout = self.observation_stdout
             else:
@@ -56,15 +69,17 @@ class FakeTransport:
                 else:
                     resource_kind, name = argv[get_index + 1:get_index + 3]
                     api_version, kind = adapter.KUBECTL_RESOURCES[resource_kind]
-                    namespace = ("None" if kind == "Node"
+                    namespace = ("None" if kind in {"Node", "CustomResourceDefinition"}
                                  else argv[argv.index("--namespace") + 1])
                 spec = ApprovedLiveAdapterTests.resource_spec(kind, name)
                 status = ApprovedLiveAdapterTests.resource_status(
                     kind, images_loaded=self.images_loaded)
+                metadata = {"name": name, "uid": "uid-" + name, "generation": 2}
+                if namespace != "None":
+                    metadata["namespace"] = namespace
                 value = {
                     "apiVersion": api_version, "kind": kind,
-                    "metadata": {"name": name, "namespace": namespace,
-                                 "uid": "uid-" + name, "generation": 2},
+                    "metadata": metadata,
                     "spec": spec, "status": status,
                 }
                 if self.observation_mutation is not None:
@@ -77,19 +92,41 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
     def setUp(self):
         self.temporary = Path(tempfile.mkdtemp(prefix="live-adapter-test-", dir=HERE))
         self.addCleanup(shutil.rmtree, self.temporary, True)
-        self.context = "kind-learning-fresh-plat217-20261025"
-        self.cluster = "learning-fresh-plat217-20261025"
+        self.context = "kind-learning-fresh-fixture-sandbox"
+        self.cluster = "learning-fresh-fixture-sandbox"
         self.kubeconfig = str((self.temporary / "fresh.kubeconfig").resolve())
         self.versions = {
             "kind": "v0.33.0", "kubectl": "v1.36.4", "helm": "v4.2.4",
             "istioctl": "1.31.2", "argocd": "v3.5.2", "rollouts": "v1.10.1",
         }
+        original_sha256 = adapter._sha256
+        original_content_sha256 = adapter._content_sha256
+        self.real_sha256 = original_sha256
+
+        def fixture_sha256(path):
+            if Path(path).name == "crds.json":
+                return adapter.ROLLOUTS_CRD_LIST_SHA256
+            return original_sha256(path)
+
+        patcher = mock.patch.object(adapter, "_sha256", side_effect=fixture_sha256)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+        def fixture_content_sha256(path):
+            if Path(path).name == "chart":
+                return adapter.ROLLOUTS_CHART_SHA256
+            return original_content_sha256(path)
+
+        content_patcher = mock.patch.object(
+            adapter, "_content_sha256", side_effect=fixture_content_sha256)
+        content_patcher.start()
+        self.addCleanup(content_patcher.stop)
 
     RESOURCE_TOKEN = {
         "Deployment": "deployment", "Job": "job", "PersistentVolumeClaim": "pvc",
         "StatefulSet": "statefulset", "Rollout": "rollout", "Service": "service",
         "DestinationRule": "destinationrule", "VirtualService": "virtualservice",
-        "Application": "application",
+        "Application": "application", "CustomResourceDefinition": "customresourcedefinition",
     }
 
     @staticmethod
@@ -102,6 +139,10 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
             return {"accessModes": ["ReadWriteOnce"], "volumeName": "pvc-account-data"}
         if kind == "Node":
             return {"providerID": "kind://docker/" + name}
+        if kind == "CustomResourceDefinition":
+            return {"group": "argoproj.io", "names": {"kind": name.split(".", 1)[0]},
+                    "scope": "Namespaced", "versions": [{"name": "v1alpha1", "served": True,
+                                                           "storage": True}]}
         if kind in {"Deployment", "StatefulSet", "Rollout"}:
             return {"replicas": 1, "template": {"metadata":
                     {"labels": {"platform.lab/step": name}}}}
@@ -118,6 +159,8 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
         if kind == "Node":
             names = (["fixture/image@sha256:" + "d" * 64] if images_loaded else [])
             return {"images": [{"names": names}] if names else [], "conditions": []}
+        if kind == "CustomResourceDefinition":
+            return {"conditions": [{"type": "Established", "status": "True"}]}
         if kind == "Job":
             return {"succeeded": 1, "completionTime": "2026-10-25T13:00:00Z",
                     "conditions": [{"type": "Complete", "status": "True"}]}
@@ -147,6 +190,10 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
             return {"tool": "kubectl", "args": ["--kubeconfig", self.kubeconfig,
                     "--context", self.context, "get", "node", name,
                     "--output", "json"], "contentSha256": None}
+        if kind == "CustomResourceDefinition":
+            return {"tool": "kubectl", "args": ["--kubeconfig", self.kubeconfig,
+                    "--context", self.context, "get", "customresourcedefinition", name,
+                    "--output", "json"], "contentSha256": None}
         return {"tool": "kubectl", "args": ["--kubeconfig", self.kubeconfig,
                 "--context", self.context, "get", self.RESOURCE_TOKEN[kind], name,
                 "--namespace", namespace, "--output", "json"], "contentSha256": None}
@@ -171,6 +218,19 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
                 return [("v1", "Node", "None", self.cluster + "-control-plane",
                          "none", "node-cache-empty" if step == "empty-node-cache"
                          else "node-images-present", {})]
+            if step == "crds":
+                return [
+                    ("apiextensions.k8s.io/v1", "CustomResourceDefinition", "None", name,
+                     "none", "conditions", {"Established": "True"})
+                    for name in sorted({
+                        "analysisruns.argoproj.io", "analysistemplates.argoproj.io",
+                        "clusteranalysistemplates.argoproj.io", "experiments.argoproj.io",
+                        "rollouts.argoproj.io",
+                    })
+                ]
+            if step == "controllers":
+                return [("apps/v1", "Deployment", "fresh-control", "argo-rollouts",
+                         "observed-current", "workload-ready", {"Available": "True"})]
             if step == "database":
                 return [
                     ("argoproj.io/v1alpha1", "Application", "fresh-control", "fresh-account-release",
@@ -233,13 +293,17 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
                     "requiredImageDigests": (["sha256:" + "d" * 64]
                                              if kind == "Node" else []),
                 })
+                metadata = {"name": name}
+                if namespace != "None":
+                    metadata["namespace"] = namespace
                 manifests.append({"apiVersion": api_version, "kind": kind,
-                                  "metadata": {"namespace": namespace, "name": name},
-                                  "spec": spec})
+                                  "metadata": metadata, "spec": spec})
             manifest = self.temporary / f"{step}.json"
             manifest.write_text(json.dumps({"apiVersion": "v1", "kind": "List",
                                              "items": manifests}), encoding="utf-8")
             content = hashlib.sha256(manifest.read_bytes()).hexdigest()
+            if step == "crds":
+                content = adapter.ROLLOUTS_CRD_LIST_SHA256
             if step in adapter.GITOPS_STEPS:
                 args = ["--core", "--kube-context", self.context,
                         "app", "sync", "fresh-account-release"]
@@ -259,14 +323,13 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
                        "contentSha256": hashlib.sha256(archive.read_bytes()).hexdigest()}
             elif step == "empty-node-cache":
                 run = copy.deepcopy(verify[0])
-            elif step in {"crds", "controllers"}:
+            elif step == "controllers":
                 chart = self.temporary / "chart"
                 chart.mkdir(exist_ok=True)
-                release, namespace = (("argo-rollouts-crds", "fresh-control") if step == "crds"
-                                      else ("argo-cd", "fresh-control"))
                 run = {"tool": "helm", "args": ["--kubeconfig", self.kubeconfig,
-                       "--kube-context", self.context, "upgrade", "--install", release,
-                       str(chart.resolve()), "--namespace", namespace, "--version", "1.0.0",
+                       "--kube-context", self.context, "upgrade", "--install", "argo-rollouts",
+                       str(chart.resolve()), "--namespace", "fresh-control", "--version", "2.43.7",
+                       "--set", "installCRDs=false",
                        "--atomic", "--wait", "--wait-for-jobs", "--create-namespace"],
                        "contentSha256": adapter._content_sha256(chart)}
             elif step == "acceptance":
@@ -277,8 +340,12 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
                 run = {"tool": "kubectl", "args": ["--kubeconfig", self.kubeconfig,
                        "--context", self.context, "apply", "--filename", str(manifest.resolve())],
                        "contentSha256": content}
+            reconcile = copy.deepcopy(verify)
+            if step == "crds":
+                for command in reconcile:
+                    command["args"].insert(-2, "--ignore-not-found=true")
             return {"phase": adapter.STEP_PHASES[step], "verify": verify,
-                    "reconcile": copy.deepcopy(verify), "run": [run],
+                    "reconcile": reconcile, "run": [run],
                     "resourceIdentities": identities, "observations": observations,
                     "hostArtifacts": []}
         preflight = {"phase": "pre-cluster",
@@ -397,11 +464,40 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
                 "sha256": artifact["sha256"],
                 "sourceIdentity": artifact["sourceIdentity"],
             }},
+            "helmCharts": {"argo-rollouts": {
+                "version": "2.43.7",
+                "sha256": value["steps"]["controllers"]["run"][0]["contentSha256"],
+                "crdListSha256": adapter.ROLLOUTS_CRD_LIST_SHA256,
+            }},
         }
         adapter.ApprovedLiveAdapter(
             self.write(value), FakeTransport(),
             {"clusterName": self.cluster, "context": self.context}, self.versions,
             {"sha256:" + "d" * 64}, supply)
+
+        wrong_chart = copy.deepcopy(supply)
+        wrong_chart["helmCharts"]["argo-rollouts"]["sha256"] = "f" * 64
+        with self.assertRaisesRegex(adapter.AdapterRejected, "supply-rollouts-chart"):
+            adapter.ApprovedLiveAdapter(
+                self.write(value), FakeTransport(),
+                {"clusterName": self.cluster, "context": self.context}, self.versions,
+                {"sha256:" + "d" * 64}, wrong_chart)
+
+        wrong_chart_version = copy.deepcopy(supply)
+        wrong_chart_version["helmCharts"]["argo-rollouts"]["version"] = "2.43.6"
+        with self.assertRaisesRegex(adapter.AdapterRejected, "supply-rollouts-chart"):
+            adapter.ApprovedLiveAdapter(
+                self.write(value), FakeTransport(),
+                {"clusterName": self.cluster, "context": self.context}, self.versions,
+                {"sha256:" + "d" * 64}, wrong_chart_version)
+
+        wrong_crds = copy.deepcopy(supply)
+        wrong_crds["helmCharts"]["argo-rollouts"]["crdListSha256"] = "f" * 64
+        with self.assertRaisesRegex(adapter.AdapterRejected, "supply-rollouts-chart"):
+            adapter.ApprovedLiveAdapter(
+                self.write(value), FakeTransport(),
+                {"clusterName": self.cluster, "context": self.context}, self.versions,
+                {"sha256:" + "d" * 64}, wrong_crds)
 
         wrong_node = copy.deepcopy(value)
         wrong_node["steps"]["cluster"]["run"][0]["args"][-1] = (
@@ -605,15 +701,8 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
         attacks.append(kubectl_scale)
 
         helm_override = self.plan()
-        chart = self.temporary / "chart"
-        chart.mkdir(exist_ok=True)
-        helm_override["steps"]["controllers"]["run"][0] = {
-            "tool": "helm", "args": ["--kubeconfig", self.kubeconfig,
-            "--kube-context", self.context, "--kube-apiserver", "https://other.example",
-            "upgrade", "--install", "argo-cd", str(chart.resolve()),
-            "--namespace", "fresh-control", "--version", "1.0.0", "--atomic", "--wait",
-            "--wait-for-jobs", "--create-namespace"],
-            "contentSha256": adapter._content_sha256(chart)}
+        helm_override["steps"]["controllers"]["run"][0]["args"][4:4] = [
+            "--kube-apiserver", "https://other.example"]
         attacks.append(helm_override)
 
         kubectl_unknown = self.plan()
@@ -627,16 +716,8 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
                         self.write(value), FakeTransport(),
                         {"clusterName": self.cluster, "context": self.context}, self.versions)
 
-    def test_known_helm_shape_is_allowed_but_release_and_manifest_gvk_are_exact(self):
-        chart = self.temporary / "chart"
-        chart.mkdir(exist_ok=True)
+    def test_rollouts_controller_is_single_pinned_and_never_owns_crds(self):
         value = self.plan()
-        value["steps"]["controllers"]["run"][0] = {
-            "tool": "helm", "args": ["--kubeconfig", self.kubeconfig,
-            "--kube-context", self.context, "upgrade", "--install", "argo-cd",
-            str(chart.resolve()), "--namespace", "fresh-control", "--version", "1.0.0",
-            "--atomic", "--wait", "--wait-for-jobs", "--create-namespace"],
-            "contentSha256": adapter._content_sha256(chart)}
         adapter.ApprovedLiveAdapter(
             self.write(value), FakeTransport(),
             {"clusterName": self.cluster, "context": self.context}, self.versions)
@@ -647,6 +728,124 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
             adapter.ApprovedLiveAdapter(
                 self.write(wrong_release), FakeTransport(),
                 {"clusterName": self.cluster, "context": self.context}, self.versions)
+
+        for mutation in (
+            lambda args: args.__setitem__(11, "2.43.6"),
+            lambda args: args.__setitem__(13, "installCRDs=true"),
+            lambda args: args.__delitem__(slice(12, 14)),
+            lambda args: args.extend(["--set", "installCRDs=false"]),
+        ):
+            changed = copy.deepcopy(value)
+            mutation(changed["steps"]["controllers"]["run"][0]["args"])
+            with self.assertRaises(adapter.AdapterRejected):
+                adapter.ApprovedLiveAdapter(
+                    self.write(changed), FakeTransport(),
+                    {"clusterName": self.cluster, "context": self.context}, self.versions)
+
+        duplicate = copy.deepcopy(value)
+        duplicate["steps"]["controllers"]["run"].append(
+            copy.deepcopy(duplicate["steps"]["controllers"]["run"][0]))
+        with self.assertRaisesRegex(adapter.AdapterRejected,
+                                    "rollouts-controller-install-count"):
+            adapter.ApprovedLiveAdapter(
+                self.write(duplicate), FakeTransport(),
+                {"clusterName": self.cluster, "context": self.context}, self.versions)
+
+        wrong_observation = copy.deepcopy(value)
+        wrong_observation["steps"]["controllers"]["observations"][0]["identity"] = \
+            "Deployment/fresh-control/not-argo-rollouts"
+        wrong_observation["steps"]["controllers"]["resourceIdentities"][0] = \
+            "Deployment/fresh-control/not-argo-rollouts"
+        with self.assertRaisesRegex(adapter.AdapterRejected,
+                                    "rollouts-controller-observation"):
+            adapter.ApprovedLiveAdapter(
+                self.write(wrong_observation), FakeTransport(),
+                {"clusterName": self.cluster, "context": self.context}, self.versions)
+
+        fake_crd_release = copy.deepcopy(value)
+        command = copy.deepcopy(value["steps"]["controllers"]["run"][0])
+        command["args"][6] = "argo-rollouts-crds"
+        fake_crd_release["steps"]["crds"]["run"] = [command]
+        with self.assertRaisesRegex(adapter.AdapterRejected, "crds-single-apply"):
+            adapter.ApprovedLiveAdapter(
+                self.write(fake_crd_release), FakeTransport(),
+                {"clusterName": self.cluster, "context": self.context}, self.versions)
+
+    def test_crd_set_is_exact_and_manifest_bound(self):
+        for mutation in (
+            lambda items: items.pop(),
+            lambda items: items.append(copy.deepcopy(items[0])),
+            lambda items: items[0]["metadata"].update(name="wrong.argoproj.io"),
+        ):
+            changed = self.plan()
+            manifest_path = Path(changed["steps"]["crds"]["run"][0]["args"][-1])
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            mutation(manifest["items"])
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            changed["steps"]["crds"]["run"][0]["contentSha256"] = \
+                hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+            with self.assertRaises(adapter.AdapterRejected):
+                adapter.ApprovedLiveAdapter(
+                    self.write(changed), FakeTransport(),
+                    {"clusterName": self.cluster, "context": self.context}, self.versions)
+
+        changed = self.plan()
+        manifest_path = Path(changed["steps"]["crds"]["run"][0]["args"][-1])
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["items"][0]["spec"]["group"] = "attacker.example"
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        observation = changed["steps"]["crds"]["observations"][0]
+        observation["desiredSha256"] = adapter._mapping_digest(
+            {"/spec": manifest["items"][0]["spec"]})
+        changed["steps"]["crds"]["run"][0]["contentSha256"] = \
+            hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+        with mock.patch.object(adapter, "_sha256", side_effect=self.real_sha256):
+            with self.assertRaisesRegex(adapter.AdapterRejected,
+                                        "crds-official-render-hash"):
+                adapter.ApprovedLiveAdapter(
+                    self.write(changed), FakeTransport(),
+                    {"clusterName": self.cluster, "context": self.context}, self.versions)
+
+    def test_all_crds_require_immutable_established_true_contract(self):
+        for status in ("False", "Unknown"):
+            changed = self.plan()
+            for observation in changed["steps"]["crds"]["observations"]:
+                observation["requiredConditions"] = {"Established": status}
+            with self.assertRaisesRegex(adapter.AdapterRejected,
+                                        "crd-established-contract"):
+                adapter.ApprovedLiveAdapter(
+                    self.write(changed), FakeTransport(),
+                    {"clusterName": self.cluster, "context": self.context}, self.versions)
+
+    def test_crd_reconcile_treats_only_explicit_not_found_as_incomplete(self):
+        missing = "experiments.argoproj.io"
+        transport = FakeTransport(missing_crds={missing})
+        live = adapter.ApprovedLiveAdapter(
+            self.write(self.plan()), transport,
+            {"clusterName": self.cluster, "context": self.context}, self.versions)
+        self.assertEqual(live.reconcile("crds", {})["state"], "incomplete")
+        self.assertTrue(any("--ignore-not-found=true" in call for call in transport.calls))
+
+        transport.missing_crds.clear()
+        reconciled = live.reconcile("crds", {})
+        self.assertEqual(reconciled["state"], "succeeded")
+        self.assertEqual(len(reconciled["evidence"]["resourceObservations"]), 5)
+
+        for returncode, error in (
+                (1, "Error from server (Forbidden): forbidden"),
+                (1, "Unable to connect to the server: connection refused"),
+                (3, "arbitrary non-NotFound failure")):
+            with self.subTest(returncode=returncode, error=error):
+                failing = adapter.ApprovedLiveAdapter(
+                    self.write(self.plan()), FakeTransport(
+                        crd_error=error, crd_returncode=returncode),
+                    {"clusterName": self.cluster, "context": self.context}, self.versions)
+                with self.assertRaisesRegex(
+                        adapter.AdapterRejected, f"command-exit:{returncode}"):
+                    failing.reconcile("crds", {})
+
+    def test_known_manifest_gvk_and_desired_state_are_exact(self):
+        value = self.plan()
 
         wrong_gvk = self.plan()
         manifest_path = Path(wrong_gvk["steps"]["security-boundary"]["run"][0]["args"][-1])

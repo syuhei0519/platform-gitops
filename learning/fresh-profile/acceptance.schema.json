@@ -19,8 +19,8 @@
       "type": "object", "additionalProperties": false,
       "required": ["lockPath", "sha256", "repositories"],
       "properties": {
-        "lockPath": {"const": "learning/fresh-profile/profile.lock.yaml"},
-        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "lockPath": {"enum": ["learning/fresh-profile/.runtime/profile.runtime.local.yaml", "profile.lock.yaml"]},
+        "sha256": {"type": "string", "pattern": "^([0-9a-f]{64}|<runtime-input:profile-sha256>)$"},
         "repositories": {
           "type": "object", "additionalProperties": false,
           "required": ["backend-app", "frontend-app", "application-manifest", "platform-gitops"],

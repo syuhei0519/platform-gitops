@@ -1,49 +1,42 @@
 [
   {
     "name": "default",
-    "uid": "ed1d4445-fa3d-488d-9e7c-5815560d968c",
     "labels": {
       "kubernetes.io/metadata.name": "default"
     }
   },
   {
     "name": "istio-learning-system",
-    "uid": "3753cd75-9585-4519-aa21-e985af15666a",
     "labels": {
       "kubernetes.io/metadata.name": "istio-learning-system"
     }
   },
   {
     "name": "kube-node-lease",
-    "uid": "dc225137-3a77-4439-96b4-4c8233b46df1",
     "labels": {
       "kubernetes.io/metadata.name": "kube-node-lease"
     }
   },
   {
     "name": "kube-public",
-    "uid": "4f07b600-8344-43a7-80dd-c7fc006a0d7b",
     "labels": {
       "kubernetes.io/metadata.name": "kube-public"
     }
   },
   {
     "name": "kube-system",
-    "uid": "bf8f9b86-9624-4ee6-a1e4-509aa63ce318",
     "labels": {
       "kubernetes.io/metadata.name": "kube-system"
     }
   },
   {
     "name": "learning-istio-demo",
-    "uid": "89facb29-efa9-4969-a97d-d5ac6752f116",
     "labels": {
       "kubernetes.io/metadata.name": "learning-istio-demo"
     }
   },
   {
     "name": "learning-progressive-control",
-    "uid": "aad8a7e2-1184-485d-ad1f-f829c74a97ba",
     "labels": {
       "app.kubernetes.io/part-of": "learning-only",
       "kubernetes.io/metadata.name": "learning-progressive-control",
@@ -51,18 +44,16 @@
     }
   },
   {
-    "name": "learning-services-20261018",
-    "uid": "bc443298-5881-41bd-b1af-e9ae5aee6a7f",
+    "name": "synthetic-services",
     "labels": {
       "app.kubernetes.io/part-of": "learning-only",
-      "kubernetes.io/metadata.name": "learning-services-20261018",
-      "lab-run": "20261018-69c763",
+      "kubernetes.io/metadata.name": "synthetic-services",
+      "lab-run": "synthetic-fixture",
       "learning.local/owner": "codex-local-learning"
     }
   },
   {
     "name": "learning-slo-alerts",
-    "uid": "1371df9c-3533-4b29-96dc-2c44a5bb2ab3",
     "labels": {
       "app.kubernetes.io/part-of": "learning-monitoring",
       "kubernetes.io/metadata.name": "learning-slo-alerts",
@@ -71,14 +62,12 @@
   },
   {
     "name": "local-path-storage",
-    "uid": "d8e2a9e9-ee1a-47af-95ab-c357dff20643",
     "labels": {
       "kubernetes.io/metadata.name": "local-path-storage"
     }
   },
   {
     "name": "observability",
-    "uid": "87f72b21-5376-41d4-9757-419e838f8b2b",
     "labels": {
       "kubernetes.io/metadata.name": "observability",
       "learning.local/owner": "codex-local-learning"
@@ -86,11 +75,10 @@
   },
   {
     "name": "sonarqube",
-    "uid": "55a5b3ce-4c3c-4068-b8b7-44e960319508",
     "labels": {
       "app.kubernetes.io/part-of": "plat-3-5-sonarqube",
       "kubernetes.io/metadata.name": "sonarqube",
-      "sast.platform.local/run": "9228e92ecb6047f99d3645c19aba2b1d"
+      "sast.platform.local/run": "synthetic-fixture"
     }
   }
 ]

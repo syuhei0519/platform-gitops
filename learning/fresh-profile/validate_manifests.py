@@ -11,7 +11,7 @@ import yaml
 
 
 HERE = Path(__file__).resolve().parent
-PROFILE = HERE / "profile.lock.yaml"
+PROFILE = HERE / "profile.template.yaml"
 ROOT = HERE / "root" / "bootstrap.yaml"
 CHILDREN = HERE / "root" / "children" / "applications.yaml"
 OBSERVABILITY = HERE / "observability" / "resources.yaml"
