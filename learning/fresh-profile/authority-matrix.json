@@ -35,7 +35,8 @@
     "liveStatus": "pending-separate-approval"
   },
   "bootstrapOperations": [
-    {"actor": "bootstrap-operator", "kind": "CustomResourceDefinition", "names": ["applications.argoproj.io", "appprojects.argoproj.io", "rollouts.argoproj.io", "analysistemplates.argoproj.io"], "approval": "G1"},
+    {"actor": "bootstrap-operator", "kind": "CustomResourceDefinition", "source": "argo-cd", "names": ["applications.argoproj.io", "appprojects.argoproj.io"], "approval": "G1"},
+    {"actor": "bootstrap-operator", "kind": "CustomResourceDefinition", "source": "argo-rollouts", "names": ["analysisruns.argoproj.io", "analysistemplates.argoproj.io", "clusteranalysistemplates.argoproj.io", "experiments.argoproj.io", "rollouts.argoproj.io"], "approval": "G1"},
     {"actor": "bootstrap-operator", "kind": "AppProject", "namespace": "fresh-control", "names": ["fresh-platform", "fresh-account"], "approval": "security"},
     {"actor": "bootstrap-operator", "kind": "Role|RoleBinding|ValidatingAdmissionPolicy|ValidatingAdmissionPolicyBinding", "manifest": "learning/fresh-profile/security", "approval": "security"}
   ],

@@ -23,6 +23,12 @@ ACTORS = {"platform", "workload", "release-definition"}
 DANGEROUS_VERBS = {"delete", "deletecollection", "bind", "escalate", "impersonate", "*"}
 SHA = re.compile(r"[0-9a-f]{40}")
 PLATFORM_TOKEN = "__PLATFORM_GITOPS_SHA__"
+ARGO_CD_CRDS = ["applications.argoproj.io", "appprojects.argoproj.io"]
+ROLLOUTS_CRDS = [
+    "analysisruns.argoproj.io", "analysistemplates.argoproj.io",
+    "clusteranalysistemplates.argoproj.io", "experiments.argoproj.io",
+    "rollouts.argoproj.io",
+]
 
 
 class ContractError(ValueError):
@@ -137,6 +143,14 @@ def validate_matrix(matrix, canonical=None):
     require(identities.get("gitops-controller") ==
             "system:serviceaccount:fresh-control:argocd-application-controller", "gitops-identity")
     require(matrix.get("rbac", {}).get("workloadServiceAccountApiVerbs") == [], "workload-api-verbs")
+    crd_operations = [item for item in matrix.get("bootstrapOperations", [])
+                      if item.get("kind") == "CustomResourceDefinition"]
+    require(crd_operations == [
+        {"actor": "bootstrap-operator", "kind": "CustomResourceDefinition",
+         "source": "argo-cd", "names": ARGO_CD_CRDS, "approval": "G1"},
+        {"actor": "bootstrap-operator", "kind": "CustomResourceDefinition",
+         "source": "argo-rollouts", "names": ROLLOUTS_CRDS, "approval": "G1"},
+    ], "bootstrap-crd-operations")
     require(matrix.get("admission", {}).get("policies") ==
             ["fresh-application-boundary", "fresh-managed-resource-boundary",
              "fresh-account-pod-boundary"], "admission-policies")

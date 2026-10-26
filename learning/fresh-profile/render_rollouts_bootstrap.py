@@ -16,6 +16,11 @@ CHART_VERSION = "2.43.7"
 CHART_BYTES = 68002
 CHART_SHA256 = "166506174f4be91ed2758fccbca340e209cba35aa72ac08b5863a7b797942487"
 CRD_LIST_SHA256 = "9c4794e462b522f45077f0dabaf39df1ba3a35d29ec28787f6007ea989ddf07b"
+CONTROLLER_IMAGE_TAG = (
+    "v1.10.1@sha256:"
+    "fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396"
+)
+CONTROLLER_IMAGE = "quay.io/argoproj/argo-rollouts:" + CONTROLLER_IMAGE_TAG
 CRD_TEMPLATES = (
     "analysis-run-crd.yaml",
     "analysis-template-crd.yaml",
@@ -82,6 +87,22 @@ def reject_controller_crds(documents: list[dict]) -> None:
         raise RenderError("controller-render-contains-crd")
 
 
+def validate_controller(documents: list[dict]) -> None:
+    reject_controller_crds(documents)
+    deployments = [item for item in documents
+                   if item.get("apiVersion") == "apps/v1"
+                   and item.get("kind") == "Deployment"
+                   and item.get("metadata", {}).get("name") == "argo-rollouts"
+                   and item.get("metadata", {}).get("namespace") == "fresh-control"]
+    if len(deployments) != 1:
+        raise RenderError("controller-deployment")
+    containers = deployments[0].get("spec", {}).get("template", {}).get(
+        "spec", {}).get("containers")
+    if (not isinstance(containers, list) or len(containers) != 1
+            or containers[0].get("image") != CONTROLLER_IMAGE):
+        raise RenderError("controller-image")
+
+
 def run_helm(helm: Path, arguments: list[str]) -> str:
     if not helm.is_file() or helm.is_symlink():
         raise RenderError("helm-file")
@@ -103,9 +124,10 @@ def render(helm: Path, chart: Path, output: Path) -> dict:
         crd_arguments.extend(["--show-only", "templates/crds/" + template])
     crds = validate_crds(parse_documents(run_helm(helm, crd_arguments)))
 
-    controller_arguments = [*base, "--set", "installCRDs=false"]
+    controller_arguments = [*base, "--set", "installCRDs=false", "--set-string",
+                            "controller.image.tag=" + CONTROLLER_IMAGE_TAG]
     controller_documents = parse_documents(run_helm(helm, controller_arguments))
-    reject_controller_crds(controller_documents)
+    validate_controller(controller_documents)
 
     result = {"apiVersion": "v1", "kind": "List", "items": crds}
     encoded = (json.dumps(result, sort_keys=True, separators=(",", ":")) + "\n").encode()

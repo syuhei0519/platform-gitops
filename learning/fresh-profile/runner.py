@@ -156,6 +156,26 @@ def _mapping_digest(value: dict) -> str:
     return hashlib.sha256(encoded).hexdigest()
 
 
+def _node_import_image_digests(supply_lock: dict) -> set[str]:
+    """Return only images imported into the kind node after it is created.
+
+    ``kind-node`` is the image used by ``kind create cluster`` for the outer
+    Docker container.  It is bound separately by ``kindNodeRef`` and is not a
+    workload image expected in that node's CRI image inventory.
+    """
+    images = supply_lock["spec"]["images"]
+    if sum(item.get("name") == "kind-node" for item in images) != 1:
+        raise RunnerRejected("image-supply-kind-node")
+    digests = {
+        item["source"]["manifest"].get(
+            "childDigest", item["source"]["manifest"].get("manifestDigest"))
+        for item in images if item["name"] != "kind-node"
+    }
+    if not digests or None in digests:
+        raise RunnerRejected("image-supply-node-import-digests")
+    return digests
+
+
 def _safe_file(root: Path, relative: str, label: str) -> Path:
     candidate = (root / relative).resolve()
     if not candidate.is_relative_to(root.resolve()) or not candidate.is_file():
@@ -408,10 +428,7 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
             Path(adapter_plan_path),
             {"clusterName": target["clusterName"], "context": target["context"]},
             expected_versions,
-            {item["source"]["manifest"].get("childDigest",
-                                             item["source"]["manifest"].get(
-                                                 "manifestDigest"))
-             for item in supply_lock["spec"]["images"]},
+            _node_import_image_digests(supply_lock),
             adapter_contract.supply_plan_contract(supply_lock, profile_spec),
         )
         live_input_set_digest = adapter_contract.plan_input_set_digest(plan)

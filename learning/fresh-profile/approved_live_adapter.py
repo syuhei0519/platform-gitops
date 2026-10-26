@@ -120,6 +120,11 @@ HELM_RELEASES = {
 ROLLOUTS_CHART_VERSION = "2.43.7"
 ROLLOUTS_CHART_SHA256 = "166506174f4be91ed2758fccbca340e209cba35aa72ac08b5863a7b797942487"
 ROLLOUTS_CRD_LIST_SHA256 = "9c4794e462b522f45077f0dabaf39df1ba3a35d29ec28787f6007ea989ddf07b"
+ROLLOUTS_CONTROLLER_TAG = (
+    "v1.10.1@sha256:"
+    "fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396"
+)
+ROLLOUTS_CONTROLLER_IMAGE = "quay.io/argoproj/argo-rollouts:" + ROLLOUTS_CONTROLLER_TAG
 
 
 class AdapterRejected(ValueError):
@@ -192,6 +197,8 @@ def supply_plan_contract(supply_lock: dict, profile_spec: dict) -> dict:
     profile_images = {item["name"]: item["ref"] for item in profile_spec["images"]}
     if "kind-node" not in profile_images:
         raise AdapterRejected("supply-kind-node-missing")
+    if profile_images.get("argo-rollouts") != ROLLOUTS_CONTROLLER_IMAGE:
+        raise AdapterRejected("supply-rollouts-controller-image")
     artifacts = {}
     for item in supply_lock["spec"]["images"]:
         source = item["source"]
@@ -658,7 +665,8 @@ class ApprovedLiveAdapter:
         release, chart = rest[2], rest[3]
         tail = ["--atomic", "--wait", "--wait-for-jobs", "--create-namespace"]
         if release == "argo-rollouts":
-            tail = ["--set", "installCRDs=false", *tail]
+            tail = ["--set", "installCRDs=false", "--set-string",
+                    "controller.image.tag=" + ROLLOUTS_CONTROLLER_TAG, *tail]
         expected_chart = self.expected_helm_charts.get(release)
         if (not Path(chart).is_absolute() or rest[4] != "--namespace"
                 or (release, rest[5]) not in HELM_RELEASES[step]

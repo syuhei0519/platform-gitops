@@ -358,7 +358,8 @@ class RunnerTests(unittest.TestCase):
                     "generationPolicy": generation, "healthPolicy": health,
                     "requiredConditions": conditions,
                     "requiredImageDigests": ([item["ref"].rsplit("@", 1)[1]
-                                              for item in spec["images"]]
+                                              for item in spec["images"]
+                                              if item["name"] != "kind-node"]
                                              if kind == "Node" else []),
                 })
                 metadata = {"name": name}
@@ -407,6 +408,8 @@ class RunnerTests(unittest.TestCase):
                        "--kube-context", target_context, "upgrade", "--install", "argo-rollouts",
                        str(chart.resolve()), "--namespace", "fresh-control", "--version", "2.43.7",
                        "--set", "installCRDs=false",
+                       "--set-string", "controller.image.tag=" +
+                       adapter_contract.ROLLOUTS_CONTROLLER_TAG,
                        "--atomic", "--wait", "--wait-for-jobs", "--create-namespace"],
                        "contentSha256": "166506174f4be91ed2758fccbca340e209cba35aa72ac08b5863a7b797942487"}
             elif step == "acceptance":
@@ -517,6 +520,27 @@ class RunnerTests(unittest.TestCase):
     def test_repository_dag_is_the_runner_step_machine(self):
         dag = runner.validate_dag()
         self.assertEqual([item["id"] for item in dag["spec"]["steps"]], list(runner.STEPS))
+
+    def test_kind_node_is_cluster_provenance_not_a_node_import_digest(self):
+        (_, _, materialization_path, _, _, _, _) = self.fixture()
+        supply = yaml.safe_load((materialization_path.parent /
+                                 "image-supply.lock.yaml").read_text(encoding="utf-8"))
+        by_name = {item["name"]: item for item in supply["spec"]["images"]}
+        kind_digest = by_name["kind-node"]["source"]["manifest"]["manifestDigest"]
+        expected = {
+            item["source"]["manifest"]["manifestDigest"]
+            for item in supply["spec"]["images"] if item["name"] != "kind-node"
+        }
+        self.assertEqual(runner._node_import_image_digests(supply), expected)
+        self.assertNotIn(kind_digest, expected)
+
+        without_kind = copy.deepcopy(supply)
+        without_kind["spec"]["images"] = [
+            item for item in without_kind["spec"]["images"]
+            if item["name"] != "kind-node"
+        ]
+        with self.assertRaisesRegex(runner.RunnerRejected, "image-supply-kind-node"):
+            runner._node_import_image_digests(without_kind)
 
     def test_dry_run_is_read_only_and_needs_no_live_inputs(self):
         executor = FakeExecutor()
