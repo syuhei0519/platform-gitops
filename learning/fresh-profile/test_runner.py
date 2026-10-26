@@ -8,6 +8,7 @@ from pathlib import Path
 import shutil
 import tempfile
 import unittest
+from unittest import mock
 
 import yaml
 
@@ -79,14 +80,41 @@ class RunnerTests(unittest.TestCase):
         self.temporary = Path(tempfile.mkdtemp(prefix="runner-test-", dir=HERE))
         self.addCleanup(shutil.rmtree, self.temporary, True)
         self.fixture_index = 0
+        original_loader = runner._load_contract_module
+
+        def load_contract(name):
+            module = original_loader(name)
+            if name == "approved_live_adapter":
+                original_content_sha256 = module._content_sha256
+                original_sha256 = module._sha256
+
+                def fixture_content_sha256(path):
+                    if Path(path).name == "argo-rollouts-2.43.7.fixture.tgz":
+                        return module.ROLLOUTS_CHART_SHA256
+                    return original_content_sha256(path)
+
+                def fixture_sha256(path):
+                    if Path(path).name == "crds-apply.json":
+                        return module.ROLLOUTS_CRD_LIST_SHA256
+                    return original_sha256(path)
+
+                module._content_sha256 = fixture_content_sha256
+                module._sha256 = fixture_sha256
+            return module
+
+        patcher = mock.patch.object(runner, "_load_contract_module", side_effect=load_contract)
+        patcher.start()
+        self.addCleanup(patcher.stop)
 
     def fixture(self):
         self.fixture_index += 1
         fixture_name = f"fixture-{self.fixture_index}"
-        profile = yaml.safe_load((HERE / "profile.lock.yaml").read_text(encoding="utf-8"))
+        profile = yaml.safe_load((HERE / "profile.template.yaml").read_text(encoding="utf-8"))
         spec = profile["spec"]
-        spec["target"].update(clusterName="learning-fresh-plat217-20261025",
-                              context="kind-learning-fresh-plat217-20261025")
+        profile["metadata"]["purpose"] = "runtime-evidence"
+        spec["scope"]["currentClusterExcluded"] = "kind-protected-existing"
+        spec["target"].update(clusterName="learning-fresh-fixture-sandbox",
+                              context="kind-learning-fresh-fixture-sandbox")
         spec["repositories"]["platform-gitops"]["commit"] = PLATFORM
         spec["repositories"]["application-manifest"]["commit"] = APPLICATION
         spec["freshRuntimeRequirement"]["admissionSecretKeyContract"] = \
@@ -94,13 +122,28 @@ class RunnerTests(unittest.TestCase):
         for gate in ("G1", "G2", "G3"):
             spec["decisions"][gate] = {"status": "approved", "choice": "retained-oci-archive"}
         spec["imageSupply"].update(decision="retained-oci-archive", immutable=True,
-                                   retentionUntil="2026-11-24", restoreOwner="espoi")
+                                   retentionUntil="2026-11-24", restoreOwner="fixture-owner")
         next(item for item in spec["images"] if item["name"] == "account-runtime")["ref"] = (
             "ghcr.io/syuhei0519/backend-app@sha256:" + "b" * 64)
-        for index, item in enumerate(spec["inputs"]["secrets"]):
+        secret_contract = (
+            ("account-db-bootstrap", "fresh-account/account-db-bootstrap"),
+            ("account-db-runtime", "fresh-account/account-db-runtime"),
+            ("account-db-migration", "fresh-account/account-db-migration"),
+        )
+        for index, (item, (name, destination)) in enumerate(
+                zip(spec["inputs"]["secrets"], secret_contract)):
             digest_value = f"{index + 1:064x}"
-            item.update(owner="espoi", expiry="2026-11-24",
+            item.update(name=name, destination=destination, owner="fixture-owner",
+                        expiry="2026-11-24",
                         sourceRef="sealed-input:sha256:" + digest_value)
+        spec["budget"]["hostObservation"] = {
+            "capturedAt": "2026-10-25T11:59:00Z", "logicalCpu": 8,
+            "installedMemoryGiB": 16, "availableMemoryGiB": 9,
+            "freeDiskGiB": 401, "dockerCpuLimit": 8,
+            "dockerMemoryLimitGiB": 12, "dockerImagesGiB": 1,
+            "dockerVolumesGiB": 1, "dockerBuildCacheGiB": 1,
+            "existingRunningContainers": 0,
+        }
         limits = spec["budget"]["approvalLimits"]
         limits.update(elapsedMaxMinutes=60, hostAvailableMemoryMinGiB=8,
                       hostFreeDiskMinGiB=400, dockerAdditionalDiskMaxGiB=10,
@@ -109,6 +152,7 @@ class RunnerTests(unittest.TestCase):
         spec["budget"]["estimates"].update(
             retainedArchiveBytes="approved:15378944",
             controlPlaneOverhead="approved:2000m-cpu-1634Mi-memory")
+        spec["contracts"]["imageSupply"] = "image-supply.lock.yaml"
 
         bundle = self.temporary / fixture_name / "sealed"
         bundle.parent.mkdir()
@@ -117,10 +161,10 @@ class RunnerTests(unittest.TestCase):
         profile_path.write_text(yaml.safe_dump(profile, sort_keys=False), encoding="utf-8")
         profile_digest = hashlib.sha256(profile_path.read_bytes()).hexdigest()
 
-        supply = yaml.safe_load((HERE / "image-supply.lock.yaml").read_text(encoding="utf-8"))
+        supply = yaml.safe_load((HERE / "image-supply.template.yaml").read_text(encoding="utf-8"))
         supply["spec"]["decision"] = {
             "status": "approved", "selectedMode": "retained-oci-archive",
-            "restoreOwner": "espoi", "retentionUntil": "2026-11-24",
+            "restoreOwner": "fixture-owner", "retentionUntil": "2026-11-24",
             "restoreProcedureRef": "runbook:restore-fresh-image-supply",
         }
         profile_images = {item["name"]: item["ref"] for item in spec["images"]}
@@ -154,8 +198,8 @@ class RunnerTests(unittest.TestCase):
         for relative in runner.REQUIRED_SEALED_FILES - {"profile.lock.yaml", "image-supply.lock.yaml"}:
             path = bundle / relative
             path.parent.mkdir(parents=True, exist_ok=True)
-            if relative == "bootstrap-dag.yaml":
-                shutil.copyfile(HERE / "bootstrap-dag.yaml", path)
+            if relative in {"bootstrap-dag.yaml", "bootstrap.contract.yaml"}:
+                shutil.copyfile(HERE / relative, path)
             else:
                 path.write_text("{}\n", encoding="utf-8")
 
@@ -207,6 +251,7 @@ class RunnerTests(unittest.TestCase):
             "StatefulSet": "statefulset", "Rollout": "rollout", "Service": "service",
             "DestinationRule": "destinationrule", "VirtualService": "virtualservice",
             "Application": "application",
+            "CustomResourceDefinition": "customresourcedefinition",
             "Node": "node",
         }
         def resource_spec(kind, name):
@@ -218,6 +263,11 @@ class RunnerTests(unittest.TestCase):
                 return {"accessModes": ["ReadWriteOnce"], "volumeName": "pvc-account-data"}
             if kind == "Node":
                 return {"providerID": "kind://docker/" + name}
+            if kind == "CustomResourceDefinition":
+                return {"group": "argoproj.io", "names": {"kind": name.split(".", 1)[0]},
+                        "scope": "Namespaced", "versions": [{"name": "v1alpha1",
+                                                               "served": True,
+                                                               "storage": True}]}
             if kind in {"Deployment", "StatefulSet", "Rollout"}:
                 return {"replicas": 1, "template": {"metadata": {"labels": {"step": name}}}}
             return {"selector": {"app": name}}
@@ -229,6 +279,10 @@ class RunnerTests(unittest.TestCase):
                 return {"tool": "kubectl", "args": ["--kubeconfig", kubeconfig,
                         "--context", target_context, "get", "node", name,
                         "--output", "json"], "contentSha256": None}
+            if kind == "CustomResourceDefinition":
+                return {"tool": "kubectl", "args": ["--kubeconfig", kubeconfig,
+                        "--context", target_context, "get", "customresourcedefinition", name,
+                        "--output", "json"], "contentSha256": None}
             return {"tool": "kubectl", "args": ["--kubeconfig", kubeconfig,
                     "--context", target_context, "get", resource_tokens[kind], name,
                     "--namespace", namespace, "--output", "json"], "contentSha256": None}
@@ -238,6 +292,19 @@ class RunnerTests(unittest.TestCase):
                               spec["target"]["clusterName"] + "-control-plane", "none",
                               "node-cache-empty" if step == "empty-node-cache"
                               else "node-images-present", {})]
+            elif step == "crds":
+                contracts = [
+                    ("apiextensions.k8s.io/v1", "CustomResourceDefinition", "None", name,
+                     "none", "conditions", {"Established": "True"})
+                    for name in sorted({
+                        "analysisruns.argoproj.io", "analysistemplates.argoproj.io",
+                        "clusteranalysistemplates.argoproj.io", "experiments.argoproj.io",
+                        "rollouts.argoproj.io",
+                    })
+                ]
+            elif step == "controllers":
+                contracts = [("apps/v1", "Deployment", "fresh-control", "argo-rollouts",
+                              "observed-current", "workload-ready", {"Available": "True"})]
             elif step == "database":
                 contracts = [
                     ("argoproj.io/v1alpha1", "Application", "fresh-control",
@@ -294,13 +361,17 @@ class RunnerTests(unittest.TestCase):
                                               for item in spec["images"]]
                                              if kind == "Node" else []),
                 })
+                metadata = {"name": name}
+                if namespace != "None":
+                    metadata["namespace"] = namespace
                 manifests.append({"apiVersion": api_version, "kind": kind,
-                                  "metadata": {"namespace": namespace, "name": name},
-                                  "spec": resource_spec(kind, name)})
+                                  "metadata": metadata, "spec": resource_spec(kind, name)})
             manifest_path = bundle / f"{step}-apply.json"
             manifest_path.write_text(json.dumps({"apiVersion": "v1", "kind": "List",
                                                   "items": manifests}), encoding="utf-8")
             manifest_digest = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+            if step == "crds":
+                manifest_digest = "9c4794e462b522f45077f0dabaf39df1ba3a35d29ec28787f6007ea989ddf07b"
             gitops_resources = {
                 "database": [":PersistentVolumeClaim:account-data", ":Service:account-postgresql",
                              "apps:StatefulSet:account-postgresql"],
@@ -329,15 +400,15 @@ class RunnerTests(unittest.TestCase):
                        "contentSha256": hashlib.sha256(archive.read_bytes()).hexdigest()}
             elif step == "empty-node-cache":
                 run = copy.deepcopy(verify[0])
-            elif step in {"crds", "controllers"}:
-                chart = bundle / "chart"
-                chart.mkdir(exist_ok=True)
-                release = "argo-rollouts-crds" if step == "crds" else "argo-cd"
+            elif step == "controllers":
+                chart = bundle / "argo-rollouts-2.43.7.fixture.tgz"
+                chart.write_bytes(b"fixture-chart-bytes")
                 run = {"tool": "helm", "args": ["--kubeconfig", kubeconfig,
-                       "--kube-context", target_context, "upgrade", "--install", release,
-                       str(chart.resolve()), "--namespace", "fresh-control", "--version", "1.0.0",
+                       "--kube-context", target_context, "upgrade", "--install", "argo-rollouts",
+                       str(chart.resolve()), "--namespace", "fresh-control", "--version", "2.43.7",
+                       "--set", "installCRDs=false",
                        "--atomic", "--wait", "--wait-for-jobs", "--create-namespace"],
-                       "contentSha256": runner._mapping_digest({})}
+                       "contentSha256": "166506174f4be91ed2758fccbca340e209cba35aa72ac08b5863a7b797942487"}
             elif step == "acceptance":
                 run = {"tool": "rollouts", "args": ["--kubeconfig", kubeconfig,
                        "--context", target_context, "restart", "rollout", "account-api",
@@ -346,8 +417,12 @@ class RunnerTests(unittest.TestCase):
                 run = {"tool": "kubectl", "args": ["--kubeconfig", kubeconfig,
                        "--context", target_context, "apply", "--filename",
                        str(manifest_path.resolve())], "contentSha256": manifest_digest}
+            reconcile = copy.deepcopy(verify)
+            if step == "crds":
+                for read in reconcile:
+                    read["args"].insert(-2, "--ignore-not-found=true")
             return {"phase": "cluster-create" if step == "cluster" else "post-cluster",
-                    "verify": verify, "reconcile": copy.deepcopy(verify), "run": [run],
+                    "verify": verify, "reconcile": reconcile, "run": [run],
                     "resourceIdentities": identities, "observations": observations,
                     "hostArtifacts": []}
         preflight_command = {"tool": "kind", "args": ["get", "clusters"],
@@ -395,8 +470,8 @@ class RunnerTests(unittest.TestCase):
                          "approvedAt": "2026-10-25T11:00:00Z", "expiresAt": "2026-10-25T13:00:00Z"},
             "spec": {
                 "approved": True,
-                "target": {"clusterName": "learning-fresh-plat217-20261025",
-                           "context": "kind-learning-fresh-plat217-20261025",
+                "target": {"clusterName": spec["target"]["clusterName"],
+                           "context": spec["target"]["context"],
                            "profileName": "account-lightweight-fresh"},
                 "repositories": {"platformGitops": PLATFORM, "applicationManifest": APPLICATION},
                 "hashes": {"profileSha256": profile_digest,
@@ -691,7 +766,7 @@ class RunnerTests(unittest.TestCase):
         profile = yaml.safe_load(profile_path.read_text(encoding="utf-8"))
         profile["spec"]["inputs"]["secrets"].append({
             "name": "repository-read", "purpose": "unneeded public Git credential",
-            "destination": "fresh-control/repository-read", "owner": "espoi",
+            "destination": "fresh-control/repository-read", "owner": "runtime-owner",
             "expiry": "2026-11-24", "sourceRef": "sealed-input:sha256:" + "f" * 64,
         })
         profile_path.write_text(yaml.safe_dump(profile, sort_keys=False), encoding="utf-8")

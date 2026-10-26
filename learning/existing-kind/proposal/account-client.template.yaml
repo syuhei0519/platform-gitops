@@ -1,0 +1,22 @@
+apiVersion: platform.lab/v1alpha1
+kind: SyntheticManifestTemplate
+metadata:
+  name: account-release-client
+  annotations:
+    platform.lab/synthetic: 'true'
+    platform.lab/not-live-evidence: 'true'
+spec:
+  description: Public schema-only example. Render the real ConfigMap and Deployment
+    into a Git-ignored runtime directory using an approved target contract.
+  runtimeInputs:
+    context: <runtime-input:kube-context>
+    namespace: <runtime-input:application-namespace>
+    controlNamespace: <runtime-input:argocd-core-namespace>
+    rolloutsNamespace: <runtime-input:rollouts-namespace>
+    server: <runtime-input:cluster-server>
+  workload:
+    kind: Deployment
+    name: account-release-client
+    automountServiceAccountToken: false
+    runAsNonRoot: true
+    image: <runtime-input:verified-client-image>

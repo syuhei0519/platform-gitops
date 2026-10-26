@@ -19,6 +19,17 @@ spec:
     packageDigest: sha256:96fb5ab2897e3c8758cd8fef409a46668ef1a19a538116b112b0691614a48f20
     image: quay.io/argoproj/argocd:v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68
     redisImage: ecr-public.aws.com/docker/library/redis:8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1
+  argoRollouts:
+    repository: https://argoproj.github.io/argo-helm
+    chart: argo-rollouts
+    version: 2.43.7
+    appVersion: v1.10.1
+    releaseCommit: e25aeed3a3d1a13194de441970bdf67f4f77a58f
+    packageUrl: https://github.com/argoproj/argo-helm/releases/download/argo-rollouts-2.43.7/argo-rollouts-2.43.7.tgz
+    packageBytes: 68002
+    packageDigest: sha256:166506174f4be91ed2758fccbca340e209cba35aa72ac08b5863a7b797942487
+    crdListDigest: sha256:9c4794e462b522f45077f0dabaf39df1ba3a35d29ec28787f6007ea989ddf07b
+    image: quay.io/argoproj/argo-rollouts:v1.10.1@sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396
   gitlabRunner:
     repository: https://charts.gitlab.io
     chart: gitlab-runner

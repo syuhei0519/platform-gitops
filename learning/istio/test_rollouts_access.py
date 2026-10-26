@@ -53,10 +53,13 @@ class Access(unittest.TestCase):
                 self.assertFalse(self.allowed('mesh-argocd',group,resource,verb))
 
     def test_registration_gate_and_read_inclusions(self):
-        self.assertEqual(access.registration_scope({'kind':'ApplicationList','items':[]},'learning-services-20261018'),access.NS)
+        self.assertEqual(access.registration_scope({'kind':'ApplicationList','items':[]},'synthetic-services'),access.NS)
+        for namespaces in ['', 'synthetic', 'synthetic-other', 'synthetic-services,default']:
+            with self.assertRaises(ValueError):
+                access.registration_scope({'kind':'ApplicationList','items':[]},namespaces)
         for items in [[{'metadata':{'name':'account'}}],None]:
             with self.assertRaises(ValueError):
-                access.registration_scope({'kind':'ApplicationList','items':items},'learning-services-20261018')
+                access.registration_scope({'kind':'ApplicationList','items':items},'synthetic-services')
         for group,resource in [('apps','deployments'),('argoproj.io','analysistemplates'),('argoproj.io','analysisruns')]:
             for verb in ['get','list','watch']:
                 self.assertTrue(self.allowed('mesh-argocd',group,resource,verb))

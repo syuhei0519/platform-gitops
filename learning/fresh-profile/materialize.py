@@ -16,10 +16,8 @@ PLATFORM_TOKEN = "__PLATFORM_GITOPS_SHA__"
 APPLICATION_TOKEN = "__APPLICATION_MANIFEST_SHA__"
 SHA = re.compile(r"[0-9a-f]{40}")
 PLATFORM_FILES = (
-    "profile.lock.yaml",
+    "bootstrap.contract.yaml",
     "bootstrap-dag.yaml",
-    "image-supply.lock.yaml",
-    "acceptance.pending.json",
     "authority-matrix.json",
     "fixtures/canonical-two-sha.json",
     "fixtures/security-negative-fixtures.json",
@@ -54,8 +52,19 @@ def digest(path: Path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def runtime_input(path: Path) -> Path:
+    path = Path(path).resolve()
+    if not path.is_file() or path.is_symlink():
+        raise MaterializationError("runtime-input-file")
+    if path.is_relative_to(REPOSITORY.resolve()) and not path.is_relative_to(
+            (HERE / ".runtime").resolve()):
+        raise MaterializationError("runtime-input-must-be-ignored")
+    return path
+
+
 def materialize(platform_sha: str, application_sha: str, application_release: Path,
-                output: Path):
+                runtime_profile: Path, runtime_image_supply: Path,
+                runtime_acceptance: Path, output: Path):
     if not SHA.fullmatch(platform_sha) or not SHA.fullmatch(application_sha):
         raise MaterializationError("revision-must-be-40-hex")
     output = output.resolve()
@@ -69,7 +78,10 @@ def materialize(platform_sha: str, application_sha: str, application_release: Pa
     if not workload_root.is_dir() or any(not (workload_root / relative).is_file()
                                          for relative in APPLICATION_WORKLOAD_FILES):
         raise MaterializationError("application-workload-source")
-    profile_text = (HERE / "profile.lock.yaml").read_text(encoding="utf-8")
+    runtime_profile = runtime_input(runtime_profile)
+    runtime_image_supply = runtime_input(runtime_image_supply)
+    runtime_acceptance = runtime_input(runtime_acceptance)
+    profile_text = runtime_profile.read_text(encoding="utf-8")
     children_text = (HERE / "root/children/applications.yaml").read_text(encoding="utf-8")
     if application_sha not in profile_text or application_sha not in children_text:
         raise MaterializationError("application-sha-not-locked")
@@ -97,6 +109,15 @@ def materialize(platform_sha: str, application_sha: str, application_release: Pa
             target.write_text(text.replace(PLATFORM_TOKEN, platform_sha), encoding="utf-8")
         else:
             target.write_bytes(source.read_bytes())
+        produced.append(target)
+
+    for source, relative in (
+            (runtime_profile, "profile.lock.yaml"),
+            (runtime_image_supply, "image-supply.lock.yaml"),
+            (runtime_acceptance, "acceptance.pending.json")):
+        target = output / relative
+        text = source.read_text(encoding="utf-8")
+        target.write_text(text.replace(PLATFORM_TOKEN, platform_sha), encoding="utf-8")
         produced.append(target)
 
     sealed_profile = output / "profile.lock.yaml"
@@ -145,11 +166,16 @@ def main():
     parser.add_argument("--application-sha", required=True)
     parser.add_argument("--application-release", type=Path, required=True,
                         help="Path to the immutable application release-definition chart")
+    parser.add_argument("--runtime-profile", type=Path, required=True)
+    parser.add_argument("--runtime-image-supply", type=Path, required=True)
+    parser.add_argument("--runtime-acceptance", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     try:
-        path, manifest = materialize(args.platform_sha, args.application_sha,
-                                     args.application_release, args.output)
+        path, manifest = materialize(
+            args.platform_sha, args.application_sha, args.application_release,
+            args.runtime_profile, args.runtime_image_supply,
+            args.runtime_acceptance, args.output)
     except (MaterializationError, OSError, json.JSONDecodeError) as error:
         print(f"materialization rejected: {error}")
         return 1

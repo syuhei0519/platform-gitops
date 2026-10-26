@@ -525,10 +525,10 @@ data:
   prometheus.yml: "global:\n  scrape_interval: 30s\n  scrape_timeout: 10s\n  evaluation_interval:\
     \ 30s\nscrape_configs:\n- job_name: otel-application\n  honor_labels: true\n \
     \ honor_timestamps: true\n  static_configs:\n  - targets:\n    - otel-collector.observability.svc.cluster.local:8889\n\
-    \    labels:\n      account_namespace: learning-services-20261018\n  - targets:\n\
-    \    - account-release-otel-collector.observability.svc.cluster.local:8889\n \
-    \   labels:\n      account_namespace: learning-account-release\n- job_name: prometheus\n\
-    \  static_configs:\n  - targets:\n    - localhost:9090\n- job_name: account-release-envoy\n\
+    \    labels:\n      account_namespace: synthetic-services\n  - targets:\n    -\
+    \ account-release-otel-collector.observability.svc.cluster.local:8889\n    labels:\n\
+    \      account_namespace: learning-account-release\n- job_name: prometheus\n \
+    \ static_configs:\n  - targets:\n    - localhost:9090\n- job_name: account-release-envoy\n\
     \  scrape_interval: 5s\n  scrape_timeout: 2s\n  metrics_path: /stats/prometheus\n\
     \  dns_sd_configs:\n  - names:\n    - account-release-metrics.learning-account-release.svc.cluster.local\n\
     \    type: A\n    port: 15090\n"
@@ -641,15 +641,17 @@ data:
     \ SDK identity checks, not sender authentication. Only Account metrics.\n  filter/account:\n\
     \    error_mode: propagate\n    metrics:\n      metric:\n        - 'resource.attributes[\"\
     service.name\"] != \"account-backend\"'\n        - 'resource.attributes[\"deployment.environment.name\"\
-    ] != \"local\"'\n        - 'resource.attributes[\"k8s.namespace.name\"] != \"account\" and resource.attributes[\"k8s.namespace.name\"] != \"learning-services-20261018\"'\n  resource/real_namespace:\n    attributes:\n      - key: k8s.namespace.name\n\
-    \        value: \"learning-services-20261018\"\n        action: upsert\n  # Associate\
+    ] != \"local\"'\n        - 'resource.attributes[\"k8s.namespace.name\"] != \"\
+    account\" and resource.attributes[\"k8s.namespace.name\"] != \"synthetic-services\"\
+    '\n  resource/real_namespace:\n    attributes:\n      - key: k8s.namespace.name\n\
+    \        value: \"synthetic-services\"\n        action: upsert\n  # Associate\
     \ only the SDK's Pod UID; never fall back to source IP.\n  k8sattributes/account:\n\
     \    auth_type: serviceAccount\n    passthrough: false\n    filter:\n      namespace:\
-    \ \"learning-services-20261018\"\n    pod_association:\n      - sources: [{from:\
-    \ resource_attribute, name: k8s.pod.uid}]\n    extract:\n      metadata: [k8s.pod.uid]\n\
-    \      labels:\n        - {tag_name: rollout_revision, key: rollouts-pod-template-hash,\
-    \ from: pod}\n        - {tag_name: learning_service, key: learning.local/service,\
-    \ from: pod}\n  transform/revision:\n    error_mode: propagate\n    metric_statements:\n\
+    \ \"synthetic-services\"\n    pod_association:\n      - sources: [{from: resource_attribute,\
+    \ name: k8s.pod.uid}]\n    extract:\n      metadata: [k8s.pod.uid]\n      labels:\n\
+    \        - {tag_name: rollout_revision, key: rollouts-pod-template-hash, from:\
+    \ pod}\n        - {tag_name: learning_service, key: learning.local/service, from:\
+    \ pod}\n  transform/revision:\n    error_mode: propagate\n    metric_statements:\n\
     \      - context: datapoint\n        conditions:\n          - 'metric.name ==\
     \ \"pe_http_server_requests\" or metric.name == \"pe_http_server_request_duration\"\
     \ or metric.name == \"pe_go_goroutines\"'\n        statements:\n          # Override\
@@ -829,7 +831,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 5f13bacc93555db9d722ed209e121e4c0c92a63be7c8d15ef61a08c1bc300701
+        checksum/config: 68b2175e6bb9f6df26adcbdeeb6833fac5a8a3c159a17552c2904ad1279cd974
       labels:
         app.kubernetes.io/part-of: learning-monitoring
         learning.local/owner: codex-local-learning

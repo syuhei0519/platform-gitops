@@ -14,7 +14,7 @@ ROOT=Path(__file__).resolve().parent
 PLATFORM=ROOT.parents[1]
 APP='learning-account-release'
 CONTROL='learning-progressive-control'
-SERVICES='learning-services-20261018'
+SERVICES='synthetic-services'
 ISTIO='istio-learning-system'
 SERVER='https://kubernetes.default.svc.cluster.local:443'
 CACHE_NS=[SERVICES,CONTROL,'observability','learning-istio-demo',ISTIO,APP]
@@ -42,6 +42,24 @@ def protect(doc):
 
 def json_input(name):return json.loads((ROOT/'inputs'/name).read_text())
 
+def account_client_template():
+    return {
+      'apiVersion':'platform.lab/v1alpha1','kind':'SyntheticManifestTemplate',
+      'metadata':{'name':'account-release-client','annotations':{
+        'platform.lab/synthetic':'true','platform.lab/not-live-evidence':'true'}},
+      'spec':{
+        'description':'Public schema-only example. Render the real ConfigMap and Deployment into a Git-ignored runtime directory using an approved target contract.',
+        'runtimeInputs':{
+          'context':'<runtime-input:kube-context>',
+          'namespace':'<runtime-input:application-namespace>',
+          'controlNamespace':'<runtime-input:argocd-core-namespace>',
+          'rolloutsNamespace':'<runtime-input:rollouts-namespace>',
+          'server':'<runtime-input:cluster-server>'},
+        'workload':{
+          'kind':'Deployment','name':'account-release-client',
+          'automountServiceAccountToken':False,'runAsNonRoot':True,
+          'image':'<runtime-input:verified-client-image>'}}}
+
 def build(helm,manifest):
     lock=json.loads((PLATFORM/'learning/istio/versions.lock.json').read_text())
     if hashlib.sha256(Path(helm).read_bytes()).hexdigest()!=lock['helm']['binary']['sha256']:
@@ -52,8 +70,8 @@ def build(helm,manifest):
             p=Path(t)/'values.yaml';p.write_text(yaml.safe_dump(values))
             raw=subprocess.check_output([helm,'template',release,str(chart),'--namespace',ns,'--kube-version','1.36.4','-f',str(p)],text=True)
         return [x for x in yaml.safe_load_all(raw) if x]
-    namespaces=json_input('namespace-identities.json')
-    crds=json_input('crd-contracts.json')
+    namespaces=json_input('namespace-identities.template.json')
+    crds=json_input('crd-contracts.template.json')
     if len(namespaces)!=12 or len(crds)!=21:raise ValueError('reviewed baseline changed')
     nsnames=sorted([x['name'] for x in namespaces]+[APP])
     crdnames=sorted(x['name'] for x in crds)
@@ -186,22 +204,17 @@ def build(helm,manifest):
        annotations={'argocd.argoproj.io/sync-wave':'1','argocd.argoproj.io/sync-options':'Prune=false,Delete=false'}),
        spec=dict(backoffLimit=0,activeDeadlineSeconds=180,template=migration))
     outputs['account-initialization.yaml']=[job]
-    client_labels={'app':'account-release-client','version':'client','learning.local/owner':'plat170-account'}
-    client_cm=obj('ConfigMap','account-release-client',APP,data={n:(manifest/'learning/account-release'/n).read_text()
-                        for n in ['load.py','contract.py','deployment_target.py']})
-    client=dict(apiVersion='apps/v1',kind='Deployment',metadata=dict(name='account-release-client',namespace=APP),
-       spec=dict(replicas=1,selector=dict(matchLabels={'app':'account-release-client'}),template=dict(
-         metadata=dict(labels=client_labels,annotations={'sidecar.istio.io/inject':'true','proxy.istio.io/config':'{"holdApplicationUntilProxyStarts":true}'}),
-         spec=dict(automountServiceAccountToken=False,securityContext=dict(runAsNonRoot=True,runAsUser=10001,runAsGroup=10001,seccompProfile={'type':'RuntimeDefault'}),
-           containers=[dict(name='client',image=lock['images']['fixture']['ref'],command=['python3','-c','import time; time.sleep(86400)'],
-             securityContext=dict(allowPrivilegeEscalation=False,readOnlyRootFilesystem=True,capabilities={'drop':['ALL']}),
-             resources=dict(requests=dict(cpu='10m',memory='32Mi'),limits=dict(cpu='200m',memory='128Mi')),
-             volumeMounts=[dict(name='code',mountPath='/work',readOnly=True)])],
-           volumes=[dict(name='code',configMap=dict(name='account-release-client'))]))))
-    outputs['account-client.yaml']=[client_cm,client]
+    # Public output is schema-only. The real target and verified client image are
+    # rendered into Git-ignored runtime evidence after a separate approval.
+    outputs['account-client.template.yaml']=[account_client_template()]
     # Existing data may be disposable; no destructive storage change is needed
     # for this minimal adoption. Record exact identities for any later decision.
-    outputs['existing-pv-decision.json']=dict(action='preserve-in-place; no patch/delete required',pvs=json_input('pv-identities.json'))
+    outputs['existing-pv-decision.template.json']=dict(
+        synthetic=True,
+        description=('Public schema-only example. Resolve every runtime input in a '
+                     'Git-ignored evidence directory before an approved execution.'),
+        action='runtime-decision-required',
+        pvs=json_input('pv-identities.template.json'))
     cm=json_input('argocd-config.json');inc=yaml.safe_load(cm['data']['resource.inclusions'])
     inc += [dict(apiGroups=[''],kinds=['Namespace','ServiceAccount','ConfigMap','PersistentVolumeClaim'],clusters=[SERVER]),
       dict(apiGroups=['apps'],kinds=['StatefulSet'],clusters=[SERVER]),dict(apiGroups=['argoproj.io'],kinds=['Application','AppProject','Experiment'],clusters=[SERVER]),

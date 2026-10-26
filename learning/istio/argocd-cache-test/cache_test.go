@@ -22,7 +22,7 @@ import (
 )
 
 func TestIstioRegistrationCache(t *testing.T) {
-	const account = "learning-services-20261018"
+	const account = "synthetic-services"
 	const demo = "learning-istio-demo"
 	type rule struct {
 		Groups    []string `json:"apiGroups"`

@@ -41,7 +41,7 @@ class CurrentContractTests(unittest.TestCase):
         conditions = config['processors']['filter/account']['metrics']['metric']
         expected = (
             'resource.attributes["k8s.namespace.name"] != "account" and '
-            'resource.attributes["k8s.namespace.name"] != "learning-services-20261018"')
+            'resource.attributes["k8s.namespace.name"] != "synthetic-services"')
         self.assertIn(expected, conditions)
         self.assertNotIn(
             'resource.attributes["k8s.namespace.name"] != "account"', conditions)
@@ -50,7 +50,7 @@ class CurrentContractTests(unittest.TestCase):
             if item['key'] == 'k8s.namespace.name')
         self.assertEqual(namespace_attribute,
                          {'key': 'k8s.namespace.name',
-                          'value': 'learning-services-20261018',
+                          'value': 'synthetic-services',
                           'action': 'upsert'})
 
     def test_wrong_current_root_source_fails(self):
@@ -114,7 +114,15 @@ class CurrentContractTests(unittest.TestCase):
         pvc = next(doc for doc in resources['lab-learning-services']
                    if doc['kind'] == 'PersistentVolumeClaim')
         pvc['spec']['volumeName'] = 'pvc-replaced-without-review'
-        with self.assertRaisesRegex(ContractError, 'pvc-immutable-contract'):
+        with self.assertRaisesRegex(ContractError, 'pvc-runtime-identity-shape'):
+            validate_resources(resources, self.contract)
+
+    def test_unreviewed_runtime_namespace_fails_public_contract(self):
+        resources = copy.deepcopy(self.resources)
+        for doc in resources['lab-learning-services']:
+            if doc.get('metadata', {}).get('namespace'):
+                doc['metadata']['namespace'] = 'unreviewed-runtime-namespace'
+        with self.assertRaisesRegex(ContractError, 'runtime-services-namespace-shape'):
             validate_resources(resources, self.contract)
 
     def test_pvc_volume_mode_mutation_fails(self):

@@ -9,7 +9,7 @@
     "metadata": {
       "type": "object", "additionalProperties": false,
       "required": ["name", "purpose"],
-      "properties": {"name": {"const": "account-lightweight-fresh"}, "purpose": {"const": "PLAT-213-offline-design"}}
+      "properties": {"name": {"const": "account-lightweight-fresh"}, "purpose": {"enum": ["public-template-copy-to-gitignored-runtime-evidence", "runtime-evidence"]}}
     },
     "spec": {
       "type": "object", "additionalProperties": false,
@@ -21,7 +21,7 @@
           "required": ["mode", "workload", "currentClusterExcluded", "legacyPlatformLabExcluded", "cutoverIncluded"],
           "properties": {
             "mode": {"const": "empty-data-build"}, "workload": {"const": "account-only"},
-            "currentClusterExcluded": {"const": "kind-learning-20261018-69c763"},
+            "currentClusterExcluded": {"type": "string", "minLength": 1},
             "legacyPlatformLabExcluded": {"const": true}, "cutoverIncluded": {"const": false}
           }
         },
@@ -101,7 +101,7 @@
         "contracts": {
           "type": "object", "additionalProperties": false,
           "required": ["currentComparison", "equivalence", "secretContract", "imageSupply"],
-          "properties": {"currentComparison": {"type": "string"}, "equivalence": {"type": "string"}, "secretContract": {"type": "string"}, "imageSupply": {"const": "learning/fresh-profile/image-supply.lock.yaml"}}
+          "properties": {"currentComparison": {"type": "string"}, "equivalence": {"type": "string"}, "secretContract": {"type": "string"}, "imageSupply": {"enum": ["learning/fresh-profile/.runtime/image-supply.runtime.local.yaml", "image-supply.lock.yaml"]}}
         },
         "decisions": {
           "type": "object", "additionalProperties": false, "required": ["G1", "G2", "G3", "G4"],
@@ -113,7 +113,7 @@
   "definitions": {
     "repository": {
       "type": "object", "additionalProperties": false, "required": ["url", "commit"],
-      "properties": {"url": {"type": "string", "pattern": "^https://github.com/syuhei0519/[a-z-]+\\.git$"}, "commit": {"type": "string", "pattern": "^([0-9a-f]{40}|__PLATFORM_GITOPS_SHA__)$"}}
+      "properties": {"url": {"type": "string", "pattern": "^https://github.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\\.git$"}, "commit": {"type": "string", "pattern": "^([0-9a-f]{40}|__PLATFORM_GITOPS_SHA__)$"}}
     },
     "image": {
       "type": "object", "additionalProperties": false, "required": ["name", "ref", "architecture"],
@@ -122,7 +122,7 @@
     "secretReference": {
       "type": "object", "additionalProperties": false,
       "required": ["name", "purpose", "destination", "owner", "expiry", "sourceRef"],
-      "properties": {"name": {"type": "string"}, "purpose": {"type": "string"}, "destination": {"type": "string"}, "owner": {"type": "string"}, "expiry": {"type": "string"}, "sourceRef": {"type": "string", "pattern": "^(<operator-input:G3-[a-z-]+>|sealed-input:sha256:[0-9a-f]{64})$"}}
+      "properties": {"name": {"type": "string"}, "purpose": {"type": "string"}, "destination": {"type": "string"}, "owner": {"type": "string"}, "expiry": {"type": "string"}, "sourceRef": {"type": "string", "pattern": "^(<runtime-input:[a-z-]+>|sealed-input:sha256:[0-9a-f]{64})$"}}
     },
     "decision": {
       "type": "object", "additionalProperties": false, "required": ["status", "choice"],
@@ -132,12 +132,12 @@
       "type": "object", "additionalProperties": false,
       "required": ["capturedAt", "logicalCpu", "installedMemoryGiB", "availableMemoryGiB", "freeDiskGiB", "dockerCpuLimit", "dockerMemoryLimitGiB", "dockerImagesGiB", "dockerVolumesGiB", "dockerBuildCacheGiB", "existingRunningContainers"],
       "properties": {
-        "capturedAt": {"type": "string"}, "logicalCpu": {"const": 20},
-        "installedMemoryGiB": {"const": 31.84}, "availableMemoryGiB": {"const": 5.83},
-        "freeDiskGiB": {"const": 440.13}, "dockerCpuLimit": {"const": 20},
-        "dockerMemoryLimitGiB": {"const": 15.53}, "dockerImagesGiB": {"const": 10.86},
-        "dockerVolumesGiB": {"const": 11.21}, "dockerBuildCacheGiB": {"const": 2.847},
-        "existingRunningContainers": {"const": 1}
+        "capturedAt": {"type": "string"}, "logicalCpu": {"type": ["integer", "string"]},
+        "installedMemoryGiB": {"type": ["number", "string"]}, "availableMemoryGiB": {"type": ["number", "string"]},
+        "freeDiskGiB": {"type": ["number", "string"]}, "dockerCpuLimit": {"type": ["number", "string"]},
+        "dockerMemoryLimitGiB": {"type": ["number", "string"]}, "dockerImagesGiB": {"type": ["number", "string"]},
+        "dockerVolumesGiB": {"type": ["number", "string"]}, "dockerBuildCacheGiB": {"type": ["number", "string"]},
+        "existingRunningContainers": {"type": ["integer", "string"]}
       }
     },
     "estimates": {
@@ -159,16 +159,21 @@
     },
     "approvalLimits": {
       "type": "object", "additionalProperties": false,
-      "required": ["elapsedMaxMinutes", "hostAvailableMemoryMinGiB", "hostFreeDiskMinGiB", "dockerAdditionalDiskMaxGiB", "workloadCPURequestsMaxMilli", "workloadMemoryRequestsMaxMiB", "imageBytesMaxGiB", "podPendingMaxSeconds", "unexpectedRestartsMax"],
+      "required": ["elapsedMaxMinutes", "hostAvailableMemoryMinGiB", "hostAvailableMemoryStopBelowGiB", "hostFreeDiskMinGiB", "dockerAdditionalDiskMaxGiB", "freshMemoryMaxGiB", "combinedDockerMemoryStopAboveGiB", "workloadCPURequestsMaxMilli", "workloadMemoryRequestsMaxMiB", "imageBytesMaxGiB", "podPendingMaxSeconds", "controllerReadyMaxSeconds", "credentialLifetimeMaxMinutes", "unexpectedRestartsMax"],
       "properties": {
         "elapsedMaxMinutes": {"type": ["integer", "string"]},
         "hostAvailableMemoryMinGiB": {"type": ["number", "string"]},
+        "hostAvailableMemoryStopBelowGiB": {"type": ["number", "string"]},
         "hostFreeDiskMinGiB": {"type": ["number", "string"]},
         "dockerAdditionalDiskMaxGiB": {"type": ["number", "string"]},
+        "freshMemoryMaxGiB": {"type": ["number", "string"]},
+        "combinedDockerMemoryStopAboveGiB": {"type": ["number", "string"]},
         "workloadCPURequestsMaxMilli": {"type": ["integer", "string"]},
         "workloadMemoryRequestsMaxMiB": {"type": ["integer", "string"]},
         "imageBytesMaxGiB": {"type": ["number", "string"]},
         "podPendingMaxSeconds": {"type": ["integer", "string"]},
+        "controllerReadyMaxSeconds": {"type": ["integer", "string"]},
+        "credentialLifetimeMaxMinutes": {"type": ["integer", "string"]},
         "unexpectedRestartsMax": {"const": 0}
       }
     }

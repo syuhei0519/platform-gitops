@@ -25,8 +25,8 @@ if __name__=='__main__':
         engine=target/'gitops-engine'
         shutil.copyfile(ROOT/'argocd-cache-test/cache_test.go',engine/'pkg/cache/istio_registration_test.go')
         demo=next(d for d in access.proposal('learning-core-test','test',target) if d['kind']=='Role' and d['metadata']['name']=='mesh-argocd')
-        old=access.base.render('learning-services-20261018','learning-core-test','test',target)
+        old=access.base.render(f'learning-{access.REGISTERED_SERVICES}','learning-core-test','test',target)
         account=next(d for d in old['target.yaml'] if d['kind']=='Role' and d['metadata']['name']=='argocd-learning')
-        (engine/'pkg/cache/roles.json').write_text(json.dumps({access.NS:demo['rules'],'learning-services-20261018':account['rules']}))
+        (engine/'pkg/cache/roles.json').write_text(json.dumps({access.NS:demo['rules'],access.REGISTERED_SERVICES:account['rules']}))
         env=dict(os.environ,GOFLAGS='-mod=readonly -buildvcs=false')
         subprocess.run(['go','test','./pkg/cache','-run','^TestIstioRegistrationCache$','-count=1','-timeout','90s','-v'],cwd=engine,env=env,check=True)

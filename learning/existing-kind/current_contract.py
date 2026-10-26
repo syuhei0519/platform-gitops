@@ -9,6 +9,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 
 import yaml
@@ -26,6 +27,12 @@ CLUSTER_SCOPED = {
 }
 RBAC = {'Role', 'RoleBinding', 'ClusterRole', 'ClusterRoleBinding'}
 DEFINITION_REVISION = '1111111111111111111111111111111111111111'
+PVC_VOLUME = re.compile(
+    r'^pvc-[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-'
+    r'[89ab][0-9a-f]{3}-[0-9a-f]{12}$')
+RUNTIME_PVC_VOLUME = '<runtime-input:pvc-volume-name>'
+PUBLIC_SERVICES_NAMESPACE = 'synthetic-services'
+RUNTIME_SERVICES_NAMESPACE = re.compile(r'^learning-services-[0-9]{8}$')
 
 
 class ContractError(ValueError):
@@ -64,6 +71,18 @@ def identity(doc):
 
 def identity_text(doc):
     return '|'.join(identity(doc))
+
+
+def public_contract_identity(doc, application_contract):
+    """Normalize one structurally valid runtime namespace to its public marker."""
+    key = identity(doc)
+    if (application_contract['destination'] == PUBLIC_SERVICES_NAMESPACE
+            and key[2] != ''):
+        require(key[2] == PUBLIC_SERVICES_NAMESPACE
+                or RUNTIME_SERVICES_NAMESPACE.fullmatch(key[2]) is not None,
+                f'runtime-services-namespace-shape:{key[2]}')
+        return key[0], key[1], PUBLIC_SERVICES_NAMESPACE, key[3]
+    return key
 
 
 def permission_set(items, reason):
@@ -284,7 +303,7 @@ def validate_resources(resources, contract):
                     f'api-version-contract:{application}:{doc["kind"]}:{doc["apiVersion"]}')
             metadata = doc.get('metadata') or {}
             require(isinstance(metadata.get('name'), str) and metadata['name'], f'name:{application}')
-            key = identity(doc)
+            key = public_contract_identity(doc, expected)
             require(key not in seen, f'duplicate-identity:{key}:{seen.get(key)}:{application}')
             seen[key] = application
             require(key[2] in allowed_namespaces, f'resource-namespace:{application}:{key}')
@@ -299,10 +318,24 @@ def validate_resources(resources, contract):
                         f'pvc-delete-protection:{key}')
                 pvc_key = f"{key[2]}/{key[3]}"
                 spec = doc.get('spec', {})
+                require(pvc_key in contract['persistentVolumeClaims'],
+                        f'pvc-contract-key:{pvc_key}')
+                expected_volume = contract['persistentVolumeClaims'][pvc_key]['volumeName']
+                observed_volume = spec.get('volumeName')
+                if expected_volume == RUNTIME_PVC_VOLUME:
+                    require(isinstance(observed_volume, str)
+                            and PVC_VOLUME.fullmatch(observed_volume) is not None,
+                            'pvc-runtime-identity-shape')
+                    recorded_volume = RUNTIME_PVC_VOLUME
+                else:
+                    recorded_volume = observed_volume
                 pvcs[pvc_key] = {
                     'storageClassName': spec.get('storageClassName'),
                     'accessModes': spec.get('accessModes'),
-                    'volumeName': spec.get('volumeName'),
+                    # Exact bound PV names are environment evidence.  The public
+                    # contract validates shape only; approved live execution must
+                    # compare the exact value with its Git-ignored runtime record.
+                    'volumeName': recorded_volume,
                     'volumeMode': spec.get('volumeMode'),
                     'selector': spec.get('selector'),
                     'dataSource': spec.get('dataSource'),
@@ -312,7 +345,8 @@ def validate_resources(resources, contract):
                 require(metadata.get('annotations', {}).get('argocd.argoproj.io/sync-options') == PROTECTED,
                         f'job-delete-protection:{key}')
                 jobs[f"{key[2]}/{key[3]}"] = application
-        actual_identities = sorted(identity_text(doc) for doc in docs)
+        actual_identities = sorted('|'.join(public_contract_identity(doc, expected))
+                                   for doc in docs)
         require(actual_identities == sorted(expected_identities[application]),
                 f'resource-identities:{application}')
     require(secrets == set(contract['secretReferences']), f'secret-reference-set:{sorted(secrets)}')

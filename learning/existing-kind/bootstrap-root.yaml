@@ -11,7 +11,7 @@ spec:
   - https://github.com/syuhei0519/application-manifest.git
   destinations:
   - server: https://kubernetes.default.svc.cluster.local:443
-    namespace: learning-services-20261018
+    namespace: synthetic-services
   - server: https://kubernetes.default.svc.cluster.local:443
     namespace: learning-progressive-control
   - server: https://kubernetes.default.svc.cluster.local:443

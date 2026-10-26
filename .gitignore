@@ -7,6 +7,14 @@
 .validation/
 .oci/
 .oci-budget-*/
+.tools/
+learning/fresh-profile/.runtime/
+learning/fresh-profile/*.runtime.local.yaml
+learning/fresh-profile/*.runtime.local.json
+learning/existing-kind/.runtime/
+learning/existing-kind/*.runtime.local.yaml
+learning/existing-kind/*.runtime.local.json
+learning/sonarqube/.runtime/
 __pycache__/
 
 # Generated evidence stays in CI artifacts.

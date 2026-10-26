@@ -15,10 +15,9 @@ from jsonschema import Draft7Validator
 
 
 HERE = Path(__file__).resolve().parent
-RECORD = HERE / "acceptance.pending.json"
+RECORD = HERE / "acceptance.template.json"
 SCHEMA = HERE / "acceptance.schema.json"
-PROFILE = HERE / "profile.lock.yaml"
-CURRENT_CLUSTER = "kind-learning-20261018-69c763"
+PROFILE = HERE / "profile.template.yaml"
 RUN_MODES = ["first", "rerun", "resume-after-interruption"]
 STEPS = [
     "preflight", "image-source", "cluster", "empty-node-cache", "image-import", "crds", "controllers",
@@ -158,8 +157,12 @@ def validate(record_path: Path = RECORD, require_complete: bool = False,
 
     profile, _, _ = profile_contract.validate(profile_path, require_approved=require_complete)
     spec = profile["spec"]
-    if record["profile"]["sha256"] != file_sha256(profile_path):
+    profile_digest = record["profile"]["sha256"]
+    if (profile_digest != "<runtime-input:profile-sha256>"
+            and profile_digest != file_sha256(profile_path)):
         raise AcceptanceError("profile-digest")
+    if require_complete and profile_digest == "<runtime-input:profile-sha256>":
+        raise AcceptanceError("profile-digest-placeholder")
     repositories = {name: value["commit"] for name, value in spec["repositories"].items()}
     if record["profile"]["repositories"] != repositories:
         raise AcceptanceError("repository-revisions")
@@ -170,7 +173,10 @@ def validate(record_path: Path = RECORD, require_complete: bool = False,
         raise AcceptanceError("kubeconfig-reference")
     if target["architecture"] != spec["target"]["architecture"]:
         raise AcceptanceError("target-architecture")
-    if target["clusterName"] == CURRENT_CLUSTER or target["context"] == CURRENT_CLUSTER:
+    protected_cluster = spec["scope"]["currentClusterExcluded"]
+    if (target["clusterName"] == protected_cluster
+            or target["context"] == protected_cluster
+            or target["context"] == "kind-" + protected_cluster.removeprefix("kind-")):
         raise AcceptanceError("current-cluster-target")
 
     expected_images = {}

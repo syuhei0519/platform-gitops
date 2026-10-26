@@ -1,0 +1,19 @@
+{
+  "apiVersion": "platform.lab/v1alpha1",
+  "kind": "ExistingKindCaptureRuntime",
+  "synthetic": true,
+  "target": {
+    "context": "<runtime-input:kube-context>",
+    "kubeSystemUid": "<runtime-input:kube-system-uid>"
+  },
+  "namespaces": {
+    "services": "<runtime-input:services-namespace>",
+    "observability": "<runtime-input:observability-namespace>",
+    "meshFixture": "<runtime-input:mesh-fixture-namespace>",
+    "argocdCore": "<runtime-input:argocd-core-namespace>"
+  },
+  "exclusions": {
+    "names": {},
+    "prefixes": {}
+  }
+}

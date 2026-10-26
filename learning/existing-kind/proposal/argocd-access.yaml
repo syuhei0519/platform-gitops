@@ -2,7 +2,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: learning-gitops-adoption
-  namespace: learning-services-20261018
+  namespace: synthetic-services
 rules:
 - apiGroups:
   - ''
@@ -97,7 +97,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: learning-gitops-adoption
-  namespace: learning-services-20261018
+  namespace: synthetic-services
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -722,11 +722,11 @@ rules:
   - learning-account-release
   - learning-istio-demo
   - learning-progressive-control
-  - learning-services-20261018
   - learning-slo-alerts
   - local-path-storage
   - observability
   - sonarqube
+  - synthetic-services
 - apiGroups:
   - apiextensions.k8s.io
   resources:

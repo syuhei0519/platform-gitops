@@ -11,12 +11,12 @@ No actual migration, API/data acceptance or final PLAT-199 pass is claimed.
   namespace ServiceAccounts. Corrected approval-scope.md to distinguish direct
   Secret API permissions from effective workload authority. This risk is part of
   the pending decision, not an assertion of credential isolation.
-* Targeted static check passed: all 572 inventoried identities map to ownership
-  rows, eight access documents parse, and the new role rules contain no delete,
-  direct Secret, wildcard-resource or cluster-scoped grant.
-* Live baseline: 32 Pods, 28 Running, all Running container statuses Ready;
-  four completed migration Pods retained. pod-baseline.json captures UID and
-  runtime imageID for later comparison.
+* The targeted static check verified that the captured inventory and ownership
+  rows agreed and that the proposed role rules contained no delete, direct
+  Secret, wildcard-resource or cluster-scoped grant. Exact object counts and
+  identities are retained only in Git-ignored runtime evidence.
+* Live Pod UID, image ID, readiness and restart baselines are runtime evidence,
+  not public acceptance facts. `pod-baseline.template.json` is schema-only.
 * The source check found no AGENTS.md or .agents/skills/SKILL.md in the four
   checked-out repositories. README, CI validation entrypoints and relevant
   progressive-delivery/Sonar/cache/Account handoff instructions were read.

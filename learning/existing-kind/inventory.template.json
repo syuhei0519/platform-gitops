@@ -1,0 +1,8 @@
+{
+  "synthetic": true,
+  "description": "Schema-only example. Copy to .runtime/inventory.runtime.local.json and replace every runtime input from an approved read-only capture.",
+  "collectedAt": null,
+  "context": "<runtime-input:kube-context>",
+  "resources": [],
+  "errors": []
+}

@@ -28,12 +28,26 @@ SENSITIVE_FRAGMENTS = ("--password", "--token", "--auth-token", "password=", "to
 REQUIRED_STEP_HEALTH = {
     "empty-node-cache": {"node-cache-empty"},
     "image-import": {"node-images-present"},
+    "crds": {"conditions"},
+    "controllers": {"workload-ready"},
     "database": {"argocd-operation-succeeded", "statefulset-ready", "pvc-bound"},
     "role-bootstrap": {"argocd-operation-succeeded", "job-complete"},
     "migration": {"argocd-operation-succeeded", "job-complete"},
     "application": {"argocd-application-ready", "rollout-ready"},
 }
 STEP_RESOURCE_CONTRACTS = {
+    "crds": {
+        ("apiextensions.k8s.io/v1",
+         "CustomResourceDefinition/None/analysisruns.argoproj.io", "conditions"),
+        ("apiextensions.k8s.io/v1",
+         "CustomResourceDefinition/None/analysistemplates.argoproj.io", "conditions"),
+        ("apiextensions.k8s.io/v1",
+         "CustomResourceDefinition/None/clusteranalysistemplates.argoproj.io", "conditions"),
+        ("apiextensions.k8s.io/v1",
+         "CustomResourceDefinition/None/experiments.argoproj.io", "conditions"),
+        ("apiextensions.k8s.io/v1",
+         "CustomResourceDefinition/None/rollouts.argoproj.io", "conditions"),
+    },
     "database": {
         ("argoproj.io/v1alpha1", "Application/fresh-control/fresh-account-release",
          "argocd-operation-succeeded"),
@@ -82,6 +96,7 @@ ARGO_SYNC_RESOURCES = {
 KUBECTL_RESOURCES = {
     "application": ("argoproj.io/v1alpha1", "Application"),
     "configmap": ("v1", "ConfigMap"),
+    "customresourcedefinition": ("apiextensions.k8s.io/v1", "CustomResourceDefinition"),
     "deployment": ("apps/v1", "Deployment"),
     "destinationrule": ("networking.istio.io/v1beta1", "DestinationRule"),
     "job": ("batch/v1", "Job"),
@@ -96,13 +111,15 @@ KUBECTL_RESOURCES = {
     "virtualservice": ("networking.istio.io/v1beta1", "VirtualService"),
 }
 HELM_RELEASES = {
-    "crds": {("argo-rollouts-crds", "fresh-control")},
     "controllers": {
         ("argo-cd", "fresh-control"),
         ("argo-rollouts", "fresh-control"),
         ("istiod", "istio-system"),
     },
 }
+ROLLOUTS_CHART_VERSION = "2.43.7"
+ROLLOUTS_CHART_SHA256 = "166506174f4be91ed2758fccbca340e209cba35aa72ac08b5863a7b797942487"
+ROLLOUTS_CRD_LIST_SHA256 = "9c4794e462b522f45077f0dabaf39df1ba3a35d29ec28787f6007ea989ddf07b"
 
 
 class AdapterRejected(ValueError):
@@ -195,7 +212,17 @@ def supply_plan_contract(supply_lock: dict, profile_spec: dict) -> dict:
             "sha256": archive_digest.removeprefix("sha256:"),
             "sourceIdentity": source_identity,
         }
-    return {"kindNodeRef": profile_images["kind-node"], "hostArtifacts": artifacts}
+    return {
+        "kindNodeRef": profile_images["kind-node"],
+        "hostArtifacts": artifacts,
+        "helmCharts": {
+            "argo-rollouts": {
+                "version": ROLLOUTS_CHART_VERSION,
+                "sha256": ROLLOUTS_CHART_SHA256,
+                "crdListSha256": ROLLOUTS_CRD_LIST_SHA256,
+            },
+        },
+    }
 
 
 def _bound_content_path(command: dict) -> str:
@@ -267,7 +294,17 @@ class ApprovedLiveAdapter:
                 target.get(name) != expected_target.get(name)
                 for name in ("clusterName", "context")):
             raise AdapterRejected("target-contract")
-        self.expected_kind_node_ref = (expected_supply_contract or {}).get("kindNodeRef")
+        supply_contract = expected_supply_contract or {}
+        self.expected_kind_node_ref = supply_contract.get("kindNodeRef")
+        self.expected_helm_charts = supply_contract.get("helmCharts", {})
+        if expected_supply_contract is not None:
+            expected_chart = self.expected_helm_charts.get("argo-rollouts")
+            if (not isinstance(expected_chart, dict)
+                    or set(expected_chart) != {"version", "sha256", "crdListSha256"}
+                    or expected_chart["version"] != ROLLOUTS_CHART_VERSION
+                    or expected_chart["sha256"] != ROLLOUTS_CHART_SHA256
+                    or expected_chart["crdListSha256"] != ROLLOUTS_CRD_LIST_SHA256):
+                raise AdapterRejected("supply-rollouts-chart")
         self._reject_environment_override(target)
         if set(self.plan["tools"]) != ALLOWED_TOOLS:
             raise AdapterRejected("tool-set")
@@ -297,6 +334,23 @@ class ApprovedLiveAdapter:
             if not all(isinstance(actions[name], list)
                        for name in ("verify", "reconcile", "run", "hostArtifacts")):
                 raise AdapterRejected("step-actions:" + step)
+            if any(not isinstance(command, dict)
+                   for name in ("verify", "reconcile", "run")
+                   for command in actions[name]):
+                raise AdapterRejected("step-command-object:" + step)
+            if step == "crds" and (len(actions["run"]) != 1
+                                    or actions["run"][0].get("tool") != "kubectl"):
+                raise AdapterRejected("crds-single-apply")
+            if step == "controllers":
+                rollout_installs = []
+                for command in actions["run"]:
+                    args = command.get("args", [])
+                    if (command.get("tool") == "helm" and "--install" in args
+                            and args.index("--install") + 1 < len(args)
+                            and args[args.index("--install") + 1] == "argo-rollouts"):
+                        rollout_installs.append(command)
+                if len(rollout_installs) != 1:
+                    raise AdapterRejected("rollouts-controller-install-count")
             if (not isinstance(actions["resourceIdentities"], list)
                     or not actions["resourceIdentities"]
                     or not all(isinstance(item, str) and item
@@ -320,6 +374,12 @@ class ApprovedLiveAdapter:
             for item in observations:
                 self._validate_observation(item, step)
                 observation_identities.append(item["identity"])
+            if step == "crds" and any(
+                    item["generationPolicy"] != "none"
+                    or item["healthPolicy"] != "conditions"
+                    or item["requiredConditions"] != {"Established": "True"}
+                    for item in observations):
+                raise AdapterRejected("crd-established-contract")
             if (len(observation_identities) != len(set(observation_identities))
                     or observation_identities != actions["resourceIdentities"]):
                 raise AdapterRejected("step-observation-identities:" + step)
@@ -328,11 +388,15 @@ class ApprovedLiveAdapter:
                                            for item in observations):
                 raise AdapterRejected("step-semantic-health:" + step)
             required_resources = STEP_RESOURCE_CONTRACTS.get(step)
+            actual_resources = {
+                (item["apiVersion"], item["identity"], item["healthPolicy"])
+                for item in observations
+            }
+            if (step == "controllers"
+                    and ("apps/v1", "Deployment/fresh-control/argo-rollouts",
+                         "workload-ready") not in actual_resources):
+                raise AdapterRejected("rollouts-controller-observation")
             if required_resources is not None:
-                actual_resources = {
-                    (item["apiVersion"], item["identity"], item["healthPolicy"])
-                    for item in observations
-                }
                 if actual_resources != required_resources:
                     raise AdapterRejected("step-resource-contract:" + step)
             if step in {"empty-node-cache", "image-import"}:
@@ -463,6 +527,22 @@ class ApprovedLiveAdapter:
                 if rest != expected:
                     raise AdapterRejected("kubectl-node-read-command")
                 return
+            if step == "crds":
+                expected_suffix = (["--ignore-not-found=true", "--output", "json"]
+                                   if section == "reconcile" else ["--output", "json"])
+                if (len(rest) != 3 + len(expected_suffix) or rest[0] != "get"
+                        or rest[1] != "customresourcedefinition"
+                        or rest[3:] != expected_suffix):
+                    raise AdapterRejected("kubectl-crd-read-command")
+                api_kind = KUBECTL_RESOURCES["customresourcedefinition"]
+                identity = f"{api_kind[1]}/None/{rest[2]}"
+                expected_targets = {
+                    (item["apiVersion"], item["identity"])
+                    for item in self.plan["steps"][step]["observations"]
+                }
+                if (api_kind[0], identity) not in expected_targets:
+                    raise AdapterRejected("kubectl-read-target")
+                return
             if (len(rest) != 7 or rest[0] != "get" or rest[3] != "--namespace"
                     or rest[5:] != ["--output", "json"]):
                 raise AdapterRejected("kubectl-read-command")
@@ -487,6 +567,8 @@ class ApprovedLiveAdapter:
             if (not manifest_path.is_absolute() or not manifest_path.is_file()
                     or content_digest is None or _sha256(manifest_path) != content_digest):
                 raise AdapterRejected("kubectl-manifest-path")
+            if step == "crds" and content_digest != ROLLOUTS_CRD_LIST_SHA256:
+                raise AdapterRejected("crds-official-render-hash")
             expected_targets = {
                 (item["apiVersion"], item["identity"])
                 for item in self.plan["steps"][step]["observations"]
@@ -517,6 +599,8 @@ class ApprovedLiveAdapter:
             if not all(isinstance(value, str) and value
                        for value in (api_version, kind, name, namespace)):
                 raise AdapterRejected("kubectl-manifest-identity")
+            if kind == "CustomResourceDefinition" and "namespace" in metadata:
+                raise AdapterRejected("kubectl-crd-must-be-cluster-scoped")
             identity = f"{kind}/{namespace}/{name}"
             target = (api_version, identity)
             if target in identities:
@@ -569,14 +653,22 @@ class ApprovedLiveAdapter:
         rest = self._exact_prefix(args, prefix)
         if section != "run" or step not in HELM_RELEASES:
             raise AdapterRejected("helm-operation")
-        if len(rest) != 12 or rest[:2] != ["upgrade", "--install"]:
+        if len(rest) < 12 or rest[:2] != ["upgrade", "--install"]:
             raise AdapterRejected("helm-command")
         release, chart = rest[2], rest[3]
+        tail = ["--atomic", "--wait", "--wait-for-jobs", "--create-namespace"]
+        if release == "argo-rollouts":
+            tail = ["--set", "installCRDs=false", *tail]
+        expected_chart = self.expected_helm_charts.get(release)
         if (not Path(chart).is_absolute() or rest[4] != "--namespace"
                 or (release, rest[5]) not in HELM_RELEASES[step]
                 or rest[6] != "--version" or not rest[7]
-                or rest[8:] != ["--atomic", "--wait", "--wait-for-jobs", "--create-namespace"]
-                or content_digest is None or _content_sha256(Path(chart)) != content_digest):
+                or rest[8:] != tail
+                or (release == "argo-rollouts" and rest[7] != ROLLOUTS_CHART_VERSION)
+                or content_digest is None or _content_sha256(Path(chart)) != content_digest
+                or (expected_chart is not None
+                    and (rest[7] != expected_chart["version"]
+                         or content_digest != expected_chart["sha256"]))):
             raise AdapterRejected("helm-command")
 
     def _validate_istioctl_command(self, args, section, step, resources, target, content_digest):
@@ -738,7 +830,8 @@ class ApprovedLiveAdapter:
     def _argv(self, command):
         return [self.plan["tools"][command["tool"]]["path"], *command["args"]]
 
-    def _run_commands(self, commands, incomplete_exit_codes=frozenset()):
+    def _run_commands(self, commands, incomplete_exit_codes=frozenset(),
+                      empty_stdout_is_incomplete=False):
         results = []
         for command in commands:
             self._verify_command_content(command)
@@ -748,6 +841,8 @@ class ApprovedLiveAdapter:
                 return results, False
             if result.returncode != 0:
                 raise AdapterRejected(f"command-exit:{result.returncode}")
+            if empty_stdout_is_incomplete and not result.stdout.strip():
+                return results, False
         return results, True
 
     @staticmethod
@@ -1014,7 +1109,9 @@ class ApprovedLiveAdapter:
                     "resourceIdentities": self.plan["steps"][step]["resourceIdentities"],
                     "resourceObservations": observed}, "resourceDigest": digest}
         results, complete = self._run_commands(
-            self.plan["steps"][step]["reconcile"], incomplete_exit_codes={3})
+            self.plan["steps"][step]["reconcile"],
+            incomplete_exit_codes=(frozenset() if step == "crds" else {3}),
+            empty_stdout_is_incomplete=(step == "crds"))
         if not complete:
             return {"state": "incomplete"}
         observed, digest = self._observe(results, self.plan["steps"][step]["observations"])

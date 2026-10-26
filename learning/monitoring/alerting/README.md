@@ -36,7 +36,7 @@ resolved は「条件が消えた」通知であり、欠測への遷移でも�
 通知の `service=backend` はmetric/routingの識別子で、Kubernetes Service名ではない。
 `service_url` は既存入力 `accountNamespace` と、明示values
 `alerting.accountServiceName`（既定 `learning-account`）、`alerting.accountServicePort`（既定 `8080`）から組み立てる。
-例：`http://learning-account.learning-services-20261018.svc.cluster.local:8080`。
+例：`http://learning-account.synthetic-services.svc.cluster.local:8080`。
 実Serviceの名前/portを読み取りで照合し、異なる場合はこの2入力だけを上書きする。
 通知には対象 `service=backend` / `account_namespace`、Service DNS の `service_url`、
 `query` / `state_query`、Prometheus の `generatorURL`、この `runbook_url` を含む。

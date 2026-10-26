@@ -36,11 +36,12 @@ metadata:
 data:
   original-values: "{\n  \"autoscaleEnabled\": false,\n  \"cni\": {\n    \"enabled\"\
     : false\n  },\n  \"env\": {\n    \"DEFAULT_WORKLOAD_CERT_TTL\": \"1h\",\n    \"\
-    MAX_WORKLOAD_CERT_TTL\": \"24h\",\n    \"PILOT_ENABLE_GATEWAY_API\": \"false\"\
-    ,\n    \"PILOT_ENABLE_GATEWAY_API_DEPLOYMENT_CONTROLLER\": \"false\"\n  },\n \
-    \ \"global\": {\n    \"enableReaderRBAC\": false,\n    \"hub\": \"docker.io/istio\"\
-    ,\n    \"istioNamespace\": \"istio-learning-system\",\n    \"istiod\": {\n   \
-    \   \"enableAnalysis\": false\n    },\n    \"proxy\": {\n      \"image\": \"docker.io/istio/proxyv2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1\"\
+    ISTIO_WATCH_NAMESPACE\": \"learning-account-release\",\n    \"MAX_WORKLOAD_CERT_TTL\"\
+    : \"24h\",\n    \"PILOT_ENABLE_GATEWAY_API\": \"false\",\n    \"PILOT_ENABLE_GATEWAY_API_DEPLOYMENT_CONTROLLER\"\
+    : \"false\"\n  },\n  \"global\": {\n    \"enableReaderRBAC\": false,\n    \"hub\"\
+    : \"docker.io/istio\",\n    \"istioNamespace\": \"istio-learning-system\",\n \
+    \   \"istiod\": {\n      \"enableAnalysis\": false\n    },\n    \"proxy\": {\n\
+    \      \"image\": \"docker.io/istio/proxyv2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1\"\
     ,\n      \"resources\": {\n        \"limits\": {\n          \"cpu\": \"500m\"\
     ,\n          \"memory\": \"256Mi\"\n        },\n        \"requests\": {\n    \
     \      \"cpu\": \"100m\",\n          \"memory\": \"128Mi\"\n        }\n      }\n\
@@ -61,10 +62,11 @@ data:
     \   \"provider\": \"default\"\n  },\n  \"configMap\": true,\n  \"cpu\": {\n  \
     \  \"targetAverageUtilization\": 80\n  },\n  \"deploymentAnnotations\": {},\n\
     \  \"deploymentLabels\": {},\n  \"env\": {\n    \"DEFAULT_WORKLOAD_CERT_TTL\"\
-    : \"1h\",\n    \"MAX_WORKLOAD_CERT_TTL\": \"24h\",\n    \"PILOT_ENABLE_GATEWAY_API\"\
-    : \"false\",\n    \"PILOT_ENABLE_GATEWAY_API_DEPLOYMENT_CONTROLLER\": \"false\"\
-    \n  },\n  \"envVarFrom\": [],\n  \"experimental\": {\n    \"stableValidationPolicy\"\
-    : false\n  },\n  \"extraContainerArgs\": [],\n  \"gatewayClasses\": {},\n  \"\
+    : \"1h\",\n    \"ISTIO_WATCH_NAMESPACE\": \"learning-account-release\",\n    \"\
+    MAX_WORKLOAD_CERT_TTL\": \"24h\",\n    \"PILOT_ENABLE_GATEWAY_API\": \"false\"\
+    ,\n    \"PILOT_ENABLE_GATEWAY_API_DEPLOYMENT_CONTROLLER\": \"false\"\n  },\n \
+    \ \"envVarFrom\": [],\n  \"experimental\": {\n    \"stableValidationPolicy\":\
+    \ false\n  },\n  \"extraContainerArgs\": [],\n  \"gatewayClasses\": {},\n  \"\
     gateways\": {\n    \"seccompProfile\": {},\n    \"securityContext\": {}\n  },\n\
     \  \"global\": {\n    \"caAddress\": \"\",\n    \"caName\": \"\",\n    \"certSigners\"\
     : [],\n    \"configCluster\": false,\n    \"configValidation\": true,\n    \"\
@@ -213,8 +215,9 @@ data:
     \        }\n      },\n      \"tolerations\": [],\n      \"topologySpreadConstraints\"\
     : []\n    }\n  },\n  \"pilot\": {\n    \"cni\": {\n      \"enabled\": false,\n\
     \      \"provider\": \"default\"\n    },\n    \"env\": {\n      \"DEFAULT_WORKLOAD_CERT_TTL\"\
-    : \"1h\",\n      \"MAX_WORKLOAD_CERT_TTL\": \"24h\",\n      \"PILOT_ENABLE_GATEWAY_API\"\
-    : \"false\",\n      \"PILOT_ENABLE_GATEWAY_API_DEPLOYMENT_CONTROLLER\": \"false\"\
+    : \"1h\",\n      \"ISTIO_WATCH_NAMESPACE\": \"learning-account-release\",\n  \
+    \    \"MAX_WORKLOAD_CERT_TTL\": \"24h\",\n      \"PILOT_ENABLE_GATEWAY_API\":\
+    \ \"false\",\n      \"PILOT_ENABLE_GATEWAY_API_DEPLOYMENT_CONTROLLER\": \"false\"\
     \n    }\n  },\n  \"revision\": \"learning-1-31-2\",\n  \"sidecarInjectorWebhook\"\
     : {\n    \"alwaysInjectSelector\": [],\n    \"defaultTemplates\": [],\n    \"\
     enableNamespacesByDefault\": false,\n    \"injectedAnnotations\": {},\n    \"\
@@ -1823,6 +1826,8 @@ spec:
           value: istio-learning-system/ztunnel
         - name: DEFAULT_WORKLOAD_CERT_TTL
           value: 1h
+        - name: ISTIO_WATCH_NAMESPACE
+          value: learning-account-release
         - name: MAX_WORKLOAD_CERT_TTL
           value: 24h
         - name: PILOT_ENABLE_GATEWAY_API
@@ -2275,6 +2280,65 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: learning-istiod-public-ca
+subjects:
+- kind: ServiceAccount
+  name: istiod-learning-1-31-2
+  namespace: istio-learning-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: learning-istiod-credentials
+  namespace: learning-account-release
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - secrets
+  verbs:
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: learning-istiod-credentials
+  namespace: learning-account-release
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: learning-istiod-credentials
+subjects:
+- kind: ServiceAccount
+  name: istiod-learning-1-31-2
+  namespace: istio-learning-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: learning-istiod-runtime
+  namespace: istio-learning-system
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - configmaps
+  verbs:
+  - update
+  resourceNames:
+  - istio-leader
+  - istio-ip-autoallocate
+  - istio-namespace-controller-election
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: learning-istiod-runtime
+  namespace: istio-learning-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: learning-istiod-runtime
 subjects:
 - kind: ServiceAccount
   name: istiod-learning-1-31-2

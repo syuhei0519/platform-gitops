@@ -18,7 +18,7 @@ SPEC.loader.exec_module(contract)
 class ImageSupplyTests(unittest.TestCase):
     def setUp(self):
         self.lock = contract.load_yaml(contract.LOCK)
-        self.profile = contract.load_yaml(contract.HERE / "profile.lock.yaml")
+        self.profile = contract.load_yaml(contract.HERE / "profile.template.yaml")
         self.profile_images = {item["name"]: item for item in self.profile["spec"]["images"]}
 
     def validate_copy(self, lock, require=False, profile=None, require_source=False):
@@ -47,7 +47,7 @@ class ImageSupplyTests(unittest.TestCase):
             "ghcr.io/syuhei0519/backend-app@sha256:" + "b" * 64)
         value["spec"]["decision"] = {
             "status": "approved", "selectedMode": mode,
-            "restoreOwner": "personal-platform-owner",
+            "restoreOwner": "fixture-owner",
             "retentionUntil": "2099-10-25",
             "restoreProcedureRef": "runbook:restore-fresh-image-supply",
         }
@@ -84,17 +84,13 @@ class ImageSupplyTests(unittest.TestCase):
             }
         return value
 
-    def test_verified_candidate_is_fixed_but_not_retained_g2_evidence(self):
+    def test_public_template_contains_no_runtime_supply_evidence(self):
         lock, _ = contract.validate()
         self.assertEqual(len(lock["spec"]["images"]), 11)
         account = next(item for item in lock["spec"]["images"] if item["name"] == "account-runtime")
-        self.assertEqual(account["source"]["kind"], "checked-local-artifact")
+        self.assertEqual(account["source"]["kind"], "pending-g2")
         self.assertFalse(account["source"]["published"])
         self.assertFalse(account["source"]["freshEligible"])
-        self.assertEqual(self.profile_images["account-runtime"]["ref"],
-                         "ghcr.io/syuhei0519/backend-app@sha256:"
-                         "fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd")
-        self.assertEqual(account["source"]["artifactId"], 12606240607)
         with self.assertRaisesRegex(contract.SupplyError, "approval-g2"):
             contract.validate(require_fresh_evidence=True)
 
@@ -103,13 +99,14 @@ class ImageSupplyTests(unittest.TestCase):
         account = next(item for item in value["spec"]["images"] if item["name"] == "account-runtime")
         account["source"] = {"kind": "checked-local-artifact", "published": False, "immutable": True,
             "freshEligible": False, "location": "checked-artifact:account-runtime", "retentionHours": 0,
-            "sourceCommit": "527b9bccf4ae56244d134ae384564ec1cccea815",
-            "manifestDigest": "sha256:966adba896524519bd1653b31ade97b624dd5cbf83623f7cdeb5c5708aaa69e0",
-            "configDigest": "sha256:5062ed82987c361535a339f6ee30c67d3fca5c8190989aa404f5bda13dd72822",
-            "archiveSha256": "sha256:9e9b4b12315c9efa665f82dd43975668b738bb65f6f2434f8350f0d4e9a9ba37",
-            "ciRunId": 40145897432, "artifactId": 12580417539,
+            "sourceCommit": "1" * 40,
+            "manifestDigest": "sha256:" + "2" * 64,
+            "configDigest": "sha256:" + "3" * 64,
+            "archiveSha256": "sha256:" + "4" * 64,
+            "ciRunId": 1, "artifactId": 1,
             "entrypoint": ["/bin/rollouts-controller"], "user": "10001:10001"}
-        with self.assertRaisesRegex(contract.SupplyError, "schema|account-artifact-identity"):
+        with self.assertRaisesRegex(contract.SupplyError,
+                                    "schema|account-artifact-profile-digest"):
             self.validate_copy(value)
 
     def test_registry_and_retained_archive_are_finite_approved_modes(self):

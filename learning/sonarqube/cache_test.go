@@ -24,7 +24,7 @@ import (
 )
 
 func TestSonarNamespaceCacheBoundary(t *testing.T) {
-	const old = "learning-services-20261018"
+	const old = "synthetic-services"
 	const sonar = "sonarqube"
 	resources := []struct{ group, kind, plural string }{
 		{"", "Secret", "secrets"}, {"", "ConfigMap", "configmaps"},
@@ -124,7 +124,7 @@ func TestSonarNamespaceCacheBoundary(t *testing.T) {
 // half of a distinct-URL proposal, given already filtered discovery results.
 // It does NOT test cluster registration, the real resource filter or credentials.
 func TestSonarEndpointSplitCache(t *testing.T) {
-	const old = "learning-services-20261018"
+	const old = "synthetic-services"
 	const sonar = "sonarqube"
 	resources := []struct{ group, kind, plural string }{
 		{"", "Secret", "secrets"}, {"", "ConfigMap", "configmaps"},

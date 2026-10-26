@@ -1,0 +1,5 @@
+{
+  "synthetic": true,
+  "description": "Public schema-only example. Runtime identities are captured into a Git-ignored directory and are never acceptance evidence when this list is empty.",
+  "identities": []
+}

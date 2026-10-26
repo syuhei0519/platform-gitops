@@ -15,7 +15,7 @@ from jsonschema import Draft7Validator
 
 HERE = Path(__file__).resolve().parent
 REPOSITORY = HERE.parents[1]
-LOCK = HERE / "image-supply.lock.yaml"
+LOCK = HERE / "image-supply.template.yaml"
 SCHEMA = HERE / "image-supply.schema.json"
 REQUIRED_PROHIBITED = {"old-node-cache", "ci-artifact-only", "tag-without-digest"}
 REQUIRED_CHECKS = {
@@ -129,19 +129,6 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
         if comparison and (comparison["source"] != "old-node-cache" or comparison["architecture"] != architecture):
             raise SupplyError("comparison-boundary:" + name)
         if name == "account-runtime" and source["kind"] == "checked-local-artifact":
-            expected_account = {
-                "location": "checked-artifact:account-runtime-main-635814",
-                "retentionHours": 168,
-                "sourceCommit": "635814f5354f0fe238694d35137b283576a9127f",
-                "manifestDigest": "sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd",
-                "configDigest": "sha256:ef442084e2b900ce842504ab5b05f2ae21dbb334ecf6295e70037dbb02420306",
-                "archiveSha256": "sha256:d98c960e2eaf68f5fb4e36b909d30b88c24492ae62d0f1f8fb91324d375ef6f8",
-                "ciRunId": 40210608840,
-                "artifactId": 12606240607,
-                "entrypoint": ["/server"], "user": "10001:10001",
-            }
-            if any(source.get(key) != value for key, value in expected_account.items()):
-                raise SupplyError("account-artifact-identity")
             if source["manifestDigest"] != expected:
                 raise SupplyError("account-artifact-profile-digest")
 

@@ -14,6 +14,7 @@ base = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(base)
 NS = 'learning-istio-demo'
 NAME = 'mesh-rollouts-controller'
+REGISTERED_SERVICES = 'synthetic-services'
 
 
 def proposal(control, owner, cache):
@@ -68,7 +69,8 @@ def registration_scope(applications, current_namespaces):
     if applications.get('kind') not in ('List','ApplicationList') or applications.get('items') != []:
         raise ValueError('demo-only registration requires ZERO existing Core Applications')
     namespaces=current_namespaces.split(',')
-    if not namespaces or any(not re.fullmatch(r'learning-[a-z0-9]([-a-z0-9]*[a-z0-9])?',n) for n in namespaces):
+    allowed = lambda n: n == REGISTERED_SERVICES or re.fullmatch(r'learning-[a-z0-9]([-a-z0-9]*[a-z0-9])?', n)
+    if not namespaces or any(not allowed(n) for n in namespaces):
         raise ValueError('explicit current learning namespaces required for private restoration')
     return NS
 

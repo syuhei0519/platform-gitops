@@ -40,12 +40,12 @@
       "id": "fake-owner-direct-pod",
       "expected": "deny",
       "request": {"operation": "CREATE", "resource": "pods", "subResource": "", "username": "system:serviceaccount:fresh-control:argocd-application-controller"},
-      "object": {"kind": "Pod", "metadata": {"name": "forged-owner", "namespace": "fresh-account", "ownerReferences": [{"kind": "ReplicaSet", "name": "account-api-forged", "uid": "00000000-0000-0000-0000-000000000000", "controller": true}]}, "spec": {"serviceAccountName": "account-runtime", "automountServiceAccountToken": false, "containers": [{"name": "api", "securityContext": {"allowPrivilegeEscalation": false}}], "volumes": []}}
+      "object": {"kind": "Pod", "metadata": {"name": "forged-owner", "namespace": "fresh-account", "ownerReferences": [{"kind": "ReplicaSet", "name": "account-api-forged", "uid": "synthetic-forged-owner", "controller": true}]}, "spec": {"serviceAccountName": "account-runtime", "automountServiceAccountToken": false, "containers": [{"name": "api", "securityContext": {"allowPrivilegeEscalation": false}}], "volumes": []}}
     },
     {
       "id": "secret-volume",
       "expected": "deny",
-      "object": {"kind": "Pod", "metadata": {"name": "owned", "namespace": "fresh-account", "ownerReferences": [{"kind": "ReplicaSet", "name": "account-api-abc", "uid": "22222222-2222-2222-2222-222222222222", "controller": true}]}, "spec": {"serviceAccountName": "account-runtime", "automountServiceAccountToken": false, "containers": [{"name": "api", "securityContext": {"allowPrivilegeEscalation": false}}], "volumes": [{"name": "credential", "secret": {"secretName": "account-db-runtime"}}]}}
+      "object": {"kind": "Pod", "metadata": {"name": "owned", "namespace": "fresh-account", "ownerReferences": [{"kind": "ReplicaSet", "name": "account-api-abc", "uid": "synthetic-owned-controller", "controller": true}]}, "spec": {"serviceAccountName": "account-runtime", "automountServiceAccountToken": false, "containers": [{"name": "api", "securityContext": {"allowPrivilegeEscalation": false}}], "volumes": [{"name": "credential", "secret": {"secretName": "account-db-runtime"}}]}}
     },
     {
       "id": "wrong-secret-key",
@@ -66,7 +66,7 @@
       "id": "ephemeralcontainers-subresource",
       "expected": "deny",
       "request": {"operation": "UPDATE", "resource": "pods", "subResource": "ephemeralcontainers", "username": "system:serviceaccount:fresh-control:argocd-application-controller"},
-      "object": {"kind": "Pod", "metadata": {"name": "account-api-pod", "namespace": "fresh-account", "ownerReferences": [{"kind": "ReplicaSet", "name": "account-api-abc", "uid": "11111111-1111-1111-1111-111111111111", "controller": true}]}, "spec": {"serviceAccountName": "account-runtime", "automountServiceAccountToken": false, "containers": [{"name": "api", "securityContext": {"allowPrivilegeEscalation": false}}], "ephemeralContainers": [{"name": "debug", "image": "busybox"}], "volumes": []}}
+      "object": {"kind": "Pod", "metadata": {"name": "account-api-pod", "namespace": "fresh-account", "ownerReferences": [{"kind": "ReplicaSet", "name": "account-api-abc", "uid": "synthetic-api-controller", "controller": true}]}, "spec": {"serviceAccountName": "account-runtime", "automountServiceAccountToken": false, "containers": [{"name": "api", "securityContext": {"allowPrivilegeEscalation": false}}], "ephemeralContainers": [{"name": "debug", "image": "busybox"}], "volumes": []}}
     },
     {
       "id": "runtime-uri-fallback",

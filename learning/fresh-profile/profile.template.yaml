@@ -2,18 +2,18 @@ apiVersion: platform.lab/v1alpha1
 kind: FreshProfileLock
 metadata:
   name: account-lightweight-fresh
-  purpose: PLAT-213-offline-design
+  purpose: public-template-copy-to-gitignored-runtime-evidence
 spec:
   profileVersion: 1
   scope:
     mode: empty-data-build
     workload: account-only
-    currentClusterExcluded: kind-learning-20261018-69c763
+    currentClusterExcluded: <runtime-input:protected-cluster>
     legacyPlatformLabExcluded: true
     cutoverIncluded: false
   target:
-    clusterName: learning-fresh-plat217-20261025
-    context: kind-learning-fresh-plat217-20261025
+    clusterName: <runtime-input:cluster-name>
+    context: <runtime-input:kube-context>
     architecture: linux/amd64
     isolation: separate-named-sandbox
   repositories:
@@ -93,38 +93,38 @@ spec:
     clusterKubeconfigRef: <operator-input:G1-kubeconfig>
     imageSupplyRef: <operator-input:G2-image-supply>
     secrets:
-    - name: account-db-bootstrap
-      purpose: PostgreSQL bootstrap and recovery only
-      destination: fresh-account/account-db-bootstrap
-      owner: PENDING_G3
-      expiry: PENDING_G3
-      sourceRef: <operator-input:G3-account-db-bootstrap>
-    - name: account-db-runtime
-      purpose: Account runtime DML
-      destination: fresh-account/account-db-runtime
-      owner: PENDING_G3
-      expiry: PENDING_G3
-      sourceRef: <operator-input:G3-account-runtime-db>
-    - name: account-db-migration
-      purpose: Account owned-schema migration
-      destination: fresh-account/account-db-migration
-      owner: PENDING_G3
-      expiry: PENDING_G3
-      sourceRef: <operator-input:G3-account-migration-db>
+    - name: <runtime-input:bootstrap-secret-name>
+      purpose: bootstrap-role
+      destination: <runtime-input:bootstrap-secret-destination>
+      owner: <runtime-input:credential-owner>
+      expiry: <runtime-input:credential-expiry>
+      sourceRef: <runtime-input:bootstrap-credential-source>
+    - name: <runtime-input:runtime-secret-name>
+      purpose: runtime-role
+      destination: <runtime-input:runtime-secret-destination>
+      owner: <runtime-input:credential-owner>
+      expiry: <runtime-input:credential-expiry>
+      sourceRef: <runtime-input:runtime-credential-source>
+    - name: <runtime-input:migration-secret-name>
+      purpose: migration-role
+      destination: <runtime-input:migration-secret-destination>
+      owner: <runtime-input:credential-owner>
+      expiry: <runtime-input:credential-expiry>
+      sourceRef: <runtime-input:migration-credential-source>
   budget:
     measureAt: [before, peak, after]
     hostObservation:
-      capturedAt: '2026-10-25T00:00:00Z'
-      logicalCpu: 20
-      installedMemoryGiB: 31.84
-      availableMemoryGiB: 5.83
-      freeDiskGiB: 440.13
-      dockerCpuLimit: 20
-      dockerMemoryLimitGiB: 15.53
-      dockerImagesGiB: 10.86
-      dockerVolumesGiB: 11.21
-      dockerBuildCacheGiB: 2.847
-      existingRunningContainers: 1
+      capturedAt: <runtime-input:measurement-time>
+      logicalCpu: <runtime-input:logical-cpu>
+      installedMemoryGiB: <runtime-input:installed-memory-gib>
+      availableMemoryGiB: <runtime-input:available-memory-gib>
+      freeDiskGiB: <runtime-input:free-disk-gib>
+      dockerCpuLimit: <runtime-input:docker-cpu-limit>
+      dockerMemoryLimitGiB: <runtime-input:docker-memory-limit-gib>
+      dockerImagesGiB: <runtime-input:docker-images-gib>
+      dockerVolumesGiB: <runtime-input:docker-volumes-gib>
+      dockerBuildCacheGiB: <runtime-input:docker-build-cache-gib>
+      existingRunningContainers: <runtime-input:running-container-count>
     estimates:
       renderedRequestTotals:
         cpuMilli: 475
@@ -136,14 +136,19 @@ spec:
       retainedArchiveBytes: PENDING_G2
       controlPlaneOverhead: PENDING_G1
     approvalLimits:
-      elapsedMaxMinutes: PENDING_G1
-      hostAvailableMemoryMinGiB: PENDING_G1
-      hostFreeDiskMinGiB: PENDING_G1
-      dockerAdditionalDiskMaxGiB: PENDING_G1
-      workloadCPURequestsMaxMilli: PENDING_G1
-      workloadMemoryRequestsMaxMiB: PENDING_G1
+      elapsedMaxMinutes: 60
+      hostAvailableMemoryMinGiB: 8
+      hostAvailableMemoryStopBelowGiB: 3
+      hostFreeDiskMinGiB: 400
+      dockerAdditionalDiskMaxGiB: 10
+      freshMemoryMaxGiB: 4.5
+      combinedDockerMemoryStopAboveGiB: 11
+      workloadCPURequestsMaxMilli: <runtime-input:workload-cpu-limit-milli>
+      workloadMemoryRequestsMaxMiB: <runtime-input:workload-memory-limit-mib>
       imageBytesMaxGiB: PENDING_G2
-      podPendingMaxSeconds: PENDING_G1
+      podPendingMaxSeconds: 120
+      controllerReadyMaxSeconds: 300
+      credentialLifetimeMaxMinutes: 120
       unexpectedRestartsMax: 0
     stopOn:
     - host-memory-below-minimum
@@ -161,7 +166,7 @@ spec:
     currentComparison: learning/existing-kind/current-contract.json
     equivalence: learning/fresh-profile/equivalence.json
     secretContract: learning/fresh-profile/secret-contract.md
-    imageSupply: learning/fresh-profile/image-supply.lock.yaml
+    imageSupply: learning/fresh-profile/.runtime/image-supply.runtime.local.yaml
   decisions:
     G1:
       status: pending-approval

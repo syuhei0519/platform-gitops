@@ -1,0 +1,7 @@
+{
+  "synthetic": true,
+  "description": "Schema-only example; not a live Pod baseline.",
+  "collectedAt": null,
+  "context": "<runtime-input:kube-context>",
+  "pods": []
+}

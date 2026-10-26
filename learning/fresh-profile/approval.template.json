@@ -10,13 +10,13 @@
   "spec": {
     "approved": false,
     "target": {
-      "clusterName": "learning-fresh-plat217-20261025",
-      "context": "kind-learning-fresh-plat217-20261025",
+      "clusterName": "<runtime-input:cluster-name>",
+      "context": "<runtime-input:kube-context>",
       "profileName": "account-lightweight-fresh"
     },
     "repositories": {
       "platformGitops": "0000000000000000000000000000000000000000",
-      "applicationManifest": "4a98e85a3866e48868c0c69505e546ac73f67641"
+      "applicationManifest": "0000000000000000000000000000000000000000"
     },
     "hashes": {
       "profileSha256": "0000000000000000000000000000000000000000000000000000000000000000",
