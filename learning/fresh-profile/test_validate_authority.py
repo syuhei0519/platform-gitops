@@ -63,6 +63,23 @@ class AuthorityTests(unittest.TestCase):
         with self.assertRaisesRegex(contract.ContractError, "permission-resource-names"):
             contract.validate_matrix(changed)
 
+    def test_bootstrap_authority_names_the_exact_rollouts_crd_set(self):
+        operation = next(item for item in self.matrix["bootstrapOperations"]
+                         if item.get("source") == "argo-rollouts")
+        self.assertEqual(operation["names"], contract.ROLLOUTS_CRDS)
+        for mutate in (
+            lambda names: names.pop(),
+            lambda names: names.append("other.argoproj.io"),
+            lambda names: names.__setitem__(0, "wrong.argoproj.io"),
+        ):
+            changed = copy.deepcopy(self.matrix)
+            names = next(item for item in changed["bootstrapOperations"]
+                         if item.get("source") == "argo-rollouts")["names"]
+            mutate(names)
+            with self.subTest(names=names), self.assertRaisesRegex(
+                    contract.ContractError, "bootstrap-crd-operations"):
+                contract.validate_matrix(changed)
+
     def test_privilege_escalation_verb_is_rejected(self):
         changed = copy.deepcopy(self.matrix)
         changed["permissions"][0]["verbs"].append("escalate")

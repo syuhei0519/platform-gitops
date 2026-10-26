@@ -330,6 +330,7 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
                        "--kube-context", self.context, "upgrade", "--install", "argo-rollouts",
                        str(chart.resolve()), "--namespace", "fresh-control", "--version", "2.43.7",
                        "--set", "installCRDs=false",
+                       "--set-string", "controller.image.tag=" + adapter.ROLLOUTS_CONTROLLER_TAG,
                        "--atomic", "--wait", "--wait-for-jobs", "--create-namespace"],
                        "contentSha256": adapter._content_sha256(chart)}
             elif step == "acceptance":
@@ -455,6 +456,15 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
                 {"clusterName": self.cluster, "context": self.context}, self.versions,
                 {"sha256:" + "d" * 64})
 
+        kind_node_as_workload = self.plan()
+        kind_node_as_workload["steps"]["image-import"]["observations"][0][
+            "requiredImageDigests"].append("sha256:" + "a" * 64)
+        with self.assertRaisesRegex(adapter.AdapterRejected, "node-image-digest-set"):
+            adapter.ApprovedLiveAdapter(
+                self.write(kind_node_as_workload), FakeTransport(),
+                {"clusterName": self.cluster, "context": self.context}, self.versions,
+                {"sha256:" + "d" * 64})
+
     def test_kind_node_and_host_archives_are_bound_to_the_g2_supply_contract(self):
         value = self.plan()
         artifact = value["steps"]["image-source"]["hostArtifacts"][0]
@@ -507,6 +517,17 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
                 self.write(wrong_node), FakeTransport(),
                 {"clusterName": self.cluster, "context": self.context}, self.versions,
                 {"sha256:" + "d" * 64}, supply)
+
+        profile_spec = {"images": [
+            {"name": "kind-node", "ref": supply["kindNodeRef"]},
+            {"name": "argo-rollouts", "ref": adapter.ROLLOUTS_CONTROLLER_IMAGE},
+        ]}
+        adapter.supply_plan_contract({"spec": {"images": []}}, profile_spec)
+        profile_spec["images"][1]["ref"] = \
+            "quay.io/argoproj/argo-rollouts:v1.10.1"
+        with self.assertRaisesRegex(adapter.AdapterRejected,
+                                    "supply-rollouts-controller-image"):
+            adapter.supply_plan_contract({"spec": {"images": []}}, profile_spec)
 
         wrong_source = copy.deepcopy(value)
         wrong_source["steps"]["image-source"]["hostArtifacts"][0]["sourceIdentity"] = \
@@ -732,7 +753,9 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
         for mutation in (
             lambda args: args.__setitem__(11, "2.43.6"),
             lambda args: args.__setitem__(13, "installCRDs=true"),
+            lambda args: args.__setitem__(15, "controller.image.tag=v1.10.1"),
             lambda args: args.__delitem__(slice(12, 14)),
+            lambda args: args.__delitem__(slice(14, 16)),
             lambda args: args.extend(["--set", "installCRDs=false"]),
         ):
             changed = copy.deepcopy(value)

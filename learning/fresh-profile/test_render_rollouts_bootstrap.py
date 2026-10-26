@@ -25,6 +25,16 @@ def crd(name):
     }
 
 
+def controller(image=contract.CONTROLLER_IMAGE):
+    return {
+        "apiVersion": "apps/v1", "kind": "Deployment",
+        "metadata": {"name": "argo-rollouts", "namespace": "fresh-control"},
+        "spec": {"template": {"spec": {"containers": [
+            {"name": "argo-rollouts", "image": image},
+        ]}}},
+    }
+
+
 class RenderRolloutsBootstrapTests(unittest.TestCase):
     def setUp(self):
         self.documents = [crd(name) for name in sorted(contract.CRD_NAMES)]
@@ -60,6 +70,18 @@ class RenderRolloutsBootstrapTests(unittest.TestCase):
         with self.assertRaisesRegex(contract.RenderError, "controller-render-contains-crd"):
             contract.reject_controller_crds([{"kind": "Deployment"}, self.documents[0]])
 
+    def test_controller_render_requires_the_fixed_digest_image(self):
+        contract.validate_controller([controller()])
+        for documents in (
+            [controller("quay.io/argoproj/argo-rollouts:v1.10.1")],
+            [controller(), controller()],
+            [{"apiVersion": "apps/v1", "kind": "Deployment",
+              "metadata": {"name": "other", "namespace": "fresh-control"}}],
+        ):
+            with self.subTest(documents=documents):
+                with self.assertRaises(contract.RenderError):
+                    contract.validate_controller(documents)
+
     def test_chart_bytes_and_digest_are_both_required(self):
         with tempfile.TemporaryDirectory(dir=HERE) as directory:
             path = Path(directory) / "chart.tgz"
@@ -73,10 +95,7 @@ class RenderRolloutsBootstrapTests(unittest.TestCase):
     def test_exact_five_but_noncanonical_crd_bytes_are_rejected(self):
         rendered_crds = "\n---\n".join(
             json.dumps(item) for item in self.documents)
-        rendered_controller = json.dumps({
-            "apiVersion": "apps/v1", "kind": "Deployment",
-            "metadata": {"name": "argo-rollouts"},
-        })
+        rendered_controller = json.dumps(controller())
         with tempfile.TemporaryDirectory(dir=HERE) as directory:
             output = Path(directory) / "crds.json"
             with mock.patch.object(contract, "verify_chart"), mock.patch.object(
