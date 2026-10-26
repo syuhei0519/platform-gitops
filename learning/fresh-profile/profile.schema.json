@@ -76,10 +76,10 @@
         },
         "inputs": {
           "type": "object", "additionalProperties": false,
-          "required": ["clusterKubeconfigRef", "imageSupplyRef", "secrets"],
+          "required": ["clusterKubeconfigRef", "imageSupplyRef", "credentialIssuancePlan"],
           "properties": {
             "clusterKubeconfigRef": {"type": "string"}, "imageSupplyRef": {"type": "string"},
-            "secrets": {"type": "array", "minItems": 3, "items": {"$ref": "#/definitions/secretReference"}}
+            "credentialIssuancePlan": {"$ref": "#/definitions/credentialIssuancePlan"}
           }
         },
         "budget": {
@@ -104,8 +104,17 @@
           "properties": {"currentComparison": {"type": "string"}, "equivalence": {"type": "string"}, "secretContract": {"type": "string"}, "imageSupply": {"enum": ["learning/fresh-profile/.runtime/image-supply.runtime.local.yaml", "image-supply.lock.yaml"]}}
         },
         "decisions": {
-          "type": "object", "additionalProperties": false, "required": ["G1", "G2", "G3", "G4"],
-          "properties": {"G1": {"$ref": "#/definitions/decision"}, "G2": {"$ref": "#/definitions/decision"}, "G3": {"$ref": "#/definitions/decision"}, "G4": {"$ref": "#/definitions/decision"}}
+          "type": "object", "additionalProperties": false,
+          "required": ["G1", "G2", "G3Precondition", "G3RuntimeProof", "G4"],
+          "properties": {
+            "G1": {"$ref": "#/definitions/decision"},
+            "G2": {"$ref": "#/definitions/decision"},
+            "G3Precondition": {"$ref": "#/definitions/decision"},
+            "G3RuntimeProof": {
+              "const": {"status": "required-at-runtime", "choice": "credential-bootstrap-journal-before-custom-resources"}
+            },
+            "G4": {"$ref": "#/definitions/decision"}
+          }
         }
       }
     }
@@ -119,10 +128,43 @@
       "type": "object", "additionalProperties": false, "required": ["name", "ref", "architecture"],
       "properties": {"name": {"type": "string", "pattern": "^[a-z0-9-]+$"}, "ref": {"type": "string", "pattern": "^(.+@sha256:[0-9a-f]{64}|PENDING_PLAT211_VERIFIED_IMAGE)$"}, "architecture": {"const": "linux/amd64"}}
     },
-    "secretReference": {
+    "credentialIssuancePlan": {
       "type": "object", "additionalProperties": false,
-      "required": ["name", "purpose", "destination", "owner", "expiry", "sourceRef"],
-      "properties": {"name": {"type": "string"}, "purpose": {"type": "string"}, "destination": {"type": "string"}, "owner": {"type": "string"}, "expiry": {"type": "string"}, "sourceRef": {"type": "string", "pattern": "^(<runtime-input:[a-z-]+>|sealed-input:sha256:[0-9a-f]{64})$"}}
+      "required": ["schemaVersion", "planId", "procedureRef", "procedureSha256", "secrets", "ca", "runtimeProofPolicy"],
+      "properties": {
+        "schemaVersion": {"const": "platform.lab/g3-issuance-plan/v1"},
+        "planId": {"type": "string", "minLength": 1},
+        "procedureRef": {"type": "string", "pattern": "^(<runtime-input:[a-z0-9-]+>|runbook:[a-z0-9-]+)$"},
+        "procedureSha256": {"type": "string", "pattern": "^(<runtime-input:[a-z0-9-]+>|[0-9a-f]{64})$"},
+        "secrets": {"type": "array", "minItems": 3, "items": {"$ref": "#/definitions/secretIssuanceTarget"}},
+        "ca": {"$ref": "#/definitions/caIssuanceTarget"},
+        "runtimeProofPolicy": {"const": "metadata-uid-and-non-secret-issuance-receipt-before-custom-resources"}
+      }
+    },
+    "secretIssuanceTarget": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "purpose", "destination", "secretType", "keyNames", "owner", "expiry", "issuerRef", "cleanupOwner"],
+      "properties": {
+        "name": {"type": "string"}, "purpose": {"type": "string"},
+        "destination": {"type": "string"}, "secretType": {"const": "Opaque"},
+        "keyNames": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "owner": {"type": "string", "minLength": 1},
+        "expiry": {"type": "string", "pattern": "^(<runtime-input:[a-z0-9-]+>|[0-9]{4}-[0-9]{2}-[0-9]{2})$"},
+        "issuerRef": {"type": "string", "pattern": "^(<runtime-input:[a-z0-9-]+>|issuer:[a-z0-9-]+)$"},
+        "cleanupOwner": {"type": "string", "minLength": 1}
+      }
+    },
+    "caIssuanceTarget": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "scope", "owner", "expiry", "issuerRef", "cleanupOwner"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "scope": {"const": "fresh-sandbox-only"},
+        "owner": {"type": "string", "minLength": 1},
+        "expiry": {"type": "string", "pattern": "^(<runtime-input:[a-z0-9-]+>|[0-9]{4}-[0-9]{2}-[0-9]{2})$"},
+        "issuerRef": {"type": "string", "pattern": "^(<runtime-input:[a-z0-9-]+>|issuer:[a-z0-9-]+)$"},
+        "cleanupOwner": {"type": "string", "minLength": 1}
+      }
     },
     "decision": {
       "type": "object", "additionalProperties": false, "required": ["status", "choice"],

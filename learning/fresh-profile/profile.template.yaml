@@ -92,25 +92,47 @@ spec:
   inputs:
     clusterKubeconfigRef: <operator-input:G1-kubeconfig>
     imageSupplyRef: <operator-input:G2-image-supply>
-    secrets:
-    - name: <runtime-input:bootstrap-secret-name>
-      purpose: bootstrap-role
-      destination: <runtime-input:bootstrap-secret-destination>
-      owner: <runtime-input:credential-owner>
-      expiry: <runtime-input:credential-expiry>
-      sourceRef: <runtime-input:bootstrap-credential-source>
-    - name: <runtime-input:runtime-secret-name>
-      purpose: runtime-role
-      destination: <runtime-input:runtime-secret-destination>
-      owner: <runtime-input:credential-owner>
-      expiry: <runtime-input:credential-expiry>
-      sourceRef: <runtime-input:runtime-credential-source>
-    - name: <runtime-input:migration-secret-name>
-      purpose: migration-role
-      destination: <runtime-input:migration-secret-destination>
-      owner: <runtime-input:credential-owner>
-      expiry: <runtime-input:credential-expiry>
-      sourceRef: <runtime-input:migration-credential-source>
+    credentialIssuancePlan:
+      schemaVersion: platform.lab/g3-issuance-plan/v1
+      planId: <runtime-input:g3-issuance-plan-id>
+      procedureRef: <runtime-input:g3-issuance-procedure>
+      procedureSha256: <runtime-input:g3-issuance-procedure-sha256>
+      runtimeProofPolicy: metadata-uid-and-non-secret-issuance-receipt-before-custom-resources
+      secrets:
+      - name: account-db-bootstrap
+        purpose: bootstrap-role
+        destination: fresh-account/account-db-bootstrap
+        secretType: Opaque
+        keyNames: [admin-password]
+        owner: <runtime-input:credential-owner>
+        expiry: <runtime-input:credential-expiry>
+        issuerRef: <runtime-input:credential-issuer>
+        cleanupOwner: <runtime-input:credential-cleanup-owner>
+      - name: account-db-runtime
+        purpose: runtime-role
+        destination: fresh-account/account-db-runtime
+        secretType: Opaque
+        keyNames: [username, password]
+        owner: <runtime-input:credential-owner>
+        expiry: <runtime-input:credential-expiry>
+        issuerRef: <runtime-input:credential-issuer>
+        cleanupOwner: <runtime-input:credential-cleanup-owner>
+      - name: account-db-migration
+        purpose: migration-role
+        destination: fresh-account/account-db-migration
+        secretType: Opaque
+        keyNames: [username, password]
+        owner: <runtime-input:credential-owner>
+        expiry: <runtime-input:credential-expiry>
+        issuerRef: <runtime-input:credential-issuer>
+        cleanupOwner: <runtime-input:credential-cleanup-owner>
+      ca:
+        name: <runtime-input:fresh-ca-name>
+        scope: fresh-sandbox-only
+        owner: <runtime-input:credential-owner>
+        expiry: <runtime-input:credential-expiry>
+        issuerRef: <runtime-input:credential-issuer>
+        cleanupOwner: <runtime-input:credential-cleanup-owner>
   budget:
     measureAt: [before, peak, after]
     hostObservation:
@@ -174,9 +196,12 @@ spec:
     G2:
       status: pending-approval
       choice: public-upstream-plus-retained-account-archive
-    G3:
+    G3Precondition:
       status: pending-approval
-      choice: finite-existing-manual-bootstrap-or-approved-provider
+      choice: non-secret-exact-issuance-plan-and-authority
+    G3RuntimeProof:
+      status: required-at-runtime
+      choice: credential-bootstrap-journal-before-custom-resources
     G4:
       status: pending-cutover
       choice: not-required-for-fresh-acceptance

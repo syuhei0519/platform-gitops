@@ -34,7 +34,7 @@
     "gates": {
       "G1": {"approved": false, "approvalId": "PENDING"},
       "G2": {"approved": false, "approvalId": "PENDING"},
-      "G3": {"approved": false, "approvalId": "PENDING"},
+      "G3Precondition": {"approved": false, "approvalId": "PENDING"},
       "security": {"approved": false, "approvalId": "PENDING"}
     },
     "inputDigests": {

@@ -11,6 +11,7 @@ import unittest
 from unittest import mock
 
 import yaml
+from jsonschema import Draft7Validator
 
 
 HERE = Path(__file__).resolve().parent
@@ -25,9 +26,10 @@ APPLICATION = "2" * 40
 
 class FakeExecutor:
     plan_sha256 = None
+    supports_credential_runtime_proof = True
 
     def __init__(self, fail_verify=None, fail_run=None, cluster_uid=None,
-                 reconcile_states=None):
+                 reconcile_states=None, credential_proof=True):
         self.identity_calls = []
         self.verify_calls = []
         self.reconcile_calls = []
@@ -36,6 +38,7 @@ class FakeExecutor:
         self.fail_run = fail_run
         self.cluster_uid = cluster_uid
         self.reconcile_states = reconcile_states or {}
+        self.include_credential_proof = credential_proof
 
     @staticmethod
     def digest(step):
@@ -49,7 +52,11 @@ class FakeExecutor:
         self.verify_calls.append(step)
         if step == self.fail_verify:
             raise RuntimeError("synthetic verify failure")
-        return {"verified": True, "resourceDigest": checkpoint["resourceDigest"]}
+        result = {"verified": True, "resourceDigest": checkpoint["resourceDigest"]}
+        if step == "credential-bootstrap":
+            result["credentialRuntimeProof"] = checkpoint["evidence"][
+                "credentialRuntimeProof"]
+        return result
 
     def reconcile(self, step, checkpoint):
         self.reconcile_calls.append(step)
@@ -72,7 +79,37 @@ class FakeExecutor:
         if step == "cluster":
             self.cluster_uid = "fixture-cluster-uid"
             evidence["clusterUID"] = self.cluster_uid
+        if step == "credential-bootstrap" and self.include_credential_proof:
+            evidence["credentialRuntimeProof"] = self.credential_proof()
         return evidence
+
+    def credential_proof(self):
+        common = {"owner": "fixture-owner", "expiry": "2026-11-24",
+                  "issuerRef": "issuer:fixture", "cleanupOwner": "fixture-cleanup"}
+        return {
+            "schemaVersion": "platform.lab/g3-runtime-proof/v1",
+            "observedAt": "2026-10-25T12:00:00Z",
+            "clusterUID": self.cluster_uid or "fixture-cluster-uid",
+            "secrets": [
+                {"name": "account-db-bootstrap",
+                 "destination": "fresh-account/account-db-bootstrap",
+                 "uid": "uid-bootstrap", "secretType": "Opaque",
+                 "keyNames": ["admin-password"], **common,
+                 "issuanceReceiptSha256": "4" * 64},
+                {"name": "account-db-runtime",
+                 "destination": "fresh-account/account-db-runtime",
+                 "uid": "uid-runtime", "secretType": "Opaque",
+                 "keyNames": ["username", "password"], **common,
+                 "issuanceReceiptSha256": "5" * 64},
+                {"name": "account-db-migration",
+                 "destination": "fresh-account/account-db-migration",
+                 "uid": "uid-migration", "secretType": "Opaque",
+                 "keyNames": ["username", "password"], **common,
+                 "issuanceReceiptSha256": "6" * 64},
+            ],
+            "ca": {"name": "fixture-fresh-ca", "scope": "fresh-sandbox-only",
+                   "uid": "uid-ca", **common, "issuanceReceiptSha256": "7" * 64},
+        }
 
 
 class RunnerTests(unittest.TestCase):
@@ -119,23 +156,19 @@ class RunnerTests(unittest.TestCase):
         spec["repositories"]["application-manifest"]["commit"] = APPLICATION
         spec["freshRuntimeRequirement"]["admissionSecretKeyContract"] = \
             "username-password-operation-key-allowlist-aligned"
-        for gate in ("G1", "G2", "G3"):
+        for gate in ("G1", "G2", "G3Precondition"):
             spec["decisions"][gate] = {"status": "approved", "choice": "retained-oci-archive"}
         spec["imageSupply"].update(decision="retained-oci-archive", immutable=True,
                                    retentionUntil="2026-11-24", restoreOwner="fixture-owner")
         next(item for item in spec["images"] if item["name"] == "account-runtime")["ref"] = (
             "ghcr.io/syuhei0519/backend-app@sha256:" + "b" * 64)
-        secret_contract = (
-            ("account-db-bootstrap", "fresh-account/account-db-bootstrap"),
-            ("account-db-runtime", "fresh-account/account-db-runtime"),
-            ("account-db-migration", "fresh-account/account-db-migration"),
-        )
-        for index, (item, (name, destination)) in enumerate(
-                zip(spec["inputs"]["secrets"], secret_contract)):
-            digest_value = f"{index + 1:064x}"
-            item.update(name=name, destination=destination, owner="fixture-owner",
-                        expiry="2026-11-24",
-                        sourceRef="sealed-input:sha256:" + digest_value)
+        plan = spec["inputs"]["credentialIssuancePlan"]
+        plan.update(planId="fixture-g3-plan", procedureRef="runbook:fixture-g3-issuance",
+                    procedureSha256="3" * 64)
+        for item in [*plan["secrets"], plan["ca"]]:
+            item.update(owner="fixture-owner", expiry="2026-11-24",
+                        issuerRef="issuer:fixture", cleanupOwner="fixture-cleanup")
+        plan["ca"]["name"] = "fixture-fresh-ca"
         spec["budget"]["hostObservation"] = {
             "capturedAt": "2026-10-25T11:59:00Z", "logicalCpu": 8,
             "installedMemoryGiB": 16, "availableMemoryGiB": 9,
@@ -190,8 +223,22 @@ class RunnerTests(unittest.TestCase):
             item["checks"] = {
                 name: {"status": "passed", "evidenceRef": f"evidence:{item['name']}:{name}"}
                 for name in ("digest", "architecture", "entrypoint", "user", "args",
-                             "migration", "smoke", "scan", "sbom")
+                             "scan", "sbom")
             }
+            item["checks"]["smoke"] = {
+                "applicability": "required", "rawResult": "passed",
+                "evidenceRef": f"evidence:{item['name']}:smoke",
+                "evidenceScope": "selected-architecture-isolated-image",
+            }
+            item["checks"]["migration"] = (
+                {"applicability": "required", "rawResult": "passed",
+                 "evidenceRef": "evidence:account-runtime:migration",
+                 "evidenceScope": "selected-architecture-isolated-image",
+                 "reason": "account-runtime-owns-account-schema-migration"}
+                if item["name"] == "account-runtime" else {
+                    "applicability": "not-applicable", "rawResult": "not-applicable",
+                    "evidenceRef": "N-A", "evidenceScope": "not-applicable",
+                    "reason": "image-does-not-own-account-schema-migration"})
         supply_path = bundle / "image-supply.lock.yaml"
         supply_path.write_text(yaml.safe_dump(supply, sort_keys=False), encoding="utf-8")
 
@@ -490,7 +537,6 @@ class RunnerTests(unittest.TestCase):
             },
         }
         references = {spec["inputs"]["clusterKubeconfigRef"], spec["inputs"]["imageSupplyRef"]}
-        references.update(item["sourceRef"] for item in spec["inputs"]["secrets"])
         for reference in references:
             approval["spec"]["inputDigests"][reference] = (
                 reference.rsplit(":", 1)[1] if reference.startswith("sealed-input:sha256:") else "9" * 64)
@@ -520,6 +566,19 @@ class RunnerTests(unittest.TestCase):
     def test_repository_dag_is_the_runner_step_machine(self):
         dag = runner.validate_dag()
         self.assertEqual([item["id"] for item in dag["spec"]["steps"]], list(runner.STEPS))
+
+    def test_approval_schema_allows_only_controller_prefix_or_full_dag(self):
+        schema = json.loads((HERE / "approval.schema.json").read_text(encoding="utf-8"))
+        approval = json.loads((HERE / "approval.template.json").read_text(encoding="utf-8"))
+        self.assertEqual(list(Draft7Validator(schema).iter_errors(approval)), [])
+        approval["spec"]["allowedSteps"] = list(runner.CONTROLLER_STAGE_STEPS)
+        self.assertEqual(list(Draft7Validator(schema).iter_errors(approval)), [])
+        approval["spec"]["allowedSteps"] = list(runner.STEPS[:4])
+        self.assertTrue(list(Draft7Validator(schema).iter_errors(approval)))
+        approval["spec"]["allowedSteps"] = list(runner.STEPS)
+        approval["spec"]["gates"]["G3"] = approval["spec"]["gates"].pop(
+            "G3Precondition")
+        self.assertTrue(list(Draft7Validator(schema).iter_errors(approval)))
 
     def test_kind_node_is_cluster_provenance_not_a_node_import_digest(self):
         (_, _, materialization_path, _, _, _, _) = self.fixture()
@@ -584,6 +643,22 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(executor.identity_calls, [])
         self.assertEqual(executor.run_calls, [])
 
+    def test_full_plan_rejects_adapter_without_g3_runtime_proof_before_executor(self):
+        (_, approval_path, materialization_path, profile_path, journal_path,
+         platform_source, application_source) = self.fixture()
+        executor = FakeExecutor()
+        executor.supports_credential_runtime_proof = False
+        with self.assertRaisesRegex(runner.RunnerRejected,
+                                    "adapter-g3-runtime-proof-unsupported"):
+            runner.execute("first", approval_path, materialization_path, profile_path,
+                           journal_path, executor, platform_source, application_source,
+                           now=NOW)
+        self.assertEqual(executor.identity_calls, [])
+        self.assertEqual(executor.verify_calls, [])
+        self.assertEqual(executor.reconcile_calls, [])
+        self.assertEqual(executor.run_calls, [])
+        self.assertFalse(journal_path.exists())
+
     def test_approval_and_journal_bind_the_complete_live_input_byte_set(self):
         (approval, approval_path, materialization_path, profile_path, journal_path,
          platform_source, application_source) = self.fixture()
@@ -626,6 +701,129 @@ class RunnerTests(unittest.TestCase):
                        journal_path, rerun, platform_source, application_source, now=NOW)
         self.assertEqual(rerun.verify_calls, list(runner.STEPS))
         self.assertEqual(rerun.run_calls, [])
+
+    def test_controller_stage_needs_g3_precondition_but_not_runtime_proof(self):
+        (approval, approval_path, materialization_path, profile_path, journal_path,
+         platform_source, application_source) = self.fixture()
+        approval["spec"]["allowedSteps"] = list(runner.CONTROLLER_STAGE_STEPS)
+        self.rewrite_approval(approval_path, approval)
+        executor = FakeExecutor(credential_proof=False)
+        result = runner.execute("first", approval_path, materialization_path, profile_path,
+                                journal_path, executor, platform_source, application_source,
+                                now=NOW)
+        self.assertEqual(executor.run_calls, list(runner.CONTROLLER_STAGE_STEPS))
+        self.assertEqual(result["steps"]["controllers"]["status"], "succeeded")
+        self.assertEqual(result["steps"]["credential-bootstrap"]["status"], "pending")
+
+    def test_controller_stage_rejects_unapproved_g3_precondition_before_executor(self):
+        (approval, approval_path, materialization_path, profile_path, journal_path,
+         platform_source, application_source) = self.fixture()
+        profile = yaml.safe_load(profile_path.read_text(encoding="utf-8"))
+        profile["spec"]["decisions"]["G3Precondition"]["status"] = "pending-approval"
+        profile_path.write_text(yaml.safe_dump(profile, sort_keys=False), encoding="utf-8")
+        self.reseal(approval, approval_path, materialization_path, profile_path)
+        approval["spec"]["allowedSteps"] = list(runner.CONTROLLER_STAGE_STEPS)
+        self.rewrite_approval(approval_path, approval)
+        executor = FakeExecutor()
+        with self.assertRaisesRegex(runner.RunnerRejected,
+                                    "profile-pending-input|profile-contract"):
+            runner.execute("first", approval_path, materialization_path, profile_path,
+                           journal_path, executor, platform_source, application_source,
+                           now=NOW)
+        self.assertEqual(executor.identity_calls, [])
+        self.assertEqual(executor.run_calls, [])
+
+    def test_expired_g3_precondition_stops_controller_stage_before_executor(self):
+        (approval, approval_path, materialization_path, profile_path, journal_path,
+         platform_source, application_source) = self.fixture()
+        profile = yaml.safe_load(profile_path.read_text(encoding="utf-8"))
+        plan = profile["spec"]["inputs"]["credentialIssuancePlan"]
+        for item in [*plan["secrets"], plan["ca"]]:
+            item["expiry"] = "2026-10-24"
+        profile_path.write_text(yaml.safe_dump(profile, sort_keys=False), encoding="utf-8")
+        self.reseal(approval, approval_path, materialization_path, profile_path)
+        approval["spec"]["allowedSteps"] = list(runner.CONTROLLER_STAGE_STEPS)
+        self.rewrite_approval(approval_path, approval)
+        executor = FakeExecutor()
+        with self.assertRaisesRegex(runner.RunnerRejected, "g3-precondition-expired"):
+            runner.execute("first", approval_path, materialization_path, profile_path,
+                           journal_path, executor, platform_source, application_source,
+                           now=NOW)
+        self.assertEqual(executor.identity_calls, [])
+
+    def test_only_fixed_controller_prefix_or_full_plan_can_be_approved(self):
+        (approval, approval_path, materialization_path, profile_path, journal_path,
+         platform_source, application_source) = self.fixture()
+        approval["spec"]["allowedSteps"] = list(runner.STEPS[:4])
+        self.rewrite_approval(approval_path, approval)
+        executor = FakeExecutor()
+        with self.assertRaisesRegex(runner.RunnerRejected, "approval-steps"):
+            runner.execute("first", approval_path, materialization_path, profile_path,
+                           journal_path, executor, platform_source, application_source,
+                           now=NOW)
+        self.assertEqual(executor.identity_calls, [])
+
+    def test_full_plan_stops_at_credential_step_without_runtime_proof(self):
+        (_, approval_path, materialization_path, profile_path, journal_path,
+         platform_source, application_source) = self.fixture()
+        executor = FakeExecutor(credential_proof=False)
+        with self.assertRaisesRegex(runner.RunnerRejected, "g3-runtime-proof"):
+            runner.execute("first", approval_path, materialization_path, profile_path,
+                           journal_path, executor, platform_source, application_source,
+                           now=NOW)
+        self.assertIn("credential-bootstrap", executor.run_calls)
+        self.assertNotIn("custom-resources", executor.run_calls)
+        journal = json.loads(journal_path.read_text(encoding="utf-8"))
+        self.assertEqual(journal["steps"]["credential-bootstrap"]["status"], "uncertain")
+
+        resumed = FakeExecutor(cluster_uid="fixture-cluster-uid",
+                               credential_proof=False)
+        with self.assertRaisesRegex(runner.RunnerRejected,
+                                    "uncertain-job-outcome:credential-bootstrap"):
+            runner.execute("resume", approval_path, materialization_path, profile_path,
+                           journal_path, resumed, platform_source, application_source,
+                           now=NOW)
+        self.assertNotIn("credential-bootstrap", resumed.run_calls)
+
+    def test_controller_stage_can_resume_under_new_full_approval_with_g3_runtime_proof(self):
+        (approval, approval_path, materialization_path, profile_path, journal_path,
+         platform_source, application_source) = self.fixture()
+        approval["spec"]["allowedSteps"] = list(runner.CONTROLLER_STAGE_STEPS)
+        self.rewrite_approval(approval_path, approval)
+        first = FakeExecutor()
+        runner.execute("first", approval_path, materialization_path, profile_path,
+                       journal_path, first, platform_source, application_source, now=NOW)
+
+        approval["spec"]["allowedSteps"] = list(runner.STEPS)
+        approval["metadata"].update(approvedAt="2026-10-25T11:30:00Z",
+                                    expiresAt="2026-10-25T13:30:00Z")
+        self.rewrite_approval(approval_path, approval)
+        resumed = FakeExecutor(cluster_uid="fixture-cluster-uid")
+        result = runner.execute("resume", approval_path, materialization_path, profile_path,
+                                journal_path, resumed, platform_source, application_source,
+                                now=NOW)
+        self.assertEqual(resumed.run_calls, list(runner.STEPS[len(
+            runner.CONTROLLER_STAGE_STEPS):]))
+        self.assertEqual(result["steps"]["acceptance"]["status"], "succeeded")
+
+    def test_wrong_runtime_proof_identity_stops_before_custom_resources(self):
+        (_, approval_path, materialization_path, profile_path, journal_path,
+         platform_source, application_source) = self.fixture()
+        executor = FakeExecutor()
+        original = executor.credential_proof
+
+        def wrong_proof():
+            proof = original()
+            proof["secrets"][0]["uid"] = ""
+            return proof
+
+        executor.credential_proof = wrong_proof
+        with self.assertRaisesRegex(runner.RunnerRejected,
+                                    "g3-runtime-proof-secret-identity"):
+            runner.execute("first", approval_path, materialization_path, profile_path,
+                           journal_path, executor, platform_source, application_source,
+                           now=NOW)
+        self.assertNotIn("custom-resources", executor.run_calls)
 
     def test_resume_retries_only_incomplete_and_preserves_succeeded_jobs(self):
         (_, approval_path, materialization_path, profile_path, journal_path,
@@ -784,19 +982,21 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(executor.identity_calls, [])
             self.assertEqual(executor.run_calls, [])
 
-    def test_unneeded_repository_credential_is_rejected(self):
+    def test_unneeded_repository_credential_plan_target_is_rejected(self):
         (approval, approval_path, materialization_path, profile_path, journal_path,
          platform_source, application_source) = self.fixture()
         profile = yaml.safe_load(profile_path.read_text(encoding="utf-8"))
-        profile["spec"]["inputs"]["secrets"].append({
+        profile["spec"]["inputs"]["credentialIssuancePlan"]["secrets"].append({
             "name": "repository-read", "purpose": "unneeded public Git credential",
             "destination": "fresh-control/repository-read", "owner": "runtime-owner",
-            "expiry": "2026-11-24", "sourceRef": "sealed-input:sha256:" + "f" * 64,
+            "expiry": "2026-11-24", "secretType": "Opaque", "keyNames": ["token"],
+            "issuerRef": "issuer:fixture", "cleanupOwner": "fixture-cleanup",
         })
         profile_path.write_text(yaml.safe_dump(profile, sort_keys=False), encoding="utf-8")
         self.reseal(approval, approval_path, materialization_path, profile_path)
         executor = FakeExecutor()
-        with self.assertRaisesRegex(runner.RunnerRejected, "g3-secret-set"):
+        with self.assertRaisesRegex(runner.RunnerRejected,
+                                    "profile-contract:g3-precondition-secret-set"):
             runner.execute("first", approval_path, materialization_path, profile_path,
                            journal_path, executor, platform_source, application_source, now=NOW)
         self.assertEqual(executor.identity_calls, [])

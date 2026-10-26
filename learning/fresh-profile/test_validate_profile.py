@@ -35,22 +35,20 @@ class FreshProfileTests(unittest.TestCase):
             "username-password-operation-key-allowlist-aligned"
         value["spec"]["target"].update(
             clusterName="kind-platform-fresh-fixture", context="kind-platform-fresh-fixture")
-        for gate in ("G1", "G2", "G3"):
+        for gate in ("G1", "G2", "G3Precondition"):
             value["spec"]["decisions"][gate] = {
                 "status": "approved", "choice": "approved-fixture-choice"}
         value["spec"]["imageSupply"].update(
             decision="retained-oci-archive", immutable=True,
             retentionUntil="2027-10-25", restoreOwner="fixture-owner")
-        secret_contract = (
-            ("account-db-bootstrap", "fresh-account/account-db-bootstrap"),
-            ("account-db-runtime", "fresh-account/account-db-runtime"),
-            ("account-db-migration", "fresh-account/account-db-migration"),
-        )
-        for item, (name, destination) in zip(
-                value["spec"]["inputs"]["secrets"], secret_contract):
-            item.update(name=name, destination=destination, owner="fixture-owner",
-                        expiry="2026-11-25",
-                        sourceRef="sealed-input:sha256:" + "3" * 64)
+        plan = value["spec"]["inputs"]["credentialIssuancePlan"]
+        plan.update(planId="fixture-g3-plan",
+                    procedureRef="runbook:fixture-g3-issuance",
+                    procedureSha256="3" * 64)
+        for item in [*plan["secrets"], plan["ca"]]:
+            item.update(owner="fixture-owner", expiry="2026-11-25",
+                        issuerRef="issuer:fixture", cleanupOwner="fixture-cleanup")
+        plan["ca"]["name"] = "fixture-fresh-ca"
         value["spec"]["repositories"]["platform-gitops"]["commit"] = "1" * 40
         next(item for item in value["spec"]["images"]
              if item["name"] == "account-runtime")["ref"] = (
@@ -132,7 +130,8 @@ class FreshProfileTests(unittest.TestCase):
 
     def test_secret_value_fields_are_rejected(self):
         value = copy.deepcopy(self.profile)
-        value["spec"]["inputs"]["secrets"][0]["password"] = "synthetic"
+        value["spec"]["inputs"]["credentialIssuancePlan"]["secrets"][0]["password"] = \
+            "synthetic"
         with self.assertRaisesRegex(contract.ContractError, "schema"):
             self.validate_copy(value)
         value = copy.deepcopy(self.profile)
@@ -167,9 +166,24 @@ class FreshProfileTests(unittest.TestCase):
         with self.assertRaisesRegex(contract.ContractError, "equivalence-tickets"):
             contract.validate_equivalence(value)
 
-    def test_explicit_g1_g2_g3_can_unlock_live_validation(self):
+    def test_explicit_g1_g2_g3_precondition_can_unlock_live_validation(self):
         value = self.approved_profile()
         self.validate_copy(value, require_approved=True)
+
+    def test_required_g3_precondition_cannot_be_replaced_by_runtime_claim(self):
+        value = self.approved_profile()
+        value["spec"]["decisions"]["G3Precondition"]["status"] = "pending-approval"
+        with self.assertRaisesRegex(contract.ContractError, "approval-g3precondition"):
+            self.validate_copy(value, require_approved=True)
+
+    def test_issuance_plan_cannot_contain_preissued_uid_or_secret_source(self):
+        for field in ("uid", "sourceRef"):
+            value = self.approved_profile()
+            value["spec"]["inputs"]["credentialIssuancePlan"]["secrets"][0][field] = \
+                "synthetic"
+            with self.subTest(field=field), self.assertRaisesRegex(
+                    contract.ContractError, "schema"):
+                self.validate_copy(value, require_approved=True)
 
     def test_approved_profile_rejects_unverified_plat211_image(self):
         value = self.approved_profile()

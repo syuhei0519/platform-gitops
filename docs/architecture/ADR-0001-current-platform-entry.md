@@ -45,3 +45,30 @@ Done PLAT-177 and PLAT-193–199 prove the retained cluster's observed 4-API/DB,
 They do **not** prove cacheless image retrieval, a new cluster's bootstrap ordering, fresh Secret input/recovery, finite profile/DB-role selection, interruption resume, or empty-child negative behavior. PLAT-212–217 must produce those measurements on the separately authorized fresh profile. A rendered manifest, this ADR, or an existing cluster's Healthy status is not fresh acceptance.
 
 This decision moves no repository path, archives nothing, retires no cluster, changes no live RBAC/security policy, and authorizes no image publication or credential creation.
+
+## PLAT-212/217 staged evidence semantics
+
+For the PLAT-212 image matrix, `smoke` is selected-architecture isolated image
+behavior. Kubernetes controller, DB and application integration remains later
+DAG evidence. `migration` is the Account application image's schema-migration
+execution capability: `account-runtime` is required and all other ten fixed
+roles are not applicable because they do not own that migration. PostgreSQL is
+the server, not the migration client; its compatibility, initialization,
+restart/PVC behavior and the actual migration result remain mandatory later
+evidence. No raw `failed` or `unrun` result becomes `passed`.
+
+G3 is split without weakening final acceptance. G3-P is an exact, non-secret,
+hash-bound issuance plan and explicit authority. G3-R is the runtime issuance
+receipt and fresh Secret/CA metadata/UID proof recorded at
+`credential-bootstrap` before any dependent step. A separately approved fixed
+prefix may end at `controllers` without G3-R; it still requires every target,
+source and authority gate applicable to that prefix. Only the complete
+fifteen-step first/rerun/resume and acceptance/cleanup evidence can complete
+PLAT-217.
+
+This decision defines the prefix shape but does not relax native G2. Both the
+prefix and full runner require applicable raw G2 checks to be `passed`; an
+external exception disposition is not converted to `passed`. Until those
+inputs satisfy the native gate, the prefix remains an offline contract and
+must reject before mutation. A separately approved manual experiment is not a
+runner prefix or PLAT-217 completion record.

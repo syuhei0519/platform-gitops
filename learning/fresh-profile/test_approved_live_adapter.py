@@ -398,6 +398,7 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
         self.assertEqual(live.plan, value)
         self.assertEqual(live.plan_sha256,
                          hashlib.sha256(live.plan_path.read_bytes()).hexdigest())
+        self.assertIs(live.supports_credential_runtime_proof, False)
         self.assertEqual(transport.calls, [])
 
     def test_full_first_and_rerun_lifecycle_has_semantic_evidence_for_every_step(self):

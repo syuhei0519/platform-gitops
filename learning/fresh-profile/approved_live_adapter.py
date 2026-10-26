@@ -271,6 +271,11 @@ class ApprovedLiveAdapter:
     means observable incomplete state; all other non-zero exits fail closed.
     """
 
+    # The v3 plan has no metadata-only Secret/CA receipt transport.  Keep full
+    # execution disabled before credential-bootstrap can mutate anything;
+    # the controller-only prefix does not require this capability.
+    supports_credential_runtime_proof = False
+
     def __init__(self, plan_path: Path, transport: Transport | None = None,
                  expected_target: dict | None = None,
                  expected_versions: dict | None = None,
