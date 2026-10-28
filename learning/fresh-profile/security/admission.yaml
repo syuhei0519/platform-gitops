@@ -108,8 +108,20 @@ spec:
         (object.kind == 'ServiceAccount' && object.metadata.name in ['grafana', 'otel-collector', 'prometheus']) ||
         (object.kind == 'Deployment' && object.metadata.name in ['grafana', 'otel-collector']) ||
         (object.kind == 'StatefulSet' && object.metadata.name == 'prometheus')
-      ))
-    message: only canonical kind/name/namespace resources are admitted
+      )) || (
+        object.metadata.namespace in ['fresh-account', 'fresh-observability'] &&
+        (
+          (object.kind == 'ConfigMap' && object.metadata.name == 'kube-root-ca.crt' &&
+           request.userInfo.username == 'system:serviceaccount:kube-system:root-ca-cert-publisher') ||
+          (object.kind == 'ServiceAccount' && object.metadata.name == 'default' &&
+           request.userInfo.username == 'system:serviceaccount:kube-system:service-account-controller')
+        )
+      ) || (
+        object.metadata.namespace == 'fresh-account' &&
+        object.kind == 'ConfigMap' && object.metadata.name == 'istio-ca-root-cert' &&
+        request.userInfo.username == 'system:serviceaccount:fresh-control:istiod-fresh-1-31-2'
+      )
+    message: only canonical resources or exact trusted-controller public-root/default-SA resources are admitted
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicyBinding
@@ -174,12 +186,12 @@ spec:
       (request.resource.resource == 'pods' &&
        (!has(object.spec.initContainers) || object.spec.initContainers.all(c,
          (!has(c.envFrom) || c.envFrom.all(e, !has(e.secretRef))) &&
-         (!has(c.env) || c.env.all(e, !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef)))) &&
+         (!has(c.env) || c.env.all(e, !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef))))) &&
        (!has(object.spec.ephemeralContainers) || size(object.spec.ephemeralContainers) == 0)) ||
       (request.resource.resource != 'pods' &&
        (!has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c,
          (!has(c.envFrom) || c.envFrom.all(e, !has(e.secretRef))) &&
-         (!has(c.env) || c.env.all(e, !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef)))))
+         (!has(c.env) || c.env.all(e, !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef))))))
     message: Secret-backed init containers and ephemeral containers are forbidden
   - expression: >-
       (request.resource.resource == 'pods' && object.spec.containers.all(c,

@@ -2,6 +2,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata: {name: argocd-fresh-control-writer, namespace: fresh-control}
 rules:
+- {apiGroups: [''], resources: [configmaps, persistentvolumeclaims, services, serviceaccounts], verbs: [get, list, watch]}
+- {apiGroups: [apps], resources: [deployments, statefulsets], verbs: [get, list, watch]}
+- {apiGroups: [batch], resources: [jobs], verbs: [get, list, watch]}
+- {apiGroups: [argoproj.io], resources: [applications, rollouts], verbs: [get, list, watch]}
+- {apiGroups: [networking.istio.io], resources: [destinationrules, virtualservices], verbs: [get, list, watch]}
 - {apiGroups: [argoproj.io], resources: [applications], verbs: [get, list, watch]}
 - {apiGroups: [argoproj.io], resources: [applications], verbs: [create]}
 - apiGroups: [argoproj.io]
@@ -20,6 +25,10 @@ kind: Role
 metadata: {name: argocd-fresh-account-writer, namespace: fresh-account}
 rules:
 - {apiGroups: [''], resources: [configmaps, persistentvolumeclaims, services, serviceaccounts], verbs: [get, list, watch]}
+- {apiGroups: [apps], resources: [deployments, statefulsets], verbs: [get, list, watch]}
+- {apiGroups: [batch], resources: [jobs], verbs: [get, list, watch]}
+- {apiGroups: [argoproj.io], resources: [applications, rollouts], verbs: [get, list, watch]}
+- {apiGroups: [networking.istio.io], resources: [destinationrules, virtualservices], verbs: [get, list, watch]}
 - {apiGroups: [''], resources: [configmaps, persistentvolumeclaims, services, serviceaccounts], verbs: [create]}
 - {apiGroups: [''], resources: [configmaps], verbs: [get, update, patch], resourceNames: [account-role-bootstrap]}
 - {apiGroups: [''], resources: [persistentvolumeclaims], verbs: [get, update, patch], resourceNames: [account-data]}
@@ -51,6 +60,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata: {name: argocd-fresh-observability-writer, namespace: fresh-observability}
 rules:
+- {apiGroups: [''], resources: [configmaps, persistentvolumeclaims, services, serviceaccounts], verbs: [get, list, watch]}
+- {apiGroups: [apps], resources: [deployments, statefulsets], verbs: [get, list, watch]}
+- {apiGroups: [batch], resources: [jobs], verbs: [get, list, watch]}
+- {apiGroups: [argoproj.io], resources: [applications, rollouts], verbs: [get, list, watch]}
+- {apiGroups: [networking.istio.io], resources: [destinationrules, virtualservices], verbs: [get, list, watch]}
 - {apiGroups: [''], resources: [configmaps, services, serviceaccounts], verbs: [get, list, watch]}
 - {apiGroups: [''], resources: [configmaps, services, serviceaccounts], verbs: [create]}
 - {apiGroups: [''], resources: [configmaps], verbs: [get, update, patch], resourceNames: [otel-collector, prometheus]}

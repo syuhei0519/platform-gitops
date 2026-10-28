@@ -171,6 +171,68 @@ class AuthorityTests(unittest.TestCase):
         rules = pod_policy["spec"]["matchConstraints"]["resourceRules"]
         self.assertTrue(any("pods/ephemeralcontainers" in item["resources"] for item in rules))
 
+    def test_every_admission_cel_expression_has_balanced_delimiters(self):
+        documents = contract.load_yaml(contract.ADMISSION)
+        contract.validate_admission(self.canonical, documents)
+
+        pod_policy = next(item for item in documents if item.get("metadata", {}).get("name") ==
+                          "fresh-account-pod-boundary" and item["kind"] == "ValidatingAdmissionPolicy")
+        expression = pod_policy["spec"]["validations"][6]["expression"]
+        self.assertEqual(expression.count("("), expression.count(")"))
+        pod_policy["spec"]["validations"][6]["expression"] = expression[:-1]
+        with self.assertRaisesRegex(
+                contract.ContractError,
+                "admission-cel-delimiters:fresh-account-pod-boundary:6"):
+            contract.validate_admission(self.canonical, documents)
+
+    def test_managed_system_resources_require_exact_controller_identity_name_and_namespace(self):
+        replacements = (
+            ("system:serviceaccount:kube-system:root-ca-cert-publisher",
+             "system:serviceaccount:kube-system:service-account-controller",
+             "admission-system-controller-boundary"),
+            ("system:serviceaccount:kube-system:service-account-controller",
+             "system:serviceaccount:kube-system:root-ca-cert-publisher",
+             "admission-system-controller-boundary"),
+            ("system:serviceaccount:kube-system:root-ca-cert-publisher",
+             "system:kube-controller-manager", "admission-system-controller-boundary"),
+            ("system:serviceaccount:kube-system:service-account-controller",
+             "system:kube-controller-manager", "admission-system-controller-boundary"),
+            ("kube-root-ca.crt", "other-root", "admission-system-controller-boundary"),
+            ("object.metadata.name == 'default'", "object.metadata.name == 'other'",
+             "admission-system-controller-boundary"),
+            ("['fresh-account', 'fresh-observability']", "['fresh-account', 'fresh-observability', 'default']",
+             "admission-system-controller-boundary"),
+            ("system:serviceaccount:fresh-control:istiod-fresh-1-31-2",
+             "system:serviceaccount:fresh-control:other", "admission-istio-root-boundary"),
+            ("object.metadata.name == 'istio-ca-root-cert'", "object.metadata.name == 'other-ca'",
+             "admission-istio-root-boundary"),
+        )
+        for old, new, reason in replacements:
+            documents = contract.load_yaml(contract.ADMISSION)
+            policy = next(item for item in documents if item.get("metadata", {}).get("name") ==
+                          "fresh-managed-resource-boundary" and item["kind"] == "ValidatingAdmissionPolicy")
+            policy["spec"]["validations"][0]["expression"] = \
+                policy["spec"]["validations"][0]["expression"].replace(old, new)
+            with self.subTest(old=old), self.assertRaisesRegex(contract.ContractError, reason):
+                contract.validate_admission(self.canonical, documents)
+
+    def test_managed_system_exception_cannot_be_widened(self):
+        documents = contract.load_yaml(contract.ADMISSION)
+        policy = next(item for item in documents if item.get("metadata", {}).get("name") ==
+                      "fresh-managed-resource-boundary" and item["kind"] == "ValidatingAdmissionPolicy")
+        policy["spec"]["validations"][0]["expression"] += \
+            " || (object.kind == 'ConfigMap' && object.metadata.name == 'arbitrary')"
+        with self.assertRaisesRegex(contract.ContractError, "admission-managed-expression"):
+            contract.validate_admission(self.canonical, documents)
+
+        documents = contract.load_yaml(contract.ADMISSION)
+        binding = next(item for item in documents if item.get("metadata", {}).get("name") ==
+                       "fresh-managed-resource-boundary" and
+                       item["kind"] == "ValidatingAdmissionPolicyBinding")
+        binding["spec"]["matchResources"]["namespaceSelector"]["matchExpressions"][0]["values"].append("control")
+        with self.assertRaisesRegex(contract.ContractError, "managed-binding-label"):
+            contract.validate_admission(self.canonical, documents)
+
     def test_all_named_negative_fixtures_are_denied(self):
         fixture = contract.load(contract.NEGATIVE)
         contract.validate_negatives(self.canonical, fixture)

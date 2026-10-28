@@ -18,6 +18,26 @@ OBSERVABILITY = HERE / "observability" / "resources.yaml"
 RBAC = HERE / "security" / "rbac.yaml"
 ADMISSION = HERE / "security" / "admission.yaml"
 CANONICAL = HERE / "security" / "canonical-contract.json"
+ARGOCD_VALUES = HERE.parents[1] / "bootstrap" / "argocd-values.yaml"
+GRAFANA_SAFE_ENV = [
+    {"name": "GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION", "value": "true"},
+    {"name": "GF_AUTH_DISABLE_LOGIN", "value": "true"},
+    {"name": "GF_AUTH_DISABLE_LOGIN_FORM", "value": "true"},
+    {"name": "GF_AUTH_BASIC_ENABLED", "value": "false"},
+    {"name": "GF_AUTH_ANONYMOUS_ENABLED", "value": "true"},
+    {"name": "GF_AUTH_ANONYMOUS_ORG_ROLE", "value": "Viewer"},
+    {"name": "GF_USERS_ALLOW_SIGN_UP", "value": "false"},
+    {"name": "GF_USERS_ALLOW_ORG_CREATE", "value": "false"},
+    {"name": "GF_USERS_VIEWERS_CAN_EDIT", "value": "false"},
+    {"name": "GF_ANALYTICS_ENABLED", "value": "false"},
+    {"name": "GF_ANALYTICS_REPORTING_ENABLED", "value": "false"},
+    {"name": "GF_ANALYTICS_CHECK_FOR_UPDATES", "value": "false"},
+    {"name": "GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES", "value": "false"},
+    {"name": "GF_SNAPSHOTS_EXTERNAL_ENABLED", "value": "false"},
+    {"name": "GF_PLUGINS_PLUGIN_ADMIN_ENABLED", "value": "false"},
+    {"name": "GF_PLUGINS_PREINSTALL_DISABLED", "value": "true"},
+    {"name": "GF_PLUGINS_PREINSTALL_AUTO_UPDATE", "value": "false"},
+]
 
 AUTHORITY_SPEC = importlib.util.spec_from_file_location("fresh_authority", HERE / "validate_authority.py")
 authority = importlib.util.module_from_spec(AUTHORITY_SPEC)
@@ -57,10 +77,60 @@ def validate_application(application, expected):
     require(spec.get("destination") == expected["destination"], f"application-destination:{name}")
 
 
+def validate_argocd_cache_scope(canonical, values_path=ARGOCD_VALUES):
+    values = yaml.safe_load(Path(values_path).read_text(encoding="utf-8"))
+    configs = values.get("configs", {})
+    cm = configs.get("cm", {})
+    require("resource.respectRBAC" not in cm, "argocd-cache-respect-rbac")
+    require("resource.exclusions" not in cm, "argocd-cache-custom-exclusions")
+    inclusions = yaml.safe_load(cm.get("resource.inclusions", ""))
+    require(isinstance(inclusions, list), "argocd-cache-inclusions-shape")
+    actual = {}
+    for rule in inclusions:
+        require(rule.get("clusters") == [canonical["argocdCacheScope"]["server"]],
+                "argocd-cache-inclusion-cluster")
+        require(len(rule.get("apiGroups", [])) == 1, "argocd-cache-inclusion-group")
+        group = rule["apiGroups"][0]
+        require(group not in actual, "argocd-cache-inclusion-duplicate")
+        actual[group] = rule.get("kinds", [])
+    require(actual == canonical["argocdCacheScope"]["resourceInclusions"],
+            "argocd-cache-inclusions")
+    require("Secret" not in {kind for kinds in actual.values() for kind in kinds},
+            "argocd-cache-secret-read")
+
+    credentials = configs.get("clusterCredentials", {})
+    require(set(credentials) == {canonical["argocdCacheScope"]["clusterName"]},
+            "argocd-cluster-registration-inventory")
+    cluster = credentials[canonical["argocdCacheScope"]["clusterName"]]
+    require(set(cluster) == {"server", "namespaces", "clusterResources", "config"},
+            "argocd-cluster-registration-fields")
+    require(cluster.get("server") == canonical["argocdCacheScope"]["server"],
+            "argocd-cluster-registration-server")
+    require(cluster.get("namespaces") == ",".join(canonical["argocdCacheScope"]["namespaces"]),
+            "argocd-cluster-registration-namespaces")
+    require(cluster.get("clusterResources") == canonical["argocdCacheScope"]["clusterResources"],
+            "argocd-cluster-registration-resources")
+    require(cluster.get("config") == {"tlsClientConfig": {"insecure": False}},
+            "argocd-cluster-registration-config")
+    forbidden = {"username", "password", "bearerToken", "certData", "keyData", "caData",
+                 "execProviderConfig", "awsAuthConfig"}
+    def keys(value):
+        if isinstance(value, dict):
+            return set(value).union(*(keys(item) for item in value.values()))
+        if isinstance(value, list):
+            return set().union(*(keys(item) for item in value))
+        return set()
+    require(not forbidden.intersection(keys(cluster.get("config"))),
+            "argocd-cluster-registration-credential")
+    return values
+
+
 def validate(root_path=ROOT, children_path=CHILDREN, observability_path=OBSERVABILITY,
-             rbac_path=RBAC, admission_path=ADMISSION, canonical_path=CANONICAL):
+             rbac_path=RBAC, admission_path=ADMISSION, canonical_path=CANONICAL,
+             argocd_values_path=ARGOCD_VALUES):
     profile = yaml.safe_load(PROFILE.read_text(encoding="utf-8"))["spec"]
     canonical = authority.validate_canonical(authority.load(canonical_path))
+    validate_argocd_cache_scope(canonical, argocd_values_path)
     root = load(root_path)
     require({identity(item) for item in root} == {
         "Namespace/None/fresh-control", "Namespace/None/fresh-account", "Namespace/None/fresh-observability",
@@ -115,6 +185,24 @@ def validate(root_path=ROOT, children_path=CHILDREN, observability_path=OBSERVAB
               for container in item["spec"]["template"]["spec"]["containers"]}
     require(images == {"collector": profile_images["otel-collector"], "prometheus": profile_images["prometheus"],
                        "grafana": profile_images["grafana"]}, "observability-images")
+    grafana = next(item for item in observability
+                   if identity(item) == "Deployment/fresh-observability/grafana")
+    require(grafana["spec"].get("replicas") == 1 and
+            grafana["spec"].get("strategy") == {"type": "Recreate"},
+            "grafana-recreate")
+    grafana_container = next(container for container in
+                             grafana["spec"]["template"]["spec"]["containers"]
+                             if container.get("name") == "grafana")
+    require(grafana_container.get("resources") == {
+        "requests": {"cpu": "50m", "memory": "128Mi"},
+        "limits": {"memory": "512Mi"},
+    }, "grafana-resources")
+    require(grafana_container.get("env") == GRAFANA_SAFE_ENV, "grafana-safe-env")
+    require(grafana_container.get("readinessProbe") == {
+        "httpGet": {"path": "/api/health", "port": "http"}
+    }, "grafana-readiness")
+    require("livenessProbe" not in grafana_container and
+            "startupProbe" not in grafana_container, "grafana-no-auto-restart-probes")
     observed_hash = hashlib.sha256(Path(observability_path).read_bytes()).hexdigest()
     require(observed_hash == profile["budget"]["estimates"]["renderedRequestTotals"]
             ["platformObservabilityInputSha256"], "observability-measurement-input")

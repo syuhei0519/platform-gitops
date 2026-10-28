@@ -40,6 +40,35 @@ gate continues to require applicable raw G2 checks to be `passed`; the runner
 does not translate an external exception disposition into a raw pass. Current
 raw `failed`/`unrun` inputs therefore reject the prefix before mutation.
 
+### Argo CD cache readiness before any root sync
+
+The in-cluster registration is restricted to `fresh-control`, `fresh-account`
+and `fresh-observability`, with `clusterResources=false` and no embedded
+credential. `argocd-cm` includes only the fixed desired namespaced GroupKinds.
+The three namespace Roles must expose the same `get/list/watch` union for those
+GroupKinds while retaining their existing exact-name write rules. Secret is
+not in the cache inclusion set and no cluster-wide Secret read is granted.
+
+Before a root operation, prove every included resource is listable in every
+configured namespace, cluster cache sync has no forbidden/unauthorized error,
+both root Applications compare without `ComparisonError`/`UnknownError`, and
+no desired GroupKind was skipped. An application-controller Pod that is merely
+Ready does **not** satisfy this gate. `resource.respectRBAC=normal` is not used
+to hide a missing required kind. A direct settings/registration change is
+expected to invalidate the v3.5.2 cache without a restart; failure to converge
+is STOP, and any Pod replacement requires its own approval. A later Helm
+upgrade changes the ConfigMap checksum and may replace application-controller,
+repo-server and server Pods, so that rollout is not implicit in this gate.
+
+This source tree carries the cache scope together with the separately reviewed
+admission fixes (CEL delimiter repair, exact kube-controller-manager service
+accounts, and the Istiod public-CA exception) and the reviewed Grafana safe
+17-variable, 512 MiB, readiness-only, Recreate desired state. Publication and
+live application are still separate decisions: compare the exact integrated
+tree with current live bytes, render it, and obtain the required approval
+before any sync or Helm upgrade. Never restore the older admission or Grafana
+configuration from a partial tree.
+
 ## Positive evidence
 
 - Applications: `Application/fresh-control/account-lightweight-root`,

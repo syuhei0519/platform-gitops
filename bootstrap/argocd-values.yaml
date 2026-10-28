@@ -12,6 +12,25 @@ global:
 configs:
   cm:
     application.resourceTrackingMethod: annotation
+    # The application controller has only namespace Roles.  Restrict the
+    # managed-cluster cache to the exact desired, namespaced GroupKinds instead
+    # of making a cluster-wide discovery request for every installed API.
+    resource.inclusions: |
+      - apiGroups: ['']
+        kinds: [ConfigMap, PersistentVolumeClaim, Service, ServiceAccount]
+        clusters: [https://kubernetes.default.svc]
+      - apiGroups: [apps]
+        kinds: [Deployment, StatefulSet]
+        clusters: [https://kubernetes.default.svc]
+      - apiGroups: [batch]
+        kinds: [Job]
+        clusters: [https://kubernetes.default.svc]
+      - apiGroups: [argoproj.io]
+        kinds: [Application, Rollout]
+        clusters: [https://kubernetes.default.svc]
+      - apiGroups: [networking.istio.io]
+        kinds: [DestinationRule, VirtualService]
+        clusters: [https://kubernetes.default.svc]
     resource.customizations.health.argoproj.io_Application: |
       local hs = { status = "Progressing", message = "Waiting for child Application status" }
       if obj.status == nil then return hs end
@@ -43,6 +62,18 @@ configs:
       hs.status = "Healthy"
       hs.message = health.message or "Child Application Synced and Healthy; verify leaf revision separately"
       return hs
+  # This Secret carries no bearer token, client certificate, private CA, or
+  # password.  Empty auth fields make Argo CD use the existing controller Pod
+  # ServiceAccount through rest.InClusterConfig.  A non-empty, inert TLS map is
+  # required because the fixed chart rejects an empty config map.
+  clusterCredentials:
+    learning-fresh-plat217-20261025:
+      server: https://kubernetes.default.svc
+      namespaces: fresh-control,fresh-account,fresh-observability
+      clusterResources: "false"
+      config:
+        tlsClientConfig:
+          insecure: false
 dex:
   enabled: false
 notifications:

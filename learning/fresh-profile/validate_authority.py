@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 from pathlib import Path
@@ -29,6 +30,21 @@ ROLLOUTS_CRDS = [
     "clusteranalysistemplates.argoproj.io", "experiments.argoproj.io",
     "rollouts.argoproj.io",
 ]
+MANAGED_SYSTEM_CONTROLLER_CLAUSE = """(
+object.metadata.namespace in ['fresh-account', 'fresh-observability'] &&
+(
+(object.kind == 'ConfigMap' && object.metadata.name == 'kube-root-ca.crt' &&
+request.userInfo.username == 'system:serviceaccount:kube-system:root-ca-cert-publisher') ||
+(object.kind == 'ServiceAccount' && object.metadata.name == 'default' &&
+request.userInfo.username == 'system:serviceaccount:kube-system:service-account-controller')
+)
+)"""
+MANAGED_ISTIO_ROOT_CLAUSE = """(
+object.metadata.namespace == 'fresh-account' &&
+object.kind == 'ConfigMap' && object.metadata.name == 'istio-ca-root-cert' &&
+request.userInfo.username == 'system:serviceaccount:fresh-control:istiod-fresh-1-31-2'
+)"""
+MANAGED_EXPRESSION_SHA256 = "69179f9880f18fff3d92f50c386cb07c45cf867966f1fe5b711d17b474fce172"
 
 
 class ContractError(ValueError):
@@ -38,6 +54,35 @@ class ContractError(ValueError):
 def require(value, reason):
     if not value:
         raise ContractError(reason)
+
+
+def compact_expression(value):
+    return " ".join(value.split())
+
+
+def cel_delimiters_balanced(expression):
+    """Reject truncated CEL before the API server performs authoritative compilation."""
+    pairs = {")": "(", "]": "[", "}": "{"}
+    stack = []
+    quote = None
+    escaped = False
+    for character in expression:
+        if quote is not None:
+            if escaped:
+                escaped = False
+            elif character == "\\":
+                escaped = True
+            elif character == quote:
+                quote = None
+            continue
+        if character in {"'", '"'}:
+            quote = character
+        elif character in "([{":
+            stack.append(character)
+        elif character in pairs:
+            if not stack or stack.pop() != pairs[character]:
+                return False
+    return quote is None and not stack
 
 
 def load(path: Path):
@@ -107,6 +152,30 @@ def validate_canonical(contract):
         "discoveryVerbs": ["get", "list", "watch"], "createVerbs": ["create"],
         "namedMutationVerbs": ["get", "update", "patch"], "deleteVerbs": [],
         "createIsBoundedByFailClosedAdmission": True}, "canonical-rbac-contract")
+    cache_scope = contract.get("argocdCacheScope", {})
+    require(cache_scope == {
+        "server": contract["destinationServer"],
+        "clusterName": "learning-fresh-plat217-20261025",
+        "namespaces": ["fresh-control", "fresh-account", "fresh-observability"],
+        "clusterResources": "false",
+        "resourceInclusions": {
+            "": ["ConfigMap", "PersistentVolumeClaim", "Service", "ServiceAccount"],
+            "apps": ["Deployment", "StatefulSet"],
+            "batch": ["Job"],
+            "argoproj.io": ["Application", "Rollout"],
+            "networking.istio.io": ["DestinationRule", "VirtualService"],
+        },
+        "readVerbs": ["get", "list", "watch"],
+        "respectRBAC": "unset",
+        "credentialFields": [],
+        "acceptance": [
+            "effective list permission for every included GroupKind in every configured namespace",
+            "cluster cache sync completes without forbidden or unauthorized resource errors",
+            "both root Applications compare without ComparisonError or UnknownError",
+            "every desired GroupKind is present in the cache; no respectRBAC skip is accepted",
+            "controller Pod Ready is necessary but not sufficient",
+        ],
+    }, "canonical-argocd-cache-scope")
     require(contract.get("podCreationBoundary") == {
         "trustedCreateRequestor": "system:kube-controller-manager",
         "namespacedPodCreateSubjects": [], "ownerReferenceUidLookupInCel": False,
@@ -276,6 +345,19 @@ def validate_rbac(canonical, documents):
                 expected.add((namespace, group, resource, verb, ()))
             for verb in ("get", "update", "patch"):
                 expected.add((namespace, group, resource, verb, tuple(sorted(names))))
+    kind_to_resource = {
+        "ConfigMap": "configmaps", "PersistentVolumeClaim": "persistentvolumeclaims",
+        "Service": "services", "ServiceAccount": "serviceaccounts",
+        "Deployment": "deployments", "StatefulSet": "statefulsets", "Job": "jobs",
+        "Application": "applications", "Rollout": "rollouts",
+        "DestinationRule": "destinationrules", "VirtualService": "virtualservices",
+    }
+    cache_scope = canonical["argocdCacheScope"]
+    for namespace in cache_scope["namespaces"]:
+        for group, kinds in cache_scope["resourceInclusions"].items():
+            for kind in kinds:
+                for verb in cache_scope["readVerbs"]:
+                    expected.add((namespace, group, kind_to_resource[kind], verb, ()))
     require(actual == expected, "rbac-canonical-rules")
 
 
@@ -285,6 +367,10 @@ def validate_admission(canonical, documents):
     expected = {"fresh-application-boundary", "fresh-managed-resource-boundary", "fresh-account-pod-boundary"}
     require(set(policies) == expected and set(bindings) == expected, "admission-inventory")
     require(all(item["spec"].get("failurePolicy") == "Fail" for item in policies.values()), "admission-fail-open")
+    for policy_name, policy in policies.items():
+        for index, validation in enumerate(policy["spec"].get("validations", [])):
+            require(cel_delimiters_balanced(validation.get("expression", "")),
+                    f"admission-cel-delimiters:{policy_name}:{index}")
     app_expression = " ".join(item["expression"] for item in policies["fresh-application-boundary"]["spec"]["validations"])
     for name, app in canonical["applications"].items():
         for value in (name, app["project"], app["repository"], app["revision"], app["path"],
@@ -312,6 +398,16 @@ def validate_admission(canonical, documents):
         require(namespace in managed_expression, f"admission-namespace:{namespace}")
         for names in resources.values():
             require(all(name in managed_expression for name in names), f"admission-managed-name:{namespace}")
+    compact_managed = compact_expression(managed_expression)
+    require(compact_expression(MANAGED_SYSTEM_CONTROLLER_CLAUSE) in compact_managed,
+            "admission-system-controller-boundary")
+    require(compact_expression(MANAGED_ISTIO_ROOT_CLAUSE) in compact_managed,
+            "admission-istio-root-boundary")
+    require("object.metadata.namespace == 'fresh-observability' && object.kind == 'ConfigMap' && "
+            "object.metadata.name == 'istio-ca-root-cert'" not in compact_managed,
+            "admission-observability-istio-root")
+    require(hashlib.sha256(compact_managed.encode("utf-8")).hexdigest() == MANAGED_EXPRESSION_SHA256,
+            "admission-managed-expression")
     pod_expression = " ".join(item["expression"] for item in policies["fresh-account-pod-boundary"]["spec"]["validations"])
     for fragment in ("ownerReferences", "initContainers", "ephemeralContainers", "request.subResource",
                      "request.userInfo.username", "system:kube-controller-manager", "secretRef", "secretKeyRef", "projected", "hostPath",
@@ -321,6 +417,10 @@ def validate_admission(canonical, documents):
             {"matchLabels": {"platform.lab/security-boundary": "control"}}, "application-binding-label")
     require(bindings["fresh-account-pod-boundary"]["spec"]["matchResources"]["namespaceSelector"] ==
             {"matchLabels": {"platform.lab/security-boundary": "account"}}, "pod-binding-label")
+    require(bindings["fresh-managed-resource-boundary"]["spec"]["matchResources"]["namespaceSelector"] ==
+            {"matchExpressions": [{"key": "platform.lab/security-boundary", "operator": "In",
+                                   "values": ["account", "observability"]}]},
+            "managed-binding-label")
 
 
 def validate_evidence(matrix, evidence, canonical=None):
