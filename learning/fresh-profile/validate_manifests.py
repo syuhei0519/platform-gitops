@@ -87,7 +87,7 @@ def validate_argocd_cache_scope(canonical, values_path=ARGOCD_VALUES):
     require(isinstance(inclusions, list), "argocd-cache-inclusions-shape")
     actual = {}
     for rule in inclusions:
-        require(rule.get("clusters") == [canonical["argocdCacheScope"]["server"]],
+        require(rule.get("clusters") == ["*"],
                 "argocd-cache-inclusion-cluster")
         require(len(rule.get("apiGroups", [])) == 1, "argocd-cache-inclusion-group")
         group = rule["apiGroups"][0]

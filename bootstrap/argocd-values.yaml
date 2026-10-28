@@ -18,19 +18,19 @@ configs:
     resource.inclusions: |
       - apiGroups: ['']
         kinds: [ConfigMap, PersistentVolumeClaim, Service, ServiceAccount]
-        clusters: [https://kubernetes.default.svc]
+        clusters: ['*']
       - apiGroups: [apps]
         kinds: [Deployment, StatefulSet]
-        clusters: [https://kubernetes.default.svc]
+        clusters: ['*']
       - apiGroups: [batch]
         kinds: [Job]
-        clusters: [https://kubernetes.default.svc]
+        clusters: ['*']
       - apiGroups: [argoproj.io]
         kinds: [Application, Rollout]
-        clusters: [https://kubernetes.default.svc]
+        clusters: ['*']
       - apiGroups: [networking.istio.io]
         kinds: [DestinationRule, VirtualService]
-        clusters: [https://kubernetes.default.svc]
+        clusters: ['*']
     resource.customizations.health.argoproj.io_Application: |
       local hs = { status = "Progressing", message = "Waiting for child Application status" }
       if obj.status == nil then return hs end
