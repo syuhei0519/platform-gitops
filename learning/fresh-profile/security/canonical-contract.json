@@ -79,6 +79,53 @@
     "namedMutationVerbs": ["get", "update", "patch"], "deleteVerbs": [],
     "createIsBoundedByFailClosedAdmission": true
   },
+  "argocdCacheScope": {
+    "server": "https://kubernetes.default.svc",
+    "clusterName": "learning-fresh-plat217-20261025",
+    "namespaces": [
+      "fresh-control",
+      "fresh-account",
+      "fresh-observability"
+    ],
+    "clusterResources": "false",
+    "resourceInclusions": {
+      "": [
+        "ConfigMap",
+        "PersistentVolumeClaim",
+        "Service",
+        "ServiceAccount"
+      ],
+      "apps": [
+        "Deployment",
+        "StatefulSet"
+      ],
+      "batch": [
+        "Job"
+      ],
+      "argoproj.io": [
+        "Application",
+        "Rollout"
+      ],
+      "networking.istio.io": [
+        "DestinationRule",
+        "VirtualService"
+      ]
+    },
+    "readVerbs": [
+      "get",
+      "list",
+      "watch"
+    ],
+    "respectRBAC": "unset",
+    "credentialFields": [],
+    "acceptance": [
+      "effective list permission for every included GroupKind in every configured namespace",
+      "cluster cache sync completes without forbidden or unauthorized resource errors",
+      "both root Applications compare without ComparisonError or UnknownError",
+      "every desired GroupKind is present in the cache; no respectRBAC skip is accepted",
+      "controller Pod Ready is necessary but not sufficient"
+    ]
+  },
   "podCreationBoundary": {
     "trustedCreateRequestor": "system:kube-controller-manager",
     "namespacedPodCreateSubjects": [],
