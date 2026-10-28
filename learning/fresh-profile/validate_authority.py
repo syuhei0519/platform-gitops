@@ -45,6 +45,10 @@ object.kind == 'ConfigMap' && object.metadata.name == 'istio-ca-root-cert' &&
 request.userInfo.username == 'system:serviceaccount:fresh-control:istiod-fresh-1-31-2'
 )"""
 MANAGED_EXPRESSION_SHA256 = "69179f9880f18fff3d92f50c386cb07c45cf867966f1fe5b711d17b474fce172"
+EPHEMERAL_SUBRESOURCE_CLAUSE = """!has(request.subResource) ||
+request.subResource != 'ephemeralcontainers'"""
+POD_CREATE_CONTROLLER_EXPRESSION_SHA256 = "7ec08b385d928c39c6c53facf370467cc6ac72b2513f008fe3aaf9f4490d1a4e"
+CONTAINER_SECURITY_CONTEXT_EXPRESSION_SHA256 = "ce42f6f17114cd96b151968623345c7fd5c8d612bf2ee9579a531001b075c67a"
 
 
 class ContractError(ValueError):
@@ -410,9 +414,23 @@ def validate_admission(canonical, documents):
             "admission-managed-expression")
     pod_expression = " ".join(item["expression"] for item in policies["fresh-account-pod-boundary"]["spec"]["validations"])
     for fragment in ("ownerReferences", "initContainers", "ephemeralContainers", "request.subResource",
-                     "request.userInfo.username", "system:kube-controller-manager", "secretRef", "secretKeyRef", "projected", "hostPath",
+                     "request.userInfo.username", "system:serviceaccount:kube-system:statefulset-controller",
+                     "system:serviceaccount:kube-system:job-controller",
+                     "system:serviceaccount:kube-system:replicaset-controller",
+                     "secretRef", "secretKeyRef", "projected", "hostPath",
                      "account-db-bootstrap", "account-db-migration", "account-db-runtime"):
         require(fragment in pod_expression, f"admission-pod-fragment:{fragment}")
+    pod_validations = policies["fresh-account-pod-boundary"]["spec"]["validations"]
+    require(hashlib.sha256(compact_expression(pod_validations[1]["expression"]).encode("utf-8")).hexdigest() ==
+            POD_CREATE_CONTROLLER_EXPRESSION_SHA256, "admission-pod-controller-identity")
+    require(hashlib.sha256(compact_expression(pod_validations[5]["expression"]).encode("utf-8")).hexdigest() ==
+            CONTAINER_SECURITY_CONTEXT_EXPRESSION_SHA256, "admission-container-security-context")
+    subresource_validations = [item for item in pod_validations
+                               if "request.subResource" in item.get("expression", "")]
+    require(len(subresource_validations) == 1, "admission-subresource-guard-count")
+    require(compact_expression(subresource_validations[0]["expression"]) ==
+            compact_expression(EPHEMERAL_SUBRESOURCE_CLAUSE),
+            "admission-subresource-optional-field-guard")
     require(bindings["fresh-application-boundary"]["spec"]["matchResources"]["namespaceSelector"] ==
             {"matchLabels": {"platform.lab/security-boundary": "control"}}, "application-binding-label")
     require(bindings["fresh-account-pod-boundary"]["spec"]["matchResources"]["namespaceSelector"] ==

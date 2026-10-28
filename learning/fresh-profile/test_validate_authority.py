@@ -171,6 +171,124 @@ class AuthorityTests(unittest.TestCase):
         rules = pod_policy["spec"]["matchConstraints"]["resourceRules"]
         self.assertTrue(any("pods/ephemeralcontainers" in item["resources"] for item in rules))
 
+    def test_ephemeral_subresource_guard_handles_optional_admission_request_field(self):
+        documents = contract.load_yaml(contract.ADMISSION)
+        pod_policy = next(item for item in documents if item.get("metadata", {}).get("name") ==
+                          "fresh-account-pod-boundary" and item["kind"] == "ValidatingAdmissionPolicy")
+        guards = [item["expression"] for item in pod_policy["spec"]["validations"]
+                  if "request.subResource" in item["expression"]]
+        self.assertEqual(len(guards), 1)
+        self.assertEqual(contract.compact_expression(guards[0]),
+                         contract.compact_expression(contract.EPHEMERAL_SUBRESOURCE_CLAUSE))
+
+        # This is the truth table of the CEL presence guard.  The API-server
+        # dry-run remains the authoritative compile/evaluation check; these
+        # cases prevent a regression to direct selection of an omitted field.
+        cases = (
+            ({}, True),
+            ({"subResource": ""}, True),
+            ({"subResource": "status"}, True),
+            ({"subResource": "ephemeralcontainers"}, False),
+        )
+        for request, allowed in cases:
+            with self.subTest(request=request):
+                actual = "subResource" not in request or request["subResource"] != "ephemeralcontainers"
+                self.assertEqual(actual, allowed)
+
+    def test_ephemeral_subresource_guard_cannot_drop_presence_check_or_broaden_denial(self):
+        for replacement in (
+                "request.subResource != 'ephemeralcontainers'",
+                "!has(request.subResource)",
+                "!has(request.subResource) || request.subResource != 'other'",
+                "!has(request.subResource) || true"):
+            documents = contract.load_yaml(contract.ADMISSION)
+            pod_policy = next(item for item in documents if item.get("metadata", {}).get("name") ==
+                              "fresh-account-pod-boundary" and item["kind"] == "ValidatingAdmissionPolicy")
+            guard = next(item for item in pod_policy["spec"]["validations"]
+                         if "request.subResource" in item["expression"])
+            guard["expression"] = replacement
+            with self.subTest(replacement=replacement), self.assertRaisesRegex(
+                    contract.ContractError, "admission-subresource-optional-field-guard"):
+                contract.validate_admission(self.canonical, documents)
+
+    def test_ephemeral_subresource_guard_is_the_only_optional_subresource_access(self):
+        documents = contract.load_yaml(contract.ADMISSION)
+        pod_policy = next(item for item in documents if item.get("metadata", {}).get("name") ==
+                          "fresh-account-pod-boundary" and item["kind"] == "ValidatingAdmissionPolicy")
+        occurrences = [item["expression"] for item in pod_policy["spec"]["validations"]
+                       if "request.subResource" in item["expression"]]
+        self.assertEqual(occurrences, [next(item["expression"] for item in
+                                            pod_policy["spec"]["validations"]
+                                            if "!has(request.subResource)" in item["expression"])])
+
+    def test_pod_create_requires_exact_controller_service_account_for_each_owner(self):
+        documents = contract.load_yaml(contract.ADMISSION)
+        contract.validate_admission(self.canonical, documents)
+        policy = next(item for item in documents if item.get("metadata", {}).get("name") ==
+                      "fresh-account-pod-boundary" and item["kind"] == "ValidatingAdmissionPolicy")
+        expression = policy["spec"]["validations"][1]["expression"]
+        for identity in (
+                "system:serviceaccount:kube-system:statefulset-controller",
+                "system:serviceaccount:kube-system:job-controller",
+                "system:serviceaccount:kube-system:replicaset-controller"):
+            self.assertIn(identity, expression)
+        self.assertNotIn("system:kube-controller-manager", expression)
+
+        replacements = (
+            ("system:serviceaccount:kube-system:statefulset-controller",
+             "system:serviceaccount:kube-system:job-controller"),
+            ("system:serviceaccount:kube-system:job-controller",
+             "system:serviceaccount:kube-system:statefulset-controller"),
+            ("system:serviceaccount:kube-system:replicaset-controller",
+             "system:kube-controller-manager"),
+            ("o.name == 'account-postgresql'", "o.name.startsWith('account-')"),
+        )
+        for old, new in replacements:
+            changed = copy.deepcopy(documents)
+            changed_policy = next(item for item in changed if item.get("metadata", {}).get("name") ==
+                                  "fresh-account-pod-boundary" and
+                                  item["kind"] == "ValidatingAdmissionPolicy")
+            changed_policy["spec"]["validations"][1]["expression"] = \
+                changed_policy["spec"]["validations"][1]["expression"].replace(old, new)
+            with self.subTest(old=old), self.assertRaisesRegex(
+                    contract.ContractError, "admission-pod"):
+                contract.validate_admission(self.canonical, changed)
+
+    def test_container_security_context_optional_parent_guard_is_exact(self):
+        documents = contract.load_yaml(contract.ADMISSION)
+        contract.validate_admission(self.canonical, documents)
+        policy = next(item for item in documents if item.get("metadata", {}).get("name") ==
+                      "fresh-account-pod-boundary" and item["kind"] == "ValidatingAdmissionPolicy")
+        expression = contract.compact_expression(policy["spec"]["validations"][5]["expression"])
+        self.assertEqual(expression.count("has(c.securityContext) &&"), 4)
+        self.assertEqual(expression.count("has(c.securityContext.allowPrivilegeEscalation) &&"), 4)
+
+        cases = (
+            ({}, False),
+            ({"privileged": False}, False),
+            ({"allowPrivilegeEscalation": False}, True),
+            ({"privileged": False, "allowPrivilegeEscalation": False}, True),
+            ({"privileged": True, "allowPrivilegeEscalation": False}, False),
+            ({"privileged": False, "allowPrivilegeEscalation": True}, False),
+        )
+        for security_context, allowed in cases:
+            actual = bool(security_context) and (
+                security_context.get("privileged") in (None, False) and
+                security_context.get("allowPrivilegeEscalation") is False)
+            with self.subTest(securityContext=security_context):
+                self.assertEqual(actual, allowed)
+
+        changed = copy.deepcopy(documents)
+        changed_policy = next(item for item in changed if item.get("metadata", {}).get("name") ==
+                              "fresh-account-pod-boundary" and
+                              item["kind"] == "ValidatingAdmissionPolicy")
+        changed_policy["spec"]["validations"][5]["expression"] = \
+            changed_policy["spec"]["validations"][5]["expression"].replace(
+                "has(c.securityContext) &&", "", 1)
+        with self.assertRaisesRegex(contract.ContractError,
+                                    "admission-container-security-context"):
+            contract.validate_admission(self.canonical, changed)
+
     def test_every_admission_cel_expression_has_balanced_delimiters(self):
         documents = contract.load_yaml(contract.ADMISSION)
         contract.validate_admission(self.canonical, documents)

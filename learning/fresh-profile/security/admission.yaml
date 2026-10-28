@@ -16,7 +16,7 @@ spec:
          object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-control') ||
         (object.metadata.name == 'fresh-release-definitions' && object.spec.project == 'fresh-platform' &&
          object.spec.source.repoURL == 'https://github.com/syuhei0519/application-manifest.git' &&
-            object.spec.source.targetRevision == '4a98e85a3866e48868c0c69505e546ac73f67641' &&
+            object.spec.source.targetRevision == '3707f73581da5d04db0e4771dda7c1e82bd0f47c' &&
          object.spec.source.path == 'learning/fresh-profile/release-definition' &&
          object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-control') ||
         (object.metadata.name == 'fresh-observability' && object.spec.project == 'fresh-platform' &&
@@ -26,7 +26,7 @@ spec:
          object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-observability') ||
         (object.metadata.name == 'fresh-account-release' && object.spec.project == 'fresh-account' &&
          object.spec.source.repoURL == 'https://github.com/syuhei0519/application-manifest.git' &&
-            object.spec.source.targetRevision == '4a98e85a3866e48868c0c69505e546ac73f67641' &&
+            object.spec.source.targetRevision == '3707f73581da5d04db0e4771dda7c1e82bd0f47c' &&
          object.spec.source.path == 'learning/fresh-profile/workload' &&
          object.spec.destination.server == 'https://kubernetes.default.svc' && object.spec.destination.namespace == 'fresh-account')
       )
@@ -42,7 +42,7 @@ spec:
         (object.metadata.name == 'fresh-release-definitions' &&
          has(object.spec.source.helm) && object.spec.source.helm.releaseName == 'fresh-account-release-definition' &&
          object.spec.source.helm.parameters.size() == 2 && object.spec.source.helm.parameters.all(p,
-                !has(p.forceString) && ((p.name == 'workloadRevision' && p.value == '4a98e85a3866e48868c0c69505e546ac73f67641') ||
+                !has(p.forceString) && ((p.name == 'workloadRevision' && p.value == '3707f73581da5d04db0e4771dda7c1e82bd0f47c') ||
                 (p.name == 'accountRuntimeImage' && p.value == 'ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd'))) &&
          !has(object.spec.source.helm.valueFiles) && !has(object.spec.source.helm.fileParameters) &&
          !has(object.spec.source.helm.values) && !has(object.spec.source.helm.valuesObject) &&
@@ -155,14 +155,17 @@ spec:
     message: controller kind/name/serviceAccountName must match the canonical contract
   - expression: >-
       request.resource.resource != 'pods' || request.operation != 'CREATE' ||
-      (request.userInfo.username == 'system:kube-controller-manager' &&
-       has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o,
-         o.controller == true && has(o.uid) && o.uid != '' &&
-         ((o.kind == 'StatefulSet' && o.name == 'account-postgresql') ||
-          (o.kind == 'Job' && o.name in ['account-db-role-bootstrap', 'account-migration']) ||
-          (o.kind == 'ReplicaSet' && o.name.startsWith('account-api-')))))
-    message: Pod CREATE requires the trusted kube-controller-manager requestor and canonical controller owner shape
-  - expression: request.subResource != 'ephemeralcontainers'
+      (has(object.metadata.ownerReferences) && object.metadata.ownerReferences.exists(o,
+         o.controller == true && has(o.uid) && o.uid != '' && (
+           (request.userInfo.username == 'system:serviceaccount:kube-system:statefulset-controller' &&
+            o.kind == 'StatefulSet' && o.name == 'account-postgresql') ||
+           (request.userInfo.username == 'system:serviceaccount:kube-system:job-controller' &&
+            o.kind == 'Job' && o.name in ['account-db-role-bootstrap', 'account-migration']) ||
+           (request.userInfo.username == 'system:serviceaccount:kube-system:replicaset-controller' &&
+            o.kind == 'ReplicaSet' && o.name.startsWith('account-api-')))))
+    message: Pod CREATE requires the exact trusted controller service account and canonical owner shape
+  - expression: >-
+      !has(request.subResource) || request.subResource != 'ephemeralcontainers'
     message: pods/ephemeralcontainers updates are forbidden
   - expression: >-
       (request.resource.resource == 'pods' && object.spec.automountServiceAccountToken == false) ||
@@ -176,11 +179,11 @@ spec:
     message: host networking, hostPath and every Secret volume form are forbidden
   - expression: >-
       (request.resource.resource == 'pods' &&
-       (!has(object.spec.initContainers) || object.spec.initContainers.all(c, (!has(c.securityContext.privileged) || c.securityContext.privileged == false) && (!has(c.securityContext.allowPrivilegeEscalation) || c.securityContext.allowPrivilegeEscalation == false))) &&
-       object.spec.containers.all(c, (!has(c.securityContext.privileged) || c.securityContext.privileged == false) && (!has(c.securityContext.allowPrivilegeEscalation) || c.securityContext.allowPrivilegeEscalation == false))) ||
+       (!has(object.spec.initContainers) || object.spec.initContainers.all(c, has(c.securityContext) && (!has(c.securityContext.privileged) || c.securityContext.privileged == false) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false)) &&
+       object.spec.containers.all(c, has(c.securityContext) && (!has(c.securityContext.privileged) || c.securityContext.privileged == false) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false)) ||
       (request.resource.resource != 'pods' &&
-       (!has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c, (!has(c.securityContext.privileged) || c.securityContext.privileged == false) && (!has(c.securityContext.allowPrivilegeEscalation) || c.securityContext.allowPrivilegeEscalation == false))) &&
-       object.spec.template.spec.containers.all(c, (!has(c.securityContext.privileged) || c.securityContext.privileged == false) && (!has(c.securityContext.allowPrivilegeEscalation) || c.securityContext.allowPrivilegeEscalation == false)))
+       (!has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c, has(c.securityContext) && (!has(c.securityContext.privileged) || c.securityContext.privileged == false) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false)) &&
+       object.spec.template.spec.containers.all(c, has(c.securityContext) && (!has(c.securityContext.privileged) || c.securityContext.privileged == false) && has(c.securityContext.allowPrivilegeEscalation) && c.securityContext.allowPrivilegeEscalation == false))
     message: privileged or privilege-escalating regular and init containers are forbidden
   - expression: >-
       (request.resource.resource == 'pods' &&
