@@ -42,7 +42,7 @@ class MaterializeTests(unittest.TestCase):
             output = root / "sealed"
             runtime = self.runtime_inputs(root)
             platform_sha = "1" * 40
-            application_sha = "4a98e85a3866e48868c0c69505e546ac73f67641"
+            application_sha = "3707f73581da5d04db0e4771dda7c1e82bd0f47c"
             path, manifest = contract.materialize(
                 platform_sha, application_sha, release, *runtime, output)
             self.assertTrue(path.is_file())
@@ -81,7 +81,7 @@ class MaterializeTests(unittest.TestCase):
                     "main", "2" * 40, release, *runtime, Path(directory) / "out")
             with self.assertRaises(contract.MaterializationError):
                 contract.materialize(
-                    "1" * 40, "4a98e85a3866e48868c0c69505e546ac73f67641",
+                    "1" * 40, "3707f73581da5d04db0e4771dda7c1e82bd0f47c",
                     release, *runtime, contract.HERE / "generated")
 
     def test_tracked_runtime_template_is_rejected_as_runtime_evidence(self):
@@ -93,7 +93,7 @@ class MaterializeTests(unittest.TestCase):
             with self.assertRaisesRegex(contract.MaterializationError,
                                         "runtime-input-must-be-ignored"):
                 contract.materialize(
-                    "1" * 40, "4a98e85a3866e48868c0c69505e546ac73f67641",
+                    "1" * 40, "3707f73581da5d04db0e4771dda7c1e82bd0f47c",
                     release, *runtime, root / "sealed")
 
     def test_application_git_source_token_is_rejected(self):
@@ -103,7 +103,7 @@ class MaterializeTests(unittest.TestCase):
             runtime = self.runtime_inputs(root)
             with self.assertRaisesRegex(contract.MaterializationError, "application-source-revision-token"):
                 contract.materialize(
-                    "1" * 40, "4a98e85a3866e48868c0c69505e546ac73f67641",
+                    "1" * 40, "3707f73581da5d04db0e4771dda7c1e82bd0f47c",
                     release, *runtime, root / "sealed")
 
 

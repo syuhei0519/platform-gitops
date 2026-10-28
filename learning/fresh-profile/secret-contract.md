@@ -32,7 +32,7 @@ full-plan invocation is rejected before executor identity, reconciliation or
 mutation; a generic Deployment or ordinary Secret JSON response does not
 satisfy this contract.
 
-The application source at `4a98e85a3866e48868c0c69505e546ac73f67641`
+The application source at `3707f73581da5d04db0e4771dda7c1e82bd0f47c`
 removes the `uri` fallback and consumes only `username` and `password` for the
 runtime and migration operations. The local Admission allowlist now matches
 those exact operation-scoped keys: the migration Job cannot read
