@@ -117,6 +117,15 @@ class FreshManifestTests(unittest.TestCase):
         with self.assertRaisesRegex(contract.Rejected, "argocd-cluster-registration-config"):
             contract.validate(argocd_values_path=self.temp([values]))
 
+    def test_cache_filter_cluster_must_cover_incluster_rest_host(self):
+        values = yaml.safe_load(contract.ARGOCD_VALUES.read_text(encoding="utf-8"))
+        inclusions = yaml.safe_load(values["configs"]["cm"]["resource.inclusions"])
+        canonical = contract.authority.load(contract.CANONICAL)
+        inclusions[0]["clusters"] = [canonical["argocdCacheScope"]["server"]]
+        values["configs"]["cm"]["resource.inclusions"] = yaml.safe_dump(inclusions, sort_keys=False)
+        with self.assertRaisesRegex(contract.Rejected, "argocd-cache-inclusion-cluster"):
+            contract.validate(argocd_values_path=self.temp([values]))
+
     def test_secret_and_respect_rbac_cannot_hide_required_resources(self):
         values = yaml.safe_load(contract.ARGOCD_VALUES.read_text(encoding="utf-8"))
         inclusions = yaml.safe_load(values["configs"]["cm"]["resource.inclusions"])
