@@ -143,7 +143,7 @@ class RunnerTests(unittest.TestCase):
         patcher.start()
         self.addCleanup(patcher.stop)
 
-    def fixture(self):
+    def fixture(self, plugin=False):
         self.fixture_index += 1
         fixture_name = f"fixture-{self.fixture_index}"
         profile = yaml.safe_load((HERE / "profile.template.yaml").read_text(encoding="utf-8"))
@@ -190,6 +190,17 @@ class RunnerTests(unittest.TestCase):
         bundle = self.temporary / fixture_name / "sealed"
         bundle.parent.mkdir()
         bundle.mkdir()
+        plugin_contract = None
+        if plugin:
+            from plugin_overlay import overlay
+            controller_image = "local/account-rollouts-fresh@sha256:" + "a" * 64
+            spec["images"].append({"name":"argo-rollouts-plugin", "ref":controller_image, "architecture":"linux/amd64"})
+            upstream = runner._load_contract_module("approved_live_adapter").ROLLOUTS_CONTROLLER_IMAGE
+            deployment={"apiVersion":"apps/v1", "kind":"Deployment", "metadata":{"name":"argo-rollouts","namespace":"fresh-control"}, "spec":{"template":{"spec":{"serviceAccountName":"argo-rollouts", "containers":[{"name":"controller","image":upstream}]}}}}
+            objects=overlay(deployment, controller_image, "b"*64)
+            plugin_path=bundle/"plugin-bundle.json"
+            plugin_path.write_text(json.dumps({"apiVersion":"v1","kind":"List","items":objects}), encoding="utf-8")
+            plugin_contract={"profile":"fresh-account","sourceRevision":APPLICATION,"controllerImage":controller_image,"binarySha256":"b"*64,"bundleSha256":hashlib.sha256(plugin_path.read_bytes()).hexdigest()}
         profile_path = bundle / "profile.lock.yaml"
         profile_path.write_text(yaml.safe_dump(profile, sort_keys=False), encoding="utf-8")
         profile_digest = hashlib.sha256(profile_path.read_bytes()).hexdigest()
@@ -200,6 +211,11 @@ class RunnerTests(unittest.TestCase):
             "restoreOwner": "fixture-owner", "retentionUntil": "2026-11-24",
             "restoreProcedureRef": "runbook:restore-fresh-image-supply",
         }
+        if plugin:
+            cloned = copy.deepcopy(next(x for x in supply["spec"]["images"] if x["name"] == "argo-rollouts"))
+            cloned["name"] = "argo-rollouts-plugin"
+            supply["spec"]["images"].append(cloned)
+            supply["spec"]["rolloutsPlugin"] = plugin_contract
         profile_images = {item["name"]: item["ref"] for item in spec["images"]}
         archive_paths = {}
         archive_dir = bundle / "approved-sources"
@@ -245,7 +261,7 @@ class RunnerTests(unittest.TestCase):
         for relative in runner.REQUIRED_SEALED_FILES - {"profile.lock.yaml", "image-supply.lock.yaml"}:
             path = bundle / relative
             path.parent.mkdir(parents=True, exist_ok=True)
-            if relative in {"bootstrap-dag.yaml", "bootstrap.contract.yaml"}:
+            if relative in {"bootstrap-dag.yaml", "bootstrap.contract.yaml", "security/admission.yaml"}:
                 shutil.copyfile(HERE / relative, path)
             else:
                 path.write_text("{}\n", encoding="utf-8")
@@ -258,7 +274,7 @@ class RunnerTests(unittest.TestCase):
         source_revisions = {"platform-gitops": PLATFORM,
                             "application-manifest": APPLICATION}
         for repository, paths in runner.REQUIRED_SOURCE_PATHS.items():
-            for relative in paths:
+            for relative in (paths | runner.PLUGIN_SOURCE_PATHS[repository] if plugin else paths):
                 source_blob = source_roots[repository] / relative
                 source_blob.parent.mkdir(parents=True, exist_ok=True)
                 source_blob.write_text(f"{repository}:{relative}\n", encoding="utf-8")
@@ -299,7 +315,7 @@ class RunnerTests(unittest.TestCase):
             "DestinationRule": "destinationrule", "VirtualService": "virtualservice",
             "Application": "application",
             "CustomResourceDefinition": "customresourcedefinition",
-            "Node": "node",
+            "Node": "node", "AnalysisTemplate": "analysistemplate",
         }
         def resource_spec(kind, name):
             if kind == "Application":
@@ -391,6 +407,8 @@ class RunnerTests(unittest.TestCase):
                 else:
                     contracts = [("apps/v1", "Deployment", "fresh-control", step,
                                   "observed-current", "workload-ready", {"Available": "True"})]
+            if plugin and step == "application":
+                contracts.append(("argoproj.io/v1alpha1", "AnalysisTemplate", "fresh-account", "account-api-policy", "none", "none", {}))
             observations, identities, verify, manifests = [], [], [], []
             for api_version, kind, namespace, name, generation, health, conditions in contracts:
                 identity = f"{kind}/{namespace}/{name}"
@@ -432,7 +450,9 @@ class RunnerTests(unittest.TestCase):
             if step in gitops_resources:
                 args = ["--core", "--kube-context", target_context,
                         "app", "sync", "fresh-account-release"]
-                for resource in gitops_resources[step]:
+                resources = gitops_resources[step]
+                if plugin and step == "application": resources = ["argoproj.io:AnalysisTemplate:account-api-policy", *resources]
+                for resource in resources:
                     args.extend(["--resource", resource])
                 args.append("--prune=false")
                 run = {"tool": "argocd", "args": args, "contentSha256": None}
@@ -500,6 +520,20 @@ class RunnerTests(unittest.TestCase):
         steps = {step: step_contract(step) for step in runner.STEPS
                  if step not in {"preflight", "image-source"}}
         steps = {"preflight": preflight, "image-source": image_source, **steps}
+        if plugin:
+            action=steps["controllers"]
+            action["resourceIdentities"]=[]; action["observations"]=[]; action["verify"]=[]
+            for obj in objects:
+                kind, ns, name = obj["kind"], obj["metadata"]["namespace"], obj["metadata"]["name"]
+                identity=f"{kind}/{ns}/{name}"
+                pointer="/spec" if kind=="Deployment" else ("/data" if kind=="ConfigMap" else ("/rules" if kind=="Role" else "/subjects"))
+                desired={pointer:adapter_contract._json_pointer(obj,pointer)}
+                action["resourceIdentities"].append(identity)
+                action["observations"].append({"apiVersion":obj["apiVersion"],"identity":identity,"desiredPaths":[pointer],"desiredSha256":adapter_contract._mapping_digest(desired),"generationPolicy":"observed-current" if kind=="Deployment" else "none","healthPolicy":"workload-ready" if kind=="Deployment" else "none","requiredConditions":{"Available":"True"} if kind=="Deployment" else {},"requiredImageDigests":[]})
+                token={"Deployment":"deployment","ConfigMap":"configmap","Role":"role","RoleBinding":"rolebinding"}[kind]
+                action["verify"].append({"tool":"kubectl","args":["--kubeconfig",kubeconfig,"--context",target_context,"get",token,name,"--namespace",ns,"--output","json"],"contentSha256":None})
+            action["reconcile"]=copy.deepcopy(action["verify"])
+            action["run"].append({"tool":"kubectl","args":["--kubeconfig",kubeconfig,"--context",target_context,"apply","--filename",str(plugin_path.resolve())],"contentSha256":plugin_contract["bundleSha256"]})
         adapter_plan = {
             "schemaVersion": "platform.lab/approved-live-step-plan/v3",
             "target": {"clusterName": spec["target"]["clusterName"],
@@ -511,6 +545,8 @@ class RunnerTests(unittest.TestCase):
                 "jsonpath={.metadata.uid}"], "contentSha256": None}},
             "steps": steps,
         }
+        if plugin:
+            adapter_plan["rolloutsPlugin"] = plugin_contract
         adapter_plan_path.write_text(json.dumps(adapter_plan) + "\n", encoding="utf-8")
         FakeExecutor.plan_sha256 = hashlib.sha256(adapter_plan_path.read_bytes()).hexdigest()
         adapter_input_set_digest = adapter_contract.plan_input_set_digest(adapter_plan)
@@ -1001,6 +1037,126 @@ class RunnerTests(unittest.TestCase):
                            journal_path, executor, platform_source, application_source, now=NOW)
         self.assertEqual(executor.identity_calls, [])
         self.assertEqual(executor.run_calls, [])
+
+    def test_existing_upgrade_cli_reaches_real_sealed_gate_and_rejects_tampering(self):
+        # The fixture's chart and CRD hash shims in setUp are retained; the
+        # live gate itself and all supply/source validations are real.
+        import contextlib, io, sys
+        upgrade_spec=importlib.util.spec_from_file_location("synthetic_upgrade_fixture",HERE/"test_existing_upgrade.py")
+        upgrade_tests=importlib.util.module_from_spec(upgrade_spec);upgrade_spec.loader.exec_module(upgrade_tests)
+        upgrade_fixture=upgrade_tests.UpgradeTests("test_live_adapter_is_mutation_disabled")
+        upgrade_fixture.setUp();self.addCleanup(upgrade_fixture.doCleanups)
+        approval, gate_approval, materialization_path, profile_path, journal, platform, application = self.fixture(plugin=True)
+        materialization=json.loads(materialization_path.read_text())
+        for relative in runner.PLUGIN_SOURCE_PATHS["platform-gitops"]:
+            source=platform/relative;source.write_bytes((HERE.parent.parent/relative).read_bytes())
+            identity=f"platform-gitops@{PLATFORM}:{relative}"
+            materialization["sourceFiles"][identity]=hashlib.sha256(source.read_bytes()).hexdigest()
+        materialization_path.write_text(json.dumps(materialization,sort_keys=True))
+        approval["metadata"].update(approvedAt="2026-10-25T00:00:00Z",expiresAt="2026-11-23T00:00:00Z")
+        self.reseal(approval,gate_approval,materialization_path,profile_path)
+        upgrade=upgrade_fixture.plan
+        upgrade["target"].update(clusterName="learning-fresh-fixture-sandbox",context="kind-learning-fresh-fixture-sandbox")
+        upgrade["source"].update(platformRevision=PLATFORM,newApplicationRevision=APPLICATION)
+        upgrade["gitDesired"]["sourceRender"]["platformRevision"]=PLATFORM
+        upgrade["gitDesired"]["root"]["revision"]=PLATFORM
+        upgrade["gitDesired"]["sourceRender"]["prePause"]["platformRevision"]=PLATFORM
+        upgrade["gitDesired"]["sourceRender"]["transitions"]["rollbackOld"]["platformRevision"]=PLATFORM
+        upgrade["gitDesired"]["child"]["newRevision"]=APPLICATION
+        upgrade["gitDesired"]["sourceRender"]["newWorkloadRevision"]=APPLICATION
+        plugin=json.loads((materialization_path.parent/"live-step-plan.json").read_text())["rolloutsPlugin"]
+        bundle=materialization_path.parent/"plugin-bundle.json"
+        upgrade["artifacts"].update(controllerImageDigest=plugin["controllerImage"].split("@",1)[1],binarySha256=plugin["binarySha256"],bundleSha256=plugin["bundleSha256"],bundlePath=str(bundle))
+        upgrade_fixture.plan_path.write_text(json.dumps(upgrade))
+        upgrade_fixture.approval.update(approvedAt="2026-10-25T00:00:00Z",expiresAt="2026-11-23T00:00:00Z",planSha256=hashlib.sha256(upgrade_fixture.plan_path.read_bytes()).hexdigest())
+        upgrade_fixture.approval_path.write_text(json.dumps(upgrade_fixture.approval))
+        argv=["runner.py","--mode","existing-upgrade","--upgrade-action","first","--live-plan",str(upgrade_fixture.plan_path),"--approval",str(upgrade_fixture.approval_path),"--journal",str(journal),"--gate-approval",str(gate_approval),"--gate-plan",str(materialization_path.parent/"live-step-plan.json"),"--materialization",str(materialization_path),"--profile",str(profile_path),"--platform-source-root",str(platform),"--application-source-root",str(application)]
+        def main_output():
+            output=io.StringIO()
+            with mock.patch.object(sys,"argv",argv),contextlib.redirect_stdout(output):
+                result=runner.main()
+            return result,output.getvalue()
+        result,output=main_output()
+        self.assertEqual(result,2);self.assertIn("upgrade-mutation-capability-unavailable",output)
+        self.assertFalse(journal.exists())
+        approval["spec"]["approved"]=False;self.rewrite_approval(gate_approval,approval)
+        result,output=main_output();self.assertEqual(result,2);self.assertIn("approval-not-granted",output)
+        approval["spec"]["approved"]=True;self.rewrite_approval(gate_approval,approval)
+        (materialization_path.parent/"image-supply.lock.yaml").write_text("tampered")
+        result,output=main_output();self.assertEqual(result,2);self.assertIn("materialization-file-digest",output)
+
+    def test_reviewed_plugin_through_runner_entry_and_tamper_rejection(self):
+        from types import SimpleNamespace
+        class Transport:
+            def __init__(self): self.calls=[]
+            def run(self, argv, env):
+                self.calls.append(argv)
+                return SimpleNamespace(returncode=0,stdout="fixture applied",stderr="")
+        approval, approval_path, materialization_path, profile_path, _, platform, application = self.fixture(plugin=True)
+        plan_path = materialization_path.parent / "live-step-plan.json"
+        approval["spec"]["allowedSteps"] = list(runner.CONTROLLER_STAGE_STEPS)
+        self.rewrite_approval(approval_path, approval)
+        fake = Transport()
+        live = runner.create_approved_adapter(approval_path,materialization_path,profile_path,platform,application,plan_path,transport=fake,now=NOW)
+        self.assertEqual(live.plugin_contract["sourceRevision"],APPLICATION)
+        plugin_command=live.plan["steps"]["controllers"]["run"][-1]
+        _, complete = live._run_commands([plugin_command])
+        self.assertTrue(complete)
+        self.assertEqual(fake.calls[-1][-3:-1],["apply","--filename"])
+        # Drive the normal runner lifecycle with synthetic step observations.
+        delegate = FakeExecutor()
+        live.identity, live.run, live.verify, live.reconcile = delegate.identity, delegate.run, delegate.verify, delegate.reconcile
+        journal = materialization_path.parent.parent / "plugin-journal.json"
+        runner.execute("first", approval_path, materialization_path, profile_path, journal, live, platform, application, plan_path, now=NOW)
+        self.assertEqual(delegate.run_calls, list(runner.CONTROLLER_STAGE_STEPS))
+        # Approval denies execution even if all other synthetic evidence matches.
+        denied=copy.deepcopy(approval); denied["spec"]["approved"]=False
+        self.rewrite_approval(approval_path,denied)
+        with self.assertRaisesRegex(runner.RunnerRejected,"approval-not-granted"):
+            runner.create_approved_adapter(approval_path,materialization_path,profile_path,platform,application,plan_path,transport=fake,now=NOW)
+        self.rewrite_approval(approval_path,approval)
+        # Sealed source bytes are checked even when the revision label is unchanged.
+        plugin_source=application/"learning/account-release/metric-plugin/fresh_query.go"
+        saved=plugin_source.read_bytes(); plugin_source.write_bytes(b"tampered")
+        before=len(fake.calls)
+        with self.assertRaisesRegex(runner.RunnerRejected,"source-file-digest"):
+            runner.create_approved_adapter(approval_path,materialization_path,profile_path,platform,application,plan_path,transport=fake,now=NOW)
+        self.assertEqual(len(fake.calls),before)
+        plugin_source.write_bytes(saved)
+        # An altered bundle is caught before any transport call.
+        bundle=materialization_path.parent/"plugin-bundle.json"
+        bundle.write_text("{}",encoding="utf-8")
+        before=len(fake.calls)
+        with self.assertRaises(runner.RunnerRejected):
+            runner.create_approved_adapter(approval_path,materialization_path,profile_path,platform,application,plan_path,transport=fake,now=NOW)
+        self.assertEqual(len(fake.calls),before)
+
+    def test_plugin_source_and_image_must_match_sealed_supply(self):
+        for field in ("sourceRevision","controllerImage","binarySha256","bundleSha256"):
+            with self.subTest(field=field):
+                approval, approval_path, materialization_path, profile_path, _, platform, application=self.fixture(plugin=True)
+                plan_path=materialization_path.parent/"live-step-plan.json"
+                plan=json.loads(plan_path.read_text())
+                plan["rolloutsPlugin"][field] = ("d" * 40 if field=="sourceRevision" else ("local/other@sha256:"+"d"*64 if field=="controllerImage" else "d"*64))
+                plan_path.write_text(json.dumps(plan),encoding="utf-8")
+                approval["spec"]["hashes"]["liveAdapterPlanSha256"]=hashlib.sha256(plan_path.read_bytes()).hexdigest()
+                self.rewrite_approval(approval_path,approval)
+                with self.assertRaises(runner.RunnerRejected):
+                    runner.create_approved_adapter(approval_path,materialization_path,profile_path,platform,application,plan_path,now=NOW)
+
+    def test_plugin_supply_must_be_approved_and_complete(self):
+        for change in ("missing", "unapproved", "source"):
+            with self.subTest(change=change):
+                approval, approval_path, materialization_path, profile_path, _, platform, application = self.fixture(plugin=True)
+                supply_path=materialization_path.parent/"image-supply.lock.yaml"
+                supply=yaml.safe_load(supply_path.read_text())
+                if change=="missing": supply["spec"].pop("rolloutsPlugin")
+                if change=="unapproved": supply["spec"]["decision"]["status"]="pending-approval"
+                if change=="source": supply["spec"]["rolloutsPlugin"]["sourceRevision"]="d"*40
+                supply_path.write_text(yaml.safe_dump(supply),encoding="utf-8")
+                self.reseal(approval,approval_path,materialization_path,profile_path)
+                with self.assertRaises(runner.RunnerRejected):
+                    runner.create_approved_adapter(approval_path,materialization_path,profile_path,platform,application,materialization_path.parent/"live-step-plan.json",now=NOW)
 
 
 if __name__ == "__main__":

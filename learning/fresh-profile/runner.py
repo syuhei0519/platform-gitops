@@ -79,6 +79,10 @@ REQUIRED_SOURCE_PATHS = {
         "learning/fresh-profile/workload/kustomization.yaml",
     },
 }
+PLUGIN_SOURCE_PATHS = {
+    "platform-gitops": {"learning/fresh-profile/plugin_overlay.py", "learning/fresh-profile/existing_upgrade.py", "learning/fresh-profile/mode_transition.py", "learning/fresh-profile/mode_operation.py", "learning/fresh-profile/render_rollouts_bootstrap.py", "learning/fresh-profile/approved_live_adapter.py", "learning/fresh-profile/runner.py", "learning/fresh-profile/materialize.py", "learning/fresh-profile/validate_profile.py", "learning/fresh-profile/validate_image_supply.py", "learning/fresh-profile/profile.schema.json", "learning/fresh-profile/image-supply.schema.json", "learning/fresh-profile/live-step-plan.schema.json"},
+    "application-manifest": {"learning/account-release/metric-plugin/main.go", "learning/account-release/metric-plugin/runtime.go", "learning/account-release/metric-plugin/fresh_query.go", "learning/account-release/metric-plugin/queries.json", "learning/account-release/metric-plugin/go.mod", "learning/account-release/metric-plugin/go.sum", "learning/account-release/metric-plugin/Dockerfile", "learning/fresh-profile/workload-auto/kustomization.yaml"},
+}
 TOOL_VERSION_KEYS = {
     "kind": "kind", "kubectl": "kubectl", "helm": "helm", "istioctl": "istio",
     "argocd": "argoCd", "rollouts": "rollouts",
@@ -277,7 +281,8 @@ def _validate_sealed_files(materialization: dict, bundle_root: Path) -> None:
 
 
 def _validate_source_files(materialization: dict, repositories: dict,
-                           platform_source_root: Path, application_source_root: Path) -> str:
+                           platform_source_root: Path, application_source_root: Path,
+                           plugin_selected: bool = False) -> str:
     source_files = materialization.get("sourceFiles")
     if (not isinstance(source_files, dict) or not source_files
             or any(not isinstance(name, str) or not SHA256.fullmatch(value or "")
@@ -292,7 +297,7 @@ def _validate_source_files(materialization: dict, repositories: dict,
     expected_identities = {
         f"{repository}@{repository_revisions[repository]}:{relative}"
         for repository, paths in REQUIRED_SOURCE_PATHS.items()
-        for relative in paths
+        for relative in (paths | PLUGIN_SOURCE_PATHS[repository] if plugin_selected else paths)
     }
     if set(source_files) != expected_identities:
         raise RunnerRejected("materialization-source-set")
@@ -412,8 +417,10 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
     validate_dag(_safe_file(bundle_root, "bootstrap-dag.yaml", "sealed-bootstrap-dag"))
     if materialization["files"].get("profile.lock.yaml") != hashes["profileSha256"]:
         raise RunnerRejected("materialization-profile-hash")
+    approved_plan = _load_json(Path(adapter_plan_path))
+    plugin_selected = "rolloutsPlugin" in approved_plan
     source_set_digest = _validate_source_files(materialization, repositories,
-                                               platform_source_root, application_source_root)
+                                               platform_source_root, application_source_root, plugin_selected)
     if hashes["sourceSetSha256"] != source_set_digest:
         raise RunnerRejected("approval-source-set-hash")
 
@@ -490,12 +497,14 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
     }
     try:
         adapter_contract = _load_contract_module("approved_live_adapter")
+        adapter_supply = adapter_contract.supply_plan_contract(supply_lock, profile_spec)
+        image_digests = _node_import_image_digests(supply_lock)
         plan = adapter_contract.validate_plan(
             Path(adapter_plan_path),
             {"clusterName": target["clusterName"], "context": target["context"]},
             expected_versions,
-            _node_import_image_digests(supply_lock),
-            adapter_contract.supply_plan_contract(supply_lock, profile_spec),
+            image_digests,
+            adapter_supply,
         )
         live_input_set_digest = adapter_contract.plan_input_set_digest(plan)
         if hashes["liveAdapterInputSetSha256"] != live_input_set_digest:
@@ -505,6 +514,9 @@ def validate_live_gate(approval_path: Path, materialization_path: Path,
     return {"approval": approval, "materialization": materialization, "profile": profile,
             "sourceSetSha256": source_set_digest, "inputDigests": input_digests,
             "allowedSteps": allowed_steps,
+            "adapterSupplyContract": adapter_supply,
+            "adapterImageDigests": image_digests,
+            "adapterVersions": expected_versions,
             "approvedAt": approved_at,
             "liveAdapterPlanSha256": hashes["liveAdapterPlanSha256"],
             "liveAdapterInputSetSha256": live_input_set_digest}
@@ -727,9 +739,102 @@ def execute(mode: str, approval_path: Path | None, materialization_path: Path | 
     return journal
 
 
+def create_approved_adapter(approval, materialization, profile, platform_source, application_source, plan_path, *, transport=None, now=None):
+    """Resolve a live adapter only after the complete approval and supply gate."""
+    sealed = validate_live_gate(approval, materialization, profile, platform_source, application_source, plan_path, now=now)
+    module = _load_contract_module("approved_live_adapter")
+    target = sealed["profile"]["spec"]["target"]
+    return module.ApprovedLiveAdapter(
+        plan_path, transport=transport,
+        expected_target={"clusterName":target["clusterName"], "context":target["context"]},
+        expected_versions=sealed["adapterVersions"], expected_image_digests=sealed["adapterImageDigests"],
+        expected_supply_contract=sealed["adapterSupplyContract"])
+
+
+def create_existing_upgrade_adapter(plan_path, upgrade_approval, gate_approval, materialization, profile,
+                                    platform_source, application_source, gate_plan,
+                                    *, transport=None, now=None):
+    """Bind the independent upgrade approval to the sealed fresh supply gate."""
+    def verify_local_source():
+        # Verify all platform source files in the plugin source set, including
+        # the executing runner, imported contracts, and their local schemas.
+        # Do this before importing gate contracts and repeat after the gate has
+        # authenticated the source set.
+        for relative in sorted(PLUGIN_SOURCE_PATHS["platform-gitops"]):
+            reviewed = _safe_file(Path(platform_source), relative, "source-file-path")
+            local = _safe_file(HERE.parent.parent, relative, "executing-source-path")
+            if _digest(local) != _digest(reviewed):
+                raise RunnerRejected("existing-upgrade-executing-source-mismatch:" + relative)
+    verify_local_source()
+    sealed = validate_live_gate(gate_approval, materialization, profile,
+                                platform_source, application_source, gate_plan, now=now)
+    verify_local_source()
+    if _digest(HERE / "security/admission.yaml") != _digest(_safe_file(Path(materialization).parent, "security/admission.yaml", "sealed-policy-template")):
+        raise RunnerRejected("existing-upgrade-policy-template-mismatch")
+    contract = _load_contract_module("existing_upgrade")
+    upgrade, _, _ = contract.validate(plan_path, upgrade_approval, now=now)
+    spec = sealed["profile"]["spec"]
+    target = spec["target"]
+    source = upgrade.get("source")
+    artifacts = upgrade.get("artifacts")
+    if (not isinstance(source, dict) or not isinstance(artifacts, dict)
+            or not isinstance(upgrade.get("target"), dict)):
+        raise RunnerRejected("existing-upgrade-plan-fields")
+    supply = sealed["adapterSupplyContract"]
+    plugin = supply.get("rolloutsPlugin") or {}
+    runtime_images = [item.get("ref") for item in spec.get("images", []) if item.get("name") == "account-runtime"]
+    render = upgrade.get("gitDesired", {}).get("sourceRender", {})
+    if ({k: upgrade["target"].get(k) for k in ("clusterName", "context")}
+            != {k: target.get(k) for k in ("clusterName", "context")}
+            or source.get("platformRevision") != spec["repositories"]["platform-gitops"]["commit"]
+            or source.get("newApplicationRevision") != spec["repositories"]["application-manifest"]["commit"]
+            or len(runtime_images) != 1 or render.get("runtimeImage") != runtime_images[0]
+            or plugin.get("sourceRevision") != source.get("newApplicationRevision")
+            or not plugin.get("controllerImage", "").endswith("@" + artifacts.get("controllerImageDigest", "!"))
+            or plugin.get("binarySha256") != artifacts.get("binarySha256")
+            or plugin.get("bundleSha256") != artifacts.get("bundleSha256")):
+        raise RunnerRejected("existing-upgrade-sealed-supply-mismatch")
+    module = _load_contract_module("approved_live_adapter")
+    adapter = module.ExistingUpgradeAdapter(plan_path, transport=transport,
+        render_verifier=lambda plan: contract.verify_reviewed_render(plan, platform_source, application_source))
+    # Only this factory enables the staged path, after both the independent
+    # upgrade approval and the sealed gate have been verified.
+    adapter.supports_existing_policy_mutations=True
+    adapter.supports_existing_upgrade_pause=True
+    adapter.supports_existing_controller_mutations=True
+    adapter.supports_existing_account_mutations=True
+    return adapter
+
+
+def create_mode_adapter(plan_path, approval, gate_approval, materialization, profile, platform_source, application_source, gate_plan, *, transport=None, now=None):
+    """Require the sealed supply gate and a separately reviewed mode plan."""
+    for relative in sorted(PLUGIN_SOURCE_PATHS["platform-gitops"]):
+        reviewed = _safe_file(Path(platform_source), relative, "source-file-path")
+        local = _safe_file(HERE.parent.parent, relative, "executing-source-path")
+        if _digest(local) != _digest(reviewed): raise RunnerRejected("mode-executing-source-mismatch:" + relative)
+    sealed = validate_live_gate(gate_approval, materialization, profile, platform_source, application_source, gate_plan, now=now)
+    for relative in sorted(PLUGIN_SOURCE_PATHS["platform-gitops"]):
+        if _digest(_safe_file(HERE.parent.parent, relative, "executing-source-path")) != _digest(_safe_file(Path(platform_source), relative, "source-file-path")): raise RunnerRejected("mode-executing-source-mismatch:" + relative)
+    if _digest(HERE / "security/admission.yaml") != _digest(_safe_file(Path(materialization).parent, "security/admission.yaml", "sealed-policy-template")): raise RunnerRejected("mode-policy-template-mismatch")
+    contract = _load_contract_module("mode_transition")
+    plan, _, _ = contract.validate(plan_path, approval, now=now)
+    profile_spec=sealed["profile"]["spec"];target=profile_spec["target"];new=plan["states"]["new"]
+    images=[x.get("ref") for x in profile_spec.get("images",[]) if x.get("name")=="account-runtime"]
+    if ({k:plan["target"].get(k) for k in ("clusterName","context")} != {k:target.get(k) for k in ("clusterName","context")} or (plan["states"]["final"] or new)["platformRevision"]!=profile_spec["repositories"]["platform-gitops"]["commit"] or new["workloadRevision"]!=profile_spec["repositories"]["application-manifest"]["commit"] or images!=[new["runtimeImage"]]): raise RunnerRejected("mode-sealed-supply-mismatch")
+    evidence=contract.render(plan,platform_source,application_source)
+    adapter_module=_load_contract_module("approved_live_adapter")
+    return contract.ModeAdapter(plan,evidence,transport or adapter_module.SubprocessTransport())
+
+
+def execute_existing_upgrade(action, plan, approval, journal, executor, *, now=None):
+    """Separate existing-cluster entry; never creates or bootstraps a cluster."""
+    module = _load_contract_module("existing_upgrade")
+    return module.execute(action, plan, approval, journal, executor, now=now)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mode", choices=("dry-run", "first", "rerun", "resume"), required=True)
+    parser.add_argument("--mode", choices=("dry-run", "first", "rerun", "resume", "existing-upgrade", "mode-transition"), required=True)
     parser.add_argument("--approval", type=Path)
     parser.add_argument("--materialization", type=Path)
     parser.add_argument("--profile", type=Path,
@@ -738,17 +843,37 @@ def main() -> int:
     parser.add_argument("--platform-source-root", type=Path)
     parser.add_argument("--application-source-root", type=Path)
     parser.add_argument("--live-plan", type=Path)
+    parser.add_argument("--gate-approval", type=Path)
+    parser.add_argument("--gate-plan", type=Path)
+    parser.add_argument("--upgrade-action", choices=("observe", "first", "continue", "resume", "rerun", "pause", "policy-initial", "policy-new-paused", "policy-final-automated", "policy-rollback-paused", "policy-rollback-old", "account-continue", "restore-continue", "rollback-continue", "rollback-restore", "prepare-continue"))
+    parser.add_argument("--mode-action", choices=("first", "continue", "resume"))
     args = parser.parse_args()
     try:
         if args.mode == "dry-run":
             result = execute(args.mode, args.approval, args.materialization, args.profile,
                              args.journal, None)
+        elif args.mode == "mode-transition":
+            if any(x is None for x in (args.live_plan,args.approval,args.mode_action,args.gate_approval,args.gate_plan,args.materialization,args.platform_source_root,args.application_source_root)):
+                raise RunnerRejected("mode-transition-inputs-required")
+            adapter=create_mode_adapter(args.live_plan,args.approval,args.gate_approval,args.materialization,args.profile,args.platform_source_root,args.application_source_root,args.gate_plan)
+            contract=_load_contract_module("mode_transition")
+            result=contract.execute(args.mode_action,args.live_plan,args.approval,args.journal,adapter)
+        elif args.mode == "existing-upgrade":
+            if any(x is None for x in (args.live_plan, args.approval, args.upgrade_action,
+                    args.gate_approval, args.gate_plan, args.materialization,
+                    args.platform_source_root, args.application_source_root)):
+                raise RunnerRejected("existing-upgrade-inputs-required")
+            adapter = create_existing_upgrade_adapter(args.live_plan, args.approval, args.gate_approval,
+                args.materialization, args.profile, args.platform_source_root,
+                args.application_source_root, args.gate_plan)
+            result = execute_existing_upgrade(args.upgrade_action, args.live_plan, args.approval, args.journal, adapter)
         else:
             if (args.live_plan is None or args.platform_source_root is None
                     or args.application_source_root is None):
                 raise RunnerRejected("live-cli-inputs-required")
-            adapter_module = _load_contract_module("approved_live_adapter")
-            adapter = adapter_module.ApprovedLiveAdapter(args.live_plan)
+            adapter = create_approved_adapter(args.approval, args.materialization, args.profile,
+                                              args.platform_source_root, args.application_source_root,
+                                              args.live_plan)
             result = execute(args.mode, args.approval, args.materialization, args.profile,
                              args.journal, adapter, args.platform_source_root,
                              args.application_source_root, args.live_plan)

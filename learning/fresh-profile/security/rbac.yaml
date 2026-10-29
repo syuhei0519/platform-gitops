@@ -5,7 +5,7 @@ rules:
 - {apiGroups: [''], resources: [configmaps, persistentvolumeclaims, services, serviceaccounts], verbs: [get, list, watch]}
 - {apiGroups: [apps], resources: [deployments, statefulsets], verbs: [get, list, watch]}
 - {apiGroups: [batch], resources: [jobs], verbs: [get, list, watch]}
-- {apiGroups: [argoproj.io], resources: [applications, rollouts], verbs: [get, list, watch]}
+- {apiGroups: [argoproj.io], resources: [applications, rollouts, analysistemplates], verbs: [get, list, watch]}
 - {apiGroups: [networking.istio.io], resources: [destinationrules, virtualservices], verbs: [get, list, watch]}
 - {apiGroups: [argoproj.io], resources: [applications], verbs: [get, list, watch]}
 - {apiGroups: [argoproj.io], resources: [applications], verbs: [create]}
@@ -27,7 +27,7 @@ rules:
 - {apiGroups: [''], resources: [configmaps, persistentvolumeclaims, services, serviceaccounts], verbs: [get, list, watch]}
 - {apiGroups: [apps], resources: [deployments, statefulsets], verbs: [get, list, watch]}
 - {apiGroups: [batch], resources: [jobs], verbs: [get, list, watch]}
-- {apiGroups: [argoproj.io], resources: [applications, rollouts], verbs: [get, list, watch]}
+- {apiGroups: [argoproj.io], resources: [applications, rollouts, analysistemplates], verbs: [get, list, watch]}
 - {apiGroups: [networking.istio.io], resources: [destinationrules, virtualservices], verbs: [get, list, watch]}
 - {apiGroups: [''], resources: [configmaps, persistentvolumeclaims, services, serviceaccounts], verbs: [create]}
 - {apiGroups: [''], resources: [configmaps], verbs: [get, update, patch], resourceNames: [account-role-bootstrap]}
@@ -41,6 +41,8 @@ rules:
 - {apiGroups: [batch], resources: [jobs], verbs: [create]}
 - {apiGroups: [batch], resources: [jobs], verbs: [get, update, patch], resourceNames: [account-db-role-bootstrap, account-migration]}
 - {apiGroups: [argoproj.io], resources: [rollouts], verbs: [get, list, watch]}
+- {apiGroups: [argoproj.io], resources: [analysistemplates], verbs: [get, list, watch, create]}
+- {apiGroups: [argoproj.io], resources: [analysistemplates], verbs: [get, update, patch], resourceNames: [account-api-policy]}
 - {apiGroups: [argoproj.io], resources: [rollouts], verbs: [create]}
 - {apiGroups: [argoproj.io], resources: [rollouts], verbs: [get, update, patch], resourceNames: [account-api]}
 - {apiGroups: [networking.istio.io], resources: [destinationrules], verbs: [get, list, watch]}
@@ -63,7 +65,7 @@ rules:
 - {apiGroups: [''], resources: [configmaps, persistentvolumeclaims, services, serviceaccounts], verbs: [get, list, watch]}
 - {apiGroups: [apps], resources: [deployments, statefulsets], verbs: [get, list, watch]}
 - {apiGroups: [batch], resources: [jobs], verbs: [get, list, watch]}
-- {apiGroups: [argoproj.io], resources: [applications, rollouts], verbs: [get, list, watch]}
+- {apiGroups: [argoproj.io], resources: [applications, rollouts, analysistemplates], verbs: [get, list, watch]}
 - {apiGroups: [networking.istio.io], resources: [destinationrules, virtualservices], verbs: [get, list, watch]}
 - {apiGroups: [''], resources: [configmaps, services, serviceaccounts], verbs: [get, list, watch]}
 - {apiGroups: [''], resources: [configmaps, services, serviceaccounts], verbs: [create]}

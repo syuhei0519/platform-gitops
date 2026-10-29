@@ -61,6 +61,7 @@ spec:
   - {group: apps, kind: StatefulSet}
   - {group: batch, kind: Job}
   - {group: argoproj.io, kind: Rollout}
+  - {group: argoproj.io, kind: AnalysisTemplate}
   - {group: networking.istio.io, kind: DestinationRule}
   - {group: networking.istio.io, kind: VirtualService}
 ---

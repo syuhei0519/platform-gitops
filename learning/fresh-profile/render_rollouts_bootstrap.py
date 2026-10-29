@@ -10,6 +10,7 @@ from pathlib import Path
 import subprocess
 
 import yaml
+from plugin_overlay import overlay
 
 
 CHART_VERSION = "2.43.7"
@@ -145,14 +146,44 @@ def render(helm: Path, chart: Path, output: Path) -> dict:
     }
 
 
+def render_plugin_bundle(helm: Path, chart: Path, output: Path, image: str, binary_sha256: str) -> dict:
+    """Render an offline, checksum-addressed proposal from the pinned Helm chart."""
+    verify_chart(chart)
+    args = ["template", "argo-rollouts", str(chart.resolve()), "--namespace", "fresh-control",
+            "--set", "installCRDs=false", "--set-string", "controller.image.tag=" + CONTROLLER_IMAGE_TAG]
+    docs = parse_documents(run_helm(helm, args))
+    validate_controller(docs)
+    configs = [d for d in docs if d.get('kind') == 'ConfigMap' and d.get('metadata', {}).get('name') == 'argo-rollouts-config' and d.get('metadata', {}).get('namespace') == 'fresh-control']
+    if len(configs) != 1 or (configs[0].get('data') or {}).get('metricProviderPlugins'):
+        raise RenderError('plugin-config-conflict')
+    controller = next(d for d in docs if d.get('kind') == 'Deployment' and d.get('metadata', {}).get('name') == 'argo-rollouts')
+    try:
+        replaced, config, role, binding = overlay(controller, image, binary_sha256)
+    except ValueError as exc:
+        raise RenderError(str(exc)) from exc
+    configs[0]['data'] = dict(configs[0].get('data') or {})
+    configs[0]['data'].update(config['data'])
+    docs = [replaced, configs[0], role, binding]
+    encoded = (json.dumps({'apiVersion':'v1','kind':'List','items':docs},sort_keys=True,separators=(',',':'))+'\n').encode()
+    output = output.resolve(); output.parent.mkdir(parents=True,exist_ok=True); output.write_bytes(encoded)
+    return {'bundleSha256':hashlib.sha256(encoded).hexdigest(), 'controllerImage':image, 'binarySha256':binary_sha256}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--helm", type=Path, required=True)
     parser.add_argument("--chart", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--plugin-output", type=Path)
+    parser.add_argument("--plugin-image")
+    parser.add_argument("--plugin-sha256")
     args = parser.parse_args()
     try:
         result = render(args.helm, args.chart, args.output)
+        if any((args.plugin_output, args.plugin_image, args.plugin_sha256)):
+            if not all((args.plugin_output, args.plugin_image, args.plugin_sha256)):
+                raise RenderError("plugin-inputs-required")
+            result["plugin"] = render_plugin_bundle(args.helm, args.chart, args.plugin_output, args.plugin_image, args.plugin_sha256)
     except (OSError, UnicodeError, RenderError) as error:
         print("rollouts bootstrap render rejected: " + str(error))
         return 2

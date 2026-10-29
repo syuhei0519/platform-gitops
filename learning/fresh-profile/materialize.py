@@ -9,6 +9,8 @@ import json
 from pathlib import Path
 import re
 
+import yaml
+
 
 HERE = Path(__file__).resolve().parent
 REPOSITORY = HERE.parents[1]
@@ -146,6 +148,16 @@ def materialize(platform_sha: str, application_sha: str, application_release: Pa
             digest(workload_root / relative)
         for relative in APPLICATION_WORKLOAD_FILES
     })
+    supply_document = yaml.safe_load(runtime_image_supply.read_text(encoding="utf-8"))
+    if supply_document.get("spec", {}).get("rolloutsPlugin") is not None:
+        app_root = release_root.parents[2]
+        plugin_files = {
+            "platform-gitops": (REPOSITORY, platform_sha, ["learning/fresh-profile/plugin_overlay.py", "learning/fresh-profile/existing_upgrade.py", "learning/fresh-profile/mode_transition.py", "learning/fresh-profile/mode_operation.py", "learning/fresh-profile/render_rollouts_bootstrap.py", "learning/fresh-profile/approved_live_adapter.py", "learning/fresh-profile/runner.py", "learning/fresh-profile/materialize.py", "learning/fresh-profile/validate_profile.py", "learning/fresh-profile/validate_image_supply.py", "learning/fresh-profile/profile.schema.json", "learning/fresh-profile/image-supply.schema.json", "learning/fresh-profile/live-step-plan.schema.json"]),
+            "application-manifest": (app_root, application_sha, ["learning/account-release/metric-plugin/main.go", "learning/account-release/metric-plugin/runtime.go", "learning/account-release/metric-plugin/fresh_query.go", "learning/account-release/metric-plugin/queries.json", "learning/account-release/metric-plugin/go.mod", "learning/account-release/metric-plugin/go.sum", "learning/account-release/metric-plugin/Dockerfile", "learning/fresh-profile/workload-auto/kustomization.yaml"]),
+        }
+        for repository, (root, revision, paths) in plugin_files.items():
+            for relative in paths:
+                source_files[f"{repository}@{revision}:{relative}"] = digest(root / relative)
     manifest = {
         "schemaVersion": "platform.lab/materialization/v1alpha1",
         "platformGitops": platform_sha,

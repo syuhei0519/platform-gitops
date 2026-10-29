@@ -22,7 +22,7 @@
       "revision": "3707f73581da5d04db0e4771dda7c1e82bd0f47c", "path": "learning/fresh-profile/release-definition",
       "sourceConfig": {"helm": {"releaseName": "fresh-account-release-definition", "parameters": [
           {"name": "workloadRevision", "value": "3707f73581da5d04db0e4771dda7c1e82bd0f47c"},
-          {"name": "accountRuntimeImage", "value": "ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd"}
+          {"name": "accountRuntimeImage", "value": "ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd"}, {"name": "promotionMode", "value": "manual"}, {"name": "syncMode", "value": "automated"}, {"name": "workloadVariant", "value": "fresh"}
       ]}},
       "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}
     },
@@ -62,7 +62,7 @@
       "/configmaps": ["account-role-bootstrap"], "/persistentvolumeclaims": ["account-data"],
       "/services": ["account-api", "account-postgresql"], "/serviceaccounts": ["account-database", "account-migration", "account-runtime"],
       "apps/statefulsets": ["account-postgresql"], "batch/jobs": ["account-db-role-bootstrap", "account-migration"],
-      "argoproj.io/rollouts": ["account-api"], "networking.istio.io/destinationrules": ["account-api"],
+      "argoproj.io/rollouts": ["account-api"], "argoproj.io/analysistemplates": ["account-api-policy"], "networking.istio.io/destinationrules": ["account-api"],
       "networking.istio.io/virtualservices": ["account-api"]
     },
     "fresh-observability": {
@@ -104,7 +104,8 @@
       ],
       "argoproj.io": [
         "Application",
-        "Rollout"
+        "Rollout",
+        "AnalysisTemplate"
       ],
       "networking.istio.io": [
         "DestinationRule",

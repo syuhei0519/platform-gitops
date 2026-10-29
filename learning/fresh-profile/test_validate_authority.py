@@ -28,6 +28,38 @@ class AuthorityTests(unittest.TestCase):
         self.assertEqual(len(evidence["applications"]), 4)
         self.assertEqual(matrix["liveEvidence"]["status"], "not-run")
 
+    def test_reviewed_mode_pin_accepts_auto_and_rejects_unapproved_modes(self):
+        canonical=copy.deepcopy(self.canonical)
+        args=canonical["applications"]["fresh-release-definitions"]["sourceConfig"]["helm"]["parameters"]
+        next(p for p in args if p["name"] == "promotionMode")["value"] = "auto"
+        canonical["applications"]["fresh-account-release"]["path"] = "learning/fresh-profile/workload-auto"
+        contract.validate_canonical(canonical)
+        docs=contract.load_yaml(Path(__file__).parent/"security/admission.yaml")
+        policy=next(d for d in docs if d.get("kind")=="ValidatingAdmissionPolicy" and d["metadata"]["name"]=="fresh-application-boundary")
+        policy["spec"]["validations"][1]["expression"] = policy["spec"]["validations"][1]["expression"].replace("p.name == 'promotionMode' && p.value == 'manual'", "p.name == 'promotionMode' && p.value == 'auto'")
+        policy["spec"]["validations"][0]["expression"] = policy["spec"]["validations"][0]["expression"].replace("object.spec.source.path == 'learning/fresh-profile/workload'", "object.spec.source.path == 'learning/fresh-profile/workload-auto'")
+        contract.validate_admission(canonical,docs)
+        with self.assertRaisesRegex(contract.ContractError,"admission-promotion-mode-pin"):
+            contract.validate_admission(self.canonical,docs)
+        next(p for p in args if p["name"] == "promotionMode")["value"] = "unknown"
+        with self.assertRaisesRegex(contract.ContractError,"canonical-promotion-mode"):
+            contract.validate_canonical(canonical)
+
+    def test_sync_mode_requires_matching_reviewed_admission_pin(self):
+        canonical=copy.deepcopy(self.canonical)
+        args=canonical["applications"]["fresh-release-definitions"]["sourceConfig"]["helm"]["parameters"]
+        next(p for p in args if p["name"]=="syncMode")["value"]="paused"
+        contract.validate_canonical(canonical)
+        docs=contract.load_yaml(Path(__file__).parent/"security/admission.yaml")
+        with self.assertRaisesRegex(contract.ContractError,"admission-sync-mode-pin"):
+            contract.validate_admission(canonical,docs)
+        policy=next(d for d in docs if d.get("kind")=="ValidatingAdmissionPolicy" and d["metadata"]["name"]=="fresh-application-boundary")
+        policy["spec"]["validations"][1]["expression"]=policy["spec"]["validations"][1]["expression"].replace("p.name == 'syncMode' && p.value == 'automated'","p.name == 'syncMode' && p.value == 'paused'")
+        contract.validate_admission(canonical,docs)
+        next(p for p in args if p["name"]=="syncMode")["value"]="unknown"
+        with self.assertRaisesRegex(contract.ContractError,"canonical-sync-mode"):
+            contract.validate_canonical(canonical)
+
     def test_variable_or_wrong_source_sha_is_rejected(self):
         self.evidence["sources"]["workload"]["commit"] = "main"
         self.assertEvidenceRejected("evidence-sha:workload")

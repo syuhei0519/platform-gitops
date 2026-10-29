@@ -18,6 +18,17 @@
       "type": "object", "additionalProperties": false,
       "required": ["profileRef", "targetArchitecture", "decision", "prohibitedEvidence", "requiredChecks", "images"],
       "properties": {
+        "rolloutsPlugin": {
+          "type": "object", "additionalProperties": false,
+          "required": ["profile", "sourceRevision", "controllerImage", "binarySha256", "bundleSha256"],
+          "properties": {
+            "profile": {"const": "fresh-account"},
+            "sourceRevision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+            "controllerImage": {"type": "string", "pattern": "^[a-z0-9][a-z0-9./-]*@sha256:[0-9a-f]{64}$"},
+            "binarySha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "bundleSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+          }
+        },
         "profileRef": {"enum": ["learning/fresh-profile/profile.template.yaml", "learning/fresh-profile/.runtime/profile.runtime.local.yaml", "profile.lock.yaml"]},
         "targetArchitecture": {"enum": ["linux/amd64", "linux/arm64"]},
         "decision": {

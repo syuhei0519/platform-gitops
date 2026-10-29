@@ -248,7 +248,7 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
                  or target["context"] == "kind-" + protected_cluster.removeprefix("kind-"))):
         raise ContractError("current-cluster-target")
     names = [image["name"] for image in spec["images"]]
-    if len(names) != len(set(names)) or set(names) != REQUIRED_IMAGES:
+    if len(names) != len(set(names)) or set(names) not in (REQUIRED_IMAGES, REQUIRED_IMAGES | {"argo-rollouts-plugin"}):
         raise ContractError("image-set")
     if any(image["architecture"] != target["architecture"] for image in spec["images"]):
         raise ContractError("image-architecture")

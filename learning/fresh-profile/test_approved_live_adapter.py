@@ -915,6 +915,123 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
                     self.write(self.plan()), FakeTransport(),
                     {"clusterName": self.cluster, "context": self.context}, self.versions)
 
+    def test_plugin_bundle_requires_reviewed_contract_and_is_consumed(self):
+        from plugin_overlay import overlay
+        plan = self.plan()
+        image = "local/rollouts@sha256:" + "a" * 64
+        binary = "b" * 64
+        deployment = {"apiVersion":"apps/v1", "kind":"Deployment", "metadata":{"name":"argo-rollouts","namespace":"fresh-control"}, "spec":{"template":{"spec":{"serviceAccountName":"argo-rollouts", "containers":[{"name":"controller", "image":adapter.ROLLOUTS_CONTROLLER_IMAGE}]}}}}
+        objects = overlay(deployment, image, binary)
+        path = self.temporary / "plugin.json"
+        path.write_text(json.dumps({"apiVersion":"v1","kind":"List","items":objects}), encoding="utf-8")
+        digest = self.real_sha256(path)
+        contract = {"profile":"fresh-account", "sourceRevision":"c"*40, "controllerImage":image, "binarySha256":binary, "bundleSha256":digest}
+        plan["rolloutsPlugin"] = contract
+        action = plan["steps"]["controllers"]
+        action["run"].append({"tool":"kubectl", "args":["--kubeconfig",self.kubeconfig,"--context",self.context,"apply","--filename",str(path)], "contentSha256":digest})
+        action["resourceIdentities"] = []
+        action["observations"] = []
+        action["verify"] = []
+        for obj in objects:
+            kind, ns, name = obj["kind"],obj["metadata"]["namespace"],obj["metadata"]["name"]
+            identity = f"{kind}/{ns}/{name}"
+            pointer = "/spec" if kind == "Deployment" else ("/data" if kind == "ConfigMap" else ("/rules" if kind == "Role" else "/subjects"))
+            desired = {pointer: adapter._json_pointer(obj, pointer)}
+            action["resourceIdentities"].append(identity)
+            action["observations"].append({"apiVersion":obj["apiVersion"],"identity":identity,"desiredPaths":[pointer],"desiredSha256":adapter._mapping_digest(desired),"generationPolicy":"observed-current" if kind=="Deployment" else "none","healthPolicy":"workload-ready" if kind=="Deployment" else "none","requiredConditions":{"Available":"True"} if kind=="Deployment" else {},"requiredImageDigests":[]})
+            token = {"Deployment":"deployment","ConfigMap":"configmap","Role":"role","RoleBinding":"rolebinding"}[kind]
+            action["verify"].append({"tool":"kubectl","args":["--kubeconfig",self.kubeconfig,"--context",self.context,"get",token,name,"--namespace",ns,"--output","json"],"contentSha256":None})
+        # Other controller observations remain valid; the plugin bundle must
+        # cover precisely its own four resources, not every controller.
+        action["resourceIdentities"].append("Deployment/fresh-control/other-controller")
+        action["observations"].append({"apiVersion":"apps/v1","identity":"Deployment/fresh-control/other-controller","desiredPaths":["/spec"],"desiredSha256":self.desired_digest("other-controller"),"generationPolicy":"observed-current","healthPolicy":"workload-ready","requiredConditions":{"Available":"True"},"requiredImageDigests":[]})
+        action["verify"].append({"tool":"kubectl","args":["--kubeconfig",self.kubeconfig,"--context",self.context,"get","deployment","other-controller","--namespace","fresh-control","--output","json"],"contentSha256":None})
+        action["reconcile"] = copy.deepcopy(action["verify"])
+        app_action=plan["steps"]["application"]
+        app_action["resourceIdentities"].append("AnalysisTemplate/fresh-account/account-api-policy")
+        app_action["observations"].append({"apiVersion":"argoproj.io/v1alpha1","identity":"AnalysisTemplate/fresh-account/account-api-policy","desiredPaths":["/spec"],"desiredSha256":self.desired_digest("account-api-policy", "AnalysisTemplate"),"generationPolicy":"none","healthPolicy":"none","requiredConditions":{},"requiredImageDigests":[]})
+        app_action["verify"].append({"tool":"kubectl","args":["--kubeconfig",self.kubeconfig,"--context",self.context,"get","analysistemplate","account-api-policy","--namespace","fresh-account","--output","json"],"contentSha256":None})
+        app_action["reconcile"] = copy.deepcopy(app_action["verify"])
+        insert_at=app_action["run"][0]["args"].index("--resource")
+        app_action["run"][0]["args"][insert_at:insert_at] = ["--resource", "argoproj.io:AnalysisTemplate:account-api-policy"]
+        artifacts=plan["steps"]["image-source"]["hostArtifacts"]
+        supply={"rolloutsPlugin":copy.deepcopy(contract),"helmCharts":{"argo-rollouts":{"version":adapter.ROLLOUTS_CHART_VERSION,"sha256":adapter.ROLLOUTS_CHART_SHA256,"crdListSha256":adapter.ROLLOUTS_CRD_LIST_SHA256}},"hostArtifacts":{a["id"]:{"sha256":a["sha256"],"sourceIdentity":a["sourceIdentity"]} for a in artifacts}}
+        supply["kindNodeRef"]="kindest/node@sha256:"+"a"*64
+        supply["applicationRevision"]=contract["sourceRevision"]
+        schema = json.loads((Path(__file__).parent / "live-step-plan.schema.json").read_text(encoding="utf-8"))
+        self.assertEqual(list(Draft7Validator(schema).iter_errors(plan)), [])
+        path_plan=self.write(plan)
+        transport = FakeTransport()
+        live=adapter.ApprovedLiveAdapter(path_plan,transport,{"clusterName":self.cluster,"context":self.context},self.versions,expected_supply_contract=supply)
+        self.assertEqual(live.plugin_contract,contract)
+        _, completed = live._run_commands([action["run"][-1]])
+        self.assertTrue(completed)
+        self.assertEqual(transport.calls[-1][-3:], ["apply", "--filename", str(path)])
+        with self.assertRaisesRegex(adapter.AdapterRejected,"plugin-unapproved-contract"):
+            adapter.ApprovedLiveAdapter(path_plan,FakeTransport(),{"clusterName":self.cluster,"context":self.context},self.versions)
+        mismatch = copy.deepcopy(supply); mismatch["applicationRevision"] = "d" * 40
+        with self.assertRaisesRegex(adapter.AdapterRejected,"plugin-source-not-approved"):
+            adapter.ApprovedLiveAdapter(path_plan,FakeTransport(),{"clusterName":self.cluster,"context":self.context},self.versions,expected_supply_contract=mismatch)
+        reversed_plan = copy.deepcopy(plan)
+        reversed_plan["steps"]["controllers"]["run"].reverse()
+        with self.assertRaisesRegex(adapter.AdapterRejected,"plugin-controller-apply-order"):
+            adapter.ApprovedLiveAdapter(self.write(reversed_plan),FakeTransport(),{"clusterName":self.cluster,"context":self.context},self.versions,expected_supply_contract=supply)
+        for forbidden in ("batch:Job:account-migration", ":ConfigMap:account-role-bootstrap", ":PersistentVolumeClaim:account-data", ":Secret:account-db-runtime"):
+            altered_plan=copy.deepcopy(plan)
+            altered_plan["steps"]["application"]["run"][0]["args"][-1:-1]=["--resource",forbidden]
+            with self.assertRaisesRegex(adapter.AdapterRejected,"argocd-run-command"):
+                adapter.ApprovedLiveAdapter(self.write(altered_plan),FakeTransport(),{"clusterName":self.cluster,"context":self.context},self.versions,expected_supply_contract=supply)
+        path_plan = self.write(plan)
+        for key in ("sourceRevision","controllerImage","binarySha256","bundleSha256"):
+            changed=copy.deepcopy(supply); changed["rolloutsPlugin"][key]="f"*len(changed["rolloutsPlugin"][key])
+            with self.assertRaisesRegex(adapter.AdapterRejected,"plugin-unapproved-contract"):
+                adapter.ApprovedLiveAdapter(path_plan,FakeTransport(),{"clusterName":self.cluster,"context":self.context},self.versions,expected_supply_contract=changed)
+        altered = copy.deepcopy(objects)
+        next(x for x in altered if x["kind"] == "Role")["rules"][0]["resources"] = ["secrets"]
+        path.write_text(json.dumps({"apiVersion":"v1","kind":"List","items":altered}),encoding="utf-8")
+        changed_contract = copy.deepcopy(contract); changed_contract["bundleSha256"] = self.real_sha256(path)
+        live.plugin_contract = changed_contract
+        with self.assertRaisesRegex(adapter.AdapterRejected,"plugin-bundle-contract"):
+            live._validate_plugin_bundle(path, changed_contract["bundleSha256"])
+        live.plugin_contract = contract
+        path.write_text("{}",encoding="utf-8")
+        with self.assertRaisesRegex(adapter.AdapterRejected,"command-content-changed"):
+            live._run_commands([action["run"][-1]])
+        with self.assertRaisesRegex(adapter.AdapterRejected,"kubectl-manifest-path"):
+            adapter.ApprovedLiveAdapter(path_plan,FakeTransport(),{"clusterName":self.cluster,"context":self.context},self.versions,expected_supply_contract=supply)
+
+    def test_plugin_selected_sync_preserves_protected_state_and_does_not_retry_failure(self):
+        from types import SimpleNamespace
+        class StatefulTransport:
+            def __init__(self):
+                self.protected={"Job/account-migration":"job-uid", "Job/account-db-role-bootstrap":"bootstrap-uid", "ConfigMap/account-role-bootstrap":"old-config", "PVC/account-data":"pvc-uid", "Secret/account-db-runtime":"secret-uid"}
+                self.calls=[]; self.fail=False
+            def run(self, argv, env):
+                self.calls.append(argv)
+                if self.fail: return SimpleNamespace(returncode=1,stdout="",stderr="synthetic-failure")
+                self.synced=[argv[i+1] for i,x in enumerate(argv[:-1]) if x=="--resource"]
+                return SimpleNamespace(returncode=0,stdout="ok",stderr="")
+        node=object.__new__(adapter.ApprovedLiveAdapter)
+        node.plugin_contract={"profile":"fresh-account"}
+        node.plan={"target":{"context":self.context,"kubeconfig":self.kubeconfig},"tools":{"argocd":{"path":"/fixture/argocd"}},"steps":{"application":{"observations":[{"apiVersion":"argoproj.io/v1alpha1","identity":"Application/fresh-control/fresh-account-release"}]}}}
+        args=["--core","--kube-context",self.context,"app","sync","fresh-account-release"]
+        for resource in ["argoproj.io:AnalysisTemplate:account-api-policy",*adapter.ARGO_SYNC_RESOURCES["application"]]:args += ["--resource",resource]
+        args.append("--prune=false")
+        node._validate_argocd_command(args,"run","application",[],node.plan["target"],None)
+        transport=StatefulTransport();node.transport=transport;node.command_env={}
+        baseline=copy.deepcopy(transport.protected)
+        command={"tool":"argocd","args":args,"contentSha256":None}
+        _,done=node._run_commands([command]);self.assertTrue(done);self.assertEqual(transport.protected,baseline)
+        for forbidden in ("batch:Job:account-migration",":ConfigMap:account-role-bootstrap",":PersistentVolumeClaim:account-data",":Secret:account-db-runtime"):
+            bad=args[:-1]+["--resource",forbidden,args[-1]]
+            with self.assertRaisesRegex(adapter.AdapterRejected,"argocd-run-command"):
+                node._validate_argocd_command(bad,"run","application",[],node.plan["target"],None)
+        transport.fail=True
+        with self.assertRaisesRegex(adapter.AdapterRejected,"command-exit"):
+            node._run_commands([command])
+        self.assertEqual(len(transport.calls),2)
+        self.assertEqual(transport.protected,baseline)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
