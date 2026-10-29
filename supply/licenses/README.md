@@ -5,10 +5,16 @@ The files below accompany byte-preserving copies in
 upstream image manifest. Each version directory binds the public license copy
 and upstream evidence to the exact source digest in `supply/images.json`.
 
-Before making the GHCR package public, its description must link to this
-directory so a recipient can obtain the applicable license materials without
-GitHub repository authentication.
+The public GHCR package is connected to this public repository so recipients
+can follow its source link to these license materials without GitHub repository
+authentication. Multi-architecture package descriptions are OCI annotations;
+the mirror does not rewrite them because that would change the fixed digest.
 
 Only inventory entries whose metadata says `redistributionReady: true` may be
 dispatched with `redistribution-approved=true`.
+
+The current evidence set covers Argo CD, Argo Rollouts, Istio pilot/proxy,
+Prometheus, Prometheus config reloader, and the OpenTelemetry Collector. The
+kube-state-metrics registry object remains unverified because its official
+registry denied the read-only request; it is not redistribution-ready here.
 

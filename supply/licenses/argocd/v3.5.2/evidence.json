@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "platform.lab/redistribution-evidence/v1",
+  "name": "argocd",
+  "version": "v3.5.2",
+  "redistributionReady": true,
+  "copyMode": "oci-byte-preserving",
+  "source": {"repository": "https://github.com/argoproj/argo-cd", "tag": "v3.5.2", "commit": "e258ee23c3e52266d407572f4bcdfe7d9ed36cb5"},
+  "images": [{"name": "argocd", "reference": "quay.io/argoproj/argocd:v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68", "manifestDigest": "sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68", "configDigest": "sha256:a670b6481b51009353f432a446c4f787887fc19f04822c506eb62391ecae6cdb", "mediaType": "application/vnd.docker.distribution.manifest.v2+json", "platform": "linux/amd64"}],
+  "license": {"spdx": "Apache-2.0", "upstreamUrl": "https://github.com/argoproj/argo-cd/blob/v3.5.2/LICENSE", "upstreamGitBlob": "67e99b065bcd6ac93d93c8fe8e0a72c6296a5614", "localPath": "LICENSE", "sha256": "c996fc213c94f4a4a838407d355b081226caa7b103a4f239bb87fb8f1d8e3a60", "upstreamNotice": "absent-at-tag"},
+  "inspectionScope": "Official fixed manifest/config identity and tagged LICENSE/NOTICE only; not a legal audit of every transitive package."
+}

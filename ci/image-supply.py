@@ -36,7 +36,14 @@ def load():
     }, "policy")
     evidence = data.get("redistributionEvidence", {})
     require(evidence == {
+        "argocd": "supply/licenses/argocd/v3.5.2/evidence.json",
         "argo-rollouts": "supply/licenses/argo-rollouts/v1.10.1/evidence.json",
+        "istio-pilot": "supply/licenses/istio/1.31.2/evidence.json",
+        "istio-proxy": "supply/licenses/istio/1.31.2/evidence.json",
+        "prometheus": "supply/licenses/prometheus/v3.15.0/evidence.json",
+        "prometheus-config-reloader":
+            "supply/licenses/prometheus-config-reloader/v0.94.1/evidence.json",
+        "otel-collector": "supply/licenses/otel-collector/0.161.0/evidence.json",
     }, "redistribution-evidence")
     seen_names, seen_tags, matrix = set(), set(), []
     for item in data["images"]:
@@ -61,14 +68,35 @@ def _validate_evidence(entries, matrix):
         path = ROOT / relative
         record = json.loads(path.read_text(), object_pairs_hook=_unique)
         require(record["schemaVersion"] == "platform.lab/redistribution-evidence/v1", "evidence-schema")
-        require(record["name"] == name and record["redistributionReady"] is True, "evidence-name")
+        require(record["redistributionReady"] is True, "evidence-ready")
         require(record["copyMode"] == "oci-byte-preserving", "evidence-copy-mode")
-        require(record["image"]["reference"] == by_name[name]["source"], "evidence-source")
+        if "images" in record:
+            image = next((item for item in record["images"] if item["name"] == name), None)
+            require(image is not None, "evidence-name")
+            require(image["reference"] == by_name[name]["source"], "evidence-source")
+            require(image["manifestDigest"] == by_name[name]["sourceDigest"], "evidence-digest")
+            require(image["mediaType"] ==
+                    "application/vnd.docker.distribution.manifest.v2+json", "evidence-media-type")
+            require(image["platform"] == data_architecture(), "evidence-platform")
+        else:
+            require(record["name"] == name, "evidence-name")
+            require(record["image"]["reference"] == by_name[name]["source"], "evidence-source")
+            require(record["image"]["indexDigest"] == by_name[name]["sourceDigest"],
+                    "evidence-digest")
         license_record = record["license"]
         license_path = path.parent / license_record["localPath"]
         require(license_record["spdx"] == "Apache-2.0", "evidence-license")
         require(hashlib.sha256(license_path.read_bytes()).hexdigest() == license_record["sha256"],
                 "evidence-license-digest")
+        notice = license_record["upstreamNotice"]
+        if isinstance(notice, dict):
+            notice_path = path.parent / notice["localPath"]
+            require(hashlib.sha256(notice_path.read_bytes()).hexdigest() == notice["sha256"],
+                    "evidence-notice-digest")
+
+
+def data_architecture():
+    return "linux/amd64"
 
 
 def _unique(pairs):
