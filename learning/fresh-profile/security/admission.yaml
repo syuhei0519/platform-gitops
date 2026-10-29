@@ -41,9 +41,18 @@ spec:
          !has(object.spec.source.chart) && !has(object.spec.source.ref)) ||
         (object.metadata.name == 'fresh-release-definitions' &&
          has(object.spec.source.helm) && object.spec.source.helm.releaseName == 'fresh-account-release-definition' &&
-         object.spec.source.helm.parameters.size() == 2 && object.spec.source.helm.parameters.all(p,
+         object.spec.source.helm.parameters.size() == 5 &&
+         object.spec.source.helm.parameters.exists(p, p.name == 'workloadRevision') &&
+         object.spec.source.helm.parameters.exists(p, p.name == 'accountRuntimeImage') &&
+         object.spec.source.helm.parameters.exists(p, p.name == 'promotionMode') &&
+         object.spec.source.helm.parameters.exists(p, p.name == 'syncMode') &&
+         object.spec.source.helm.parameters.exists(p, p.name == 'workloadVariant') &&
+         object.spec.source.helm.parameters.all(p,
                 !has(p.forceString) && ((p.name == 'workloadRevision' && p.value == '3707f73581da5d04db0e4771dda7c1e82bd0f47c') ||
-                (p.name == 'accountRuntimeImage' && p.value == 'ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd'))) &&
+                (p.name == 'accountRuntimeImage' && p.value == 'ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd') ||
+                (p.name == 'promotionMode' && p.value == 'manual') ||
+                (p.name == 'syncMode' && p.value == 'automated') ||
+                (p.name == 'workloadVariant' && p.value == 'fresh'))) &&
          !has(object.spec.source.helm.valueFiles) && !has(object.spec.source.helm.fileParameters) &&
          !has(object.spec.source.helm.values) && !has(object.spec.source.helm.valuesObject) &&
          !has(object.spec.source.helm.version) && !has(object.spec.source.helm.passCredentials) &&
@@ -88,7 +97,7 @@ spec:
     - {apiGroups: [''], apiVersions: [v1], operations: [CREATE, UPDATE], resources: [configmaps, persistentvolumeclaims, services, serviceaccounts]}
     - {apiGroups: [apps], apiVersions: [v1], operations: [CREATE, UPDATE], resources: [deployments, statefulsets]}
     - {apiGroups: [batch], apiVersions: [v1], operations: [CREATE, UPDATE], resources: [jobs]}
-    - {apiGroups: [argoproj.io], apiVersions: [v1alpha1], operations: [CREATE, UPDATE], resources: [rollouts]}
+    - {apiGroups: [argoproj.io], apiVersions: [v1alpha1], operations: [CREATE, UPDATE], resources: [rollouts, analysistemplates]}
     - {apiGroups: [networking.istio.io], apiVersions: [v1beta1], operations: [CREATE, UPDATE], resources: [destinationrules, virtualservices]}
   validations:
   - expression: >-
@@ -100,6 +109,7 @@ spec:
         (object.kind == 'StatefulSet' && object.metadata.name == 'account-postgresql') ||
         (object.kind == 'Job' && object.metadata.name in ['account-db-role-bootstrap', 'account-migration']) ||
         (object.kind == 'Rollout' && object.metadata.name == 'account-api') ||
+        (object.kind == 'AnalysisTemplate' && object.metadata.name == 'account-api-policy') ||
         (object.kind == 'DestinationRule' && object.metadata.name == 'account-api') ||
         (object.kind == 'VirtualService' && object.metadata.name == 'account-api')
       )) || (object.metadata.namespace == 'fresh-observability' && (
@@ -216,6 +226,15 @@ spec:
             (e.valueFrom.secretKeyRef.name == 'account-db-migration' && e.valueFrom.secretKeyRef.key in ['username', 'password']) ||
             (e.valueFrom.secretKeyRef.name == 'account-db-runtime' && e.valueFrom.secretKeyRef.key in ['username', 'password'])))))))
     message: Secret envFrom and every non-canonical Secret/key reference are forbidden
+  - expression: >-
+      request.resource.resource != 'rollouts' || request.operation != 'UPDATE' ||
+      object.spec.strategy.canary.steps == oldObject.spec.strategy.canary.steps ||
+      (has(oldObject.status) && has(oldObject.status.phase) && oldObject.status.phase == 'Healthy' &&
+       has(oldObject.status.observedGeneration) && oldObject.status.observedGeneration == string(oldObject.metadata.generation) &&
+       has(oldObject.status.stableRS) && oldObject.status.stableRS != '' &&
+       has(oldObject.status.currentPodHash) && oldObject.status.currentPodHash == oldObject.status.stableRS &&
+       oldObject.spec.template == object.spec.template)
+    message: changing rollout steps requires an observed healthy stable revision and unchanged Pod template
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicyBinding

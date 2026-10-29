@@ -162,7 +162,7 @@ def validate(root_path=ROOT, children_path=CHILDREN, observability_path=OBSERVAB
     validate_application(release, canonical["applications"]["fresh-release-definitions"])
     parameters = {item["name"]: item["value"] for item in release["spec"]["source"]["helm"]["parameters"]}
     require(parameters == {"workloadRevision": canonical["applications"]["fresh-account-release"]["revision"],
-                           "accountRuntimeImage": canonical["approvedRuntimeImage"]},
+                           "accountRuntimeImage": canonical["approvedRuntimeImage"], "promotionMode": next(p["value"] for p in canonical["applications"]["fresh-release-definitions"]["sourceConfig"]["helm"]["parameters"] if p["name"] == "promotionMode"), "syncMode": next(p["value"] for p in canonical["applications"]["fresh-release-definitions"]["sourceConfig"]["helm"]["parameters"] if p["name"] == "syncMode"), "workloadVariant": next(p["value"] for p in canonical["applications"]["fresh-release-definitions"]["sourceConfig"]["helm"]["parameters"] if p["name"] == "workloadVariant")},
             "release-helm-parameters")
     require(profile["repositories"]["application-manifest"]["commit"] ==
             canonical["applications"]["fresh-account-release"]["revision"], "profile-application-revision")

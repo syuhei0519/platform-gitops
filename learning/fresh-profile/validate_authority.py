@@ -44,7 +44,7 @@ object.metadata.namespace == 'fresh-account' &&
 object.kind == 'ConfigMap' && object.metadata.name == 'istio-ca-root-cert' &&
 request.userInfo.username == 'system:serviceaccount:fresh-control:istiod-fresh-1-31-2'
 )"""
-MANAGED_EXPRESSION_SHA256 = "69179f9880f18fff3d92f50c386cb07c45cf867966f1fe5b711d17b474fce172"
+MANAGED_EXPRESSION_SHA256 = "b73e7e8db782aa8b73c0877bd75f0c3923e35bfb9b5de5b988c61ba6739f1806"
 EPHEMERAL_SUBRESOURCE_CLAUSE = """!has(request.subResource) ||
 request.subResource != 'ephemeralcontainers'"""
 POD_CREATE_CONTROLLER_EXPRESSION_SHA256 = "7ec08b385d928c39c6c53facf370467cc6ac72b2513f008fe3aaf9f4490d1a4e"
@@ -127,6 +127,18 @@ def validate_canonical(contract):
         require(application["destination"]["namespace"] in namespaces, f"application-destination:{name}")
         require(application.get("project") in {"fresh-platform", "fresh-account"}, f"application-project:{name}")
     application_revision = applications["fresh-account-release"]["revision"]
+    parameters = applications["fresh-release-definitions"].get("sourceConfig", {}).get("helm", {}).get("parameters", [])
+    mode_values = [item.get("value") for item in parameters if item.get("name") == "promotionMode"]
+    require(len(mode_values) == 1 and mode_values[0] in {"manual", "auto"}, "canonical-promotion-mode")
+    mode = mode_values[0]
+    sync_values = [item.get("value") for item in parameters if item.get("name") == "syncMode"]
+    require(len(sync_values) == 1 and sync_values[0] in {"automated", "paused"}, "canonical-sync-mode")
+    sync_mode = sync_values[0]
+    variant_values = [item.get("value") for item in parameters if item.get("name") == "workloadVariant"]
+    require(len(variant_values) == 1 and variant_values[0] in {"fresh", "existing-upgrade"} and (variant_values[0] != "existing-upgrade" or mode == "manual"), "canonical-workload-variant")
+    variant = variant_values[0]
+    expected_path = "learning/fresh-profile/workload" + ("-existing" if variant == "existing-upgrade" else ("-auto" if mode == "auto" else ""))
+    require(applications["fresh-account-release"]["path"] == expected_path, "canonical-mode-path")
     require(applications["account-lightweight-root"].get("sourceConfig") ==
             {"directory": {"recurse": True}}, "application-source-config:account-lightweight-root")
     require(applications["fresh-observability"].get("sourceConfig") ==
@@ -135,6 +147,9 @@ def validate_canonical(contract):
         "releaseName": "fresh-account-release-definition", "parameters": [
             {"name": "workloadRevision", "value": application_revision},
             {"name": "accountRuntimeImage", "value": runtime_image},
+            {"name": "promotionMode", "value": mode},
+            {"name": "syncMode", "value": sync_mode},
+            {"name": "workloadVariant", "value": variant},
         ]}}, "application-source-config:fresh-release-definitions")
     require(applications["fresh-account-release"].get("sourceConfig") == {"kustomize": {
         "images": ["ghcr.io/syuhei0519/backend-app=" + runtime_image]}},
@@ -166,7 +181,7 @@ def validate_canonical(contract):
             "": ["ConfigMap", "PersistentVolumeClaim", "Service", "ServiceAccount"],
             "apps": ["Deployment", "StatefulSet"],
             "batch": ["Job"],
-            "argoproj.io": ["Application", "Rollout"],
+            "argoproj.io": ["Application", "Rollout", "AnalysisTemplate"],
             "networking.istio.io": ["DestinationRule", "VirtualService"],
         },
         "readVerbs": ["get", "list", "watch"],
@@ -353,7 +368,7 @@ def validate_rbac(canonical, documents):
         "ConfigMap": "configmaps", "PersistentVolumeClaim": "persistentvolumeclaims",
         "Service": "services", "ServiceAccount": "serviceaccounts",
         "Deployment": "deployments", "StatefulSet": "statefulsets", "Job": "jobs",
-        "Application": "applications", "Rollout": "rollouts",
+        "Application": "applications", "Rollout": "rollouts", "AnalysisTemplate": "analysistemplates",
         "DestinationRule": "destinationrules", "VirtualService": "virtualservices",
     }
     cache_scope = canonical["argocdCacheScope"]
@@ -395,6 +410,14 @@ def validate_admission(canonical, documents):
                      "kustomize.ignoreMissingComponents", "kustomize.patches",
                      "kustomize.replicas", "kustomize.labelWithoutSelector"):
         require(fragment in app_expression, f"admission-source-fragment:{fragment}")
+    mode = next(p["value"] for p in canonical["applications"]["fresh-release-definitions"]["sourceConfig"]["helm"]["parameters"] if p["name"] == "promotionMode")
+    require("p.name == 'promotionMode' && p.value == '" + mode + "'" in app_expression, "admission-promotion-mode-pin")
+    sync_mode = next(p["value"] for p in canonical["applications"]["fresh-release-definitions"]["sourceConfig"]["helm"]["parameters"] if p["name"] == "syncMode")
+    require("p.name == 'syncMode' && p.value == '" + sync_mode + "'" in app_expression, "admission-sync-mode-pin")
+    variant = next(p["value"] for p in canonical["applications"]["fresh-release-definitions"]["sourceConfig"]["helm"]["parameters"] if p["name"] == "workloadVariant")
+    require("p.name == 'workloadVariant' && p.value == '" + variant + "'" in app_expression, "admission-workload-variant-pin")
+    child_path = canonical["applications"]["fresh-account-release"]["path"]
+    require("object.spec.source.path == '" + child_path + "'" in app_expression, "admission-workload-path-pin")
     managed_expression = " ".join(item["expression"] for item in policies["fresh-managed-resource-boundary"]["spec"]["validations"])
     for namespace, resources in canonical["resourceNames"].items():
         if namespace == "fresh-control":

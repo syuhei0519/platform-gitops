@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	celgo "github.com/google/cel-go/cel"
@@ -16,6 +17,7 @@ import (
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	yamlutil "k8s.io/apimachinery/pkg/util/yaml"
@@ -234,4 +236,274 @@ func TestAdmissionRequestOmitEmptyAndRuleMatching(t *testing.T) {
 	if len(results) != 1 || results[0].Error == nil {
 		t.Fatal("expected historical missing subResource error")
 	}
+}
+
+// Evaluate distinct old/new Rollouts through the Kubernetes admission CEL engine.
+func TestFreshRolloutModeTransition(t *testing.T) {
+	_, policy := policies(t)
+	// Isolate the actual mode rule; the rest of the policy is covered above.
+	rule := compile(t, []plugin.ExpressionAccessor{expression(policy.Spec.Validations[len(policy.Spec.Validations)-1].Expression)})
+	makeObj := func() *unstructured.Unstructured {
+		return &unstructured.Unstructured{Object: map[string]interface{}{
+			"apiVersion": "argoproj.io/v1alpha1", "kind": "Rollout", "metadata": map[string]interface{}{"name": "account-api", "namespace": "fresh-account", "generation": int64(3)},
+			"spec":   map[string]interface{}{"strategy": map[string]interface{}{"canary": map[string]interface{}{"steps": []interface{}{map[string]interface{}{"setWeight": int64(10)}, map[string]interface{}{"pause": map[string]interface{}{}}}}}, "template": map[string]interface{}{"spec": map[string]interface{}{"containers": []interface{}{map[string]interface{}{"name": "api", "image": "old"}}}}},
+			"status": map[string]interface{}{"phase": "Healthy", "observedGeneration": "3", "stableRS": "aaaaa", "currentPodHash": "aaaaa"},
+		}}
+	}
+	for _, tc := range []struct {
+		name, phase, observed, current    string
+		templateChange, stepsChange, want bool
+	}{
+		{"stable-switch", "Healthy", "3", "aaaaa", false, true, true},
+		{"in-progress", "Progressing", "3", "bbbbb", false, true, false},
+		{"stale-status", "Healthy", "2", "aaaaa", false, true, false},
+		{"hash-mismatch", "Healthy", "3", "bbbbb", false, true, false},
+		{"simultaneous-template-change", "Healthy", "3", "aaaaa", true, true, false},
+		{"unchanged-steps", "Progressing", "3", "bbbbb", false, false, true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			old := makeObj()
+			next := old.DeepCopy()
+			st := old.Object["status"].(map[string]interface{})
+			st["phase"] = tc.phase
+			st["observedGeneration"] = tc.observed
+			st["currentPodHash"] = tc.current
+			if tc.stepsChange {
+				next.Object["spec"].(map[string]interface{})["strategy"].(map[string]interface{})["canary"].(map[string]interface{})["steps"] = []interface{}{map[string]interface{}{"setWeight": int64(10)}}
+			}
+			if tc.templateChange {
+				next.Object["spec"].(map[string]interface{})["template"].(map[string]interface{})["metadata"] = map[string]interface{}{"labels": map[string]interface{}{"test": "changed"}}
+			}
+			gvk := schema.GroupVersionKind{Group: "argoproj.io", Version: "v1alpha1", Kind: "Rollout"}
+			gvr := schema.GroupVersionResource{Group: "argoproj.io", Version: "v1alpha1", Resource: "rollouts"}
+			attr := admission.NewAttributesRecord(next, old, gvk, "fresh-account", "account-api", gvr, "", admission.Update, &metav1.UpdateOptions{}, false, &user.DefaultInfo{Name: "argocd"})
+			va := &admission.VersionedAttributes{Attributes: attr, VersionedObject: next, VersionedOldObject: old, VersionedKind: gvk}
+			req := plugin.CreateAdmissionRequest(attr, metav1.GroupVersionResource(gvr), metav1.GroupVersionKind(gvk))
+			results, _, err := rule.ForInput(context.Background(), va, req, plugin.OptionalVariableBindings{}, nil, celconfig.RuntimeCELCostBudget)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(results) != 1 || results[0].Error != nil {
+				t.Fatalf("CEL evaluation: %+v", results)
+			}
+			if (results[0].EvalResult == celtypes.True) != tc.want {
+				t.Fatalf("result=%v want=%v", results[0].EvalResult, tc.want)
+			}
+		})
+	}
+}
+
+func TestApprovedPromotionParameter(t *testing.T) {
+	f, err := os.Open(filepath.Join("..", "..", "learning", "fresh-profile", "security", "admission.yaml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+	d := yamlutil.NewYAMLOrJSONDecoder(f, 4096)
+	var chosen registrationv1.ValidatingAdmissionPolicy
+	for {
+		var raw json.RawMessage
+		e := d.Decode(&raw)
+		if e == io.EOF {
+			break
+		}
+		if e != nil {
+			t.Fatal(e)
+		}
+		var meta metav1.TypeMeta
+		_ = json.Unmarshal(raw, &meta)
+		if meta.Kind != "ValidatingAdmissionPolicy" {
+			continue
+		}
+		var p registrationv1.ValidatingAdmissionPolicy
+		if e = json.Unmarshal(raw, &p); e != nil {
+			t.Fatal(e)
+		}
+		if p.Name == "fresh-application-boundary" {
+			chosen = p
+			break
+		}
+	}
+	if chosen.Name == "" {
+		t.Fatal("application policy missing")
+	}
+	app := &unstructured.Unstructured{Object: map[string]interface{}{"apiVersion": "argoproj.io/v1alpha1", "kind": "Application", "metadata": map[string]interface{}{"name": "fresh-release-definitions", "namespace": "fresh-control"}, "spec": map[string]interface{}{"project": "fresh-platform", "destination": map[string]interface{}{"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}, "source": map[string]interface{}{"repoURL": "https://github.com/syuhei0519/application-manifest.git", "targetRevision": "3707f73581da5d04db0e4771dda7c1e82bd0f47c", "path": "learning/fresh-profile/release-definition", "helm": map[string]interface{}{"releaseName": "fresh-account-release-definition", "parameters": []interface{}{map[string]interface{}{"name": "workloadRevision", "value": "3707f73581da5d04db0e4771dda7c1e82bd0f47c"}, map[string]interface{}{"name": "accountRuntimeImage", "value": "ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd"}, map[string]interface{}{"name": "promotionMode", "value": "manual"}, map[string]interface{}{"name": "syncMode", "value": "automated"}, map[string]interface{}{"name": "workloadVariant", "value": "fresh"}}}}}}}
+	for _, tc := range []struct {
+		name, pinned, mode string
+		duplicate, want    bool
+	}{{"manual-approved", "manual", "manual", false, true}, {"auto-unapproved", "manual", "auto", false, false}, {"unknown", "manual", "other", false, false}, {"duplicate", "manual", "manual", true, false}, {"auto-reviewed", "auto", "auto", false, true}, {"manual-after-auto", "auto", "manual", false, false}} {
+		t.Run(tc.name, func(t *testing.T) {
+			exprs := []plugin.ExpressionAccessor{}
+			for _, v := range chosen.Spec.Validations {
+				expr := strings.ReplaceAll(v.Expression, "p.name == 'promotionMode' && p.value == 'manual'", "p.name == 'promotionMode' && p.value == '"+tc.pinned+"'")
+				exprs = append(exprs, expression(expr))
+			}
+			ev := compile(t, exprs)
+			obj := app.DeepCopy()
+			args := obj.Object["spec"].(map[string]interface{})["source"].(map[string]interface{})["helm"].(map[string]interface{})["parameters"].([]interface{})
+			args[2].(map[string]interface{})["value"] = tc.mode
+			if tc.duplicate {
+				args[2] = map[string]interface{}{"name": "workloadRevision", "value": "3707f73581da5d04db0e4771dda7c1e82bd0f47c"}
+			}
+			gvk := schema.GroupVersionKind{Group: "argoproj.io", Version: "v1alpha1", Kind: "Application"}
+			gvr := schema.GroupVersionResource{Group: "argoproj.io", Version: "v1alpha1", Resource: "applications"}
+			attr := admission.NewAttributesRecord(obj, obj.DeepCopy(), gvk, "fresh-control", "fresh-release-definitions", gvr, "", admission.Update, &metav1.UpdateOptions{}, false, &user.DefaultInfo{Name: "argocd"})
+			va := &admission.VersionedAttributes{Attributes: attr, VersionedObject: obj, VersionedOldObject: obj.DeepCopy(), VersionedKind: gvk}
+			req := plugin.CreateAdmissionRequest(attr, metav1.GroupVersionResource(gvr), metav1.GroupVersionKind(gvk))
+			res, _, err := ev.ForInput(context.Background(), va, req, plugin.OptionalVariableBindings{}, nil, celconfig.RuntimeCELCostBudget)
+			if err != nil {
+				t.Fatal(err)
+			}
+			allowed := true
+			for _, r := range res {
+				if r.Error != nil || r.EvalResult != celtypes.True {
+					allowed = false
+					if tc.want {
+						t.Errorf("value=%v error=%v", r.EvalResult, r.Error)
+					}
+				}
+			}
+			if allowed != tc.want {
+				t.Fatalf("allowed=%v want=%v", allowed, tc.want)
+			}
+		})
+	}
+	for _, tc := range []struct {
+		name, pinned, mode string
+		duplicate, want    bool
+	}{
+		{"sync-automated-approved", "automated", "automated", false, true},
+		{"sync-paused-unapproved", "automated", "paused", false, false},
+		{"sync-invalid", "automated", "unexpected", false, false},
+		{"sync-duplicate", "automated", "automated", true, false},
+		{"sync-paused-reviewed", "paused", "paused", false, true},
+		{"sync-automated-after-paused-review", "paused", "automated", false, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			exprs := []plugin.ExpressionAccessor{}
+			for _, v := range chosen.Spec.Validations {
+				expr := strings.ReplaceAll(v.Expression, "p.name == 'syncMode' && p.value == 'automated'", "p.name == 'syncMode' && p.value == '"+tc.pinned+"'")
+				exprs = append(exprs, expression(expr))
+			}
+			ev := compile(t, exprs)
+			obj := app.DeepCopy()
+			args := obj.Object["spec"].(map[string]interface{})["source"].(map[string]interface{})["helm"].(map[string]interface{})["parameters"].([]interface{})
+			args[3].(map[string]interface{})["value"] = tc.mode
+			if tc.duplicate {
+				args[3] = map[string]interface{}{"name": "promotionMode", "value": "manual"}
+			}
+			gvk := schema.GroupVersionKind{Group: "argoproj.io", Version: "v1alpha1", Kind: "Application"}
+			gvr := schema.GroupVersionResource{Group: "argoproj.io", Version: "v1alpha1", Resource: "applications"}
+			attr := admission.NewAttributesRecord(obj, obj.DeepCopy(), gvk, "fresh-control", "fresh-release-definitions", gvr, "", admission.Update, &metav1.UpdateOptions{}, false, &user.DefaultInfo{Name: "argocd"})
+			va := &admission.VersionedAttributes{Attributes: attr, VersionedObject: obj, VersionedOldObject: obj.DeepCopy(), VersionedKind: gvk}
+			req := plugin.CreateAdmissionRequest(attr, metav1.GroupVersionResource(gvr), metav1.GroupVersionKind(gvk))
+			res, _, err := ev.ForInput(context.Background(), va, req, plugin.OptionalVariableBindings{}, nil, celconfig.RuntimeCELCostBudget)
+			if err != nil {
+				t.Fatal(err)
+			}
+			allowed := true
+			for _, r := range res {
+				if r.Error != nil || r.EvalResult != celtypes.True {
+					allowed = false
+					if tc.want {
+						t.Errorf("value=%v error=%v", r.EvalResult, r.Error)
+					}
+				}
+			}
+			if allowed != tc.want {
+				t.Fatalf("allowed=%v want=%v", allowed, tc.want)
+			}
+		})
+	}
+
+	for _, stage := range []struct{ name, platform, chart, workload, mode, variant, path, promotion string }{
+		{"initial", strings.Repeat("1", 40), strings.Repeat("2", 40), strings.Repeat("3", 40), "paused", "fresh", "learning/fresh-profile/workload", "manual"},
+		{"new-paused", strings.Repeat("4", 40), strings.Repeat("5", 40), strings.Repeat("6", 40), "paused", "existing-upgrade", "learning/fresh-profile/workload-existing", "manual"},
+		{"final-automated", strings.Repeat("7", 40), strings.Repeat("8", 40), strings.Repeat("9", 40), "automated", "existing-upgrade", "learning/fresh-profile/workload-existing", "manual"},
+		{"rollback-old", strings.Repeat("a", 40), strings.Repeat("b", 40), strings.Repeat("c", 40), "automated", "fresh", "learning/fresh-profile/workload", "manual"},
+		{"fresh-auto", strings.Repeat("1", 40), strings.Repeat("2", 40), strings.Repeat("3", 40), "paused", "fresh", "learning/fresh-profile/workload-auto", "auto"},
+		{"existing-auto", strings.Repeat("4", 40), strings.Repeat("5", 40), strings.Repeat("6", 40), "paused", "existing-upgrade", "learning/fresh-profile/workload-existing-auto", "auto"},
+		{"existing-auto-final", strings.Repeat("4", 40), strings.Repeat("5", 40), strings.Repeat("6", 40), "automated", "existing-upgrade", "learning/fresh-profile/workload-existing-auto", "auto"},
+	} {
+		t.Run("policy-stage-"+stage.name, func(t *testing.T) {
+			exprs := []plugin.ExpressionAccessor{}
+			old := "3707f73581da5d04db0e4771dda7c1e82bd0f47c"
+			for _, validation := range chosen.Spec.Validations {
+				expr := strings.ReplaceAll(validation.Expression, "__PLATFORM_GITOPS_SHA__", stage.platform)
+				needle := "object.spec.source.targetRevision == '" + old + "'"
+				expr = strings.Replace(expr, needle, "object.spec.source.targetRevision == '"+stage.chart+"'", 1)
+				expr = strings.Replace(expr, needle, "object.spec.source.targetRevision == '"+stage.workload+"'", 1)
+				expr = strings.ReplaceAll(expr, "p.name == 'workloadRevision' && p.value == '"+old+"'", "p.name == 'workloadRevision' && p.value == '"+stage.workload+"'")
+				expr = strings.ReplaceAll(expr, "p.name == 'promotionMode' && p.value == 'manual'", "p.name == 'promotionMode' && p.value == '"+stage.promotion+"'")
+				expr = strings.ReplaceAll(expr, "p.name == 'syncMode' && p.value == 'automated'", "p.name == 'syncMode' && p.value == '"+stage.mode+"'")
+				expr = strings.ReplaceAll(expr, "p.name == 'workloadVariant' && p.value == 'fresh'", "p.name == 'workloadVariant' && p.value == '"+stage.variant+"'")
+				expr = strings.ReplaceAll(expr, "object.spec.source.path == 'learning/fresh-profile/workload'", "object.spec.source.path == '"+stage.path+"'")
+				exprs = append(exprs, expression(expr))
+			}
+			ev := compile(t, exprs)
+			parent := app.DeepCopy()
+			source := parent.Object["spec"].(map[string]interface{})["source"].(map[string]interface{})
+			source["targetRevision"] = stage.chart
+			args := source["helm"].(map[string]interface{})["parameters"].([]interface{})
+			args[0].(map[string]interface{})["value"] = stage.workload
+			args[2].(map[string]interface{})["value"] = stage.promotion
+			args[3].(map[string]interface{})["value"] = stage.mode
+			args[4].(map[string]interface{})["value"] = stage.variant
+			child := &unstructured.Unstructured{Object: map[string]interface{}{"apiVersion": "argoproj.io/v1alpha1", "kind": "Application", "metadata": map[string]interface{}{"name": "fresh-account-release", "namespace": "fresh-control"}, "spec": map[string]interface{}{"project": "fresh-account", "destination": map[string]interface{}{"server": "https://kubernetes.default.svc", "namespace": "fresh-account"}, "source": map[string]interface{}{"repoURL": "https://github.com/syuhei0519/application-manifest.git", "targetRevision": stage.workload, "path": stage.path, "kustomize": map[string]interface{}{"images": []interface{}{"ghcr.io/syuhei0519/backend-app=ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd"}}}}}}
+			root := &unstructured.Unstructured{Object: map[string]interface{}{"apiVersion": "argoproj.io/v1alpha1", "kind": "Application", "metadata": map[string]interface{}{"name": "account-lightweight-root", "namespace": "fresh-control"}, "spec": map[string]interface{}{"project": "fresh-platform", "destination": map[string]interface{}{"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}, "source": map[string]interface{}{"repoURL": "https://github.com/syuhei0519/platform-gitops.git", "targetRevision": stage.platform, "path": "learning/fresh-profile/root/children", "directory": map[string]interface{}{"recurse": true}}}}}
+			check := func(obj *unstructured.Unstructured) bool {
+				gvk := schema.GroupVersionKind{Group: "argoproj.io", Version: "v1alpha1", Kind: "Application"}
+				gvr := schema.GroupVersionResource{Group: "argoproj.io", Version: "v1alpha1", Resource: "applications"}
+				attr := admission.NewAttributesRecord(obj, obj.DeepCopy(), gvk, "fresh-control", obj.GetName(), gvr, "", admission.Update, &metav1.UpdateOptions{}, false, &user.DefaultInfo{Name: "argocd"})
+				va := &admission.VersionedAttributes{Attributes: attr, VersionedObject: obj, VersionedOldObject: obj.DeepCopy(), VersionedKind: gvk}
+				req := plugin.CreateAdmissionRequest(attr, metav1.GroupVersionResource(gvr), metav1.GroupVersionKind(gvk))
+				res, _, err := ev.ForInput(context.Background(), va, req, plugin.OptionalVariableBindings{}, nil, celconfig.RuntimeCELCostBudget)
+				if err != nil {
+					t.Fatal(err)
+				}
+				for _, r := range res {
+					if r.Error != nil || r.EvalResult != celtypes.True {
+						return false
+					}
+				}
+				return true
+			}
+			for _, obj := range []*unstructured.Unstructured{root, parent, child} {
+				if !check(obj) {
+					t.Errorf("reviewed %s rejected", obj.GetName())
+				}
+				bad := obj.DeepCopy()
+				bad.Object["spec"].(map[string]interface{})["source"].(map[string]interface{})["targetRevision"] = strings.Repeat("f", 40)
+				if check(bad) {
+					t.Errorf("unapproved revision accepted for %s", obj.GetName())
+				}
+			}
+			badMode := parent.DeepCopy()
+			badParams := badMode.Object["spec"].(map[string]interface{})["source"].(map[string]interface{})["helm"].(map[string]interface{})["parameters"].([]interface{})
+			if stage.promotion == "auto" {
+				badParams[2].(map[string]interface{})["value"] = "manual"
+			} else {
+				badParams[2].(map[string]interface{})["value"] = "auto"
+			}
+			if check(badMode) {
+				t.Error("unapproved promotion mode accepted")
+			}
+			bad := child.DeepCopy()
+			bad.Object["spec"].(map[string]interface{})["source"].(map[string]interface{})["path"] = "learning/fresh-profile/other"
+			if check(bad) {
+				t.Error("unapproved path accepted")
+			}
+			bad = parent.DeepCopy()
+			bad.Object["spec"].(map[string]interface{})["destination"].(map[string]interface{})["namespace"] = "other"
+			if check(bad) {
+				t.Error("unapproved namespace accepted")
+			}
+			bad = parent.DeepCopy()
+			bad.SetName("unapproved-application")
+			if check(bad) {
+				t.Error("unapproved application accepted")
+			}
+		})
+	}
+
 }

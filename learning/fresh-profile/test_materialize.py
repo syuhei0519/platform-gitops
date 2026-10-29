@@ -2,6 +2,7 @@ import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
+import yaml
 
 
 MODULE = Path(__file__).with_name("materialize.py")
@@ -105,6 +106,23 @@ class MaterializeTests(unittest.TestCase):
                 contract.materialize(
                     "1" * 40, "3707f73581da5d04db0e4771dda7c1e82bd0f47c",
                     release, *runtime, root / "sealed")
+
+    def test_plugin_materialization_seals_plugin_source_set(self):
+        with tempfile.TemporaryDirectory(dir=contract.REPOSITORY.parent) as directory:
+            root=Path(directory)
+            app_root=root/"app"
+            release=self.release_chart(app_root/"learning/fresh-profile")
+            runtime=self.runtime_inputs(root)
+            supply=yaml.safe_load(runtime[1].read_text(encoding="utf-8"))
+            supply["spec"]["rolloutsPlugin"]={"profile":"fresh-account"}
+            runtime[1].write_text(yaml.safe_dump(supply),encoding="utf-8")
+            paths=["learning/account-release/metric-plugin/main.go", "learning/account-release/metric-plugin/runtime.go", "learning/account-release/metric-plugin/fresh_query.go", "learning/account-release/metric-plugin/queries.json", "learning/account-release/metric-plugin/go.mod", "learning/account-release/metric-plugin/go.sum", "learning/account-release/metric-plugin/Dockerfile", "learning/fresh-profile/workload-auto/kustomization.yaml"]
+            for relative in paths:
+                target=app_root/relative; target.parent.mkdir(parents=True,exist_ok=True); target.write_text("fixture",encoding="utf-8")
+            _, manifest=contract.materialize("1"*40,"3707f73581da5d04db0e4771dda7c1e82bd0f47c",release,*runtime,root/"sealed")
+            for relative in paths:
+                self.assertIn("application-manifest@3707f73581da5d04db0e4771dda7c1e82bd0f47c:"+relative,manifest["sourceFiles"])
+            self.assertIn("platform-gitops@"+"1"*40+":learning/fresh-profile/plugin_overlay.py",manifest["sourceFiles"])
 
 
 if __name__ == "__main__":

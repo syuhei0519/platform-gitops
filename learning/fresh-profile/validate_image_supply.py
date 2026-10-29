@@ -120,6 +120,18 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
           or profile_supply["restoreOwner"] != decision["restoreOwner"]):
         raise SupplyError("profile-g2-approved")
 
+    plugin = spec.get("rolloutsPlugin")
+    has_plugin_image = "argo-rollouts-plugin" in profile_images
+    if (plugin is None) != (not has_plugin_image):
+        raise SupplyError("plugin-image-contract")
+    if plugin is not None:
+        if pending or plugin["sourceRevision"] != profile_spec["repositories"]["application-manifest"]["commit"]:
+            raise SupplyError("plugin-source-approval")
+        if plugin["controllerImage"] != profile_images["argo-rollouts-plugin"]["ref"]:
+            raise SupplyError("plugin-image-profile")
+        if any(plugin[k] == "0" * n for k, n in (("sourceRevision", 40), ("binarySha256", 64), ("bundleSha256", 64))):
+            raise SupplyError("plugin-placeholder")
+
     os_name, architecture = platform_parts(spec["targetArchitecture"])
     for item in supplied:
         name = item["name"]

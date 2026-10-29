@@ -12,8 +12,10 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
+import tempfile
 from typing import Protocol
 
 ALLOWED_TOOLS = {"kubectl", "kind", "helm", "istioctl", "argocd", "rollouts"}
@@ -95,6 +97,7 @@ ARGO_SYNC_RESOURCES = {
 }
 KUBECTL_RESOURCES = {
     "application": ("argoproj.io/v1alpha1", "Application"),
+    "analysistemplate": ("argoproj.io/v1alpha1", "AnalysisTemplate"),
     "configmap": ("v1", "ConfigMap"),
     "customresourcedefinition": ("apiextensions.k8s.io/v1", "CustomResourceDefinition"),
     "deployment": ("apps/v1", "Deployment"),
@@ -105,6 +108,8 @@ KUBECTL_RESOURCES = {
     "persistentvolumeclaim": ("v1", "PersistentVolumeClaim"),
     "pvc": ("v1", "PersistentVolumeClaim"),
     "rollout": ("argoproj.io/v1alpha1", "Rollout"),
+    "role": ("rbac.authorization.k8s.io/v1", "Role"),
+    "rolebinding": ("rbac.authorization.k8s.io/v1", "RoleBinding"),
     "service": ("v1", "Service"),
     "serviceaccount": ("v1", "ServiceAccount"),
     "statefulset": ("apps/v1", "StatefulSet"),
@@ -219,7 +224,14 @@ def supply_plan_contract(supply_lock: dict, profile_spec: dict) -> dict:
             "sha256": archive_digest.removeprefix("sha256:"),
             "sourceIdentity": source_identity,
         }
+    plugin = supply_lock["spec"].get("rolloutsPlugin")
+    if plugin is not None:
+        if (supply_lock["spec"]["decision"]["status"] != "approved"
+                or profile_images.get("argo-rollouts-plugin") != plugin.get("controllerImage")
+                or profile_spec["repositories"]["application-manifest"]["commit"] != plugin.get("sourceRevision")):
+            raise AdapterRejected("plugin-supply-contract")
     return {
+        **({"rolloutsPlugin": plugin, "applicationRevision": profile_spec["repositories"]["application-manifest"]["commit"]} if plugin is not None else {}),
         "kindNodeRef": profile_images["kind-node"],
         "hostArtifacts": artifacts,
         "helmCharts": {
@@ -263,6 +275,663 @@ def _json_pointer(value, pointer: str):
     return current
 
 
+class ExistingUpgradeAdapter:
+    """Read-only identity observer; mutation remains explicitly disabled.
+
+    Secret reads request only individual metadata fields through JSONPath. No
+    Secret object or value is returned, logged, or placed in the journal.
+    """
+    supports_existing_upgrade_mutations = False
+    # Parent Git desired can restore child auto-sync; do not expose a live
+    # pause until parent reconciliation and recovery are controlled.
+    supports_existing_upgrade_pause = False
+    supports_existing_controller_mutations = False
+    supports_existing_policy_mutations = False
+    supports_existing_account_mutations = False
+
+    def __init__(self, plan_path: Path, transport: Transport | None = None, render_verifier=None):
+        self.render_verifier = render_verifier
+        self.upgrade_plan_sha256 = _sha256(Path(plan_path))
+        self.plan = json.loads(Path(plan_path).read_text(encoding="utf-8"))
+        self.transport = transport or SubprocessTransport()
+
+    def _get(self, resource, name, namespace, field):
+        tool=self.plan["tool"]
+        if _sha256(Path(tool["kubectlPath"])) != tool["kubectlSha256"]:
+            raise AdapterRejected("existing-upgrade-tool-changed")
+        args=[tool["kubectlPath"], "--kubeconfig", tool["kubeconfigPath"], "--context", self.plan["target"]["context"], "get", resource, name, "--namespace", namespace, "-o", "jsonpath={"+field+"}"]
+        result=self.transport.run(args,dict(os.environ))
+        if result.returncode != 0 or not isinstance(result.stdout,str) or not result.stdout.strip() or len(result.stdout)>1024:
+            raise AdapterRejected("existing-upgrade-observe-failed")
+        return result.stdout.strip()
+
+    def observe(self):
+        target=self.plan["target"]
+        actual={"clusterName":target["clusterName"], "context":target["context"],
+            "clusterUID":self._get("namespace","kube-system","kube-system",".metadata.uid"),
+            "applicationUID":self._get("application","fresh-account-release","fresh-control",".metadata.uid"),
+            "parentApplicationUID":self._get("application","fresh-release-definitions","fresh-control",".metadata.uid"),
+            "rootApplicationUID":self._get("application","account-lightweight-root","fresh-control",".metadata.uid"),
+            "controllerUID":self._get("deployment","argo-rollouts","fresh-control",".metadata.uid"),
+            "rolloutUID":self._get("rollout","account-api","fresh-account",".metadata.uid")}
+        resources={"Job/account-db-role-bootstrap":"job", "Job/account-migration":"job", "ConfigMap/account-role-bootstrap":"configmap", "PVC/account-data":"persistentvolumeclaim", "Secret/account-db-bootstrap":"secret", "Secret/account-db-migration":"secret", "Secret/account-db-runtime":"secret"}
+        protected={}
+        for identity,resource in resources.items():
+            name=identity.split("/",1)[1]
+            protected[identity]={"uid":self._get(resource,name,"fresh-account",".metadata.uid"),"resourceVersion":self._get(resource,name,"fresh-account",".metadata.resourceVersion")}
+        completed={}
+        for identity in ("Job/account-db-role-bootstrap","Job/account-migration"):
+            name=identity.split("/",1)[1]
+            completed[identity]=self._get("job",name,"fresh-account",'.status.conditions[?(@.type=="Complete")].status')=="True"
+        image=self._get("deployment","argo-rollouts","fresh-control",'.spec.template.spec.containers[?(@.name=="argo-rollouts")].image')
+        if "@sha256:" not in image:
+            raise AdapterRejected("existing-upgrade-controller-image-unpinned")
+        return {"target":actual, "applicationRevision":self._get("application","fresh-account-release","fresh-control",".spec.source.targetRevision"), "controllerImageDigest":"sha256:"+image.rsplit("@sha256:",1)[1], "protected":protected, "completedJobs":completed}
+
+    def verify_database_prerequisite(self):
+        """Read ACL catalog booleans only; never return credentials or rows."""
+        sql = """SELECT CASE WHEN
+          has_table_privilege('account_runtime','account.accounts','SELECT') AND
+          has_table_privilege('account_runtime','account.accounts','INSERT') AND
+          has_table_privilege('account_runtime','account.accounts','UPDATE') AND
+          has_table_privilege('account_runtime','account.accounts','DELETE') AND
+          has_table_privilege('account_runtime','account.schema_migrations','SELECT') AND
+          NOT has_table_privilege('account_runtime','account.schema_migrations','INSERT') AND
+          NOT has_table_privilege('account_runtime','account.schema_migrations','UPDATE') AND
+          NOT has_table_privilege('account_runtime','account.schema_migrations','DELETE') AND
+          pg_get_serial_sequence('account.accounts','id') IS NOT NULL AND
+          NOT COALESCE(has_sequence_privilege('account_runtime',pg_get_serial_sequence('account.accounts','id'),'USAGE'),false) AND
+          NOT COALESCE(has_sequence_privilege('account_runtime',pg_get_serial_sequence('account.accounts','id'),'SELECT'),false) AND
+          NOT COALESCE(has_sequence_privilege('account_runtime',pg_get_serial_sequence('account.accounts','id'),'UPDATE'),false) AND
+          NOT EXISTS (SELECT 1 FROM pg_default_acl d, LATERAL aclexplode(d.defaclacl) a
+              WHERE d.defaclrole='account_migrator'::regrole AND d.defaclobjtype IN ('r','S')
+                AND d.defaclnamespace IN (0,'account'::regnamespace)
+                AND a.grantee IN (0,'account_runtime'::regrole))
+          THEN 'ok' ELSE 'not-ok' END"""
+        tool=self.plan["tool"]
+        if _sha256(Path(tool["kubectlPath"])) != tool["kubectlSha256"]:
+            raise AdapterRejected("existing-upgrade-tool-changed")
+        args=[tool["kubectlPath"],"--kubeconfig",tool["kubeconfigPath"],"--context",self.plan["target"]["context"],
+              "exec","account-postgresql-0","--namespace","fresh-account","--container","postgresql","--",
+              "sh","-c",'PGCONNECT_TIMEOUT=5 PGOPTIONS="-c statement_timeout=5000" PGPASSWORD="$POSTGRES_PASSWORD" exec psql -X -A -t -v ON_ERROR_STOP=1 -h 127.0.0.1 -U postgres -d account -c "$1"',"sh",sql]
+        result=self.transport.run(args,dict(os.environ))
+        if result.returncode != 0 or not isinstance(result.stdout,str) or result.stdout.strip()!="ok":
+            raise AdapterRejected("existing-upgrade-database-prerequisite")
+        return True
+
+    def verify_reviewed_render(self, plan):
+        if self.render_verifier is None:
+            raise AdapterRejected("git-render-verifier-unavailable")
+        self.render_evidence = self.render_verifier(plan)
+        return bool(self.render_evidence)
+
+    def _pre_pause_spec(self, layer, *, paused=False):
+        evidence=getattr(self,"render_evidence",None)
+        if not isinstance(evidence,dict) or not isinstance(evidence.get("prePause"),dict):raise AdapterRejected("pre-pause-evidence-unavailable")
+        spec=json.loads(json.dumps(evidence["prePause"][layer+"Spec"]))
+        if layer=="child" and paused:spec.get("syncPolicy",{}).pop("automated",None)
+        return spec
+
+    def verify_pre_pause_chain(self, plan, *, paused=False, completed=frozenset(), uncertain=None, initial_versions=False):
+        for layer in ("root","parent","child"):
+            obj,_,_=self._read_transition_application(plan,layer)
+            before=self._pre_pause_spec(layer,paused=paused);after=self._transition_spec(layer,"initial")
+            allowed=[after] if layer in completed else [before]
+            if layer==uncertain:allowed=[before,after]
+            if obj["spec"] not in allowed:raise AdapterRejected("pre-pause-chain-drift:"+layer)
+            if initial_versions:
+                item=plan["gitDesired"][layer]
+                if obj["metadata"].get("resourceVersion")!=item["resourceVersion"]:raise AdapterRejected("pre-pause-resource-version:"+layer)
+        return True
+
+    def apply_prepare_transition(self, plan, layer):
+        if self.supports_existing_account_mutations is not True:raise AdapterRejected("account-mutation-capability-unavailable")
+        if plan!=self.plan:raise AdapterRejected("existing-upgrade-plan-mismatch")
+        obj,base,name=self._read_transition_application(plan,layer)
+        before=self._pre_pause_spec(layer,paused=True);after=self._transition_spec(layer,"initial")
+        if obj["spec"]!=before:raise AdapterRejected("prepare-previous-drift:"+layer)
+        if before==after:return
+        metadata=obj["metadata"];version=metadata.get("resourceVersion")
+        if not isinstance(version,str) or not version:raise AdapterRejected("account-transition-resource-version")
+        patch=[{"op":"test","path":"/metadata/uid","value":metadata["uid"]},{"op":"test","path":"/metadata/resourceVersion","value":version},{"op":"test","path":"/spec","value":before},{"op":"replace","path":"/spec","value":after}]
+        result=self.transport.run(base+["patch","application",name,"--namespace","fresh-control","--type=json","--patch",json.dumps(patch,separators=(",",":"))],dict(os.environ))
+        if result.returncode!=0:raise AdapterRejected("prepare-outcome-uncertain:"+layer)
+
+    def verify_prepare_transition(self, plan, layer):
+        obj,_,_=self._read_transition_application(plan,layer)
+        return obj["spec"]==self._transition_spec(layer,"initial")
+
+    def verify_initial_git_desired(self, plan, *, paused=False):
+        for layer in ("root","parent","child"):
+            obj,_,_=self._read_transition_application(plan,layer)
+            expected=self._transition_spec(layer,"initial")
+            if obj["spec"]!=expected:raise AdapterRejected("existing-upgrade-rendered-desired-mismatch:"+layer)
+        return True
+
+    def observe_child_autosync_paused(self, plan):
+        self.verify_initial_git_desired(plan, paused=True)
+        tool=plan["tool"]
+        if _sha256(Path(tool["kubectlPath"])) != tool["kubectlSha256"]:
+            raise AdapterRejected("existing-upgrade-tool-changed")
+        args=[tool["kubectlPath"],"--kubeconfig",tool["kubeconfigPath"],"--context",plan["target"]["context"],"get","application","fresh-account-release","--namespace","fresh-control","-o","json"]
+        result=self.transport.run(args,dict(os.environ))
+        if result.returncode != 0 or not isinstance(result.stdout,str) or len(result.stdout)>1_000_000:
+            raise AdapterRejected("existing-upgrade-pause-observe-failed")
+        try: application=json.loads(result.stdout)
+        except ValueError as error: raise AdapterRejected("existing-upgrade-pause-observe-failed") from error
+        metadata=application.get("metadata",{});spec=application.get("spec",{})
+        if metadata.get("uid") != plan["gitDesired"]["child"]["uid"] or spec.get("source",{}).get("targetRevision") != plan["gitDesired"]["child"]["oldRevision"]:
+            raise AdapterRejected("existing-upgrade-pause-observed-identity")
+        return "automated" not in spec.get("syncPolicy",{})
+
+    def pause_child_autosync(self, plan):
+        """Issue one bounded CAS patch; the journal must record intent first.
+
+        The pause journal records intent before this call. A nonzero result or
+        transport exception has an uncertain outcome.
+        """
+        if self.supports_existing_upgrade_pause is not True:
+            raise AdapterRejected("upgrade-pause-capability-unavailable")
+        if getattr(self, "_pause_attempted", False):
+            raise AdapterRejected("existing-upgrade-pause-replay-forbidden")
+        if plan != self.plan:
+            raise AdapterRejected("existing-upgrade-plan-mismatch")
+        app = plan["gitDesired"]["child"]
+        if app["automated"] is None:
+            raise AdapterRejected("existing-upgrade-autosync-already-disabled")
+        tool = plan["tool"]
+        if _sha256(Path(tool["kubectlPath"])) != tool["kubectlSha256"]:
+            raise AdapterRejected("existing-upgrade-tool-changed")
+        patch = [
+            {"op":"test", "path":"/metadata/uid", "value":app["uid"]},
+            {"op":"test", "path":"/metadata/resourceVersion", "value":app["resourceVersion"]},
+            {"op":"test", "path":"/spec/source/targetRevision", "value":app["oldRevision"]},
+            {"op":"test", "path":"/spec/syncPolicy/automated", "value":app["automated"]},
+            {"op":"remove", "path":"/spec/syncPolicy/automated"},
+        ]
+        argv = [tool["kubectlPath"], "--kubeconfig", tool["kubeconfigPath"],
+                "--context", plan["target"]["context"], "patch", "application",
+                "fresh-account-release", "--namespace", "fresh-control", "--type=json",
+                "--patch", json.dumps(patch, separators=(",", ":"))]
+        self._pause_attempted = True
+        result = self.transport.run(argv, dict(os.environ))
+        if result.returncode != 0:
+            raise AdapterRejected("existing-upgrade-pause-outcome-uncertain")
+
+    def _json_list(self, resource, namespace):
+        tool = self.plan["tool"]
+        if _sha256(Path(tool["kubectlPath"])) != tool["kubectlSha256"]:
+            raise AdapterRejected("existing-upgrade-tool-changed")
+        args = [tool["kubectlPath"], "--kubeconfig", tool["kubeconfigPath"],
+                "--context", self.plan["target"]["context"], "get", resource,
+                "--namespace", namespace, "-o", "json"]
+        result = self.transport.run(args, dict(os.environ))
+        if result.returncode != 0 or not isinstance(result.stdout, str) or len(result.stdout) > 4_000_000:
+            raise AdapterRejected("existing-upgrade-runtime-observe-failed")
+        try:
+            value = json.loads(result.stdout)
+        except ValueError as error:
+            raise AdapterRejected("existing-upgrade-runtime-observe-failed") from error
+        if not isinstance(value, dict) or not isinstance(value.get("items"), list):
+            raise AdapterRejected("existing-upgrade-runtime-observe-failed")
+        return value["items"]
+
+    def _controller_converged(self, plan, *, digest=None):
+        # Follow owner UIDs, rather than labels, so an unrelated Pod cannot
+        # satisfy the controller runtime proof. Every extant owned Pod must be
+        # ready and run the approved digest, including terminating Pods.
+        namespace = "fresh-control"
+        replicasets = self._json_list("replicasets", namespace)
+        pods = self._json_list("pods", namespace)
+        uid = plan["target"]["controllerUID"]
+        owned = {r.get("metadata", {}).get("uid") for r in replicasets
+                 if any(o.get("uid") == uid and o.get("controller") is True
+                        for o in r.get("metadata", {}).get("ownerReferences", []))}
+        owned.discard(None)
+        selected = [p for p in pods if any(o.get("uid") in owned and o.get("controller") is True
+                    for o in p.get("metadata", {}).get("ownerReferences", []))]
+        desired = self._get("deployment", "argo-rollouts", namespace, ".spec.replicas")
+        observed = self._get("deployment", "argo-rollouts", namespace, ".status.observedGeneration")
+        generation = self._get("deployment", "argo-rollouts", namespace, ".metadata.generation")
+        ready = self._get("deployment", "argo-rollouts", namespace, ".status.readyReplicas")
+        updated = self._get("deployment", "argo-rollouts", namespace, ".status.updatedReplicas")
+        if not all(x.isdecimal() for x in (desired, observed, generation, ready, updated)):
+            return False
+        count = int(desired)
+        if count < 1 or int(observed) < int(generation) or int(ready) != count or int(updated) != count or len(selected) != count:
+            return False
+        digest = digest or plan["artifacts"]["controllerImageDigest"]
+        for pod in selected:
+            if pod.get("metadata", {}).get("deletionTimestamp") or pod.get("status", {}).get("phase") != "Running":
+                return False
+            containers = pod.get("status", {}).get("containerStatuses", [])
+            matches = [c for c in containers if c.get("name") == "argo-rollouts"]
+            if len(matches) != 1 or matches[0].get("ready") is not True or not matches[0].get("imageID", "").endswith("@" + digest):
+                return False
+            if not any(c.get("type") == "Ready" and c.get("status") == "True" for c in pod.get("status", {}).get("conditions", [])):
+                return False
+        return True
+
+    def _read_transition_application(self, plan, layer, *, allow_active=False):
+        names={"root":("account-lightweight-root","rootApplicationUID"),"parent":("fresh-release-definitions","parentApplicationUID"),"child":("fresh-account-release","applicationUID")}
+        if layer not in names:raise AdapterRejected("account-transition-layer")
+        name,uid_key=names[layer];tool=plan["tool"]
+        if _sha256(Path(tool["kubectlPath"]))!=tool["kubectlSha256"]:raise AdapterRejected("existing-upgrade-tool-changed")
+        base=[tool["kubectlPath"],"--kubeconfig",tool["kubeconfigPath"],"--context",plan["target"]["context"]]
+        result=self.transport.run(base+["get","application",name,"--namespace","fresh-control","-o","json"],dict(os.environ))
+        if result.returncode!=0 or not isinstance(result.stdout,str) or len(result.stdout)>1_000_000:raise AdapterRejected("account-transition-observe-failed")
+        try:obj=json.loads(result.stdout)
+        except ValueError as error:raise AdapterRejected("account-transition-observe-failed") from error
+        if not isinstance(obj,dict) or not isinstance(obj.get("metadata"),dict) or not isinstance(obj.get("spec"),dict):raise AdapterRejected("account-transition-observe-failed")
+        if obj["metadata"].get("uid")!=plan["target"][uid_key]:raise AdapterRejected("account-transition-uid:"+layer)
+        phase=obj.get("status",{}).get("operationState",{}).get("phase")
+        if not allow_active and (obj.get("operation") is not None or phase in {"Running","Pending","Terminating","Progressing","Waiting"}):raise AdapterRejected("account-transition-operation-active:"+layer)
+        return obj,base,name
+
+    def _transition_spec(self, layer, stage):
+        evidence=getattr(self,"render_evidence",None)
+        if not isinstance(evidence,dict):raise AdapterRejected("git-render-evidence-unavailable")
+        state=evidence if stage in {"initial","rollbackPaused"} else evidence.get("transitions",{}).get(stage)
+        if not isinstance(state,dict) or not isinstance(state.get(layer+"Spec"),dict):raise AdapterRejected("account-transition-evidence-unavailable")
+        return state[layer+"Spec"]
+
+    def verify_desired_chain(self, plan, completed, uncertain=None, *, before_stage="initial", after_stage="newPaused"):
+        if (before_stage,after_stage) not in {("initial","newPaused"),("newPaused","finalAutomated"),("newPaused","initial"),("finalAutomated","initial"),("initial","rollbackOld")}:raise AdapterRejected("account-transition-stage")
+        for layer in ("root","parent","child"):
+            obj,_,_=self._read_transition_application(plan,layer)
+            before=self._transition_spec(layer,before_stage);after=self._transition_spec(layer,after_stage)
+            allowed=[after] if layer in completed else [before]
+            if layer==uncertain:allowed=[before,after]
+            if obj["spec"] not in allowed:raise AdapterRejected("account-transition-chain-drift:"+layer)
+        return True
+
+    def apply_desired_transition(self, plan, layer, *, before_stage="initial", after_stage="newPaused"):
+        if (before_stage,after_stage) not in {("initial","newPaused"),("newPaused","finalAutomated"),("newPaused","initial"),("finalAutomated","initial"),("initial","rollbackOld")}:raise AdapterRejected("account-transition-stage")
+        if self.supports_existing_account_mutations is not True:raise AdapterRejected("account-mutation-capability-unavailable")
+        if plan!=self.plan:raise AdapterRejected("existing-upgrade-plan-mismatch")
+        obj,base,name=self._read_transition_application(plan,layer)
+        before=self._transition_spec(layer,before_stage);after=self._transition_spec(layer,after_stage)
+        if obj["spec"]!=before or before==after:raise AdapterRejected("account-transition-previous-drift:"+layer)
+        metadata=obj["metadata"];version=metadata.get("resourceVersion")
+        if not isinstance(version,str) or not version:raise AdapterRejected("account-transition-resource-version")
+        patch=[{"op":"test","path":"/metadata/uid","value":metadata["uid"]},
+               {"op":"test","path":"/metadata/resourceVersion","value":version},
+               {"op":"test","path":"/spec","value":before},
+               {"op":"replace","path":"/spec","value":after}]
+        result=self.transport.run(base+["patch","application",name,"--namespace","fresh-control","--type=json","--patch",json.dumps(patch,separators=(",",":"))],dict(os.environ))
+        if result.returncode!=0:raise AdapterRejected("account-transition-outcome-uncertain:"+layer)
+
+    def verify_desired_transition(self, plan, layer, *, stage="newPaused"):
+        if stage not in {"initial","newPaused","finalAutomated","rollbackOld"}:raise AdapterRejected("account-transition-stage")
+        obj,_,_=self._read_transition_application(plan,layer)
+        return obj["spec"]==self._transition_spec(layer,stage)
+
+    def _account_sync_resources(self, plan, *, stage="newPaused"):
+        if stage not in {"newPaused","initial"}:raise AdapterRejected("account-sync-stage")
+        groups={"Rollout":"argoproj.io","Service":"","DestinationRule":"networking.istio.io","VirtualService":"networking.istio.io","AnalysisTemplate":"argoproj.io"}
+        expected={"Rollout/account-api","Service/account-api","DestinationRule/account-api","VirtualService/account-api","AnalysisTemplate/account-api-policy"}
+        sync=plan["gitDesired"]["limitedSync"]
+        if sync.get("prune") is not False or set(sync.get("resources",[]))!=expected or len(sync["resources"])!=len(expected):raise AdapterRejected("limited-sync-scope")
+        if stage=="initial":expected=expected-{"AnalysisTemplate/account-api-policy"}
+        result=[]
+        for identity in sorted(expected):
+            kind,name=identity.split("/");result.append({"group":groups[kind],"kind":kind,"name":name,"namespace":"fresh-account"})
+        return result
+
+    def _read_analysis_template(self, plan):
+        tool=plan["tool"]
+        if _sha256(Path(tool["kubectlPath"]))!=tool["kubectlSha256"]:raise AdapterRejected("existing-upgrade-tool-changed")
+        args=[tool["kubectlPath"],"--kubeconfig",tool["kubeconfigPath"],"--context",plan["target"]["context"],"get","analysistemplate","account-api-policy","--namespace","fresh-account","--ignore-not-found","-o","json"]
+        result=self.transport.run(args,dict(os.environ))
+        if result.returncode!=0 or not isinstance(result.stdout,str) or len(result.stdout)>1_000_000:raise AdapterRejected("analysis-template-observe-failed")
+        if not result.stdout.strip():return None
+        try:obj=json.loads(result.stdout)
+        except ValueError as error:raise AdapterRejected("analysis-template-observe-failed") from error
+        if not isinstance(obj,dict) or not isinstance(obj.get("metadata"),dict):raise AdapterRejected("analysis-template-observe-failed")
+        return obj
+
+    def verify_analysis_absent(self, plan):
+        return self._read_analysis_template(plan) is None
+
+    def retained_analysis_template_uid(self, plan):
+        obj=self._read_analysis_template(plan)
+        if obj is None:return None
+        meta=obj["metadata"];annotations=meta.get("annotations",{});uid=meta.get("uid")
+        allowed_tracking={"fresh-account-release:argoproj.io/AnalysisTemplate:fresh-account/account-api-policy", "fresh-control/fresh-account-release:argoproj.io/AnalysisTemplate:fresh-account/account-api-policy"}
+        if (obj.get("apiVersion")!="argoproj.io/v1alpha1" or obj.get("kind")!="AnalysisTemplate" or meta.get("name")!="account-api-policy" or meta.get("namespace")!="fresh-account" or meta.get("deletionTimestamp") or not isinstance(uid,str) or not uid or not isinstance(annotations,dict) or annotations.get("argocd.argoproj.io/compare-options")!="IgnoreExtraneous" or annotations.get("argocd.argoproj.io/sync-options")!="Prune=false,Delete=false" or annotations.get("argocd.argoproj.io/tracking-id") not in allowed_tracking):return None
+        return uid
+
+    def verify_retained_analysis_template(self, plan, expected_uid):
+        return isinstance(expected_uid,str) and bool(expected_uid) and self.retained_analysis_template_uid(plan)==expected_uid
+
+    def start_account_sync(self, plan, nonce, *, stage="newPaused"):
+        if stage not in {"newPaused","initial"}:raise AdapterRejected("account-sync-stage")
+        if self.supports_existing_account_mutations is not True:raise AdapterRejected("account-mutation-capability-unavailable")
+        if plan!=self.plan or not isinstance(nonce,str) or not re.fullmatch(r"[0-9a-f]{32}",nonce):raise AdapterRejected("account-sync-binding")
+        if stage=="newPaused" and not self.verify_analysis_absent(plan):raise AdapterRejected("analysis-template-not-absent")
+        obj,base,name=self._read_transition_application(plan,"child")
+        spec=self._transition_spec("child",stage)
+        if obj["spec"]!=spec:raise AdapterRejected("account-sync-desired-drift")
+        metadata=obj["metadata"];version=metadata.get("resourceVersion")
+        if not isinstance(version,str) or not version:raise AdapterRejected("account-transition-resource-version")
+        operation={"sync":{"revision":plan["source"]["newApplicationRevision" if stage=="newPaused" else "oldApplicationRevision"],"prune":False,"resources":self._account_sync_resources(plan,stage=stage),"syncOptions":["ApplyOutOfSyncOnly=true","Prune=false","RespectIgnoreDifferences=true"]},"info":[{"name":"platform.lab/existing-upgrade","value":nonce}]}
+        patch=[{"op":"test","path":"/metadata/uid","value":metadata["uid"]},
+               {"op":"test","path":"/metadata/resourceVersion","value":version},
+               {"op":"test","path":"/spec","value":spec},
+               {"op":"add","path":"/operation","value":operation}]
+        result=self.transport.run(base+["patch","application",name,"--namespace","fresh-control","--type=json","--patch",json.dumps(patch,separators=(",",":"))],dict(os.environ))
+        if result.returncode!=0:raise AdapterRejected("account-sync-outcome-uncertain")
+
+    def _account_runtime_converged(self, plan):
+        namespace="fresh-account";uid=plan["target"]["rolloutUID"]
+        replicasets=self._json_list("replicasets",namespace);pods=self._json_list("pods",namespace)
+        owned={r.get("metadata",{}).get("uid") for r in replicasets if any(o.get("uid")==uid and o.get("controller") is True for o in r.get("metadata",{}).get("ownerReferences",[]))};owned.discard(None)
+        selected=[p for p in pods if any(o.get("uid") in owned and o.get("controller") is True for o in p.get("metadata",{}).get("ownerReferences",[]))]
+        desired=self._get("rollout","account-api",namespace,".spec.replicas")
+        generation=self._get("rollout","account-api",namespace,".metadata.generation")
+        observed=self._get("rollout","account-api",namespace,".status.observedGeneration")
+        ready=self._get("rollout","account-api",namespace,".status.readyReplicas")
+        updated=self._get("rollout","account-api",namespace,".status.updatedReplicas")
+        if not all(x.isdecimal() for x in (desired,generation,observed,ready,updated)):return False
+        count=int(desired)
+        if count<1 or int(observed)<int(generation) or int(ready)!=count or int(updated)!=count or len(selected)!=count:return False
+        digest=plan["gitDesired"]["sourceRender"]["runtimeImage"].rsplit("@",1)[1]
+        for pod in selected:
+            if pod.get("metadata",{}).get("deletionTimestamp") or pod.get("status",{}).get("phase")!="Running":return False
+            containers=[x for x in pod.get("status",{}).get("containerStatuses",[]) if x.get("name")=="api"]
+            if len(containers)!=1 or containers[0].get("ready") is not True or not containers[0].get("imageID","").endswith("@"+digest):return False
+            if not any(x.get("type")=="Ready" and x.get("status")=="True" for x in pod.get("status",{}).get("conditions",[])):return False
+        return True
+
+    def verify_account_sync_terminal(self, plan, nonce, *, stage="newPaused"):
+        """Prove a particular bounded sync ended; no readiness is inferred."""
+        if stage not in {"newPaused","initial"}:raise AdapterRejected("account-sync-stage")
+        obj,_,_=self._read_transition_application(plan,"child",allow_active=True)
+        permitted=("newPaused","finalAutomated") if stage=="newPaused" else ("initial","rollbackOld")
+        if obj["spec"] not in tuple(self._transition_spec("child",name) for name in permitted) or obj.get("operation") is not None:return False
+        status=obj.get("status",{}).get("operationState",{})
+        if not isinstance(status,dict) or status.get("phase") not in {"Succeeded","Failed","Error"} or not status.get("finishedAt"):return False
+        operation=status.get("operation",{});sync=operation.get("sync",{})
+        if not isinstance(sync,dict) or set(sync)-{"revision","prune","resources","syncOptions","dryRun"}:return False
+        if {"name":"platform.lab/existing-upgrade","value":nonce} not in operation.get("info",[]):return False
+        revision=plan["source"]["newApplicationRevision" if stage=="newPaused" else "oldApplicationRevision"]
+        if sync.get("revision")!=revision or sync.get("prune",False) is not False or sync.get("dryRun",False) is not False:return False
+        expected=self._account_sync_resources(plan,stage=stage);requested=sync.get("resources")
+        if not isinstance(requested,list) or len(requested)!=len(expected) or any(not isinstance(item,dict) for item in requested):return False
+        scope={(x.get("group",""),x.get("kind"),x.get("name"),x.get("namespace")) for x in requested}
+        expected_scope={(x["group"],x["kind"],x["name"],x["namespace"]) for x in expected}
+        if scope!=expected_scope or sync.get("syncOptions")!=["ApplyOutOfSyncOnly=true","Prune=false","RespectIgnoreDifferences=true"]:return False
+        result=status.get("syncResult")
+        if result is not None:
+            if not isinstance(result,dict) or result.get("revision")!=revision:return False
+            resources=result.get("resources",[])
+            if not isinstance(resources,list):return False
+            seen=set()
+            for item in resources:
+                if not isinstance(item,dict):return False
+                identity=(item.get("group",""),item.get("kind"),item.get("name"),item.get("namespace"))
+                if identity not in expected_scope or identity in seen or item.get("status") not in {"Synced","SyncFailed"}:return False
+                seen.add(identity)
+        return True
+
+    def verify_terminal_analysis_applied(self, plan, nonce):
+        if not self.verify_account_sync_terminal(plan,nonce):return False
+        obj,_,_=self._read_transition_application(plan,"child",allow_active=True)
+        resources=obj.get("status",{}).get("operationState",{}).get("syncResult",{}).get("resources",[])
+        return any(isinstance(item,dict) and item.get("group")=="argoproj.io" and item.get("kind")=="AnalysisTemplate" and item.get("name")=="account-api-policy" and item.get("namespace")=="fresh-account" and item.get("status")=="Synced" for item in resources)
+
+    def verify_analysis_retention_state(self, plan, expected_uid):
+        return self.verify_analysis_absent(plan) if expected_uid is None else self.verify_retained_analysis_template(plan,expected_uid)
+
+    def verify_account_sync(self, plan, nonce, *, stage="newPaused"):
+        if stage not in {"newPaused","initial"}:raise AdapterRejected("account-sync-stage")
+        if not self.verify_account_sync_terminal(plan,nonce,stage=stage):return False
+        obj,_,_=self._read_transition_application(plan,"child",allow_active=True)
+        permitted=("newPaused","finalAutomated") if stage=="newPaused" else ("initial","rollbackOld")
+        if obj["spec"] not in tuple(self._transition_spec("child",name) for name in permitted) or obj.get("operation") is not None:return False
+        revision=plan["source"]["newApplicationRevision" if stage=="newPaused" else "oldApplicationRevision"]
+        status=obj.get("status",{}).get("operationState",{})
+        if not isinstance(status,dict) or status.get("phase")!="Succeeded" or not status.get("finishedAt"):return False
+        operation=status.get("operation",{});sync=operation.get("sync",{});result=status.get("syncResult",{})
+        if {"name":"platform.lab/existing-upgrade","value":nonce} not in operation.get("info",[]):return False
+        requested=sync.get("resources")
+        if not isinstance(requested,list) or any(not isinstance(x,dict) for x in requested):return False
+        scope={(x.get("group",""),x.get("kind"),x.get("name"),x.get("namespace")) for x in requested}
+        expected_scope={(x["group"],x["kind"],x["name"],x["namespace"]) for x in self._account_sync_resources(plan,stage=stage)}
+        if sync.get("revision")!=revision or sync.get("prune",False) is not False or scope!=expected_scope or len(requested)!=len(expected_scope):return False
+        if result.get("revision")!=revision:return False
+        resources=result.get("resources")
+        if not isinstance(resources,list):return False
+        actual={(x.get("group", ""),x.get("kind"),x.get("name"),x.get("namespace")) for x in resources if isinstance(x,dict) and x.get("status")=="Synced"}
+        expected={(x["group"],x["kind"],x["name"],x["namespace"]) for x in self._account_sync_resources(plan,stage=stage)}
+        if actual!=expected or len(resources)!=len(expected):return False
+        return self._account_runtime_converged(plan)
+
+    def verify_full_account_synced(self, plan, *, stage="newPaused"):
+        if stage not in {"newPaused","initial"}:raise AdapterRejected("account-sync-stage")
+        obj,_,_=self._read_transition_application(plan,"child")
+        spec=obj["spec"];status=obj.get("status",{}).get("sync",{})
+        compared=status.get("comparedTo",{}) if isinstance(status,dict) else {}
+        return (isinstance(status,dict) and status.get("status")=="Synced"
+                and status.get("revision")==plan["source"]["newApplicationRevision" if stage=="newPaused" else "oldApplicationRevision"]
+                and compared.get("source")==spec.get("source") and compared.get("destination")==spec.get("destination"))
+
+    def verify_ready_to_restore(self, plan, nonce, *, stage="newPaused"):
+        if stage not in {"newPaused","initial"}:raise AdapterRejected("account-sync-stage")
+        if not self.verify_account_sync(plan,nonce,stage=stage):return False
+        obj,_,_=self._read_transition_application(plan,"child")
+        spec=self._transition_spec("child",stage);status=obj.get("status",{}).get("sync",{})
+        compared=status.get("comparedTo",{}) if isinstance(status,dict) else {}
+        final=self._transition_spec("child","finalAutomated" if stage=="newPaused" else "rollbackOld").get("syncPolicy",{})
+        return (isinstance(status,dict) and status.get("status")=="Synced"
+                and status.get("revision")==plan["source"]["newApplicationRevision" if stage=="newPaused" else "oldApplicationRevision"]
+                and compared.get("source")==spec.get("source") and compared.get("destination")==spec.get("destination")
+                and final.get("automated")=={"prune":False,"selfHeal":True}
+                and (stage=="initial" or ("Prune=false" in final.get("syncOptions",[]) and "ApplyOutOfSyncOnly=true" in final.get("syncOptions",[]))))
+
+    def _read_security_policy(self, plan):
+        tool=plan["tool"]
+        if _sha256(Path(tool["kubectlPath"]))!=tool["kubectlSha256"]: raise AdapterRejected("existing-upgrade-tool-changed")
+        base=[tool["kubectlPath"],"--kubeconfig",tool["kubeconfigPath"],"--context",plan["target"]["context"]]
+        result=self.transport.run(base+["get","validatingadmissionpolicy","fresh-application-boundary","-o","json"],dict(os.environ))
+        if result.returncode!=0 or not isinstance(result.stdout,str) or len(result.stdout)>2_000_000: raise AdapterRejected("security-policy-observe-failed")
+        try: policy=json.loads(result.stdout)
+        except ValueError as error: raise AdapterRejected("security-policy-observe-failed") from error
+        if not isinstance(policy,dict) or not isinstance(policy.get("metadata"),dict) or not isinstance(policy.get("spec"),dict): raise AdapterRejected("security-policy-observe-failed")
+        if policy["metadata"].get("uid")!=plan["securityPolicy"]["uid"]:raise AdapterRejected("security-policy-uid-drift")
+        return policy,base
+
+    def _desired_security_policy(self, plan, stage):
+        evidence=getattr(self,"render_evidence",None)
+        if not isinstance(evidence,dict): raise AdapterRejected("git-render-evidence-unavailable")
+        state=evidence if stage in {"initial","rollbackPaused"} else evidence.get("transitions",{}).get(stage)
+        if not isinstance(state,dict) or not isinstance(state.get("policySpec"),dict):raise AdapterRejected("security-policy-evidence-unavailable")
+        spec=state["policySpec"]
+        digest=hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()).hexdigest()
+        if digest!=plan["securityPolicy"]["desiredHashes"]["initial" if stage=="rollbackPaused" else stage]:raise AdapterRejected("security-policy-digest")
+        return spec
+
+    def apply_security_policy(self, plan, stage, previous_spec, *, initial=False):
+        if self.supports_existing_policy_mutations is not True: raise AdapterRejected("security-policy-capability-unavailable")
+        if plan!=self.plan: raise AdapterRejected("existing-upgrade-plan-mismatch")
+        desired=self._desired_security_policy(plan,stage);policy,base=self._read_security_policy(plan)
+        metadata=policy["metadata"];version=metadata.get("resourceVersion")
+        status=policy.get("status",{})
+        if (not isinstance(status,dict) or not isinstance(metadata.get("generation"),int)
+                or status.get("observedGeneration")!=metadata["generation"]
+                or status.get("typeChecking",{}).get("expressionWarnings",[])):
+            raise AdapterRejected("security-policy-not-ready")
+        if not isinstance(version,str) or not version or (initial and version!=plan["securityPolicy"]["resourceVersion"]) or policy["spec"]!=previous_spec:
+            raise AdapterRejected("security-policy-previous-drift")
+        patch=[{"op":"test","path":"/metadata/uid","value":plan["securityPolicy"]["uid"]},
+               {"op":"test","path":"/metadata/resourceVersion","value":version},
+               {"op":"test","path":"/spec","value":previous_spec},
+               {"op":"replace","path":"/spec","value":desired}]
+        result=self.transport.run(base+["patch","validatingadmissionpolicy","fresh-application-boundary","--type=json","--patch",json.dumps(patch,separators=(",",":"))],dict(os.environ))
+        if result.returncode!=0:raise AdapterRejected("security-policy-outcome-uncertain")
+
+    def verify_security_policy(self, plan, stage):
+        desired=self._desired_security_policy(plan,stage);policy,_=self._read_security_policy(plan)
+        metadata=policy["metadata"];status=policy.get("status",{})
+        if not isinstance(status,dict) or not isinstance(metadata.get("generation"),int) or status.get("observedGeneration")!=metadata["generation"]:return False
+        warnings=status.get("typeChecking",{}).get("expressionWarnings",[])
+        if not isinstance(warnings,list) or warnings:return False
+        return policy["spec"]==desired
+
+    def apply_controller_resource(self, identity, plan):
+        """One CAS or create-only operation; caller must journal intent first."""
+        if self.supports_existing_controller_mutations is not True:
+            raise AdapterRejected("controller-mutation-capability-unavailable")
+        if plan != self.plan:
+            raise AdapterRejected("existing-upgrade-plan-mismatch")
+        allowed={"Deployment/fresh-control/argo-rollouts":("deployment",("spec",)),
+                 "ConfigMap/fresh-control/argo-rollouts-config":("configmap",("data",)),
+                 "Role/fresh-account/account-policy-reader":("role",("rules",)),
+                 "RoleBinding/fresh-account/account-policy-reader":("rolebinding",("roleRef","subjects"))}
+        if identity not in allowed: raise AdapterRejected("controller-resource-not-allowed")
+        path=Path(plan["artifacts"]["bundlePath"])
+        if _sha256(path)!=plan["artifacts"]["bundleSha256"]: raise AdapterRejected("controller-bundle-changed")
+        try: bundle=json.loads(path.read_text(encoding="utf-8"))
+        except (OSError,ValueError) as error: raise AdapterRejected("controller-bundle-invalid") from error
+        if not isinstance(bundle,dict) or bundle.get("kind")!="List" or not isinstance(bundle.get("items"),list):
+            raise AdapterRejected("controller-bundle-invalid")
+        selected=[]
+        for obj in bundle["items"]:
+            if not isinstance(obj,dict) or not isinstance(obj.get("metadata"),dict): raise AdapterRejected("controller-bundle-invalid")
+            meta=obj["metadata"];key=obj.get("kind","")+"/"+str(meta.get("namespace"))+"/"+str(meta.get("name"))
+            if key==identity:selected.append(obj)
+        if len(selected)!=1: raise AdapterRejected("controller-bundle-identity")
+        desired=selected[0];resource,fields=allowed[identity]
+        if any(field not in desired for field in fields): raise AdapterRejected("controller-bundle-fields")
+        item=plan["controllerResources"][identity];kind,namespace,name=identity.split("/")
+        tool=plan["tool"]
+        if _sha256(Path(tool["kubectlPath"]))!=tool["kubectlSha256"]: raise AdapterRejected("existing-upgrade-tool-changed")
+        base=[tool["kubectlPath"],"--kubeconfig",tool["kubeconfigPath"],"--context",plan["target"]["context"]]
+        if item["state"]=="absent":
+            if resource not in {"role","rolebinding"}: raise AdapterRejected("controller-create-forbidden")
+            fd,path_name=tempfile.mkstemp(prefix="controller-resource-",suffix=".json")
+            try:
+                with os.fdopen(fd,"w",encoding="utf-8") as file: json.dump(desired,file,sort_keys=True)
+                result=self.transport.run(base+["create","--filename",path_name,"-o","json"],dict(os.environ))
+            finally: os.unlink(path_name)
+        else:
+            patch=[{"op":"test","path":"/metadata/uid","value":item["uid"]},
+                   {"op":"test","path":"/metadata/resourceVersion","value":item["resourceVersion"]}]
+            for field in fields:
+                patch.extend([{"op":"test","path":"/"+field,"value":item["rollback"][field]},
+                              {"op":"replace","path":"/"+field,"value":desired[field]}])
+            result=self.transport.run(base+["patch",resource,name,"--namespace",namespace,"--type=json","--patch",json.dumps(patch,separators=(",",":"))],dict(os.environ))
+        if result.returncode!=0: raise AdapterRejected("controller-resource-outcome-uncertain")
+        if item["state"]=="absent":
+            try: uid=json.loads(result.stdout)["metadata"]["uid"]
+            except (ValueError,KeyError,TypeError) as error: raise AdapterRejected("controller-resource-outcome-uncertain") from error
+            if not isinstance(uid,str) or not uid: raise AdapterRejected("controller-resource-outcome-uncertain")
+            return uid
+        return item["uid"]
+
+    def verify_controller_resource(self, identity, plan):
+        allowed={"Deployment/fresh-control/argo-rollouts":("deployment",("spec",)),
+                 "ConfigMap/fresh-control/argo-rollouts-config":("configmap",("data",)),
+                 "Role/fresh-account/account-policy-reader":("role",("rules",)),
+                 "RoleBinding/fresh-account/account-policy-reader":("rolebinding",("roleRef","subjects"))}
+        if identity not in allowed: raise AdapterRejected("controller-resource-not-allowed")
+        path=Path(plan["artifacts"]["bundlePath"])
+        if _sha256(path)!=plan["artifacts"]["bundleSha256"]: raise AdapterRejected("controller-bundle-changed")
+        try: bundle=json.loads(path.read_text(encoding="utf-8"))
+        except (OSError,ValueError) as error: raise AdapterRejected("controller-bundle-invalid") from error
+        if not isinstance(bundle,dict) or bundle.get("kind")!="List" or not isinstance(bundle.get("items"),list): raise AdapterRejected("controller-bundle-invalid")
+        kind,namespace,name=identity.split("/")
+        selected=[x for x in bundle["items"] if isinstance(x,dict) and x.get("kind")==kind and x.get("metadata",{}).get("namespace")==namespace and x.get("metadata",{}).get("name")==name]
+        if len(selected)!=1: raise AdapterRejected("controller-bundle-identity")
+        resource,fields=allowed[identity];tool=plan["tool"]
+        if _sha256(Path(tool["kubectlPath"]))!=tool["kubectlSha256"]: raise AdapterRejected("existing-upgrade-tool-changed")
+        args=[tool["kubectlPath"],"--kubeconfig",tool["kubeconfigPath"],"--context",plan["target"]["context"],"get",resource,name,"--namespace",namespace,"--ignore-not-found","-o","json"]
+        result=self.transport.run(args,dict(os.environ))
+        if result.returncode!=0 or not isinstance(result.stdout,str) or len(result.stdout)>2_000_000: raise AdapterRejected("controller-resource-observe-failed")
+        if not result.stdout.strip():return False
+        try: actual=json.loads(result.stdout)
+        except ValueError as error:raise AdapterRejected("controller-resource-observe-failed") from error
+        if not isinstance(actual,dict) or not isinstance(actual.get("metadata"),dict):raise AdapterRejected("controller-resource-observe-failed")
+        uid=actual["metadata"].get("uid"); expected=plan["controllerResources"][identity]
+        if not isinstance(uid,str) or not uid or (expected["state"]=="present" and uid!=expected["uid"]):return False
+        if any(actual.get(field)!=selected[0].get(field) for field in fields):return False
+        if identity=="Deployment/fresh-control/argo-rollouts" and not self.verify_controller_runtime(plan):return False
+        return uid
+
+    def _controller_rollback_current(self, identity, plan):
+        allowed={"Deployment/fresh-control/argo-rollouts":("deployment",("spec",)),
+                 "ConfigMap/fresh-control/argo-rollouts-config":("configmap",("data",)),
+                 "Role/fresh-account/account-policy-reader":("role",("rules",)),
+                 "RoleBinding/fresh-account/account-policy-reader":("rolebinding",("roleRef","subjects"))}
+        if identity not in allowed:raise AdapterRejected("controller-resource-not-allowed")
+        path=Path(plan["artifacts"]["bundlePath"])
+        if _sha256(path)!=plan["artifacts"]["bundleSha256"]:raise AdapterRejected("controller-bundle-changed")
+        try:bundle=json.loads(path.read_text(encoding="utf-8"))
+        except (OSError,ValueError) as error:raise AdapterRejected("controller-bundle-invalid") from error
+        kind,namespace,name=identity.split("/");items=bundle.get("items",[]) if isinstance(bundle,dict) and bundle.get("kind")=="List" else []
+        found=[x for x in items if isinstance(x,dict) and x.get("kind")==kind and x.get("metadata",{}).get("namespace")==namespace and x.get("metadata",{}).get("name")==name]
+        if len(found)!=1:raise AdapterRejected("controller-bundle-identity")
+        resource,fields=allowed[identity];tool=plan["tool"]
+        if _sha256(Path(tool["kubectlPath"]))!=tool["kubectlSha256"]:raise AdapterRejected("existing-upgrade-tool-changed")
+        base=[tool["kubectlPath"],"--kubeconfig",tool["kubeconfigPath"],"--context",plan["target"]["context"]]
+        result=self.transport.run(base+["get",resource,name,"--namespace",namespace,"--ignore-not-found","-o","json"],dict(os.environ))
+        if result.returncode!=0 or not isinstance(result.stdout,str) or len(result.stdout)>2_000_000:raise AdapterRejected("controller-resource-observe-failed")
+        if not result.stdout.strip():return None,found[0],base,resource,fields,namespace,name
+        try:actual=json.loads(result.stdout)
+        except ValueError as error:raise AdapterRejected("controller-resource-observe-failed") from error
+        if not isinstance(actual,dict) or not isinstance(actual.get("metadata"),dict):raise AdapterRejected("controller-resource-observe-failed")
+        return actual,found[0],base,resource,fields,namespace,name
+
+    def rollback_controller_resource(self, identity, plan, expected_uid):
+        if self.supports_existing_controller_mutations is not True:raise AdapterRejected("controller-mutation-capability-unavailable")
+        if plan!=self.plan or not isinstance(expected_uid,str) or not expected_uid:raise AdapterRejected("controller-rollback-binding")
+        actual,desired,base,resource,fields,namespace,name=self._controller_rollback_current(identity,plan)
+        if actual is None:raise AdapterRejected("controller-rollback-missing")
+        meta=actual["metadata"];version=meta.get("resourceVersion")
+        if meta.get("uid")!=expected_uid or not isinstance(version,str) or not version or any(actual.get(f)!=desired.get(f) for f in fields):raise AdapterRejected("controller-rollback-drift")
+        previous=plan["controllerResources"][identity]
+        if previous["state"]=="absent":
+            if resource not in {"role","rolebinding"}:raise AdapterRejected("controller-delete-forbidden")
+            path="/apis/rbac.authorization.k8s.io/v1/namespaces/fresh-account/"+("roles" if resource=="role" else "rolebindings")+"/account-policy-reader"
+            options={"apiVersion":"v1","kind":"DeleteOptions","preconditions":{"uid":expected_uid,"resourceVersion":version}}
+            fd,filename=tempfile.mkstemp(prefix="controller-delete-",suffix=".json")
+            try:
+                with os.fdopen(fd,"w",encoding="utf-8") as stream:json.dump(options,stream,sort_keys=True)
+                result=self.transport.run(base+["delete","--raw",path,"--filename",filename],dict(os.environ))
+            finally:os.unlink(filename)
+        else:
+            if previous["uid"]!=expected_uid:raise AdapterRejected("controller-rollback-uid")
+            patch=[{"op":"test","path":"/metadata/uid","value":expected_uid},{"op":"test","path":"/metadata/resourceVersion","value":version}]
+            for field in fields:patch.extend([{"op":"test","path":"/"+field,"value":desired[field]},{"op":"replace","path":"/"+field,"value":previous["rollback"][field]}])
+            result=self.transport.run(base+["patch",resource,name,"--namespace",namespace,"--type=json","--patch",json.dumps(patch,separators=(",",":"))],dict(os.environ))
+        if result.returncode!=0:raise AdapterRejected("controller-rollback-outcome-uncertain")
+
+    def verify_controller_rollback_resource(self, identity, plan, expected_uid):
+        actual,_,_,_,fields,_,_=self._controller_rollback_current(identity,plan)
+        previous=plan["controllerResources"][identity]
+        if previous["state"]=="absent":return actual is None
+        if actual is None or actual["metadata"].get("uid")!=expected_uid or expected_uid!=previous["uid"]:return False
+        if any(actual.get(field)!=previous["rollback"][field] for field in fields):return False
+        if identity=="Deployment/fresh-control/argo-rollouts":return self._controller_converged(plan,digest=plan["artifacts"]["oldControllerImageDigest"])
+        return True
+
+    def verify_controller_runtime(self, plan):
+        return self._controller_converged(plan)
+
+    def reconcile(self, phase, plan):
+        if phase == "controller":
+            obs = self.observe()
+            if (obs["controllerImageDigest"] == plan["artifacts"]["controllerImageDigest"]
+                    and obs["applicationRevision"] == plan["source"]["oldApplicationRevision"]
+                    and self._controller_converged(plan)):
+                return "succeeded"
+        # Account rollout convergence is not yet proven.
+        return "unknown"
+
+    def run_upgrade_phase(self, phase, plan):
+        raise AdapterRejected("existing-upgrade-live-mutation-unavailable")
+
+
 class ApprovedLiveAdapter:
     """Concrete runner adapter backed by a sealed command plan.
 
@@ -291,8 +960,18 @@ class ApprovedLiveAdapter:
 
     def _validate_plan(self, expected_target, expected_versions, expected_image_digests,
                        expected_supply_contract):
-        if set(self.plan) != {"schemaVersion", "target", "tools", "identity", "steps"}:
+        required = {"schemaVersion", "target", "tools", "identity", "steps"}
+        if set(self.plan) not in (required, required | {"rolloutsPlugin"}):
             raise AdapterRejected("plan-fields")
+        self.plugin_contract = self.plan.get("rolloutsPlugin")
+        if "rolloutsPlugin" in self.plan and self.plugin_contract is None:
+            raise AdapterRejected("plugin-unapproved-contract")
+        if self.plugin_contract is not None:
+            trusted = (expected_supply_contract or {}).get("rolloutsPlugin")
+            self._validate_plugin_contract(self.plugin_contract, trusted)
+            if (expected_supply_contract or {}).get("applicationRevision") != self.plugin_contract["sourceRevision"]:
+                raise AdapterRejected("plugin-source-not-approved")
+
         if self.plan["schemaVersion"] != "platform.lab/approved-live-step-plan/v3":
             raise AdapterRejected("plan-version")
         target = self.plan["target"]
@@ -363,6 +1042,10 @@ class ApprovedLiveAdapter:
                         rollout_installs.append(command)
                 if len(rollout_installs) != 1:
                     raise AdapterRejected("rollouts-controller-install-count")
+                if self.plugin_contract is not None:
+                    bundle_applies = [c for c in actions["run"] if c.get("tool") == "kubectl" and c.get("contentSha256") == self.plugin_contract["bundleSha256"]]
+                    if len(bundle_applies) != 1 or actions["run"].index(bundle_applies[0]) <= actions["run"].index(rollout_installs[0]):
+                        raise AdapterRejected("plugin-controller-apply-order")
             if (not isinstance(actions["resourceIdentities"], list)
                     or not actions["resourceIdentities"]
                     or not all(isinstance(item, str) and item
@@ -400,6 +1083,8 @@ class ApprovedLiveAdapter:
                                            for item in observations):
                 raise AdapterRejected("step-semantic-health:" + step)
             required_resources = STEP_RESOURCE_CONTRACTS.get(step)
+            if step == "application" and self.plugin_contract is not None:
+                required_resources = required_resources | {("argoproj.io/v1alpha1", "AnalysisTemplate/fresh-account/account-api-policy", "none")}
             actual_resources = {
                 (item["apiVersion"], item["identity"], item["healthPolicy"])
                 for item in observations
@@ -420,6 +1105,52 @@ class ApprovedLiveAdapter:
             for command in actions["run"]:
                 self._validate_command(command, section="run", step=step,
                                        resource_identities=actions["resourceIdentities"])
+
+    @staticmethod
+    def _validate_plugin_contract(contract, trusted):
+        fields = {"profile", "sourceRevision", "controllerImage", "binarySha256", "bundleSha256"}
+        if not isinstance(contract, dict) or set(contract) != fields or contract != trusted:
+            raise AdapterRejected("plugin-unapproved-contract")
+        if contract["profile"] != "fresh-account" or not isinstance(contract["sourceRevision"], str) or not re.fullmatch(r"[0-9a-f]{40}", contract["sourceRevision"]) or contract["sourceRevision"] == "0" * 40:
+            raise AdapterRejected("plugin-source-revision")
+        if not isinstance(contract["controllerImage"], str) or not re.fullmatch(r"[a-z0-9][a-z0-9./-]*@sha256:[0-9a-f]{64}", contract["controllerImage"]):
+            raise AdapterRejected("plugin-image-digest")
+        if contract["controllerImage"].endswith("0" * 64):
+            raise AdapterRejected("plugin-image-digest")
+        if any(not isinstance(contract[k], str) or not re.fullmatch(r"[0-9a-f]{64}", contract[k]) or contract[k] == "0" * 64 for k in ("binarySha256", "bundleSha256")):
+            raise AdapterRejected("plugin-checksum")
+
+    def _validate_plugin_bundle(self, path, digest):
+        c = self.plugin_contract
+        if not c or digest != c["bundleSha256"] or _sha256(path) != digest:
+            raise AdapterRejected("plugin-bundle-digest")
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+            docs = value["items"] if value["apiVersion"] == "v1" and value["kind"] == "List" else []
+            objects = {(x["kind"], x["metadata"].get("namespace"), x["metadata"]["name"]): x for x in docs}
+            expected = {("Deployment", "fresh-control", "argo-rollouts"), ("ConfigMap", "fresh-control", "argo-rollouts-config"), ("Role", "fresh-account", "account-policy-reader"), ("RoleBinding", "fresh-account", "account-policy-reader")}
+            if len(docs) != 4 or set(objects) != expected: raise ValueError()
+            pod = objects[("Deployment", "fresh-control", "argo-rollouts")]["spec"]["template"]["spec"]
+            containers = pod["containers"]
+            if len(containers) != 1 or containers[0]["image"] != c["controllerImage"]: raise ValueError()
+            env_list = containers[0]["env"]
+            env = {e["name"]:e.get("value") for e in env_list}
+            if len(env) != len(env_list) or env.get("ACCOUNT_POLICY_PROFILE") != "fresh-account" or env.get("ACCOUNT_POLICY_SHA256") != c["binarySha256"]: raise ValueError()
+            config = objects[("ConfigMap", "fresh-control", "argo-rollouts-config")]["data"]["metricProviderPlugins"]
+            import yaml
+            if yaml.safe_load(config) != [{"name":"learning-local/account-policy", "location":"file:///opt/account-policy", "sha256":c["binarySha256"]}]: raise ValueError()
+            role = objects[("Role", "fresh-account", "account-policy-reader")]
+            if role["rules"] != [
+                {"apiGroups":[""], "resources":["pods"], "verbs":["list"]},
+                {"apiGroups":["apps"], "resources":["replicasets"], "verbs":["list"]},
+                {"apiGroups":["argoproj.io"], "resources":["rollouts"], "verbs":["get"], "resourceNames":["account-api"]},
+                {"apiGroups":["argoproj.io"], "resources":["analysisruns"], "verbs":["get"]},
+                {"apiGroups":["networking.istio.io"], "resources":["destinationrules","virtualservices"], "verbs":["get"], "resourceNames":["account-api"]},
+            ]: raise ValueError()
+            binding = objects[("RoleBinding", "fresh-account", "account-policy-reader")]
+            if binding["subjects"] != [{"kind":"ServiceAccount", "name":pod["serviceAccountName"], "namespace":"fresh-control"}] or binding["roleRef"] != {"apiGroup":"rbac.authorization.k8s.io", "kind":"Role", "name":"account-policy-reader"}: raise ValueError()
+        except (KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
+            raise AdapterRejected("plugin-bundle-contract") from exc
 
     def _validate_preflight_step(self, actions):
         if (actions["hostArtifacts"] or actions["observations"]
@@ -579,14 +1310,27 @@ class ApprovedLiveAdapter:
             if (not manifest_path.is_absolute() or not manifest_path.is_file()
                     or content_digest is None or _sha256(manifest_path) != content_digest):
                 raise AdapterRejected("kubectl-manifest-path")
+            if step == "controllers" and self.plugin_contract is not None and content_digest == self.plugin_contract["bundleSha256"]:
+                self._validate_plugin_bundle(manifest_path, content_digest)
+            elif step == "controllers" and self.plugin_contract is not None:
+                raise AdapterRejected("plugin-controller-unbound")
             if step == "crds" and content_digest != ROLLOUTS_CRD_LIST_SHA256:
                 raise AdapterRejected("crds-official-render-hash")
-            expected_targets = {
-                (item["apiVersion"], item["identity"])
-                for item in self.plan["steps"][step]["observations"]
-            }
-            if self._manifest_identities(
-                    manifest_path, self.plan["steps"][step]["observations"]) != expected_targets:
+            observations = self.plan["steps"][step]["observations"]
+            if step == "controllers" and self.plugin_contract is not None:
+                plugin_targets = {
+                    ("apps/v1", "Deployment/fresh-control/argo-rollouts"),
+                    ("v1", "ConfigMap/fresh-control/argo-rollouts-config"),
+                    ("rbac.authorization.k8s.io/v1", "Role/fresh-account/account-policy-reader"),
+                    ("rbac.authorization.k8s.io/v1", "RoleBinding/fresh-account/account-policy-reader"),
+                }
+                observations = [item for item in observations if (item["apiVersion"], item["identity"]) in plugin_targets]
+                expected_targets = plugin_targets
+                if {(item["apiVersion"], item["identity"]) for item in observations} != plugin_targets:
+                    raise AdapterRejected("plugin-controller-observations")
+            else:
+                expected_targets = {(item["apiVersion"], item["identity"]) for item in observations}
+            if self._manifest_identities(manifest_path, observations) != expected_targets:
                 raise AdapterRejected("kubectl-manifest-targets")
             return
         raise AdapterRejected("kubectl-operation")
@@ -709,7 +1453,10 @@ class ApprovedLiveAdapter:
             return
         if section == "run" and step in GITOPS_STEPS:
             expected = ["app", "sync", "fresh-account-release"]
-            for resource in ARGO_SYNC_RESOURCES[step]:
+            resources = ARGO_SYNC_RESOURCES[step]
+            if step == "application" and self.plugin_contract is not None:
+                resources = ["argoproj.io:AnalysisTemplate:account-api-policy", *resources]
+            for resource in resources:
                 expected.extend(["--resource", resource])
             expected.append("--prune=false")
             if rest != expected:
