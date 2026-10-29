@@ -1,0 +1,97 @@
+# Upstreamの固定OCI objectを、承認されたdispatchでのみGHCRへ同一digestのまま複製します。
+name: External image mirror
+on:
+  workflow_dispatch:
+    inputs:
+      image:
+        description: supply/images.json の name、または all
+        required: true
+        default: all
+        type: string
+      execute:
+        description: 実際のGHCR copyを行う（falseならinventory検証のみ）
+        required: true
+        default: false
+        type: boolean
+      redistribution-approved:
+        description: 対象upstreamの再配布条件確認済み
+        required: true
+        default: false
+        type: boolean
+permissions:
+  contents: read
+defaults:
+  run:
+    shell: bash
+jobs:
+  inventory:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.inventory.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - id: inventory
+        env:
+          SELECT_IMAGE: ${{ inputs.image }}
+        run: python3 -I ci/image-supply.py --select "$SELECT_IMAGE" --github-output "$GITHUB_OUTPUT"
+      - run: python3 -I ci/test-image-supply.py -v
+  mirror:
+    needs: inventory
+    if: inputs.execute && inputs['redistribution-approved']
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.inventory.outputs.matrix) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: ghcr-publish
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16
+        with:
+          go-version: '1.27.3'
+          cache: false
+      - name: Install pinned OCI copy tool
+        run: go install github.com/google/go-containerregistry/cmd/crane@v0.21.7
+      - name: Copy the exact OCI object and record its type
+        env:
+          SOURCE: ${{ matrix.source }}
+          SOURCE_DIGEST: ${{ matrix.sourceDigest }}
+          DESTINATION: ${{ matrix.destination }}
+          IMAGE_NAME: ${{ matrix.name }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "${{ inputs['redistribution-approved'] }}" = true
+          printf '%s' "$GH_TOKEN" | crane auth login ghcr.io -u '${{ github.actor }}' --password-stdin
+          test "$(crane digest "$SOURCE")" = "$SOURCE_DIGEST"
+          if crane manifest "$DESTINATION" >/dev/null 2>&1; then
+            echo 'destination tag already exists; overwrite refused' >&2
+            exit 1
+          fi
+          crane copy "$SOURCE" "$DESTINATION"
+          destination_digest="$(crane digest "$DESTINATION")"
+          test "$destination_digest" = "$SOURCE_DIGEST"
+          mkdir -p receipts
+          crane manifest "$DESTINATION" > receipts/manifest.json
+          python3 -I - "$IMAGE_NAME" "$SOURCE" "$DESTINATION" "$destination_digest" > receipts/receipt.json <<'PY'
+          import json,sys
+          manifest=json.load(open('receipts/manifest.json'))
+          children=[x.get('digest') for x in manifest.get('manifests',[])]
+          print(json.dumps({'schemaVersion':'platform.lab/image-copy-receipt/v1','name':sys.argv[1],
+            'source':sys.argv[2],'destination':sys.argv[3]+'@'+sys.argv[4],
+            'manifestDigest':sys.argv[4],'mediaType':manifest.get('mediaType'),'childManifestDigests':children},
+            sort_keys=True,separators=(',',':')))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: image-copy-receipt-${{ matrix.name }}-${{ github.run_attempt }}
+          path: receipts/
+          if-no-files-found: error
+          retention-days: 90

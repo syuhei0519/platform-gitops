@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "platform.lab/image-supply/v1",
+  "targetArchitecture": "linux/amd64",
+  "destinationRepository": "ghcr.io/syuhei0519/platform-lab-images",
+  "policy": {
+    "copyMode": "oci-byte-preserving",
+    "redistributionApproval": "required-at-dispatch",
+    "consumerCutover": "only-after-recorded-destination-digest",
+    "offlineImport": "explicit-exception-only"
+  },
+  "images": [
+    {"name":"kind-node","source":"docker.io/kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed","destinationTag":"kind-node-v1.36.4","producer":"external-image-mirror","consumer":"Docker --image during kind create"},
+    {"name":"argocd","source":"quay.io/argoproj/argocd:v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68","destinationTag":"argocd-v3.5.2","producer":"external-image-mirror","consumer":"bootstrap/argocd-values.yaml"},
+    {"name":"argocd-redis","source":"public.ecr.aws/docker/library/redis:8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1","destinationTag":"argocd-redis-8.6.4-alpine","producer":"external-image-mirror","consumer":"bootstrap/argocd-values.yaml"},
+    {"name":"argo-rollouts","source":"quay.io/argoproj/argo-rollouts:v1.10.1@sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396","destinationTag":"argo-rollouts-v1.10.1","producer":"external-image-mirror","consumer":"learning/fresh-profile rollout bootstrap"},
+    {"name":"istio-pilot","source":"docker.io/istio/pilot:1.31.2@sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330","destinationTag":"istio-pilot-1.31.2","producer":"external-image-mirror","consumer":"learning/fresh-profile Istio install"},
+    {"name":"istio-proxy","source":"docker.io/istio/proxyv2:1.31.2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1","destinationTag":"istio-proxyv2-1.31.2","producer":"external-image-mirror","consumer":"learning/fresh-profile Istio injection"},
+    {"name":"postgres-18","source":"docker.io/library/postgres:18.6-bookworm@sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc","destinationTag":"postgres-18.6-bookworm","producer":"external-image-mirror","consumer":"learning/fresh-profile Account database"},
+    {"name":"prometheus","source":"quay.io/prometheus/prometheus:v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa","destinationTag":"prometheus-v3.15.0","producer":"external-image-mirror","consumer":"environments/local/prometheus.yaml"},
+    {"name":"prometheus-config-reloader","source":"quay.io/prometheus-operator/prometheus-config-reloader:v0.94.1@sha256:ac2f46e50daebc6163d2ba17adbbbc7fe8f51a0000e7961e821dcb9331b3702f","destinationTag":"prometheus-config-reloader-v0.94.1","producer":"external-image-mirror","consumer":"environments/local/prometheus.yaml"},
+    {"name":"kube-state-metrics","source":"registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.20.0@sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016","destinationTag":"kube-state-metrics-v2.20.0","producer":"external-image-mirror","consumer":"environments/local/prometheus.yaml"},
+    {"name":"otel-collector","source":"ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc","destinationTag":"otel-collector-contrib-0.161.0","producer":"external-image-mirror","consumer":"charts/otel-collector/values.yaml"},
+    {"name":"grafana","source":"docker.io/grafana/grafana:13.2.3@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4","destinationTag":"grafana-13.2.3","producer":"external-image-mirror","consumer":"charts/grafana/values.yaml"},
+    {"name":"gitlab-runner","source":"registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v19.3.1@sha256:f5578027351e1db11564fff9333977fb0d8d13c802b35d42a2f392872fec6a30","destinationTag":"gitlab-runner-alpine-v19.3.1","producer":"external-image-mirror","consumer":"environments/local/gitlab-runner.yaml"},
+    {"name":"gitlab-runner-helper","source":"registry.gitlab.com/gitlab-org/ci-cd/gitlab-runner-ubi-images/gitlab-runner-helper-ocp:x86_64-v19.3.1@sha256:ebcce5b4e36899e72aa20554962d7270a0eec1e398e1b0a0f746ede4f4bb1b70","destinationTag":"gitlab-runner-helper-x86-64-v19.3.1","producer":"external-image-mirror","consumer":"bootstrap/versions.lock.yaml runner helper"}
+  ]
+}
