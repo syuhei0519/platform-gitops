@@ -8,7 +8,7 @@
     "repositories": {
       "backend-app": "635814f5354f0fe238694d35137b283576a9127f",
       "frontend-app": "aecccce46295714645387854a4dad37bdd0cd3c3",
-      "application-manifest": "3707f73581da5d04db0e4771dda7c1e82bd0f47c",
+      "application-manifest": "c879ac072bf78ba33142070932e86503cb7242b8",
       "platform-gitops": "__PLATFORM_GITOPS_SHA__"
     }
   },
@@ -60,7 +60,7 @@
       "desired": {
         "backend-app": "635814f5354f0fe238694d35137b283576a9127f",
         "frontend-app": "aecccce46295714645387854a4dad37bdd0cd3c3",
-        "application-manifest": "3707f73581da5d04db0e4771dda7c1e82bd0f47c",
+        "application-manifest": "c879ac072bf78ba33142070932e86503cb7242b8",
         "platform-gitops": "__PLATFORM_GITOPS_SHA__"
       },
       "actual": {}

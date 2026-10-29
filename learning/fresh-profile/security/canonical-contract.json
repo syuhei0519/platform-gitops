@@ -19,10 +19,10 @@
     "fresh-release-definitions": {
       "namespace": "fresh-control", "project": "fresh-platform",
       "repository": "https://github.com/syuhei0519/application-manifest.git",
-      "revision": "3707f73581da5d04db0e4771dda7c1e82bd0f47c", "path": "learning/fresh-profile/release-definition",
+      "revision": "c879ac072bf78ba33142070932e86503cb7242b8", "path": "learning/fresh-profile/release-definition",
       "sourceConfig": {"helm": {"releaseName": "fresh-account-release-definition", "parameters": [
-          {"name": "workloadRevision", "value": "3707f73581da5d04db0e4771dda7c1e82bd0f47c"},
-          {"name": "accountRuntimeImage", "value": "ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd"}, {"name": "promotionMode", "value": "manual"}, {"name": "syncMode", "value": "automated"}, {"name": "workloadVariant", "value": "fresh"}
+          {"name": "workloadRevision", "value": "c879ac072bf78ba33142070932e86503cb7242b8"},
+          {"name": "accountRuntimeImage", "value": "ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd"}, {"name": "promotionMode", "value": "manual"}, {"name": "syncMode", "value": "automated"}, {"name": "workloadVariant", "value": "existing-upgrade"}
       ]}},
       "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}
     },
@@ -36,7 +36,7 @@
     "fresh-account-release": {
       "namespace": "fresh-control", "project": "fresh-account",
       "repository": "https://github.com/syuhei0519/application-manifest.git",
-      "revision": "3707f73581da5d04db0e4771dda7c1e82bd0f47c", "path": "learning/fresh-profile/workload",
+      "revision": "c879ac072bf78ba33142070932e86503cb7242b8", "path": "learning/fresh-profile/workload-existing",
       "sourceConfig": {"kustomize": {"images": ["ghcr.io/syuhei0519/backend-app=ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd"]}},
       "destination": {"server": "https://kubernetes.default.svc", "namespace": "fresh-account"}
     }

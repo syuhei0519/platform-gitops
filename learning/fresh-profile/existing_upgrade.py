@@ -139,6 +139,41 @@ def validate(plan_path, approval_path, *, now=None):
     return plan, sha(plan_path), sha(approval_path)
 
 
+def _rewrite_application_policy(spec, platform_revision, chart_revision, workload_revision,
+                                runtime_image, sync_mode, variant, promotion_mode="manual"):
+    """Rewrite only the reviewed pins in a sealed application-boundary spec."""
+    spec=copy.deepcopy(spec)
+    require(sync_mode in {"paused","automated"} and variant in {"fresh","existing-upgrade"} and promotion_mode in {"manual","auto"},"security-policy-mode")
+    first=spec["validations"][0]["expression"]
+    release_marker="(object.metadata.name == 'fresh-release-definitions'"
+    observability_marker="(object.metadata.name == 'fresh-observability'"
+    account_marker="(object.metadata.name == 'fresh-account-release'"
+    require(first.count(release_marker)==first.count(observability_marker)==first.count(account_marker)==1,"security-policy-template-pins")
+    prefix,release=first.split(release_marker,1)
+    release,tail=release.split(observability_marker,1)
+    observability,account=tail.split(account_marker,1)
+    release,count=re.subn(r"object\.spec\.source\.targetRevision == '[0-9a-f]{40}'", "object.spec.source.targetRevision == '"+chart_revision+"'", release)
+    require(count==1,"security-policy-template-pins")
+    account,count=re.subn(r"object\.spec\.source\.targetRevision == '[0-9a-f]{40}'", "object.spec.source.targetRevision == '"+workload_revision+"'", account)
+    require(count==1,"security-policy-template-pins")
+    account,count=re.subn(r"object\.spec\.source\.path == 'learning/fresh-profile/workload(?:-existing)?(?:-auto)?'", "object.spec.source.path == 'learning/fresh-profile/workload"+("-existing" if variant=="existing-upgrade" else "")+("-auto" if promotion_mode=="auto" else "")+"'", account)
+    require(count==1,"security-policy-template-pins")
+    first=prefix+release_marker+release+observability_marker+observability+account_marker+account
+    first=first.replace("__PLATFORM_GITOPS_SHA__",platform_revision)
+    spec["validations"][0]["expression"]=first
+    second=spec["validations"][1]["expression"]
+    replacements=((r"p\.name == 'workloadRevision' && p\.value == '[0-9a-f]{40}'", "p.name == 'workloadRevision' && p.value == '"+workload_revision+"'",1),
+                  (r"p\.name == 'promotionMode' && p\.value == '(?:manual|auto)'", "p.name == 'promotionMode' && p.value == '"+promotion_mode+"'",1),
+                  (r"p\.name == 'syncMode' && p\.value == '(?:paused|automated)'", "p.name == 'syncMode' && p.value == '"+sync_mode+"'",1),
+                  (r"p\.name == 'workloadVariant' && p\.value == '(?:fresh|existing-upgrade)'", "p.name == 'workloadVariant' && p.value == '"+variant+"'",1),
+                  (r"ghcr\.io/syuhei0519/backend-app@sha256:[0-9a-f]{64}",runtime_image,2))
+    for pattern,replacement,expected_count in replacements:
+        second,count=re.subn(pattern,replacement,second)
+        require(count==expected_count,"security-policy-template-pins")
+    spec["validations"][1]["expression"]=second
+    return spec
+
+
 def build_reviewed_policy(platform_revision, chart_revision, workload_revision, runtime_image, sync_mode, variant, promotion_mode="manual"):
     """Materialize only reviewed pins in the sealed existing policy template."""
     template=Path(__file__).resolve().parent/"security/admission.yaml"
@@ -146,28 +181,7 @@ def build_reviewed_policy(platform_revision, chart_revision, workload_revision, 
     except (OSError,yaml.YAMLError) as error: raise Rejected("security-policy-template") from error
     policies=[d for d in docs if isinstance(d,dict) and d.get("kind")=="ValidatingAdmissionPolicy" and d.get("metadata",{}).get("name")=="fresh-application-boundary"]
     require(len(policies)==1,"security-policy-template")
-    spec=copy.deepcopy(policies[0]["spec"])
-    require(sync_mode in {"paused","automated"} and variant in {"fresh","existing-upgrade"} and promotion_mode in {"manual","auto"},"security-policy-mode")
-    baseline_sha="3707f73581da5d04db0e4771dda7c1e82bd0f47c"
-    baseline_image="ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd"
-    first=spec["validations"][0]["expression"]
-    needle="object.spec.source.targetRevision == '"+baseline_sha+"'"
-    require(first.count(needle)==2,"security-policy-template-pins")
-    before,between,after=first.split(needle)
-    first=before+"object.spec.source.targetRevision == '"+chart_revision+"'"+between+"object.spec.source.targetRevision == '"+workload_revision+"'"+after
-    first=first.replace("__PLATFORM_GITOPS_SHA__",platform_revision)
-    first=first.replace("object.spec.source.path == 'learning/fresh-profile/workload'", "object.spec.source.path == 'learning/fresh-profile/workload"+("-existing" if variant=="existing-upgrade" else "")+("-auto" if promotion_mode=="auto" else "")+"'")
-    spec["validations"][0]["expression"]=first
-    second=spec["validations"][1]["expression"]
-    for old,new in (("p.name == 'workloadRevision' && p.value == '"+baseline_sha+"'", "p.name == 'workloadRevision' && p.value == '"+workload_revision+"'"),
-                    ("p.name == 'promotionMode' && p.value == 'manual'", "p.name == 'promotionMode' && p.value == '"+promotion_mode+"'"),
-                    ("p.name == 'syncMode' && p.value == 'automated'", "p.name == 'syncMode' && p.value == '"+sync_mode+"'"),
-                    ("p.name == 'workloadVariant' && p.value == 'fresh'", "p.name == 'workloadVariant' && p.value == '"+variant+"'"),
-                    (baseline_image,runtime_image)):
-        require(old in second,"security-policy-template-pins")
-        second=second.replace(old,new)
-    spec["validations"][1]["expression"]=second
-    return spec
+    return _rewrite_application_policy(policies[0]["spec"],platform_revision,chart_revision,workload_revision,runtime_image,sync_mode,variant,promotion_mode)
 
 
 def policy_digest(spec):

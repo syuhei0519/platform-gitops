@@ -327,7 +327,7 @@ func TestApprovedPromotionParameter(t *testing.T) {
 	if chosen.Name == "" {
 		t.Fatal("application policy missing")
 	}
-	app := &unstructured.Unstructured{Object: map[string]interface{}{"apiVersion": "argoproj.io/v1alpha1", "kind": "Application", "metadata": map[string]interface{}{"name": "fresh-release-definitions", "namespace": "fresh-control"}, "spec": map[string]interface{}{"project": "fresh-platform", "destination": map[string]interface{}{"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}, "source": map[string]interface{}{"repoURL": "https://github.com/syuhei0519/application-manifest.git", "targetRevision": "3707f73581da5d04db0e4771dda7c1e82bd0f47c", "path": "learning/fresh-profile/release-definition", "helm": map[string]interface{}{"releaseName": "fresh-account-release-definition", "parameters": []interface{}{map[string]interface{}{"name": "workloadRevision", "value": "3707f73581da5d04db0e4771dda7c1e82bd0f47c"}, map[string]interface{}{"name": "accountRuntimeImage", "value": "ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd"}, map[string]interface{}{"name": "promotionMode", "value": "manual"}, map[string]interface{}{"name": "syncMode", "value": "automated"}, map[string]interface{}{"name": "workloadVariant", "value": "fresh"}}}}}}}
+	app := &unstructured.Unstructured{Object: map[string]interface{}{"apiVersion": "argoproj.io/v1alpha1", "kind": "Application", "metadata": map[string]interface{}{"name": "fresh-release-definitions", "namespace": "fresh-control"}, "spec": map[string]interface{}{"project": "fresh-platform", "destination": map[string]interface{}{"server": "https://kubernetes.default.svc", "namespace": "fresh-control"}, "source": map[string]interface{}{"repoURL": "https://github.com/syuhei0519/application-manifest.git", "targetRevision": "c879ac072bf78ba33142070932e86503cb7242b8", "path": "learning/fresh-profile/release-definition", "helm": map[string]interface{}{"releaseName": "fresh-account-release-definition", "parameters": []interface{}{map[string]interface{}{"name": "workloadRevision", "value": "c879ac072bf78ba33142070932e86503cb7242b8"}, map[string]interface{}{"name": "accountRuntimeImage", "value": "ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd"}, map[string]interface{}{"name": "promotionMode", "value": "manual"}, map[string]interface{}{"name": "syncMode", "value": "automated"}, map[string]interface{}{"name": "workloadVariant", "value": "existing-upgrade"}}}}}}}
 	for _, tc := range []struct {
 		name, pinned, mode string
 		duplicate, want    bool
@@ -343,7 +343,7 @@ func TestApprovedPromotionParameter(t *testing.T) {
 			args := obj.Object["spec"].(map[string]interface{})["source"].(map[string]interface{})["helm"].(map[string]interface{})["parameters"].([]interface{})
 			args[2].(map[string]interface{})["value"] = tc.mode
 			if tc.duplicate {
-				args[2] = map[string]interface{}{"name": "workloadRevision", "value": "3707f73581da5d04db0e4771dda7c1e82bd0f47c"}
+				args[2] = map[string]interface{}{"name": "workloadRevision", "value": "c879ac072bf78ba33142070932e86503cb7242b8"}
 			}
 			gvk := schema.GroupVersionKind{Group: "argoproj.io", Version: "v1alpha1", Kind: "Application"}
 			gvr := schema.GroupVersionResource{Group: "argoproj.io", Version: "v1alpha1", Resource: "applications"}
@@ -427,7 +427,7 @@ func TestApprovedPromotionParameter(t *testing.T) {
 	} {
 		t.Run("policy-stage-"+stage.name, func(t *testing.T) {
 			exprs := []plugin.ExpressionAccessor{}
-			old := "3707f73581da5d04db0e4771dda7c1e82bd0f47c"
+			old := "c879ac072bf78ba33142070932e86503cb7242b8"
 			for _, validation := range chosen.Spec.Validations {
 				expr := strings.ReplaceAll(validation.Expression, "__PLATFORM_GITOPS_SHA__", stage.platform)
 				needle := "object.spec.source.targetRevision == '" + old + "'"
@@ -436,8 +436,8 @@ func TestApprovedPromotionParameter(t *testing.T) {
 				expr = strings.ReplaceAll(expr, "p.name == 'workloadRevision' && p.value == '"+old+"'", "p.name == 'workloadRevision' && p.value == '"+stage.workload+"'")
 				expr = strings.ReplaceAll(expr, "p.name == 'promotionMode' && p.value == 'manual'", "p.name == 'promotionMode' && p.value == '"+stage.promotion+"'")
 				expr = strings.ReplaceAll(expr, "p.name == 'syncMode' && p.value == 'automated'", "p.name == 'syncMode' && p.value == '"+stage.mode+"'")
-				expr = strings.ReplaceAll(expr, "p.name == 'workloadVariant' && p.value == 'fresh'", "p.name == 'workloadVariant' && p.value == '"+stage.variant+"'")
-				expr = strings.ReplaceAll(expr, "object.spec.source.path == 'learning/fresh-profile/workload'", "object.spec.source.path == '"+stage.path+"'")
+				expr = strings.ReplaceAll(expr, "p.name == 'workloadVariant' && p.value == 'existing-upgrade'", "p.name == 'workloadVariant' && p.value == '"+stage.variant+"'")
+				expr = strings.ReplaceAll(expr, "object.spec.source.path == 'learning/fresh-profile/workload-existing'", "object.spec.source.path == '"+stage.path+"'")
 				exprs = append(exprs, expression(expr))
 			}
 			ev := compile(t, exprs)
