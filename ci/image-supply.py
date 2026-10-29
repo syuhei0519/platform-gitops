@@ -99,6 +99,20 @@ def data_architecture():
     return "linux/amd64"
 
 
+def select_ready(matrix, selection):
+    data = json.loads(INVENTORY.read_text(), object_pairs_hook=_unique)
+    ready = set(data.get("redistributionEvidence", {}))
+    if selection == "all":
+        selected = [item for item in matrix if item["name"] in ready]
+        require(selected and {item["name"] for item in selected} == ready,
+                "ready-inventory-mismatch")
+        return selected
+    require(selection in ready, "image-not-redistribution-ready")
+    selected = [item for item in matrix if item["name"] == selection]
+    require(len(selected) == 1, "unknown-image")
+    return selected
+
+
 def _unique(pairs):
     result = {}
     for key, value in pairs:
@@ -112,10 +126,7 @@ def main():
     parser.add_argument("--select", default="all")
     parser.add_argument("--github-output")
     args = parser.parse_args()
-    matrix = load()
-    if args.select != "all":
-        matrix = [item for item in matrix if item["name"] == args.select]
-        require(len(matrix) == 1, "unknown-image")
+    matrix = select_ready(load(), args.select)
     encoded = json.dumps({"include": matrix}, separators=(",", ":"), sort_keys=True)
     if args.github_output:
         with open(args.github_output, "a", encoding="utf-8") as output:

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       image:
-        description: supply/images.json の name、または all
+        description: 再配布資料確認済みのname、または確認済みのみを選ぶall
         required: true
         default: all
         type: string

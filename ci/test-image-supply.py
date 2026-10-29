@@ -51,6 +51,23 @@ class InventoryTest(unittest.TestCase):
         self.assertTrue(all(i["source"].endswith("@" + i["sourceDigest"]) for i in images))
         self.assertTrue(all(i["destination"].startswith("ghcr.io/syuhei0519/platform-lab-images:") for i in images))
 
+    def test_dispatch_selects_only_redistribution_ready_images(self):
+        images = MODULE.load()
+        ready = MODULE.select_ready(images, "all")
+        self.assertEqual({item["name"] for item in ready}, {
+            "argocd", "argo-rollouts", "istio-pilot", "istio-proxy", "prometheus",
+            "prometheus-config-reloader", "otel-collector"})
+        self.assertNotIn("kube-state-metrics", {item["name"] for item in ready})
+        self.assertEqual([item["name"] for item in MODULE.select_ready(images, "argocd")],
+            ["argocd"])
+        for name in ("kube-state-metrics", "grafana", "missing"):
+            with self.assertRaisesRegex(ValueError, "image-not-redistribution-ready"):
+                MODULE.select_ready(images, name)
+
+    def test_workflow_describes_all_as_ready_only(self):
+        workflow = (PATH.parents[1] / ".github/workflows/external-image-mirror.yml").read_text()
+        self.assertIn("確認済みのみを選ぶall", workflow)
+
     def test_unknown_destination_digest_is_not_present(self):
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         for item in raw["images"]:
