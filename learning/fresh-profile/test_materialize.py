@@ -9,6 +9,7 @@ MODULE = Path(__file__).with_name("materialize.py")
 SPEC = importlib.util.spec_from_file_location("materialize", MODULE)
 contract = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(contract)
+APPLICATION_REVISION = "c879ac072bf78ba33142070932e86503cb7242b8"
 
 
 class MaterializeTests(unittest.TestCase):
@@ -43,7 +44,7 @@ class MaterializeTests(unittest.TestCase):
             output = root / "sealed"
             runtime = self.runtime_inputs(root)
             platform_sha = "1" * 40
-            application_sha = "3707f73581da5d04db0e4771dda7c1e82bd0f47c"
+            application_sha = APPLICATION_REVISION
             path, manifest = contract.materialize(
                 platform_sha, application_sha, release, *runtime, output)
             self.assertTrue(path.is_file())
@@ -82,7 +83,7 @@ class MaterializeTests(unittest.TestCase):
                     "main", "2" * 40, release, *runtime, Path(directory) / "out")
             with self.assertRaises(contract.MaterializationError):
                 contract.materialize(
-                    "1" * 40, "3707f73581da5d04db0e4771dda7c1e82bd0f47c",
+                    "1" * 40, APPLICATION_REVISION,
                     release, *runtime, contract.HERE / "generated")
 
     def test_tracked_runtime_template_is_rejected_as_runtime_evidence(self):
@@ -94,7 +95,7 @@ class MaterializeTests(unittest.TestCase):
             with self.assertRaisesRegex(contract.MaterializationError,
                                         "runtime-input-must-be-ignored"):
                 contract.materialize(
-                    "1" * 40, "3707f73581da5d04db0e4771dda7c1e82bd0f47c",
+                    "1" * 40, APPLICATION_REVISION,
                     release, *runtime, root / "sealed")
 
     def test_application_git_source_token_is_rejected(self):
@@ -104,7 +105,7 @@ class MaterializeTests(unittest.TestCase):
             runtime = self.runtime_inputs(root)
             with self.assertRaisesRegex(contract.MaterializationError, "application-source-revision-token"):
                 contract.materialize(
-                    "1" * 40, "3707f73581da5d04db0e4771dda7c1e82bd0f47c",
+                    "1" * 40, APPLICATION_REVISION,
                     release, *runtime, root / "sealed")
 
     def test_plugin_materialization_seals_plugin_source_set(self):
@@ -119,9 +120,9 @@ class MaterializeTests(unittest.TestCase):
             paths=["learning/account-release/metric-plugin/main.go", "learning/account-release/metric-plugin/runtime.go", "learning/account-release/metric-plugin/fresh_query.go", "learning/account-release/metric-plugin/queries.json", "learning/account-release/metric-plugin/go.mod", "learning/account-release/metric-plugin/go.sum", "learning/account-release/metric-plugin/Dockerfile", "learning/fresh-profile/workload-auto/kustomization.yaml"]
             for relative in paths:
                 target=app_root/relative; target.parent.mkdir(parents=True,exist_ok=True); target.write_text("fixture",encoding="utf-8")
-            _, manifest=contract.materialize("1"*40,"3707f73581da5d04db0e4771dda7c1e82bd0f47c",release,*runtime,root/"sealed")
+            _, manifest=contract.materialize("1"*40,APPLICATION_REVISION,release,*runtime,root/"sealed")
             for relative in paths:
-                self.assertIn("application-manifest@3707f73581da5d04db0e4771dda7c1e82bd0f47c:"+relative,manifest["sourceFiles"])
+                self.assertIn("application-manifest@"+APPLICATION_REVISION+":"+relative,manifest["sourceFiles"])
             self.assertIn("platform-gitops@"+"1"*40+":learning/fresh-profile/plugin_overlay.py",manifest["sourceFiles"])
 
 

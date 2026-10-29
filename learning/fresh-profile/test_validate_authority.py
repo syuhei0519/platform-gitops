@@ -32,15 +32,20 @@ class AuthorityTests(unittest.TestCase):
         canonical=copy.deepcopy(self.canonical)
         args=canonical["applications"]["fresh-release-definitions"]["sourceConfig"]["helm"]["parameters"]
         next(p for p in args if p["name"] == "promotionMode")["value"] = "auto"
+        next(p for p in args if p["name"] == "workloadVariant")["value"] = "fresh"
         canonical["applications"]["fresh-account-release"]["path"] = "learning/fresh-profile/workload-auto"
         contract.validate_canonical(canonical)
         docs=contract.load_yaml(Path(__file__).parent/"security/admission.yaml")
         policy=next(d for d in docs if d.get("kind")=="ValidatingAdmissionPolicy" and d["metadata"]["name"]=="fresh-application-boundary")
         policy["spec"]["validations"][1]["expression"] = policy["spec"]["validations"][1]["expression"].replace("p.name == 'promotionMode' && p.value == 'manual'", "p.name == 'promotionMode' && p.value == 'auto'")
-        policy["spec"]["validations"][0]["expression"] = policy["spec"]["validations"][0]["expression"].replace("object.spec.source.path == 'learning/fresh-profile/workload'", "object.spec.source.path == 'learning/fresh-profile/workload-auto'")
+        policy["spec"]["validations"][1]["expression"] = policy["spec"]["validations"][1]["expression"].replace("p.name == 'workloadVariant' && p.value == 'existing-upgrade'", "p.name == 'workloadVariant' && p.value == 'fresh'")
+        policy["spec"]["validations"][0]["expression"] = policy["spec"]["validations"][0]["expression"].replace("object.spec.source.path == 'learning/fresh-profile/workload-existing'", "object.spec.source.path == 'learning/fresh-profile/workload-auto'")
         contract.validate_admission(canonical,docs)
+        wrong_mode=copy.deepcopy(canonical)
+        wrong_args=wrong_mode["applications"]["fresh-release-definitions"]["sourceConfig"]["helm"]["parameters"]
+        next(p for p in wrong_args if p["name"] == "promotionMode")["value"] = "manual"
         with self.assertRaisesRegex(contract.ContractError,"admission-promotion-mode-pin"):
-            contract.validate_admission(self.canonical,docs)
+            contract.validate_admission(wrong_mode,docs)
         next(p for p in args if p["name"] == "promotionMode")["value"] = "unknown"
         with self.assertRaisesRegex(contract.ContractError,"canonical-promotion-mode"):
             contract.validate_canonical(canonical)
