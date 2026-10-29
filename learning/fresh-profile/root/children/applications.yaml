@@ -17,7 +17,7 @@ spec:
       - {name: workloadRevision, value: c879ac072bf78ba33142070932e86503cb7242b8}
       - {name: accountRuntimeImage, value: ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd}
       - {name: promotionMode, value: manual}
-      - {name: syncMode, value: paused}
+      - {name: syncMode, value: automated}
       - {name: workloadVariant, value: existing-upgrade}
   destination:
     server: https://kubernetes.default.svc

@@ -51,7 +51,7 @@ spec:
                 !has(p.forceString) && ((p.name == 'workloadRevision' && p.value == 'c879ac072bf78ba33142070932e86503cb7242b8') ||
                 (p.name == 'accountRuntimeImage' && p.value == 'ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd') ||
                 (p.name == 'promotionMode' && p.value == 'manual') ||
-                (p.name == 'syncMode' && p.value == 'paused') ||
+                (p.name == 'syncMode' && p.value == 'automated') ||
                 (p.name == 'workloadVariant' && p.value == 'existing-upgrade'))) &&
          !has(object.spec.source.helm.valueFiles) && !has(object.spec.source.helm.fileParameters) &&
          !has(object.spec.source.helm.values) && !has(object.spec.source.helm.valuesObject) &&
