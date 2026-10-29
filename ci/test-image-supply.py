@@ -57,6 +57,16 @@ class InventoryTest(unittest.TestCase):
             self.assertNotIn("destinationDigest", item)
             self.assertNotIn("@sha256:", item["destinationTag"])
 
+    def test_rollouts_redistribution_evidence_is_bound_to_inventory(self):
+        images = MODULE.load()
+        rollout = next(item for item in images if item["name"] == "argo-rollouts")
+        evidence = json.loads((PATH.parents[1] /
+            "supply/licenses/argo-rollouts/v1.10.1/evidence.json").read_text())
+        self.assertTrue(evidence["redistributionReady"])
+        self.assertEqual(evidence["image"]["reference"], rollout["source"])
+        self.assertEqual(evidence["image"]["indexDigest"], rollout["sourceDigest"])
+        self.assertEqual(evidence["license"]["upstreamNotice"], "absent-at-tag")
+
     def test_duplicate_and_mutable_source_are_refused(self):
         original = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         for mutate in (lambda d: d["images"][1].update(name=d["images"][0]["name"]),

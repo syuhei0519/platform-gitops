@@ -5,6 +5,7 @@ This never resolves or invents a destination digest.  A consumer may move to
 GHCR only from the receipt produced after an actual byte-preserving OCI copy.
 """
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -33,6 +34,10 @@ def load():
         "consumerCutover": "only-after-recorded-destination-digest",
         "offlineImport": "explicit-exception-only",
     }, "policy")
+    evidence = data.get("redistributionEvidence", {})
+    require(evidence == {
+        "argo-rollouts": "supply/licenses/argo-rollouts/v1.10.1/evidence.json",
+    }, "redistribution-evidence")
     seen_names, seen_tags, matrix = set(), set(), []
     for item in data["images"]:
         require(set(item) == {"name", "source", "destinationTag", "producer", "consumer"}, "fields")
@@ -46,7 +51,24 @@ def load():
         matrix.append({**item, "sourceDigest": digest,
                        "destination": destination + ":" + item["destinationTag"]})
     require(len(matrix) == 14, "inventory-count")
+    _validate_evidence(evidence, matrix)
     return matrix
+
+
+def _validate_evidence(entries, matrix):
+    by_name = {item["name"]: item for item in matrix}
+    for name, relative in entries.items():
+        path = ROOT / relative
+        record = json.loads(path.read_text(), object_pairs_hook=_unique)
+        require(record["schemaVersion"] == "platform.lab/redistribution-evidence/v1", "evidence-schema")
+        require(record["name"] == name and record["redistributionReady"] is True, "evidence-name")
+        require(record["copyMode"] == "oci-byte-preserving", "evidence-copy-mode")
+        require(record["image"]["reference"] == by_name[name]["source"], "evidence-source")
+        license_record = record["license"]
+        license_path = path.parent / license_record["localPath"]
+        require(license_record["spdx"] == "Apache-2.0", "evidence-license")
+        require(hashlib.sha256(license_path.read_bytes()).hexdigest() == license_record["sha256"],
+                "evidence-license-digest")
 
 
 def _unique(pairs):

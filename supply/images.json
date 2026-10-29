@@ -8,6 +8,9 @@
     "consumerCutover": "only-after-recorded-destination-digest",
     "offlineImport": "explicit-exception-only"
   },
+  "redistributionEvidence": {
+    "argo-rollouts": "supply/licenses/argo-rollouts/v1.10.1/evidence.json"
+  },
   "images": [
     {"name":"kind-node","source":"docker.io/kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed","destinationTag":"kind-node-v1.36.4","producer":"external-image-mirror","consumer":"Docker --image during kind create"},
     {"name":"argocd","source":"quay.io/argoproj/argocd:v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68","destinationTag":"argocd-v3.5.2","producer":"external-image-mirror","consumer":"bootstrap/argocd-values.yaml"},
