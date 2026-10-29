@@ -63,8 +63,28 @@ jobs:
           modules: scan-gate
       - name: Policy and boundary tests
         run: bash ci/github/test.sh
+      # Test-only fixture source; this is not the runtime application pin.
+      - name: Checkout fresh profile application test fixture
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          repository: syuhei0519/application-manifest
+          ref: b76624ff732ba534881629265d85fc9e5230a9cf
+          path: .build/fresh-profile-application
+          fetch-depth: 0
+          persist-credentials: false
       - name: Fresh profile contract tests
-        run: python3 -m unittest discover -s learning/fresh-profile -p 'test_*.py' -v
+        env:
+          ACCOUNT_CANARY_APPLICATION_SOURCE: ${{ github.workspace }}/.build/fresh-profile-application
+        run: |
+          # Real cross-repository render tests must not silently skip for missing tools.
+          docker run --rm --entrypoint cat alpine/helm:4.2.4@sha256:76c375eed56144c68d6197c55bc5a4552fb42002190b796729901cbab3ae6e51 /usr/bin/helm > .build/helm
+          chmod +x .build/helm
+          export PATH="$GITHUB_WORKSPACE/.build:$PATH"
+          command -v helm
+          command -v kubectl
+          kubectl version --client
+          git -C "$ACCOUNT_CANARY_APPLICATION_SOURCE" cat-file -e 3707f73581da5d04db0e4771dda7c1e82bd0f47c^{commit}
+          python3 -m unittest discover -s learning/fresh-profile -p 'test_*.py' -v
       - name: Render, policy and checksum checks
         run: |
           mkdir -p .security/public
