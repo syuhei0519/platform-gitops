@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "platform.lab/redistribution-evidence/v1",
+  "name": "otel-collector",
+  "version": "v0.161.0",
+  "redistributionReady": true,
+  "copyMode": "oci-byte-preserving",
+  "source": {"repository": "https://github.com/open-telemetry/opentelemetry-collector-releases", "tag": "v0.161.0", "commit": "619d1d0d06e9488a4a38e993f09605bbc13db592"},
+  "images": [{"name": "otel-collector", "reference": "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc", "manifestDigest": "sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc", "configDigest": "sha256:0fd3483345a3fa17f3ffe760eea2413f640724c8204ea11a58c8e3927b2c0fe7", "mediaType": "application/vnd.docker.distribution.manifest.v2+json", "platform": "linux/amd64"}],
+  "license": {"spdx": "Apache-2.0", "upstreamUrl": "https://github.com/open-telemetry/opentelemetry-collector-releases/blob/v0.161.0/LICENSE", "upstreamGitBlob": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64", "localPath": "LICENSE", "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4", "upstreamNotice": "absent-at-tag"},
+  "inspectionScope": "Official fixed manifest/config identity and tagged LICENSE/NOTICE only; not a legal audit of every transitive package."
+}

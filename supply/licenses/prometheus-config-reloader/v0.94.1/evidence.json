@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "platform.lab/redistribution-evidence/v1",
+  "name": "prometheus-config-reloader",
+  "version": "v0.94.1",
+  "redistributionReady": true,
+  "copyMode": "oci-byte-preserving",
+  "source": {"repository": "https://github.com/prometheus-operator/prometheus-operator", "tag": "v0.94.1", "commit": "24929ab3b4c91b39d43d5f020833296654c627fd"},
+  "images": [{"name": "prometheus-config-reloader", "reference": "quay.io/prometheus-operator/prometheus-config-reloader:v0.94.1@sha256:ac2f46e50daebc6163d2ba17adbbbc7fe8f51a0000e7961e821dcb9331b3702f", "manifestDigest": "sha256:ac2f46e50daebc6163d2ba17adbbbc7fe8f51a0000e7961e821dcb9331b3702f", "configDigest": "sha256:86196e6c1d5773ea795345171ce036a25b49d82c69200c567a3dfd0135ce2ade", "mediaType": "application/vnd.docker.distribution.manifest.v2+json", "platform": "linux/amd64"}],
+  "license": {"spdx": "Apache-2.0", "upstreamUrl": "https://github.com/prometheus-operator/prometheus-operator/blob/v0.94.1/LICENSE", "upstreamGitBlob": "74e6ec6963979ae506d5a6b1d59adb7f3bdaf045", "localPath": "LICENSE", "sha256": "d944a57b4a9807adbf98cf93ebe7b30e70b43d4742dda15640b86d099a7f65f3", "upstreamNotice": {"localPath": "NOTICE", "upstreamGitBlob": "e520005cdda30b725b5534ce120ee905fd40b55a", "sha256": "afb5767f24ce18fcadf11bf71606c41f32b97aee2d54aee6a6d9706efa5d1a47"}},
+  "inspectionScope": "Official fixed manifest/config identity and tagged LICENSE/NOTICE only; not a legal audit of every transitive package."
+}

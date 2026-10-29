@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "platform.lab/redistribution-evidence/v1",
+  "name": "istio-runtime",
+  "version": "1.31.2",
+  "redistributionReady": true,
+  "copyMode": "oci-byte-preserving",
+  "source": {"repository": "https://github.com/istio/istio", "tag": "1.31.2", "commit": "e2f3a7949a358af7dd901a6f9ccd6ecdd7270271"},
+  "images": [
+    {"name": "istio-pilot", "reference": "docker.io/istio/pilot:1.31.2@sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330", "manifestDigest": "sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330", "configDigest": "sha256:f9099e6414f8e725a33c951b33cdfca81069f32b04da219129f413f4a4264406", "mediaType": "application/vnd.docker.distribution.manifest.v2+json", "platform": "linux/amd64"},
+    {"name": "istio-proxy", "reference": "docker.io/istio/proxyv2:1.31.2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1", "manifestDigest": "sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1", "configDigest": "sha256:42634830acb228541f2f5442127ccf4cec000782e50e94409d8b90c31739a692", "mediaType": "application/vnd.docker.distribution.manifest.v2+json", "platform": "linux/amd64"}
+  ],
+  "license": {"spdx": "Apache-2.0", "upstreamUrl": "https://github.com/istio/istio/blob/1.31.2/LICENSE", "upstreamGitBlob": "75bfd113b3c2531abe043c451c6863de20017f69", "localPath": "LICENSE", "sha256": "9fa6e54dafda853bb3cdc01486b677a55102f0d488282a85ba6e426d9125f8c5", "upstreamNotice": "absent-at-tag"},
+  "inspectionScope": "Official fixed manifest/config identity and tagged LICENSE/NOTICE only; not a legal audit of every transitive package."
+}
