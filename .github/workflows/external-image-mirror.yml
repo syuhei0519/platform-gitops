@@ -40,7 +40,9 @@ jobs:
       - run: python3 -I ci/test-image-supply.py -v
   mirror:
     needs: inventory
-    if: inputs.execute && inputs['redistribution-approved']
+    if: >-
+      inputs.execute && inputs['redistribution-approved'] &&
+      vars.ENABLE_EXTERNAL_IMAGE_MIRROR == 'true'
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.inventory.outputs.matrix) }}

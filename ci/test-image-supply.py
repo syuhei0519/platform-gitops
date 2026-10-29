@@ -11,6 +11,11 @@ MODULE = importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(MODULE)
 
 
 class InventoryTest(unittest.TestCase):
+    def test_workflow_requires_repository_enable_gate(self):
+        workflow = (PATH.parents[1] / ".github/workflows/external-image-mirror.yml").read_text()
+        self.assertIn("vars.ENABLE_EXTERNAL_IMAGE_MIRROR == 'true'", workflow)
+        self.assertIn("environment: ghcr-publish", workflow)
+
     def test_inventory_is_fixed_digest_and_mapped(self):
         images = MODULE.load()
         self.assertEqual(len(images), 14)
