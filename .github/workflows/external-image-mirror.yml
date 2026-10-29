@@ -20,6 +20,11 @@ on:
         type: boolean
 permissions:
   contents: read
+# 同一workflowの単独操作者を前提に直列化する。GHCRに原子的create-if-absentはないため、
+# 外部主体との競合まで排除した保証ではない。
+concurrency:
+  group: platform-lab-external-image-mirror
+  cancel-in-progress: false
 defaults:
   run:
     shell: bash
@@ -61,7 +66,10 @@ jobs:
           go-version: '1.27.3'
           cache: false
       - name: Install pinned OCI copy tool
-        run: go install github.com/google/go-containerregistry/cmd/crane@v0.21.7
+        run: |
+          go install github.com/google/go-containerregistry/cmd/crane@v0.21.7
+          (cd ci/image-copy; go build -o ../../oci-copy-once .)
+          echo "$PWD" >> "$GITHUB_PATH"
       - name: Copy the exact OCI object and record its type
         env:
           SOURCE: ${{ matrix.source }}
@@ -71,26 +79,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           test "${{ inputs['redistribution-approved'] }}" = true
-          printf '%s' "$GH_TOKEN" | crane auth login ghcr.io -u '${{ github.actor }}' --password-stdin
-          test "$(crane digest "$SOURCE")" = "$SOURCE_DIGEST"
-          if crane manifest "$DESTINATION" >/dev/null 2>&1; then
-            echo 'destination tag already exists; overwrite refused' >&2
-            exit 1
-          fi
-          crane copy "$SOURCE" "$DESTINATION"
-          destination_digest="$(crane digest "$DESTINATION")"
-          test "$destination_digest" = "$SOURCE_DIGEST"
-          mkdir -p receipts
-          crane manifest "$DESTINATION" > receipts/manifest.json
-          python3 -I - "$IMAGE_NAME" "$SOURCE" "$DESTINATION" "$destination_digest" > receipts/receipt.json <<'PY'
-          import json,sys
-          manifest=json.load(open('receipts/manifest.json'))
-          children=[x.get('digest') for x in manifest.get('manifests',[])]
-          print(json.dumps({'schemaVersion':'platform.lab/image-copy-receipt/v1','name':sys.argv[1],
-            'source':sys.argv[2],'destination':sys.argv[3]+'@'+sys.argv[4],
-            'manifestDigest':sys.argv[4],'mediaType':manifest.get('mediaType'),'childManifestDigests':children},
-            sort_keys=True,separators=(',',':')))
-          PY
+          PATH="$PWD:$PATH" python3 -I ci/image-mirror.py "$IMAGE_NAME" "$SOURCE" "$DESTINATION" "$SOURCE_DIGEST" receipts
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: image-copy-receipt-${{ matrix.name }}-${{ github.run_attempt }}

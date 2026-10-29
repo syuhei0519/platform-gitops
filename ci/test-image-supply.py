@@ -4,10 +4,13 @@ from pathlib import Path
 import tempfile
 import unittest
 from unittest import mock
+import os
 
 PATH = Path(__file__).with_name("image-supply.py")
 SPEC = importlib.util.spec_from_file_location("image_supply", PATH)
 MODULE = importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(MODULE)
+MIRROR_SPEC = importlib.util.spec_from_file_location("image_mirror", PATH.with_name("image-mirror.py"))
+MIRROR = importlib.util.module_from_spec(MIRROR_SPEC); MIRROR_SPEC.loader.exec_module(MIRROR)
 
 
 class InventoryTest(unittest.TestCase):
@@ -15,6 +18,32 @@ class InventoryTest(unittest.TestCase):
         workflow = (PATH.parents[1] / ".github/workflows/external-image-mirror.yml").read_text()
         self.assertIn("vars.ENABLE_EXTERNAL_IMAGE_MIRROR == 'true'", workflow)
         self.assertIn("environment: ghcr-publish", workflow)
+        self.assertIn("image-mirror.py", workflow)
+        self.assertNotIn("crane copy", workflow)
+
+    def test_destination_state_is_fail_closed(self):
+        import subprocess
+        result = lambda code=0, out="", err="": subprocess.CompletedProcess([], code, out, err)
+        digest = "sha256:" + "a" * 64
+        self.assertEqual(MIRROR.state(result(out=digest), digest), "same")
+        self.assertEqual(MIRROR.state(result(1, err="MANIFEST_UNKNOWN"), digest), "absent")
+        for value in (result(out="sha256:" + "b" * 64), result(1, err="DENIED"),
+                      result(1, err="MANIFEST_UNKNOWN unauthorized"), result(1, err="timeout")):
+            with self.assertRaises(MIRROR.MirrorError): MIRROR.state(value, digest)
+
+    def test_failed_copy_is_not_retried(self):
+        import subprocess
+        digest = "sha256:" + "a" * 64
+        responses = iter([subprocess.CompletedProcess([],0,"",""),
+            subprocess.CompletedProcess([],0,digest,""),
+            subprocess.CompletedProcess([],1,"","MANIFEST_UNKNOWN"),
+            subprocess.CompletedProcess([],1,"","MANIFEST_UNKNOWN"),
+            subprocess.CompletedProcess([],1,"","uncertain")])
+        calls=[]
+        def fake(args, secret=None): calls.append(args); return next(responses)
+        with tempfile.TemporaryDirectory() as directory, mock.patch.object(MIRROR,"run",side_effect=fake), mock.patch.dict(os.environ,{"GITHUB_ACTOR":"actor","GH_TOKEN":"token"}), self.assertRaises(MIRROR.MirrorError):
+            MIRROR.mirror("image","source", "destination", digest, Path(directory))
+        self.assertEqual(sum(call[0] == "oci-copy-once" for call in calls), 1)
 
     def test_inventory_is_fixed_digest_and_mapped(self):
         images = MODULE.load()
