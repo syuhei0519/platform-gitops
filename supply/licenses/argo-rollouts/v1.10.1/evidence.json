@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "platform.lab/redistribution-evidence/v1",
+  "name": "argo-rollouts",
+  "version": "v1.10.1",
+  "redistributionReady": true,
+  "copyMode": "oci-byte-preserving",
+  "source": {
+    "repository": "https://github.com/argoproj/argo-rollouts",
+    "tag": "v1.10.1",
+    "commit": "356117c8e9a21b74b58c2c01d640aa91994522b5",
+    "dockerfile": "https://github.com/argoproj/argo-rollouts/blob/v1.10.1/Dockerfile"
+  },
+  "image": {
+    "reference": "quay.io/argoproj/argo-rollouts:v1.10.1@sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396",
+    "indexDigest": "sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396",
+    "children": {
+      "linux/amd64": "sha256:109c5d6cf7f1aa79d2c116f2acc994180a3bec8f583f6b24f6ddc7498fbd7a78",
+      "linux/arm64": "sha256:274127057e8627bf7ef897fc69b8aab7838050d80e113d192f799d67f7eba2ff"
+    },
+    "baseDeclaredByDockerfile": "gcr.io/distroless/static-debian12"
+  },
+  "license": {
+    "spdx": "Apache-2.0",
+    "upstreamUrl": "https://github.com/argoproj/argo-rollouts/blob/v1.10.1/LICENSE",
+    "upstreamGitBlob": "67e99b065bcd6ac93d93c8fe8e0a72c6296a5614",
+    "localPath": "LICENSE",
+    "sha256": "c996fc213c94f4a4a838407d355b081226caa7b103a4f239bb87fb8f1d8e3a60",
+    "upstreamNotice": "absent-at-tag"
+  },
+  "officialReleaseSbom": {
+    "url": "https://github.com/argoproj/argo-rollouts/releases/download/v1.10.1/sbom.tar.gz",
+    "sha256": "fb1f06d843de651d804e5f88bf86ed607a8cd18aa7b61eb6fee71a6a1be4f566",
+    "amd64ImageDigest": "sha256:109c5d6cf7f1aa79d2c116f2acc994180a3bec8f583f6b24f6ddc7498fbd7a78",
+    "licenseDeclaration": "NOASSERTION"
+  },
+  "embeddedCopyrights": [
+    {"path": "/usr/share/doc/base-files/copyright", "sha256": "fd7e4aae7e7b05f217bcf2d02322825c360e66c52c4c2f1b28d784d6297a1c23"},
+    {"path": "/usr/share/doc/ca-certificates/copyright", "sha256": "e85e1bcad3a915dc7e6f41412bc5bdeba275cadd817896ea0451f2140a93967c"},
+    {"path": "/usr/share/doc/media-types/copyright", "sha256": "5ded7c53199b6a1d089b0b7e231d77e5c84081c7156b372b3f11ad9c1c2c5cc7"},
+    {"path": "/usr/share/doc/netbase/copyright", "sha256": "795b66147ea5ad692991caa7008ece551fb0fa88b9c53656223bd1518dc58ab2"},
+    {"path": "/usr/share/doc/tzdata/copyright", "sha256": "cb61132bc0fc7b26ef5a82ee18b2fb644a1362f4f286ed980ff22e408471f59a"}
+  ]
+}
