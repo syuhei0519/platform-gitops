@@ -3,6 +3,9 @@
 set -euo pipefail
 mkdir -p .security .build
 sh ci/test-docs-check.sh
+python3 -I ci/test-image-supply.py -v
+python3 -I ci/image-supply.py >/dev/null
+(cd ci/image-copy; go test ./...; go build .)
 for module in tools/*/go.mod; do
   dir=${module%/go.mod}
   if test "$dir" = tools/checksum; then continue; fi

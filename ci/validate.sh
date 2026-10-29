@@ -3,8 +3,6 @@
 # 非成功終了は後続の検査を止める。成功してもcluster変更・merge権限を自動付与するものではない。
 set -eu
 mkdir -p .rendered
-python3 -I ci/test-image-supply.py -v
-python3 -I ci/image-supply.py >/dev/null
 sh ci/test-order-workloads.sh
 
 helm repo add gitlab https://charts.gitlab.io --force-update
