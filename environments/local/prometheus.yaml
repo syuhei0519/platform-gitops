@@ -8,8 +8,8 @@ configmapReload:
   prometheus:
     enabled: true
     image:
-      repository: quay.io/prometheus-operator/prometheus-config-reloader
-      tag: v0.94.1
+      repository: ghcr.io/syuhei0519/platform-lab-images
+      tag: prometheus-config-reloader-v0.94.1
       digest: sha256:ac2f46e50daebc6163d2ba17adbbbc7fe8f51a0000e7961e821dcb9331b3702f
     resources:
       requests: {cpu: 10m, memory: 16Mi, ephemeral-storage: 16Mi}
@@ -17,8 +17,8 @@ configmapReload:
     containerSecurityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
 server:
   image:
-    repository: quay.io/prometheus/prometheus
-    tag: v3.15.0
+    repository: ghcr.io/syuhei0519/platform-lab-images
+    tag: prometheus-v3.15.0
     digest: sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
   replicaCount: 1
   enableServiceLinks: false

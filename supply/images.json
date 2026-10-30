@@ -17,6 +17,31 @@
     "prometheus-config-reloader": "supply/licenses/prometheus-config-reloader/v0.94.1/evidence.json",
     "otel-collector": "supply/licenses/otel-collector/0.161.0/evidence.json"
   },
+  "deliveries": {
+    "argocd": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40934558588","destinationDigest":"sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68"},
+    "argo-rollouts": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40916984294","destinationDigest":"sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396"},
+    "istio-pilot": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40936986084","destinationDigest":"sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330"},
+    "istio-proxy": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40966477911","destinationDigest":"sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1"},
+    "prometheus": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40976122866","destinationDigest":"sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa"},
+    "prometheus-config-reloader": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40976337755","destinationDigest":"sha256:ac2f46e50daebc6163d2ba17adbbbc7fe8f51a0000e7961e821dcb9331b3702f"},
+    "otel-collector": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40934582025","destinationDigest":"sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"}
+  },
+  "consumerReferences": {
+    "kind-node":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"kind-node"}],
+    "argocd":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"argocd"}],
+    "argocd-redis":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"argocd-redis"}],
+    "argo-rollouts":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"argo-rollouts"}],
+    "istio-pilot":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"istio-pilot"}],
+    "istio-proxy":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"istio-proxy"}],
+    "postgres-18":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"postgres"}],
+    "prometheus":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"prometheus"},{"path":"learning/existing-kind/managed/observability/resources.yaml","type":"deployment-image","identity":"learning-prometheus"},{"path":"environments/local/prometheus.yaml","type":"split-image","identity":"server.image"}],
+    "prometheus-config-reloader":[{"path":"environments/local/prometheus.yaml","type":"split-image","identity":"configmapReload.prometheus.image"}],
+    "kube-state-metrics":[{"path":"environments/local/prometheus.yaml","type":"registry-split-image","identity":"kube-state-metrics.image"}],
+    "otel-collector":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"otel-collector"},{"path":"learning/existing-kind/managed/observability/resources.yaml","type":"deployment-image","identity":"otel-collector"},{"path":"charts/otel-collector/values.yaml","type":"value-image","identity":"image"}],
+    "grafana":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"grafana"},{"path":"bootstrap/versions.lock.yaml","type":"value-image","identity":"spec.plannedObservability.grafana.image"},{"path":"charts/grafana/values.yaml","type":"grafana-image","identity":"grafana.image"}],
+    "gitlab-runner":[{"path":"environments/local/gitlab-runner.yaml","type":"runner-image","identity":"image"}],
+    "gitlab-runner-helper":[{"path":"bootstrap/versions.lock.yaml","type":"value-image","identity":"spec.gitlabRunner.helperImage"}]
+  },
   "images": [
     {"name":"kind-node","source":"docker.io/kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed","destinationTag":"kind-node-v1.36.4","producer":"external-image-mirror","consumer":"Docker --image during kind create"},
     {"name":"argocd","source":"quay.io/argoproj/argocd:v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68","destinationTag":"argocd-v3.5.2","producer":"external-image-mirror","consumer":"bootstrap/argocd-values.yaml"},

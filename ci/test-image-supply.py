@@ -202,6 +202,74 @@ class InventoryTest(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(notice_path.read_bytes()).hexdigest(),
                     notice["sha256"])
 
+    def test_delivered_consumers_are_ghcr_pinned_and_pending_are_absent(self):
+        images = MODULE.load()
+        by_name = {item["name"]: item for item in images}
+        raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
+        self.assertEqual(set(raw["deliveries"]), set(raw["redistributionEvidence"]))
+        for name, delivery in raw["deliveries"].items():
+            item = by_name[name]
+            self.assertEqual(delivery["destinationDigest"], item["sourceDigest"])
+            for consumer in raw["consumerReferences"][name]:
+                actual = MODULE._consumer_image(
+                    PATH.parents[1] / consumer["path"], consumer["type"],
+                    consumer["identity"])
+                self.assertIn(actual, {
+                    "ghcr.io/syuhei0519/platform-lab-images:"
+                    + item["destinationTag"] + "@" + delivery["destinationDigest"],
+                    "ghcr.io/syuhei0519/platform-lab-images@"
+                    + delivery["destinationDigest"],
+                })
+        self.assertTrue({"kind-node", "argocd-redis", "postgres-18", "grafana",
+                         "kube-state-metrics", "gitlab-runner",
+                         "gitlab-runner-helper"}.isdisjoint(raw["deliveries"]))
+
+    def test_upstream_or_unknown_consumer_digest_is_rejected(self):
+        upstream = ("quay.io/argoproj/argocd:v3.5.2@sha256:"
+                    "478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68")
+        unknown = ("ghcr.io/syuhei0519/platform-lab-images@sha256:"
+                   + "d" * 64)
+        real_consumer = MODULE._consumer_image
+        for actual in (upstream, unknown):
+            def changed(path, consumer_type, identity):
+                if identity == "argocd":
+                    return actual
+                return real_consumer(path, consumer_type, identity)
+            with self.subTest(actual=actual), \
+                    mock.patch.object(MODULE, "_consumer_image", side_effect=changed), \
+                    self.assertRaisesRegex(ValueError,
+                                           "delivery-consumer-reference:argocd"):
+                MODULE.load()
+
+    def test_undelivered_grafana_profile_and_lock_cannot_move_to_unknown_ghcr(self):
+        original = json.loads((PATH.parents[1] / "supply/images.json").read_text())
+        unknown_digest = "sha256:" + "e" * 64
+        unknown = "ghcr.io/syuhei0519/platform-lab-images@" + unknown_digest
+        grafana = next(item for item in original["images"] if item["name"] == "grafana")
+        grafana["source"] = "docker.io/grafana/grafana:13.2.3@" + unknown_digest
+        actual_consumer = MODULE._consumer_image
+        def changed(path, consumer_type, identity):
+            if identity in {"grafana", "spec.plannedObservability.grafana.image"}:
+                return unknown
+            return actual_consumer(path, consumer_type, identity)
+        with tempfile.TemporaryDirectory() as directory:
+            inventory = Path(directory) / "images.json"
+            inventory.write_text(json.dumps(original))
+            with mock.patch.object(MODULE, "INVENTORY", inventory), \
+                    mock.patch.object(MODULE, "_consumer_image", side_effect=changed), \
+                    self.assertRaisesRegex(ValueError,
+                                           "undelivered-consumer-reference:grafana"):
+                MODULE.load()
+
+    def test_account_canonical_normal_consumer_is_public_ghcr(self):
+        canonical = ("ghcr.io/syuhei0519/backend-app@sha256:"
+                     "fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd")
+        profile = (PATH.parents[1] / "learning/fresh-profile/profile.template.yaml").read_text()
+        contract = json.loads((PATH.parents[1] /
+            "learning/fresh-profile/security/canonical-contract.json").read_text())
+        self.assertIn(canonical, profile)
+        self.assertEqual(contract["approvedRuntimeImage"], canonical)
+
     def test_pending_redistribution_materials_cannot_enter_ready_matrix(self):
         images = MODULE.load()
         by_name = {item["name"]: item for item in images}
