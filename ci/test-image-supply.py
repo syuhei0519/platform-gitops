@@ -29,6 +29,7 @@ class InventoryTest(unittest.TestCase):
         self.assertIn("if: ${{ ! inputs.execute }}", inspect)
         self.assertIn("contents: read", inspect)
         self.assertIn("image-inspect.py", inspect)
+        self.assertIn("python3 -m json.tool receipts/receipt.json", inspect)
         self.assertNotIn("packages: write", inspect)
         self.assertNotIn("environment:", inspect)
         self.assertNotIn("image-mirror.py", inspect)
