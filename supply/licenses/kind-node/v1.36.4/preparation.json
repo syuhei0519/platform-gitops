@@ -5,7 +5,8 @@
   "redistributionReady": false,
   "copyMode": "oci-byte-preserving",
   "source": {"repository": "https://github.com/kubernetes-sigs/kind", "tag": "v0.33.0", "commit": "407a9675e6d9af1200b5f57f9ca52ec6cdacce74", "releaseUrl": "https://github.com/kubernetes-sigs/kind/releases/tag/v0.33.0"},
-  "image": {"reference": "docker.io/kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed", "indexDigest": "sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed", "selectedPlatform": "linux/amd64", "selectedManifestDigest": null, "configDigest": null},
+  "image": {"reference": "docker.io/kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed", "indexDigest": "sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed", "selectedPlatform": "linux/amd64", "selectedManifestDigest": "sha256:597367624b4748b74b98e4fe2d661cd78063d02ecdaca702fd90572375b83e67", "configDigest": "sha256:0fa975026f71246c4e4744409d43e2e5884bb6e960851b438e50f455808c16f4"},
+  "inspectionReceipt": {"provenance": "user-provided-run-log", "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41016047353", "schemaVersion": "platform.lab/image-inspection-receipt/v1", "topMediaType": "application/vnd.oci.image.index.v1+json", "selectedMediaType": "application/vnd.oci.image.manifest.v1+json"},
   "license": {"spdx": "Apache-2.0", "upstreamUrl": "https://github.com/kubernetes-sigs/kind/blob/v0.33.0/LICENSE", "localPath": "LICENSE", "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1", "upstreamNotice": "absent-at-tag"},
-  "missingEvidence": ["linux-amd64-manifest-and-config-receipt", "runtime-package-sbom-and-required-notices", "current-vulnerability-scan"]
+  "missingEvidence": ["runtime-package-sbom-and-required-notices", "current-vulnerability-scan"]
 }

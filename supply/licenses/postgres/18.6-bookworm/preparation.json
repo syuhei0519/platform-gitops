@@ -5,8 +5,9 @@
   "redistributionReady": false,
   "copyMode": "oci-byte-preserving",
   "source": {"repository": "https://github.com/postgres/postgres", "tag": "REL_18_6", "commit": "724edf9bde9d356724ad384a2e196edc3c9f80f7", "packagingRepository": "https://github.com/docker-library/postgres", "packagingCommit": "e00e1bd34ec5c8a8e7ad89b273b3d42efaf6d5bc"},
-  "image": {"reference": "docker.io/library/postgres:18.6-bookworm@sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc", "indexDigest": "sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc", "selectedPlatform": "linux/amd64", "selectedManifestDigest": null, "configDigest": null},
+  "image": {"reference": "docker.io/library/postgres:18.6-bookworm@sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc", "indexDigest": "sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc", "selectedPlatform": "linux/amd64", "selectedManifestDigest": "sha256:6b38fe68f2c02cafffbbce7496f76d110d8a947c039bd22c067e9a43c2250240", "configDigest": "sha256:63d4ad6f3de5e288238b3044970a677dcb0e77004d8b6050732aa0cbbeedf5d7"},
+  "inspectionReceipt": {"provenance": "user-provided-run-log", "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41020934558", "schemaVersion": "platform.lab/image-inspection-receipt/v1", "topMediaType": "application/vnd.oci.image.index.v1+json", "selectedMediaType": "application/vnd.oci.image.manifest.v1+json"},
   "license": {"spdx": "PostgreSQL", "upstreamUrl": "https://github.com/postgres/postgres/blob/REL_18_6/COPYRIGHT", "localPath": "COPYRIGHT", "sha256": "3d6af92ff8a4c2cdf69afb1cf44edea727922f5cd0cf8b5f72b11cdecac8fdfd", "upstreamNotice": "absent-at-tag"},
   "sourceMaterials": [{"upstreamUrl": "https://github.com/docker-library/postgres/blob/e00e1bd34ec5c8a8e7ad89b273b3d42efaf6d5bc/18/bookworm/Dockerfile", "localPath": "SOURCE-Dockerfile", "sha256": "ea58330e69627cb7b626043c7da44bc227ccd935126c239ceb33c8b4ddf745c2"}],
-  "missingEvidence": ["linux-amd64-manifest-and-config-receipt", "debian-and-pgdg-runtime-package-sbom-and-required-notices", "current-vulnerability-scan"]
+  "missingEvidence": ["debian-and-pgdg-runtime-package-sbom-and-required-notices", "current-vulnerability-scan"]
 }

@@ -5,7 +5,8 @@
   "redistributionReady": false,
   "copyMode": "oci-byte-preserving",
   "source": {"repository": "https://gitlab.com/gitlab-org/gitlab-runner", "tag": "v19.3.1", "commit": "a16f5092084b0373ebc30c6910f8972997e44b70"},
-  "image": {"reference": "registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v19.3.1@sha256:f5578027351e1db11564fff9333977fb0d8d13c802b35d42a2f392872fec6a30", "indexDigest": "sha256:f5578027351e1db11564fff9333977fb0d8d13c802b35d42a2f392872fec6a30", "selectedPlatform": "linux/amd64", "selectedManifestDigest": null, "configDigest": null},
+  "image": {"reference": "registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v19.3.1@sha256:f5578027351e1db11564fff9333977fb0d8d13c802b35d42a2f392872fec6a30", "manifestDigest": "sha256:f5578027351e1db11564fff9333977fb0d8d13c802b35d42a2f392872fec6a30", "selectedPlatform": "linux/amd64", "selectedManifestDigest": "sha256:f5578027351e1db11564fff9333977fb0d8d13c802b35d42a2f392872fec6a30", "configDigest": "sha256:a69c746c42524ae219ae3e8a41c0848c8990d1a30ef3d5eedf659a78f316d0b2"},
+  "inspectionReceipt": {"provenance": "user-provided-run-log", "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41021024706", "schemaVersion": "platform.lab/image-inspection-receipt/v1", "topMediaType": "application/vnd.oci.image.manifest.v1+json", "selectedMediaType": "application/vnd.oci.image.manifest.v1+json"},
   "license": {"spdx": "MIT", "upstreamUrl": "https://gitlab.com/gitlab-org/gitlab-runner/-/blob/v19.3.1/LICENSE", "localPath": "LICENSE", "sha256": "aa6e97cbe04ad41e1c081ec01740e9ed3c2453af66a082db1e6fc73b2cb96c6a", "upstreamNotice": "absent-at-tag"},
-  "missingEvidence": ["linux-amd64-manifest-and-config-receipt", "alpine-runtime-package-sbom-license-and-source-links", "current-vulnerability-scan"]
+  "missingEvidence": ["alpine-runtime-package-sbom-license-and-source-links", "current-vulnerability-scan"]
 }
