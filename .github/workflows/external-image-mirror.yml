@@ -72,7 +72,11 @@ jobs:
           SOURCE: ${{ matrix.source }}
           SOURCE_DIGEST: ${{ matrix.sourceDigest }}
           IMAGE_NAME: ${{ matrix.name }}
-        run: python3 -I ci/image-inspect.py "$IMAGE_NAME" "$SOURCE" "$SOURCE_DIGEST" receipts
+        run: |
+          python3 -I ci/image-inspect.py "$IMAGE_NAME" "$SOURCE" "$SOURCE_DIGEST" receipts
+          # The receipt contains public OCI identities only. Keep it visible in
+          # the immutable run log when artifact blob download is unavailable.
+          python3 -m json.tool receipts/receipt.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: image-inspection-receipt-${{ matrix.name }}-${{ github.run_attempt }}
