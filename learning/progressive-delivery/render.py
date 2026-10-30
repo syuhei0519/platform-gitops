@@ -19,8 +19,8 @@ INPUTS = {
     'rollouts': (f'https://raw.githubusercontent.com/argoproj/argo-rollouts/{ROLLOUTS_COMMIT}/manifests/install.yaml',
                  'be25242c55bab7650e0b845da11dbce811f7427deae367e224435e0d766ebe5a'),
 }
-ARGOCD_IMAGE = 'quay.io/argoproj/argocd:v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68'
-ROLLOUTS_IMAGE = 'quay.io/argoproj/argo-rollouts:v1.10.1@sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396'
+ARGOCD_IMAGE = 'ghcr.io/syuhei0519/platform-lab-images:argocd-v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68'
+ROLLOUTS_IMAGE = 'ghcr.io/syuhei0519/platform-lab-images:argo-rollouts-v1.10.1@sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396'
 REDIS_IMAGE = 'public.ecr.aws/docker/library/redis:8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1'
 
 

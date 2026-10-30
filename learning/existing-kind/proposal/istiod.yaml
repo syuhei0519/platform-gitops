@@ -41,12 +41,12 @@ data:
     : \"false\"\n  },\n  \"global\": {\n    \"enableReaderRBAC\": false,\n    \"hub\"\
     : \"docker.io/istio\",\n    \"istioNamespace\": \"istio-learning-system\",\n \
     \   \"istiod\": {\n      \"enableAnalysis\": false\n    },\n    \"proxy\": {\n\
-    \      \"image\": \"docker.io/istio/proxyv2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1\"\
+    \      \"image\": \"ghcr.io/syuhei0519/platform-lab-images:istio-proxyv2-1.31.2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1\"\
     ,\n      \"resources\": {\n        \"limits\": {\n          \"cpu\": \"500m\"\
     ,\n          \"memory\": \"256Mi\"\n        },\n        \"requests\": {\n    \
     \      \"cpu\": \"100m\",\n          \"memory\": \"128Mi\"\n        }\n      }\n\
-    \    },\n    \"proxy_init\": {\n      \"image\": \"docker.io/istio/proxyv2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1\"\
-    \n    },\n    \"tag\": \"1.31.2\"\n  },\n  \"image\": \"docker.io/istio/pilot@sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330\"\
+    \    },\n    \"proxy_init\": {\n      \"image\": \"ghcr.io/syuhei0519/platform-lab-images:istio-proxyv2-1.31.2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1\"\
+    \n    },\n    \"tag\": \"1.31.2\"\n  },\n  \"image\": \"ghcr.io/syuhei0519/platform-lab-images:istio-pilot-1.31.2@sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330\"\
     ,\n  \"meshConfig\": {\n    \"discoverySelectors\": [\n      {\n        \"matchLabels\"\
     : {\n          \"kubernetes.io/metadata.name\": \"learning-account-release\"\n\
     \        }\n      },\n      {\n        \"matchLabels\": {\n          \"kubernetes.io/metadata.name\"\
@@ -84,7 +84,7 @@ data:
     ,\n    \"priorityClassName\": \"\",\n    \"proxy\": {\n      \"autoInject\": \"\
     enabled\",\n      \"clusterDomain\": \"cluster.local\",\n      \"componentLogLevel\"\
     : \"misc:error\",\n      \"excludeIPRanges\": \"\",\n      \"excludeInboundPorts\"\
-    : \"\",\n      \"excludeOutboundPorts\": \"\",\n      \"image\": \"docker.io/istio/proxyv2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1\"\
+    : \"\",\n      \"excludeOutboundPorts\": \"\",\n      \"image\": \"ghcr.io/syuhei0519/platform-lab-images:istio-proxyv2-1.31.2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1\"\
     ,\n      \"includeIPRanges\": \"*\",\n      \"includeInboundPorts\": \"*\",\n\
     \      \"includeOutboundPorts\": \"\",\n      \"logLevel\": \"warning\",\n   \
     \   \"outlierLogPath\": \"\",\n      \"privileged\": false,\n      \"readinessFailureThreshold\"\
@@ -95,7 +95,7 @@ data:
     \      \"seccompProfile\": {},\n      \"startupProbe\": {\n        \"enabled\"\
     : true,\n        \"failureThreshold\": 600\n      },\n      \"statusPort\": 15020,\n\
     \      \"tracer\": \"none\"\n    },\n    \"proxy_init\": {\n      \"forceApplyIptables\"\
-    : false,\n      \"image\": \"docker.io/istio/proxyv2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1\"\
+    : false,\n      \"image\": \"ghcr.io/syuhei0519/platform-lab-images:istio-proxyv2-1.31.2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1\"\
     \n    },\n    \"remotePilotAddress\": \"\",\n    \"resourceScope\": \"all\",\n\
     \    \"sds\": {\n      \"token\": {\n        \"aud\": \"istio-ca\"\n      }\n\
     \    },\n    \"sts\": {\n      \"servicePort\": 0\n    },\n    \"tag\": \"1.31.2\"\
@@ -104,7 +104,7 @@ data:
     \      \"cpu\": \"2\",\n          \"memory\": \"1Gi\"\n        },\n        \"\
     requests\": {\n          \"cpu\": \"100m\",\n          \"memory\": \"128Mi\"\n\
     \        }\n      },\n      \"tolerations\": [],\n      \"topologySpreadConstraints\"\
-    : []\n    }\n  },\n  \"hub\": \"\",\n  \"image\": \"docker.io/istio/pilot@sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330\"\
+    : []\n    }\n  },\n  \"hub\": \"\",\n  \"image\": \"ghcr.io/syuhei0519/platform-lab-images:istio-pilot-1.31.2@sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330\"\
     ,\n  \"initContainers\": [],\n  \"ipFamilies\": [],\n  \"ipFamilyPolicy\": \"\"\
     ,\n  \"istiodRemote\": {\n    \"enabled\": false,\n    \"enabledLocalInjectorIstiod\"\
     : false,\n    \"injectionCABundle\": \"\",\n    \"injectionPath\": \"/inject\"\
@@ -193,7 +193,7 @@ data:
     istiod\",\n    \"priorityClassName\": \"\",\n    \"proxy\": {\n      \"autoInject\"\
     : \"enabled\",\n      \"clusterDomain\": \"cluster.local\",\n      \"componentLogLevel\"\
     : \"misc:error\",\n      \"excludeIPRanges\": \"\",\n      \"excludeInboundPorts\"\
-    : \"\",\n      \"excludeOutboundPorts\": \"\",\n      \"image\": \"docker.io/istio/proxyv2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1\"\
+    : \"\",\n      \"excludeOutboundPorts\": \"\",\n      \"image\": \"ghcr.io/syuhei0519/platform-lab-images:istio-proxyv2-1.31.2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1\"\
     ,\n      \"includeIPRanges\": \"*\",\n      \"includeInboundPorts\": \"*\",\n\
     \      \"includeOutboundPorts\": \"\",\n      \"logLevel\": \"warning\",\n   \
     \   \"outlierLogPath\": \"\",\n      \"privileged\": false,\n      \"readinessFailureThreshold\"\
@@ -204,7 +204,7 @@ data:
     \      \"seccompProfile\": {},\n      \"startupProbe\": {\n        \"enabled\"\
     : true,\n        \"failureThreshold\": 600\n      },\n      \"statusPort\": 15020,\n\
     \      \"tracer\": \"none\"\n    },\n    \"proxy_init\": {\n      \"forceApplyIptables\"\
-    : false,\n      \"image\": \"docker.io/istio/proxyv2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1\"\
+    : false,\n      \"image\": \"ghcr.io/syuhei0519/platform-lab-images:istio-proxyv2-1.31.2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1\"\
     \n    },\n    \"remotePilotAddress\": \"\",\n    \"resourceScope\": \"all\",\n\
     \    \"sds\": {\n      \"token\": {\n        \"aud\": \"istio-ca\"\n      }\n\
     \    },\n    \"sts\": {\n      \"servicePort\": 0\n    },\n    \"tag\": \"1.31.2\"\
@@ -1768,7 +1768,7 @@ spec:
       serviceAccountName: istiod-learning-1-31-2
       containers:
       - name: discovery
-        image: docker.io/istio/pilot@sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330
+        image: ghcr.io/syuhei0519/platform-lab-images:istio-pilot-1.31.2@sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330
         args:
         - discovery
         - --monitoringAddr=:15014

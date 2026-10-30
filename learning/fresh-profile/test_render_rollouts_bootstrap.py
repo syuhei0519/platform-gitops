@@ -73,7 +73,7 @@ class RenderRolloutsBootstrapTests(unittest.TestCase):
     def test_controller_render_requires_the_fixed_digest_image(self):
         contract.validate_controller([controller()])
         for documents in (
-            [controller("quay.io/argoproj/argo-rollouts:v1.10.1")],
+            [controller("ghcr.io/syuhei0519/platform-lab-images:argo-rollouts-v1.10.1")],
             [controller(), controller()],
             [{"apiVersion": "apps/v1", "kind": "Deployment",
               "metadata": {"name": "other", "namespace": "fresh-control"}}],

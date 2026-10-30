@@ -8,7 +8,7 @@ import tempfile
 import unittest
 import uuid
 
-IMAGE = 'quay.io/argoproj/argocd:v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68'
+IMAGE = 'ghcr.io/syuhei0519/platform-lab-images:argocd-v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68'
 SCRIPT = Path(__file__).with_name('existing-sa-credential.sh').resolve()
 TOKEN_PATH = '/var/run/secrets/kubernetes.io/serviceaccount/token'
 

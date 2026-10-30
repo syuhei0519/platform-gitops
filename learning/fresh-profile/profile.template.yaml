@@ -43,19 +43,19 @@ spec:
     ref: kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed
     architecture: linux/amd64
   - name: argocd
-    ref: quay.io/argoproj/argocd@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68
+    ref: ghcr.io/syuhei0519/platform-lab-images@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68
     architecture: linux/amd64
   - name: argocd-redis
     ref: ecr-public.aws.com/docker/library/redis@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1
     architecture: linux/amd64
   - name: argo-rollouts
-    ref: quay.io/argoproj/argo-rollouts:v1.10.1@sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396
+    ref: ghcr.io/syuhei0519/platform-lab-images:argo-rollouts-v1.10.1@sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396
     architecture: linux/amd64
   - name: istio-pilot
-    ref: docker.io/istio/pilot@sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330
+    ref: ghcr.io/syuhei0519/platform-lab-images:istio-pilot-1.31.2@sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330
     architecture: linux/amd64
   - name: istio-proxy
-    ref: docker.io/istio/proxyv2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1
+    ref: ghcr.io/syuhei0519/platform-lab-images:istio-proxyv2-1.31.2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1
     architecture: linux/amd64
   - name: postgres
     ref: postgres:18.6-bookworm@sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc
