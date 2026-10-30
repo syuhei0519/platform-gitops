@@ -304,6 +304,18 @@ class InventoryTest(unittest.TestCase):
             "gitlab-runner": "gitlab-runner/v19.3.1",
             "gitlab-runner-helper": "gitlab-runner-helper/x86_64-v19.3.1",
         }
+        inspection_runs = {
+            "kind-node": 41016047353,
+            "postgres-18": 41020934558,
+            "gitlab-runner": 41021024706,
+            "gitlab-runner-helper": 41021115023,
+        }
+        inspected_identities = {
+            "kind-node": ("sha256:597367624b4748b74b98e4fe2d661cd78063d02ecdaca702fd90572375b83e67", "sha256:0fa975026f71246c4e4744409d43e2e5884bb6e960851b438e50f455808c16f4"),
+            "postgres-18": ("sha256:6b38fe68f2c02cafffbbce7496f76d110d8a947c039bd22c067e9a43c2250240", "sha256:63d4ad6f3de5e288238b3044970a677dcb0e77004d8b6050732aa0cbbeedf5d7"),
+            "gitlab-runner": ("sha256:f5578027351e1db11564fff9333977fb0d8d13c802b35d42a2f392872fec6a30", "sha256:a69c746c42524ae219ae3e8a41c0848c8990d1a30ef3d5eedf659a78f316d0b2"),
+            "gitlab-runner-helper": ("sha256:ebcce5b4e36899e72aa20554962d7270a0eec1e398e1b0a0f746ede4f4bb1b70", "sha256:1523809e0948018b4c25badacfd4b80dc1607fbc27a10af4298acafd512d1552"),
+        }
         self.assertTrue(set(preparations).isdisjoint(raw["redistributionEvidence"]))
         for name, relative in preparations.items():
             directory = PATH.parents[1] / "supply/licenses" / relative
@@ -319,8 +331,23 @@ class InventoryTest(unittest.TestCase):
                 record["image"].get("manifestDigest"),
             })
             self.assertEqual(record["image"]["selectedPlatform"], "linux/amd64")
-            self.assertIsNone(record["image"]["selectedManifestDigest"])
-            self.assertIsNone(record["image"]["configDigest"])
+            if name == "argocd-redis":
+                self.assertIsNone(record["image"]["selectedManifestDigest"])
+                self.assertIsNone(record["image"]["configDigest"])
+                self.assertNotIn("inspectionReceipt", record)
+            else:
+                self.assertEqual((record["image"]["selectedManifestDigest"],
+                                  record["image"]["configDigest"]),
+                                 inspected_identities[name])
+                receipt = record["inspectionReceipt"]
+                self.assertEqual(receipt["provenance"], "user-provided-run-log")
+                self.assertEqual(receipt["schemaVersion"],
+                                 "platform.lab/image-inspection-receipt/v1")
+                self.assertEqual(receipt["runUrl"],
+                                 "https://github.com/syuhei0519/platform-gitops/actions/runs/"
+                                 + str(inspection_runs[name]))
+                self.assertNotIn("linux-amd64-manifest-and-config-receipt",
+                                 record["missingEvidence"])
             self.assertTrue(record["missingEvidence"])
             license_path = directory / record["license"]["localPath"]
             self.assertTrue(license_path.is_file())
