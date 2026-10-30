@@ -38,6 +38,9 @@ class InventoryTest(unittest.TestCase):
         self.assertIn("--format cyclonedx", inspect)
         self.assertIn(".security/scan-gate -policy security/scan-policy.json", inspect)
         self.assertIn("-scanner-exit 0", inspect)
+        self.assertIn("--input .oci/layout", inspect)
+        self.assertIn("-image-config \"$CONFIG_DIGEST\"", inspect)
+        self.assertIn("oci-crane-check .oci/layout \"$SELECTED_DIGEST\"", inspect)
 
     def test_destination_state_is_fail_closed(self):
         import subprocess

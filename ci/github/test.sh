@@ -12,5 +12,6 @@ for module in tools/*/go.mod; do
   (cd "$dir"; go test ./...)
 done
 (cd tools/scan-gate; CGO_ENABLED=0 go build -trimpath -o ../../.security/scan-gate .)
+python3 -I ci/test-image-scan-gate.py
 (cd tools/bootstrap; CGO_ENABLED=0 go test -c -o ../../.build/bootstrap-test .)
 if test -f ci/github/release_test.py; then python3 -I ci/github/release_test.py; fi

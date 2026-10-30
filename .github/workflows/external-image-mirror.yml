@@ -73,7 +73,7 @@ jobs:
       - if: ${{ inputs['scan-evidence'] }}
         uses: syuhei0519/backend-app/.github/actions/shared-tools@cdea9eda59aa56c8a068a79317da239b8133727e
         with:
-          modules: scan-gate
+          modules: oci-input scan-gate
       - name: Install pinned OCI inspection tool
         run: go install github.com/google/go-containerregistry/cmd/crane@v0.21.7
       - name: Record the fixed upstream OCI identity
@@ -91,7 +91,16 @@ jobs:
         env:
           SOURCE: ${{ matrix.source }}
         run: |
-          mkdir -p .cache/trivy receipts
+          mkdir -p .cache/trivy .oci/layout receipts .security
+          (cd tools/oci-input; CGO_ENABLED=0 go build -trimpath -o ../../.security/oci-crane-check ./cmd/oci-crane-check)
+          (cd tools/scan-gate; CGO_ENABLED=0 go build -trimpath -o ../../.security/scan-gate .)
+          SELECTED_DIGEST="$(python3 -c 'import json; print(json.load(open("receipts/receipt.json"))["selectedManifestDigest"])')"
+          CONFIG_DIGEST="$(python3 -c 'import json; print(json.load(open("receipts/receipt.json"))["configDigest"])')"
+          SCAN_SOURCE="${SOURCE%@*}@${SELECTED_DIGEST}"
+          crane pull "$SCAN_SOURCE" .oci/image.tar --format=oci
+          python3 -c 'import tarfile; tarfile.open(".oci/image.tar").extractall(".oci/layout", filter="data")'
+          .security/oci-crane-check .oci/layout "$SELECTED_DIGEST" > receipts/layout-reader.json
+          python3 -c 'import json; receipt=json.load(open("receipts/receipt.json")); reader=json.load(open("receipts/layout-reader.json")); assert reader["digest"] == receipt["selectedManifestDigest"] and reader["configDigest"] == receipt["configDigest"] and reader["fullLayerValidation"] is True'
           docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
             -v "$PWD:/work" -w /work \
             --entrypoint trivy aquasec/trivy:0.75.0@sha256:9db099105405c648166e6b94155eb32f8da12673cf1f455207f7385cc9a77283 \
@@ -99,20 +108,20 @@ jobs:
             --db-repository ghcr.io/aquasecurity/trivy-db:2 \
             --db-repository public.ecr.aws/aquasecurity/trivy-db:2 \
             --cache-dir .cache/trivy --timeout 5m --quiet
-          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -e SOURCE \
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
             -v "$PWD:/work" -w /work \
             --entrypoint sh aquasec/trivy:0.75.0@sha256:9db099105405c648166e6b94155eb32f8da12673cf1f455207f7385cc9a77283 -ec '
-              trivy image --cache-dir .cache/trivy --skip-db-update --timeout 10m \
+              trivy image --input .oci/layout --cache-dir .cache/trivy --skip-db-update --timeout 10m \
                 --quiet --no-progress --scanners vuln --list-all-pkgs \
                 --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --format json \
-                --output receipts/scan.json "$SOURCE"
-              trivy image --cache-dir .cache/trivy --skip-db-update --timeout 10m \
+                --output receipts/scan.json
+              trivy image --input .oci/layout --cache-dir .cache/trivy --skip-db-update --timeout 10m \
                 --quiet --no-progress --scanners vuln --format cyclonedx \
-                --output receipts/sbom.cdx.json "$SOURCE"
+                --output receipts/sbom.cdx.json
             '
           .security/scan-gate -policy security/scan-policy.json \
             -db .cache/trivy/db/metadata.json -report receipts/scan.json \
-            -out receipts/scan-gate.json -scanner-exit 0
+            -out receipts/scan-gate.json -scanner-exit 0 -image-config "$CONFIG_DIGEST"
       - if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
