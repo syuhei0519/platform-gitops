@@ -147,12 +147,22 @@ class InventoryTest(unittest.TestCase):
             ("request failed: status=403", "http-403"),
             ("GET: HTTP/1.1 404 Not Found", "http-404"),
             ("registry response status code: 429", "http-429"),
+            ("registry response status code: 503", "http-5xx"),
             ("context deadline exceeded", "timeout"),
             ("unsupported media type application/example", "unsupported-media"),
+            ("lookup registry.invalid: no such host", "dns"),
+            ("tls: failed to verify certificate: x509: certificate signed by unknown authority",
+             "tls"),
+            ("read: connection reset by peer", "connection"),
+            ("reading response body: unexpected EOF", "eof"),
+            ("registry response: MANIFEST_UNKNOWN", "manifest-unknown"),
             ("token=secret-403-value https://user:password@example.invalid?q=secret",
              "unknown"),
             ("GET https://user:password@example.invalid/?status=403&token=secret failed",
              "unknown"),
+            ("GET https://example.invalid/?error=manifest_unknown&token=secret failed",
+             "unknown"),
+            ("token=connection-reset secret=unexpected-EOF", "unknown"),
         )
         for stderr, category in cases:
             result = subprocess.CompletedProcess([], 17, "", stderr)

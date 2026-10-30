@@ -19,11 +19,15 @@ def run(args):
 def failure_category(stderr):
     """Return a bounded public classification without echoing registry output."""
     diagnostic = re.sub(r"(?i)https?://\S+", "", stderr)
+    diagnostic = re.sub(
+        r"(?i)\b(?:authorization|password|secret|token)=\S+", "", diagnostic)
     status = re.search(
         r"(?i)\b(?:http(?:/\d(?:\.\d)?)?\s+|"
-        r"status(?:\s+code)?\s*(?:[:=]\s*)?)(401|403|404|429)\b",
+        r"status(?:\s+code)?\s*(?:[:=]\s*)?)(401|403|404|429|5\d\d)\b",
         diagnostic)
     if status:
+        if status.group(1).startswith("5"):
+            return "http-5xx"
         return "http-" + status.group(1)
     if re.search(r"(?i)\b(?:timed?\s*out|timeout|deadline exceeded)\b", diagnostic):
         return "timeout"
@@ -32,6 +36,25 @@ def failure_category(stderr):
             r"(?:media|manifest) type [^\r\n]{0,80} not supported)\b",
             diagnostic):
         return "unsupported-media"
+    if re.search(
+            r"(?i)\b(?:no such host|temporary failure in name resolution|"
+            r"name resolution failed|server misbehaving)\b",
+            diagnostic):
+        return "dns"
+    if re.search(
+            r"(?i)\b(?:tls(?: handshake)?(?: failure| error|:)|x509:|"
+            r"certificate (?:signed by unknown authority|verify failed))",
+            diagnostic):
+        return "tls"
+    if re.search(
+            r"(?i)\b(?:connection (?:refused|reset|aborted)|network is unreachable|"
+            r"no route to host|broken pipe)\b",
+            diagnostic):
+        return "connection"
+    if re.search(r"(?i)\b(?:unexpected\s+)?EOF\b", diagnostic):
+        return "eof"
+    if re.search(r"(?i)\b(?:manifest[_ ]unknown|name unknown)\b", diagnostic):
+        return "manifest-unknown"
     return "unknown"
 
 
