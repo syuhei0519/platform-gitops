@@ -113,6 +113,20 @@ def select_ready(matrix, selection):
     return selected
 
 
+def select_for_inspection(matrix, selection):
+    """Select one exact inventory entry without making it redistribution-ready.
+
+    ``all`` deliberately retains its existing meaning (the approved set only),
+    while an explicit name lets the read-only inspection job collect OCI
+    identity needed to review a not-yet-approved entry.
+    """
+    if selection == "all":
+        return select_ready(matrix, selection)
+    selected = [item for item in matrix if item["name"] == selection]
+    require(len(selected) == 1, "unknown-image")
+    return selected
+
+
 def _unique(pairs):
     result = {}
     for key, value in pairs:
@@ -124,9 +138,12 @@ def _unique(pairs):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--select", default="all")
+    parser.add_argument("--inspect-only", action="store_true")
     parser.add_argument("--github-output")
     args = parser.parse_args()
-    matrix = select_ready(load(), args.select)
+    inventory = load()
+    matrix = (select_for_inspection(inventory, args.select) if args.inspect_only
+              else select_ready(inventory, args.select))
     encoded = json.dumps({"include": matrix}, separators=(",", ":"), sort_keys=True)
     if args.github_output:
         with open(args.github_output, "a", encoding="utf-8") as output:

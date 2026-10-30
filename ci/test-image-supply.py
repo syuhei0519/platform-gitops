@@ -11,6 +11,8 @@ SPEC = importlib.util.spec_from_file_location("image_supply", PATH)
 MODULE = importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(MODULE)
 MIRROR_SPEC = importlib.util.spec_from_file_location("image_mirror", PATH.with_name("image-mirror.py"))
 MIRROR = importlib.util.module_from_spec(MIRROR_SPEC); MIRROR_SPEC.loader.exec_module(MIRROR)
+INSPECT_SPEC = importlib.util.spec_from_file_location("image_inspect", PATH.with_name("image-inspect.py"))
+INSPECT = importlib.util.module_from_spec(INSPECT_SPEC); INSPECT_SPEC.loader.exec_module(INSPECT)
 
 
 class InventoryTest(unittest.TestCase):
@@ -20,6 +22,16 @@ class InventoryTest(unittest.TestCase):
         self.assertIn("environment: ghcr-publish", workflow)
         self.assertIn("image-mirror.py", workflow)
         self.assertNotIn("crane copy", workflow)
+
+    def test_inspection_job_is_read_only_and_separate_from_publish(self):
+        workflow = (PATH.parents[1] / ".github/workflows/external-image-mirror.yml").read_text()
+        inspect = workflow.split("  inspect:\n", 1)[1].split("  mirror:\n", 1)[0]
+        self.assertIn("if: ${{ ! inputs.execute }}", inspect)
+        self.assertIn("contents: read", inspect)
+        self.assertIn("image-inspect.py", inspect)
+        self.assertNotIn("packages: write", inspect)
+        self.assertNotIn("environment:", inspect)
+        self.assertNotIn("image-mirror.py", inspect)
 
     def test_destination_state_is_fail_closed(self):
         import subprocess
@@ -63,6 +75,87 @@ class InventoryTest(unittest.TestCase):
         for name in ("kube-state-metrics", "grafana", "missing"):
             with self.assertRaisesRegex(ValueError, "image-not-redistribution-ready"):
                 MODULE.select_ready(images, name)
+
+    def test_read_only_inspection_can_select_one_unready_image(self):
+        images = MODULE.load()
+        self.assertEqual([item["name"] for item in
+                          MODULE.select_for_inspection(images, "kube-state-metrics")],
+                         ["kube-state-metrics"])
+        self.assertEqual({item["name"] for item in
+                          MODULE.select_for_inspection(images, "all")},
+                         {item["name"] for item in MODULE.select_ready(images, "all")})
+        with self.assertRaisesRegex(ValueError, "unknown-image"):
+            MODULE.select_for_inspection(images, "missing")
+
+    def test_inspection_records_index_child_and_config(self):
+        import subprocess
+        digest = "sha256:" + "a" * 64
+        child = "sha256:" + "b" * 64
+        config = "sha256:" + "c" * 64
+        top = json.dumps({"mediaType": "index", "manifests": [{
+            "digest": child, "mediaType": "manifest",
+            "platform": {"os": "linux", "architecture": "amd64"}}]})
+        manifest = json.dumps({"mediaType": "manifest", "config": {"digest": config}})
+        config_document = json.dumps({"os": "linux", "architecture": "amd64"})
+        responses = iter([
+            subprocess.CompletedProcess([], 0, digest + "\n", ""),
+            subprocess.CompletedProcess([], 0, top, ""),
+            subprocess.CompletedProcess([], 0, child + "\n", ""),
+            subprocess.CompletedProcess([], 0, manifest, ""),
+            subprocess.CompletedProcess([], 0, config_document, ""),
+        ])
+        with tempfile.TemporaryDirectory() as directory, \
+                mock.patch.object(INSPECT, "run", side_effect=lambda args: next(responses)):
+            INSPECT.inspect("image", "registry/image:tag@" + digest, digest, Path(directory))
+            receipt = json.loads((Path(directory) / "receipt.json").read_text())
+        self.assertEqual(receipt["topDigest"], digest)
+        self.assertEqual(receipt["selectedManifestDigest"], child)
+        self.assertEqual(receipt["configDigest"], config)
+
+    def test_single_manifest_requires_linux_amd64_config(self):
+        import subprocess
+        digest = "sha256:" + "a" * 64
+        config = "sha256:" + "c" * 64
+        manifest = json.dumps({"mediaType": "manifest", "config": {"digest": config}})
+        responses = iter([
+            subprocess.CompletedProcess([], 0, digest + "\n", ""),
+            subprocess.CompletedProcess([], 0, manifest, ""),
+            subprocess.CompletedProcess([], 0,
+                                        json.dumps({"os": "linux", "architecture": "arm64"}), ""),
+        ])
+        with tempfile.TemporaryDirectory() as directory, \
+                mock.patch.object(INSPECT, "run", side_effect=lambda args: next(responses)), \
+                self.assertRaisesRegex(INSPECT.InspectError, "config platform mismatch"):
+            INSPECT.inspect("image", "registry/image:tag@" + digest, digest, Path(directory))
+
+    def test_index_descriptor_media_type_must_match_child(self):
+        import subprocess
+        digest = "sha256:" + "a" * 64
+        child = "sha256:" + "b" * 64
+        config = "sha256:" + "c" * 64
+        top = json.dumps({"mediaType": "index", "manifests": [{
+            "digest": child, "mediaType": "unexpected",
+            "platform": {"os": "linux", "architecture": "amd64"}}]})
+        manifest = json.dumps({"mediaType": "manifest", "config": {"digest": config}})
+        responses = iter([
+            subprocess.CompletedProcess([], 0, digest + "\n", ""),
+            subprocess.CompletedProcess([], 0, top, ""),
+            subprocess.CompletedProcess([], 0, child + "\n", ""),
+            subprocess.CompletedProcess([], 0, manifest, ""),
+        ])
+        with tempfile.TemporaryDirectory() as directory, \
+                mock.patch.object(INSPECT, "run", side_effect=lambda args: next(responses)), \
+                self.assertRaisesRegex(INSPECT.InspectError, "child media type mismatch"):
+            INSPECT.inspect("image", "registry/image:tag@" + digest, digest, Path(directory))
+
+    def test_inspection_fails_closed_on_digest_mismatch(self):
+        import subprocess
+        digest = "sha256:" + "a" * 64
+        result = subprocess.CompletedProcess([], 0, "sha256:" + "b" * 64, "")
+        with tempfile.TemporaryDirectory() as directory, \
+                mock.patch.object(INSPECT, "run", return_value=result), \
+                self.assertRaisesRegex(INSPECT.InspectError, "source digest mismatch"):
+            INSPECT.inspect("image", "registry/image:tag@" + digest, digest, Path(directory))
 
     def test_workflow_describes_all_as_ready_only(self):
         workflow = (PATH.parents[1] / ".github/workflows/external-image-mirror.yml").read_text()
