@@ -2,6 +2,7 @@
 """Read and record one fixed upstream OCI identity without registry writes."""
 import json
 from pathlib import Path
+import re
 import subprocess
 import sys
 
@@ -15,10 +16,31 @@ def run(args):
                           stderr=subprocess.PIPE, check=False)
 
 
+def failure_category(stderr):
+    """Return a bounded public classification without echoing registry output."""
+    diagnostic = re.sub(r"(?i)https?://\S+", "", stderr)
+    status = re.search(
+        r"(?i)\b(?:http(?:/\d(?:\.\d)?)?\s+|"
+        r"status(?:\s+code)?\s*(?:[:=]\s*)?)(401|403|404|429)\b",
+        diagnostic)
+    if status:
+        return "http-" + status.group(1)
+    if re.search(r"(?i)\b(?:timed?\s*out|timeout|deadline exceeded)\b", diagnostic):
+        return "timeout"
+    if re.search(
+            r"(?i)\b(?:unsupported (?:media|manifest)(?: type)?|"
+            r"(?:media|manifest) type [^\r\n]{0,80} not supported)\b",
+            diagnostic):
+        return "unsupported-media"
+    return "unknown"
+
+
 def checked(args, message):
     result = run(args)
     if result.returncode:
-        raise InspectError(message)
+        raise InspectError(
+            f"{message} (crane_exit={result.returncode}; "
+            f"category={failure_category(result.stderr)})")
     return result.stdout
 
 

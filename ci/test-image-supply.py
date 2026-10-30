@@ -121,6 +121,35 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(receipt["selectedManifestDigest"], child)
         self.assertEqual(receipt["configDigest"], config)
 
+    def test_inspection_failure_is_safely_classified(self):
+        import subprocess
+        cases = (
+            ("unexpected status code 401 Unauthorized", "http-401"),
+            ("request failed: status=403", "http-403"),
+            ("GET: HTTP/1.1 404 Not Found", "http-404"),
+            ("registry response status code: 429", "http-429"),
+            ("context deadline exceeded", "timeout"),
+            ("unsupported media type application/example", "unsupported-media"),
+            ("token=secret-403-value https://user:password@example.invalid?q=secret",
+             "unknown"),
+            ("GET https://user:password@example.invalid/?status=403&token=secret failed",
+             "unknown"),
+        )
+        for stderr, category in cases:
+            result = subprocess.CompletedProcess([], 17, "", stderr)
+            with self.subTest(category=category), \
+                    mock.patch.object(INSPECT, "run", return_value=result), \
+                    self.assertRaises(INSPECT.InspectError) as raised:
+                INSPECT.checked(["crane", "manifest", "private-ref"],
+                                "top manifest unavailable")
+            message = str(raised.exception)
+            self.assertEqual(
+                message,
+                "top manifest unavailable (crane_exit=17; category=" + category + ")")
+            self.assertNotIn(stderr, message)
+            for secret in ("secret", "password", "private-ref", "example.invalid"):
+                self.assertNotIn(secret, message)
+
     def test_single_manifest_requires_linux_amd64_config(self):
         import subprocess
         digest = "sha256:" + "a" * 64
