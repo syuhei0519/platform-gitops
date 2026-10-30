@@ -59,6 +59,7 @@ def load():
                        "destination": destination + ":" + item["destinationTag"]})
     require(len(matrix) == 14, "inventory-count")
     _validate_evidence(evidence, matrix)
+    _validate_deliveries(data.get("deliveries", {}), evidence, matrix)
     return matrix
 
 
@@ -93,6 +94,35 @@ def _validate_evidence(entries, matrix):
             notice_path = path.parent / notice["localPath"]
             require(hashlib.sha256(notice_path.read_bytes()).hexdigest() == notice["sha256"],
                     "evidence-notice-digest")
+
+
+def _validate_deliveries(deliveries, evidence, matrix):
+    """Bind successful public copies to concrete normal-consumer files.
+
+    The copy is byte preserving, so the recorded destination digest must be
+    the fixed upstream digest.  This deliberately does not make pending
+    inventory entries look delivered.
+    """
+    require(set(deliveries) == set(evidence), "delivery-evidence-set")
+    by_name = {item["name"]: item for item in matrix}
+    for name, delivery in deliveries.items():
+        require(set(delivery) == {"runUrl", "destinationDigest", "consumerFiles"},
+                "delivery-fields")
+        item = by_name[name]
+        require(delivery["destinationDigest"] == item["sourceDigest"],
+                "delivery-digest")
+        require(re.fullmatch(
+            r"https://github\.com/syuhei0519/platform-gitops/actions/runs/[0-9]+",
+            delivery["runUrl"]), "delivery-run")
+        require(isinstance(delivery["consumerFiles"], list)
+                and delivery["consumerFiles"], "delivery-consumers")
+        repository = "ghcr.io/syuhei0519/platform-lab-images"
+        for relative in delivery["consumerFiles"]:
+            require(isinstance(relative, str) and not relative.startswith("/"),
+                    "delivery-consumer-path")
+            text = (ROOT / relative).read_text()
+            require(repository in text and delivery["destinationDigest"] in text,
+                    "delivery-consumer-reference:" + name + ":" + relative)
 
 
 def data_architecture():

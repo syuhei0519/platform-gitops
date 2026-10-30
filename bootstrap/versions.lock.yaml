@@ -46,8 +46,8 @@ spec:
     version: 29.35.0
     packageDigest: sha256:58bd043404026c30298d2f319711fd32c91e255f1c9d29be557a3d465ad91239
     appVersion: v3.15.0
-    image: quay.io/prometheus/prometheus:v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
-    configReloaderImage: quay.io/prometheus-operator/prometheus-config-reloader:v0.94.1@sha256:ac2f46e50daebc6163d2ba17adbbbc7fe8f51a0000e7961e821dcb9331b3702f
+    image: ghcr.io/syuhei0519/platform-lab-images:prometheus-v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
+    configReloaderImage: ghcr.io/syuhei0519/platform-lab-images:prometheus-config-reloader-v0.94.1@sha256:ac2f46e50daebc6163d2ba17adbbbc7fe8f51a0000e7961e821dcb9331b3702f
     kubeStateMetrics:
       chartVersion: 8.6.0
       appVersion: v2.20.0
@@ -56,7 +56,7 @@ spec:
     # この記述の時点ではCollectorはPE-011で検証/受入済み、GrafanaはPE-013の予定だった。現在の導入状態はenvironments/local/platform.yaml等と区別して読む。
     collectorContrib:
       version: 0.161.0
-      image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc
+      image: ghcr.io/syuhei0519/platform-lab-images:otel-collector-contrib-0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc
       enabled: true
     grafana:
       repository: https://grafana-community.github.io/helm-charts

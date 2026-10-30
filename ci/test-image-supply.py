@@ -202,6 +202,31 @@ class InventoryTest(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(notice_path.read_bytes()).hexdigest(),
                     notice["sha256"])
 
+    def test_delivered_consumers_are_ghcr_pinned_and_pending_are_absent(self):
+        images = MODULE.load()
+        by_name = {item["name"]: item for item in images}
+        raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
+        self.assertEqual(set(raw["deliveries"]), set(raw["redistributionEvidence"]))
+        for name, delivery in raw["deliveries"].items():
+            item = by_name[name]
+            self.assertEqual(delivery["destinationDigest"], item["sourceDigest"])
+            for relative in delivery["consumerFiles"]:
+                text = (PATH.parents[1] / relative).read_text()
+                self.assertIn("ghcr.io/syuhei0519/platform-lab-images", text)
+                self.assertIn(delivery["destinationDigest"], text)
+        self.assertTrue({"kind-node", "argocd-redis", "postgres-18", "grafana",
+                         "kube-state-metrics", "gitlab-runner",
+                         "gitlab-runner-helper"}.isdisjoint(raw["deliveries"]))
+
+    def test_account_canonical_normal_consumer_is_public_ghcr(self):
+        canonical = ("ghcr.io/syuhei0519/backend-app@sha256:"
+                     "fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd")
+        profile = (PATH.parents[1] / "learning/fresh-profile/profile.template.yaml").read_text()
+        contract = json.loads((PATH.parents[1] /
+            "learning/fresh-profile/security/canonical-contract.json").read_text())
+        self.assertIn(canonical, profile)
+        self.assertEqual(contract["approvedRuntimeImage"], canonical)
+
     def test_pending_redistribution_materials_cannot_enter_ready_matrix(self):
         images = MODULE.load()
         by_name = {item["name"]: item for item in images}
