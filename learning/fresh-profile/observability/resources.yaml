@@ -34,7 +34,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: collector
-        image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc
+        image: ghcr.io/syuhei0519/platform-lab-images@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc
         args: [--config=/conf/config.yaml]
         ports:
         - {name: otlp-grpc, containerPort: 4317}
@@ -75,7 +75,7 @@ spec:
       automountServiceAccountToken: false
       containers:
       - name: prometheus
-        image: quay.io/prometheus/prometheus@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
+        image: ghcr.io/syuhei0519/platform-lab-images@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa
         args:
         - --config.file=/etc/prometheus/prometheus.yml
         - --storage.tsdb.path=/prometheus

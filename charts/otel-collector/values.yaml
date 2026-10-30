@@ -1,6 +1,6 @@
 # Collector Chartの既定入力。charts/platform/templates/observability-applications.yamlがlocal valuesで上書きする。
 # templates/configmap.yamlとtemplates/deployment.yamlが読む。image digestは固定内容の識別子で、tagだけに依存しない。
-image: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc
+image: ghcr.io/syuhei0519/platform-lab-images:otel-collector-contrib-0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc
 # 既定は外部trace転送なし。localでは有効のため、Secretの事前注入と取り込み余裕の確認が運用前提。
 newRelicEnabled: false
 newRelicEndpoint: https://otlp.nr-data.net
