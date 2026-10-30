@@ -13,6 +13,9 @@ MIRROR_SPEC = importlib.util.spec_from_file_location("image_mirror", PATH.with_n
 MIRROR = importlib.util.module_from_spec(MIRROR_SPEC); MIRROR_SPEC.loader.exec_module(MIRROR)
 INSPECT_SPEC = importlib.util.spec_from_file_location("image_inspect", PATH.with_name("image-inspect.py"))
 INSPECT = importlib.util.module_from_spec(INSPECT_SPEC); INSPECT_SPEC.loader.exec_module(INSPECT)
+OUTPUT_SPEC = importlib.util.spec_from_file_location(
+    "image_inspection_output", PATH.with_name("image-inspection-output.py"))
+OUTPUT = importlib.util.module_from_spec(OUTPUT_SPEC); OUTPUT_SPEC.loader.exec_module(OUTPUT)
 
 
 class InventoryTest(unittest.TestCase):
@@ -30,6 +33,7 @@ class InventoryTest(unittest.TestCase):
         self.assertIn("contents: read", inspect)
         self.assertIn("image-inspect.py", inspect)
         self.assertIn("python3 -m json.tool receipts/receipt.json", inspect)
+        self.assertIn("image-inspection-output.py", inspect)
         self.assertNotIn("packages: write", inspect)
         self.assertNotIn("environment:", inspect)
         self.assertNotIn("image-mirror.py", inspect)
@@ -157,6 +161,34 @@ class InventoryTest(unittest.TestCase):
                 mock.patch.object(INSPECT, "run", return_value=result), \
                 self.assertRaisesRegex(INSPECT.InspectError, "source digest mismatch"):
             INSPECT.inspect("image", "registry/image:tag@" + digest, digest, Path(directory))
+
+    def test_public_receipt_is_emitted_as_check_notice_and_summary(self):
+        receipt = {
+            "schemaVersion": "platform.lab/image-inspection-receipt/v1",
+            "name": "image", "source": "registry/image:tag@sha256:" + "a" * 64,
+            "topDigest": "sha256:" + "a" * 64, "topMediaType": "index",
+            "platform": "linux/amd64", "selectedManifestDigest": "sha256:" + "b" * 64,
+            "selectedMediaType": "manifest", "configDigest": "sha256:" + "c" * 64,
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            receipt_path = Path(directory) / "receipt.json"
+            summary_path = Path(directory) / "summary.md"
+            receipt_path.write_text(json.dumps(receipt))
+            with mock.patch("builtins.print") as output:
+                OUTPUT.publish(receipt_path, summary_path)
+            self.assertTrue(output.call_args.args[0].startswith(
+                "::notice title=OCI inspection receipt::{"))
+            self.assertIn('"platform":"linux/amd64"', summary_path.read_text())
+
+    def test_public_receipt_rejects_additional_fields(self):
+        receipt = {key: "value" for key in OUTPUT.FIELDS}
+        receipt["schemaVersion"] = "platform.lab/image-inspection-receipt/v1"
+        receipt["rawConfig"] = "must-not-be-published"
+        with tempfile.TemporaryDirectory() as directory:
+            receipt_path = Path(directory) / "receipt.json"
+            receipt_path.write_text(json.dumps(receipt))
+            with self.assertRaisesRegex(ValueError, "inspection receipt fields"):
+                OUTPUT.publish(receipt_path, Path(directory) / "summary.md")
 
     def test_workflow_describes_all_as_ready_only(self):
         workflow = (PATH.parents[1] / ".github/workflows/external-image-mirror.yml").read_text()

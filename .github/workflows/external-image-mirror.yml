@@ -75,8 +75,9 @@ jobs:
         run: |
           python3 -I ci/image-inspect.py "$IMAGE_NAME" "$SOURCE" "$SOURCE_DIGEST" receipts
           # The receipt contains public OCI identities only. Keep it visible in
-          # the immutable run log when artifact blob download is unavailable.
+          # GitHub check metadata when artifact/log blobs are unavailable.
           python3 -m json.tool receipts/receipt.json
+          python3 -I ci/image-inspection-output.py receipts/receipt.json "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: image-inspection-receipt-${{ matrix.name }}-${{ github.run_attempt }}
