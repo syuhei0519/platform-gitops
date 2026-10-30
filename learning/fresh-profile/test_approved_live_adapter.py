@@ -557,27 +557,40 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
         registry["steps"]["image-source"]["resourceIdentities"] = [
             "SupplyMode/None/public-ghcr"]
         image_import = registry["steps"]["image-import"]
-        image_import["observations"][0]["healthPolicy"] = "node-cache-empty"
-        image_import["run"] = copy.deepcopy(image_import["verify"])
+        image_import["observations"] = []
+        image_import["resourceIdentities"] = ["SupplyMode/None/public-ghcr"]
+        image_import["verify"] = []
+        image_import["reconcile"] = []
+        image_import["run"] = []
         supply = {
             "supplyMode": "public-ghcr",
             "kindNodeRef": registry["steps"]["cluster"]["run"][0]["args"][-1],
             "hostArtifacts": {},
+            "registryImageSetSha256": "e" * 64,
             "helmCharts": {"argo-rollouts": {
                 "version": "2.43.7",
                 "sha256": registry["steps"]["controllers"]["run"][0]["contentSha256"],
                 "crdListSha256": adapter.ROLLOUTS_CRD_LIST_SHA256,
             }},
         }
-        adapter.ApprovedLiveAdapter(
+        live = adapter.ApprovedLiveAdapter(
             self.write(registry), FakeTransport(),
             {"clusterName": self.cluster, "context": self.context}, self.versions,
             {"sha256:" + "d" * 64}, supply)
+        evidence = live.run("image-import")
+        verified = live.verify("image-import", {"evidence": evidence})
+        self.assertEqual(verified["resourceDigest"], evidence["resourceDigest"])
+        self.assertEqual(evidence["resourceObservations"][0]["archiveCommandCount"], 0)
+        changed = copy.deepcopy(evidence)
+        changed["resourceObservations"][0]["registryImageSetSha256"] = "f" * 64
+        with self.assertRaisesRegex(adapter.AdapterRejected,
+                                    "registry-image-import-checkpoint"):
+            live.verify("image-import", {"evidence": changed})
         forbidden = copy.deepcopy(registry)
         forbidden["steps"]["image-import"]["run"] = copy.deepcopy(
             value["steps"]["image-import"]["run"])
         with self.assertRaisesRegex(adapter.AdapterRejected,
-                                    "registry-image-import-command"):
+                                    "registry-image-import-contract"):
             adapter.ApprovedLiveAdapter(
                 self.write(forbidden), FakeTransport(),
                 {"clusterName": self.cluster, "context": self.context}, self.versions,

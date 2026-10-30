@@ -738,6 +738,47 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(rerun.verify_calls, list(runner.STEPS))
         self.assertEqual(rerun.run_calls, [])
 
+    def test_public_registry_image_import_checkpoint_survives_later_pulls_on_rerun(self):
+        (_, approval_path, materialization_path, profile_path, journal_path,
+         platform_source, application_source) = self.fixture()
+        first = FakeExecutor()
+        journal = runner.execute("first", approval_path, materialization_path, profile_path,
+                                 journal_path, first, platform_source, application_source,
+                                 now=NOW)
+
+        adapter_contract = runner._load_contract_module("approved_live_adapter")
+        live = adapter_contract.ApprovedLiveAdapter.__new__(
+            adapter_contract.ApprovedLiveAdapter)
+        live.supply_mode = "public-ghcr"
+        live.registry_image_set_sha256 = "e" * 64
+        live.plan = {"steps": {"image-import": {
+            "resourceIdentities": ["SupplyMode/None/public-ghcr"]}}}
+        evidence = live.run("image-import")
+        journal["steps"]["image-import"].update(
+            evidence=evidence, resourceDigest=evidence["resourceDigest"])
+        journal_path.write_text(json.dumps(journal, indent=2) + "\n", encoding="utf-8")
+
+        delegate = FakeExecutor(cluster_uid="fixture-cluster-uid")
+        original_verify = delegate.verify
+
+        def verify(step, checkpoint):
+            delegate.verify_calls.append(step)
+            if step == "image-import":
+                # This is the normal rerun path after later workload pulls may
+                # have populated the node cache.  The durable checkpoint proves
+                # the registry-only plan and absence of archive commands; it
+                # intentionally does not reassert that the cache is still empty.
+                return live.verify(step, checkpoint)
+            delegate.verify_calls.pop()
+            return original_verify(step, checkpoint)
+
+        delegate.verify = verify
+        runner.execute("rerun", approval_path, materialization_path, profile_path,
+                       journal_path, delegate, platform_source, application_source,
+                       now=NOW)
+        self.assertEqual(delegate.verify_calls, list(runner.STEPS))
+        self.assertEqual(delegate.run_calls, [])
+
     def test_controller_stage_needs_g3_precondition_but_not_runtime_proof(self):
         (approval, approval_path, materialization_path, profile_path, journal_path,
          platform_source, application_source) = self.fixture()
