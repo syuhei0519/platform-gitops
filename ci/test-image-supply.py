@@ -210,7 +210,7 @@ class InventoryTest(unittest.TestCase):
         for name, delivery in raw["deliveries"].items():
             item = by_name[name]
             self.assertEqual(delivery["destinationDigest"], item["sourceDigest"])
-            for consumer in delivery["consumers"]:
+            for consumer in raw["consumerReferences"][name]:
                 actual = MODULE._consumer_image(
                     PATH.parents[1] / consumer["path"], consumer["type"],
                     consumer["identity"])
@@ -229,11 +229,36 @@ class InventoryTest(unittest.TestCase):
                     "478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68")
         unknown = ("ghcr.io/syuhei0519/platform-lab-images@sha256:"
                    + "d" * 64)
+        real_consumer = MODULE._consumer_image
         for actual in (upstream, unknown):
+            def changed(path, consumer_type, identity):
+                if identity == "argocd":
+                    return actual
+                return real_consumer(path, consumer_type, identity)
             with self.subTest(actual=actual), \
-                    mock.patch.object(MODULE, "_consumer_image", return_value=actual), \
+                    mock.patch.object(MODULE, "_consumer_image", side_effect=changed), \
                     self.assertRaisesRegex(ValueError,
                                            "delivery-consumer-reference:argocd"):
+                MODULE.load()
+
+    def test_undelivered_grafana_profile_and_lock_cannot_move_to_unknown_ghcr(self):
+        original = json.loads((PATH.parents[1] / "supply/images.json").read_text())
+        unknown_digest = "sha256:" + "e" * 64
+        unknown = "ghcr.io/syuhei0519/platform-lab-images@" + unknown_digest
+        grafana = next(item for item in original["images"] if item["name"] == "grafana")
+        grafana["source"] = "docker.io/grafana/grafana:13.2.3@" + unknown_digest
+        actual_consumer = MODULE._consumer_image
+        def changed(path, consumer_type, identity):
+            if identity in {"grafana", "spec.plannedObservability.grafana.image"}:
+                return unknown
+            return actual_consumer(path, consumer_type, identity)
+        with tempfile.TemporaryDirectory() as directory:
+            inventory = Path(directory) / "images.json"
+            inventory.write_text(json.dumps(original))
+            with mock.patch.object(MODULE, "INVENTORY", inventory), \
+                    mock.patch.object(MODULE, "_consumer_image", side_effect=changed), \
+                    self.assertRaisesRegex(ValueError,
+                                           "undelivered-consumer-reference:grafana"):
                 MODULE.load()
 
     def test_account_canonical_normal_consumer_is_public_ghcr(self):

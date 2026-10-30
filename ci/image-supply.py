@@ -61,6 +61,8 @@ def load():
     require(len(matrix) == 14, "inventory-count")
     _validate_evidence(evidence, matrix)
     _validate_deliveries(data.get("deliveries", {}), evidence, matrix)
+    _validate_consumers(data.get("consumerReferences", {}),
+                        data.get("deliveries", {}), matrix)
     return matrix
 
 
@@ -107,7 +109,7 @@ def _validate_deliveries(deliveries, evidence, matrix):
     require(set(deliveries) == set(evidence), "delivery-evidence-set")
     by_name = {item["name"]: item for item in matrix}
     for name, delivery in deliveries.items():
-        require(set(delivery) == {"runUrl", "destinationDigest", "consumers"},
+        require(set(delivery) == {"runUrl", "destinationDigest"},
                 "delivery-fields")
         item = by_name[name]
         require(delivery["destinationDigest"] == item["sourceDigest"],
@@ -115,20 +117,32 @@ def _validate_deliveries(deliveries, evidence, matrix):
         require(re.fullmatch(
             r"https://github\.com/syuhei0519/platform-gitops/actions/runs/[0-9]+",
             delivery["runUrl"]), "delivery-run")
-        require(isinstance(delivery["consumers"], list)
-                and delivery["consumers"], "delivery-consumers")
-        repository = "ghcr.io/syuhei0519/platform-lab-images"
-        tagged = repository + ":" + item["destinationTag"] + "@" + delivery["destinationDigest"]
-        tagless = repository + "@" + delivery["destinationDigest"]
-        for consumer in delivery["consumers"]:
+
+
+def _validate_consumers(references, deliveries, matrix):
+    by_name = {item["name"]: item for item in matrix}
+    require(set(references) == set(by_name), "consumer-inventory-set")
+    repository = "ghcr.io/syuhei0519/platform-lab-images"
+    for name, consumers in references.items():
+        require(isinstance(consumers, list) and consumers, "consumer-references")
+        item = by_name[name]
+        for consumer in consumers:
             require(set(consumer) == {"path", "type", "identity"},
                     "delivery-consumer-fields")
             relative = consumer["path"]
             require(isinstance(relative, str) and not relative.startswith("/"),
                     "delivery-consumer-path")
             actual = _consumer_image(ROOT / relative, consumer["type"], consumer["identity"])
-            require(actual in {tagged, tagless},
-                    "delivery-consumer-reference:" + name + ":" + relative)
+            if name in deliveries:
+                digest = deliveries[name]["destinationDigest"]
+                tagged = repository + ":" + item["destinationTag"] + "@" + digest
+                tagless = repository + "@" + digest
+                require(actual in {tagged, tagless},
+                        "delivery-consumer-reference:" + name + ":" + relative)
+            else:
+                require(not actual.startswith(repository)
+                        and actual.endswith("@" + item["sourceDigest"]),
+                        "undelivered-consumer-reference:" + name + ":" + relative)
 
 
 def _consumer_image(path, consumer_type, identity):
@@ -159,6 +173,23 @@ def _consumer_image(path, consumer_type, identity):
                 and set(("repository", "tag", "digest")).issubset(value),
                 "consumer-split-image")
         return value["repository"] + ":" + value["tag"] + "@" + value["digest"]
+    if consumer_type == "registry-split-image":
+        require(isinstance(value, dict)
+                and set(("registry", "repository", "tag", "sha")).issubset(value),
+                "consumer-registry-split-image")
+        return (value["registry"] + "/" + value["repository"] + ":"
+                + value["tag"] + "@" + value["sha"])
+    if consumer_type == "grafana-image":
+        require(isinstance(value, dict)
+                and set(("registry", "repository", "tag", "sha")).issubset(value),
+                "consumer-grafana-image")
+        return (value["registry"] + "/" + value["repository"] + ":"
+                + value["tag"] + "@sha256:" + value["sha"])
+    if consumer_type == "runner-image":
+        require(isinstance(value, dict)
+                and set(("registry", "image", "tag")).issubset(value),
+                "consumer-runner-image")
+        return value["registry"] + "/" + value["image"] + ":" + value["tag"]
     raise ValueError("consumer-type")
 
 
