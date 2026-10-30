@@ -18,6 +18,11 @@ on:
         required: true
         default: false
         type: boolean
+      scan-evidence:
+        description: read-only検査時に固定TrivyでSBOMと脆弱性gate証跡も作る
+        required: true
+        default: false
+        type: boolean
 permissions:
   contents: read
 # 同一workflowの単独操作者を前提に直列化する。GHCRに原子的create-if-absentはないため、
@@ -54,7 +59,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJSON(needs.inventory.outputs.matrix) }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 30
     permissions:
       contents: read
     steps:
@@ -65,6 +70,10 @@ jobs:
         with:
           go-version: '1.27.3'
           cache: false
+      - if: ${{ inputs['scan-evidence'] }}
+        uses: syuhei0519/backend-app/.github/actions/shared-tools@cdea9eda59aa56c8a068a79317da239b8133727e
+        with:
+          modules: scan-gate
       - name: Install pinned OCI inspection tool
         run: go install github.com/google/go-containerregistry/cmd/crane@v0.21.7
       - name: Record the fixed upstream OCI identity
@@ -77,7 +86,35 @@ jobs:
           # The receipt contains public OCI identities only. Keep it visible in
           # the immutable run log when artifact blob download is unavailable.
           python3 -m json.tool receipts/receipt.json
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      - name: Record fixed-image SBOM and vulnerability gate
+        if: ${{ inputs['scan-evidence'] }}
+        env:
+          SOURCE: ${{ matrix.source }}
+        run: |
+          mkdir -p .cache/trivy receipts
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp \
+            -v "$PWD:/work" -w /work \
+            --entrypoint trivy aquasec/trivy:0.75.0@sha256:9db099105405c648166e6b94155eb32f8da12673cf1f455207f7385cc9a77283 \
+            image --download-db-only \
+            --db-repository ghcr.io/aquasecurity/trivy-db:2 \
+            --db-repository public.ecr.aws/aquasecurity/trivy-db:2 \
+            --cache-dir .cache/trivy --timeout 5m --quiet
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -e SOURCE \
+            -v "$PWD:/work" -w /work \
+            --entrypoint sh aquasec/trivy:0.75.0@sha256:9db099105405c648166e6b94155eb32f8da12673cf1f455207f7385cc9a77283 -ec '
+              trivy image --cache-dir .cache/trivy --skip-db-update --timeout 10m \
+                --quiet --no-progress --scanners vuln --list-all-pkgs \
+                --severity UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL --format json \
+                --output receipts/scan.json "$SOURCE"
+              trivy image --cache-dir .cache/trivy --skip-db-update --timeout 10m \
+                --quiet --no-progress --scanners vuln --format cyclonedx \
+                --output receipts/sbom.cdx.json "$SOURCE"
+            '
+          .security/scan-gate -policy security/scan-policy.json \
+            -db .cache/trivy/db/metadata.json -report receipts/scan.json \
+            -out receipts/scan-gate.json -scanner-exit 0
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: image-inspection-receipt-${{ matrix.name }}-${{ github.run_attempt }}
           path: receipts/
