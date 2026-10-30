@@ -165,7 +165,7 @@ def _validate_evidence(entries, matrix):
                     SCAN_FRESHNESS_HOURS * 3600, "evidence-scan-db-age")
             runtime = record["runtimePackageEvidence"]
             require(runtime["sourceTree"] ==
-                    "https://gitlab.alpinelinux.org/alpine/aports/-/tree/3.23-stable/main",
+                    "https://github.com/alpinelinux/aports/tree/3.23-stable/main",
                     "evidence-runtime-source")
             require({item["name"] for item in runtime["sources"]} == {
                 "alpine-baselayout", "alpine-keys", "alpine-base", "apk-tools",
@@ -189,6 +189,8 @@ def _validate_evidence(entries, matrix):
                 require(source["aportsPath"] ==
                         "main/{}/APKBUILD".format(source["name"]),
                         "evidence-runtime-source-path")
+                require(re.fullmatch(r"[0-9a-f]{40}", source["aportsCommit"]),
+                        "evidence-runtime-source-commit")
             dockerfile = path.parent / "SOURCE-Dockerfile"
             require(hashlib.sha256(dockerfile.read_bytes()).hexdigest() ==
                     "e726763d1e365e0555a0e51fed481d11cdba1198742c622a3bf52c0f017411e2",
