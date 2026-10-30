@@ -93,13 +93,16 @@ class InventoryTest(unittest.TestCase):
         child = "sha256:" + "b" * 64
         config = "sha256:" + "c" * 64
         top = json.dumps({"mediaType": "index", "manifests": [{
-            "digest": child, "platform": {"os": "linux", "architecture": "amd64"}}]})
+            "digest": child, "mediaType": "manifest",
+            "platform": {"os": "linux", "architecture": "amd64"}}]})
         manifest = json.dumps({"mediaType": "manifest", "config": {"digest": config}})
+        config_document = json.dumps({"os": "linux", "architecture": "amd64"})
         responses = iter([
             subprocess.CompletedProcess([], 0, digest + "\n", ""),
             subprocess.CompletedProcess([], 0, top, ""),
             subprocess.CompletedProcess([], 0, child + "\n", ""),
             subprocess.CompletedProcess([], 0, manifest, ""),
+            subprocess.CompletedProcess([], 0, config_document, ""),
         ])
         with tempfile.TemporaryDirectory() as directory, \
                 mock.patch.object(INSPECT, "run", side_effect=lambda args: next(responses)):
@@ -108,6 +111,42 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(receipt["topDigest"], digest)
         self.assertEqual(receipt["selectedManifestDigest"], child)
         self.assertEqual(receipt["configDigest"], config)
+
+    def test_single_manifest_requires_linux_amd64_config(self):
+        import subprocess
+        digest = "sha256:" + "a" * 64
+        config = "sha256:" + "c" * 64
+        manifest = json.dumps({"mediaType": "manifest", "config": {"digest": config}})
+        responses = iter([
+            subprocess.CompletedProcess([], 0, digest + "\n", ""),
+            subprocess.CompletedProcess([], 0, manifest, ""),
+            subprocess.CompletedProcess([], 0,
+                                        json.dumps({"os": "linux", "architecture": "arm64"}), ""),
+        ])
+        with tempfile.TemporaryDirectory() as directory, \
+                mock.patch.object(INSPECT, "run", side_effect=lambda args: next(responses)), \
+                self.assertRaisesRegex(INSPECT.InspectError, "config platform mismatch"):
+            INSPECT.inspect("image", "registry/image:tag@" + digest, digest, Path(directory))
+
+    def test_index_descriptor_media_type_must_match_child(self):
+        import subprocess
+        digest = "sha256:" + "a" * 64
+        child = "sha256:" + "b" * 64
+        config = "sha256:" + "c" * 64
+        top = json.dumps({"mediaType": "index", "manifests": [{
+            "digest": child, "mediaType": "unexpected",
+            "platform": {"os": "linux", "architecture": "amd64"}}]})
+        manifest = json.dumps({"mediaType": "manifest", "config": {"digest": config}})
+        responses = iter([
+            subprocess.CompletedProcess([], 0, digest + "\n", ""),
+            subprocess.CompletedProcess([], 0, top, ""),
+            subprocess.CompletedProcess([], 0, child + "\n", ""),
+            subprocess.CompletedProcess([], 0, manifest, ""),
+        ])
+        with tempfile.TemporaryDirectory() as directory, \
+                mock.patch.object(INSPECT, "run", side_effect=lambda args: next(responses)), \
+                self.assertRaisesRegex(INSPECT.InspectError, "child media type mismatch"):
+            INSPECT.inspect("image", "registry/image:tag@" + digest, digest, Path(directory))
 
     def test_inspection_fails_closed_on_digest_mismatch(self):
         import subprocess

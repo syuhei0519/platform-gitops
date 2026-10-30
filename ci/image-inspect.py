@@ -34,6 +34,7 @@ def inspect(name, source, expected, output):
         selected_digest = expected
         selected = top
         selected_raw = top_raw
+        selected_reference = source
     else:
         candidates = [item for item in descriptors
                       if item.get("platform", {}).get("os") == "linux" and
@@ -51,10 +52,18 @@ def inspect(name, source, expected, output):
             ["crane", "manifest", child_reference],
             "child manifest unavailable")
         selected = json.loads(selected_raw)
+        if candidates[0].get("mediaType") != selected.get("mediaType"):
+            raise InspectError("child media type mismatch")
+        selected_reference = child_reference
 
     config_digest = selected.get("config", {}).get("digest")
     if not isinstance(config_digest, str) or not config_digest.startswith("sha256:"):
         raise InspectError("config digest unavailable")
+    config_raw = checked(["crane", "config", selected_reference],
+                         "config unavailable")
+    config = json.loads(config_raw)
+    if config.get("os") != "linux" or config.get("architecture") != "amd64":
+        raise InspectError("config platform mismatch")
     receipt = {
         "schemaVersion": "platform.lab/image-inspection-receipt/v1",
         "name": name,
@@ -69,6 +78,7 @@ def inspect(name, source, expected, output):
     output.mkdir(parents=True, exist_ok=True)
     (output / "top-manifest.json").write_text(top_raw)
     (output / "linux-amd64-manifest.json").write_text(selected_raw)
+    (output / "linux-amd64-config.json").write_text(config_raw)
     (output / "receipt.json").write_text(
         json.dumps(receipt, sort_keys=True, separators=(",", ":")) + "\n")
 
