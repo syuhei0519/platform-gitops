@@ -269,6 +269,29 @@ class InventoryTest(unittest.TestCase):
             "learning/fresh-profile/security/canonical-contract.json").read_text())
         self.assertIn(canonical, profile)
         self.assertEqual(contract["approvedRuntimeImage"], canonical)
+        inventory = json.loads((PATH.parents[1] / "supply/images.json").read_text())
+        self.assertEqual(inventory["accountDelivery"], {
+            "runUrl": "https://github.com/syuhei0519/backend-app/actions/runs/40924904358",
+            "destination": "ghcr.io/syuhei0519/backend-app",
+            "destinationDigest": canonical.rpartition("@")[2],
+        })
+
+    def test_delivery_run_or_account_receipt_tamper_is_refused(self):
+        original = json.loads((PATH.parents[1] / "supply/images.json").read_text())
+        mutations = (
+            lambda data: data["deliveries"]["argocd"].update(
+                runUrl="https://github.com/syuhei0519/platform-gitops/actions/runs/1"),
+            lambda data: data["accountDelivery"].update(
+                runUrl="https://github.com/syuhei0519/backend-app/actions/runs/1"),
+        )
+        for mutate in mutations:
+            data = json.loads(json.dumps(original)); mutate(data)
+            with tempfile.TemporaryDirectory() as directory:
+                inventory = Path(directory) / "images.json"
+                inventory.write_text(json.dumps(data))
+                with mock.patch.object(MODULE, "INVENTORY", inventory), \
+                        self.assertRaises(ValueError):
+                    MODULE.load()
 
     def test_pending_redistribution_materials_cannot_enter_ready_matrix(self):
         images = MODULE.load()

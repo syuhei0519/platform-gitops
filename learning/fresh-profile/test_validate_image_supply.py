@@ -4,6 +4,7 @@ import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
+from unittest import mock
 import json
 
 import yaml
@@ -22,8 +23,7 @@ class ImageSupplyTests(unittest.TestCase):
         self.profile = contract.load_yaml(contract.HERE / "profile.template.yaml")
         self.profile_images = {item["name"]: item for item in self.profile["spec"]["images"]}
 
-    def validate_copy(self, lock, require=False, profile=None, require_source=False,
-                      delivery_inventory=None):
+    def validate_copy(self, lock, require=False, profile=None, require_source=False):
         with tempfile.TemporaryDirectory(dir=contract.HERE) as directory:
             path = Path(directory) / "supply.yaml"
             profile_path = Path(directory) / "profile.yaml"
@@ -41,9 +41,7 @@ class ImageSupplyTests(unittest.TestCase):
             profile_path.write_text(yaml.safe_dump(value, sort_keys=False), encoding="utf-8")
             return contract.validate(path, require_fresh_evidence=require,
                                      profile_override=profile_path,
-                                     require_source_evidence=require_source,
-                                     delivery_inventory=(delivery_inventory
-                                         or contract.DELIVERY_INVENTORY))
+                                     require_source_evidence=require_source)
 
     def approve(self, mode="private-registry"):
         value = copy.deepcopy(self.lock)
@@ -173,10 +171,9 @@ class ImageSupplyTests(unittest.TestCase):
                 sources[name]["source"]["manifest"]["manifestDigest"] = digest
                 sources[name]["retrieval"]["observedDigest"] = digest
         with tempfile.TemporaryDirectory() as directory:
-            inventory_path = Path(directory) / "images.json"
-            inventory_path.write_text(json.dumps(inventory))
-            self.validate_copy(value, require=True, profile=profile,
-                               delivery_inventory=inventory_path)
+            with mock.patch.object(
+                    contract, "_validated_delivery_inventory", return_value=inventory):
+                self.validate_copy(value, require=True, profile=profile)
         self.assertTrue(all(item["source"]["kind"] == "public-registry"
                             for item in value["spec"]["images"]))
 

@@ -8,6 +8,11 @@
     "consumerCutover": "only-after-recorded-destination-digest",
     "offlineImport": "explicit-exception-only"
   },
+  "accountDelivery": {
+    "runUrl": "https://github.com/syuhei0519/backend-app/actions/runs/40924904358",
+    "destination": "ghcr.io/syuhei0519/backend-app",
+    "destinationDigest": "sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd"
+  },
   "redistributionEvidence": {
     "argocd": "supply/licenses/argocd/v3.5.2/evidence.json",
     "argo-rollouts": "supply/licenses/argo-rollouts/v1.10.1/evidence.json",

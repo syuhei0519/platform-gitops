@@ -16,6 +16,15 @@ INVENTORY = ROOT / "supply/images.json"
 DIGEST = re.compile(r"sha256:[0-9a-f]{64}")
 NAME = re.compile(r"[a-z0-9][a-z0-9-]{0,62}")
 TAG = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}")
+DELIVERY_RUNS = {
+    "argocd": "40934558588",
+    "argo-rollouts": "40916984294",
+    "istio-pilot": "40936986084",
+    "istio-proxy": "40966477911",
+    "prometheus": "40976122866",
+    "prometheus-config-reloader": "40976337755",
+    "otel-collector": "40934582025",
+}
 
 
 def require(value, message):
@@ -35,6 +44,12 @@ def load():
         "consumerCutover": "only-after-recorded-destination-digest",
         "offlineImport": "explicit-exception-only",
     }, "policy")
+    require(data.get("accountDelivery") == {
+        "runUrl": "https://github.com/syuhei0519/backend-app/actions/runs/40924904358",
+        "destination": "ghcr.io/syuhei0519/backend-app",
+        "destinationDigest":
+            "sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd",
+    }, "account-delivery")
     evidence = data.get("redistributionEvidence", {})
     require(evidence == {
         "argocd": "supply/licenses/argocd/v3.5.2/evidence.json",
@@ -117,6 +132,8 @@ def _validate_deliveries(deliveries, evidence, matrix):
         require(re.fullmatch(
             r"https://github\.com/syuhei0519/platform-gitops/actions/runs/[0-9]+",
             delivery["runUrl"]), "delivery-run")
+        require(delivery["runUrl"].endswith("/" + DELIVERY_RUNS[name]),
+                "delivery-run-receipt")
 
 
 def _validate_consumers(references, deliveries, matrix):
