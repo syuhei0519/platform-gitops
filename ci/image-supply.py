@@ -37,6 +37,12 @@ CANDIDATES = {
                    "gitlab-runner-helper-ocp:x86_64-v19.3.5"),
         "consumer": "read-only candidate for bootstrap/versions.lock.yaml runner helper",
     },
+    "gitlab-runner-helper-alpine-v19.3.5": {
+        "name": "gitlab-runner-helper-alpine-v19-3-5-candidate",
+        "source": ("registry.gitlab.com/gitlab-org/gitlab-runner/"
+                   "gitlab-runner-helper:x86_64-v19.3.5"),
+        "consumer": "read-only compatibility candidate for the runner helper",
+    },
 }
 
 
