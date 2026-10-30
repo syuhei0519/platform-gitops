@@ -8,6 +8,15 @@ on:
         required: true
         default: all
         type: string
+      candidate:
+        description: 公開不能な固定allowlist候補をread-only検査する
+        required: true
+        default: none
+        type: choice
+        options:
+          - none
+          - gitlab-runner-v19.3.5
+          - gitlab-runner-helper-v19.3.5
       execute:
         description: 実際のGHCR copyを行う（falseなら選択したupstreamをread-only検査）
         required: true
@@ -46,10 +55,12 @@ jobs:
       - id: inventory
         env:
           SELECT_IMAGE: ${{ inputs.image }}
+          SELECT_CANDIDATE: ${{ inputs.candidate }}
           INSPECT_ONLY: ${{ ! inputs.execute }}
         run: |
           args=(--select "$SELECT_IMAGE" --github-output "$GITHUB_OUTPUT")
           if test "$INSPECT_ONLY" = true; then args+=(--inspect-only); fi
+          if test "$SELECT_CANDIDATE" != none; then args+=(--candidate "$SELECT_CANDIDATE"); fi
           python3 -I ci/image-supply.py "${args[@]}"
       - run: python3 -I ci/test-image-supply.py -v
   inspect:
@@ -76,10 +87,27 @@ jobs:
           modules: oci-input scan-gate
       - name: Install pinned OCI inspection tool
         run: go install github.com/google/go-containerregistry/cmd/crane@v0.21.7
-      - name: Record the fixed upstream OCI identity
+      - name: Bind an approved candidate to one immutable digest
+        id: source
         env:
           SOURCE: ${{ matrix.source }}
           SOURCE_DIGEST: ${{ matrix.sourceDigest }}
+          CANDIDATE: ${{ matrix.candidate || false }}
+        run: |
+          if test "$CANDIDATE" = true; then
+            test -z "$SOURCE_DIGEST"
+            SOURCE_DIGEST="$(crane digest "$SOURCE")"
+            [[ "$SOURCE_DIGEST" =~ ^sha256:[0-9a-f]{64}$ ]]
+            SOURCE="${SOURCE}@${SOURCE_DIGEST}"
+          else
+            test "${SOURCE##*@}" = "$SOURCE_DIGEST"
+          fi
+          echo "source=$SOURCE" >> "$GITHUB_OUTPUT"
+          echo "digest=$SOURCE_DIGEST" >> "$GITHUB_OUTPUT"
+      - name: Record the fixed upstream OCI identity
+        env:
+          SOURCE: ${{ steps.source.outputs.source }}
+          SOURCE_DIGEST: ${{ steps.source.outputs.digest }}
           IMAGE_NAME: ${{ matrix.name }}
         run: |
           python3 -I ci/image-inspect.py "$IMAGE_NAME" "$SOURCE" "$SOURCE_DIGEST" receipts
@@ -89,7 +117,7 @@ jobs:
       - name: Record fixed-image SBOM and vulnerability gate
         if: ${{ inputs['scan-evidence'] }}
         env:
-          SOURCE: ${{ matrix.source }}
+          SOURCE: ${{ steps.source.outputs.source }}
         run: |
           mkdir -p .cache/trivy receipts .security
           (cd tools/oci-input; CGO_ENABLED=0 go build -trimpath -o ../../.security/oci-crane-check ./cmd/oci-crane-check)
@@ -131,7 +159,7 @@ jobs:
   mirror:
     needs: inventory
     if: >-
-      inputs.execute && inputs['redistribution-approved'] &&
+      inputs.execute && inputs.candidate == 'none' && inputs['redistribution-approved'] &&
       vars.ENABLE_EXTERNAL_IMAGE_MIRROR == 'true'
     strategy:
       fail-fast: false

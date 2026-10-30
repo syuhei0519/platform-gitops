@@ -25,6 +25,19 @@ DELIVERY_RUNS = {
     "prometheus-config-reloader": "40976337755",
     "otel-collector": "40934582025",
 }
+CANDIDATES = {
+    "gitlab-runner-v19.3.5": {
+        "name": "gitlab-runner-v19-3-5-candidate",
+        "source": "registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v19.3.5",
+        "consumer": "read-only candidate for environments/local/gitlab-runner.yaml",
+    },
+    "gitlab-runner-helper-v19.3.5": {
+        "name": "gitlab-runner-helper-v19-3-5-candidate",
+        "source": ("registry.gitlab.com/gitlab-org/ci-cd/gitlab-runner-ubi-images/"
+                   "gitlab-runner-helper-ocp:x86_64-v19.3.5"),
+        "consumer": "read-only candidate for bootstrap/versions.lock.yaml runner helper",
+    },
+}
 
 
 def require(value, message):
@@ -242,6 +255,13 @@ def select_for_inspection(matrix, selection):
     return selected
 
 
+def select_candidate(selection):
+    """Return one static, non-publishable candidate for read-only inspection."""
+    require(selection in CANDIDATES, "unknown-candidate")
+    return [{**CANDIDATES[selection], "sourceDigest": "", "candidate": True,
+             "destination": "read-only-candidate-not-publishable"}]
+
+
 def _unique(pairs):
     result = {}
     for key, value in pairs:
@@ -254,11 +274,16 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--select", default="all")
     parser.add_argument("--inspect-only", action="store_true")
+    parser.add_argument("--candidate")
     parser.add_argument("--github-output")
     args = parser.parse_args()
     inventory = load()
-    matrix = (select_for_inspection(inventory, args.select) if args.inspect_only
-              else select_ready(inventory, args.select))
+    if args.candidate:
+        require(args.inspect_only, "candidate-inspect-only")
+        matrix = select_candidate(args.candidate)
+    else:
+        matrix = (select_for_inspection(inventory, args.select) if args.inspect_only
+                  else select_ready(inventory, args.select))
     encoded = json.dumps({"include": matrix}, separators=(",", ":"), sort_keys=True)
     if args.github_output:
         with open(args.github_output, "a", encoding="utf-8") as output:
