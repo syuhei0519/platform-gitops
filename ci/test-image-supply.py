@@ -130,6 +130,7 @@ class InventoryTest(unittest.TestCase):
             MODULE.select_for_inspection(images, "missing")
 
     def test_candidate_inspection_is_static_and_non_publishable(self):
+        grafana = MODULE.select_candidate("grafana-v13.2.5")
         runner = MODULE.select_candidate("gitlab-runner-v19.3.5")
         helper = MODULE.select_candidate("gitlab-runner-helper-v19.3.5")
         alpine_helper = MODULE.select_candidate(
@@ -142,7 +143,8 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(alpine_helper[0]["source"],
                          "registry.gitlab.com/gitlab-org/gitlab-runner/"
                          "gitlab-runner-helper:x86_64-v19.3.5")
-        for candidate in (runner[0], helper[0], alpine_helper[0]):
+        self.assertEqual(grafana[0]["source"], "docker.io/grafana/grafana:13.2.5")
+        for candidate in (grafana[0], runner[0], helper[0], alpine_helper[0]):
             self.assertIs(candidate["candidate"], True)
             self.assertEqual(candidate["sourceDigest"], "")
             self.assertEqual(candidate["destination"],
