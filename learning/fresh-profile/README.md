@@ -198,6 +198,15 @@ AppProject/RBAC/admission changes, `kubectl auth can-i`, admission denials and
 canonical two-SHA sync need separate action-time approval on the isolated
 fresh cluster. The offline fixture must never be reported as live effectiveness.
 
+The `public-ghcr` supply mode is a fail-closed future normal path. It is
+selectable only when every image in the profile has a recorded byte-preserving
+delivery and the profile points at the matching fixed GHCR digest. The current
+inventory is incomplete, so real profile validation rejects this mode. Unit
+tests build an explicitly synthetic all-delivered inventory to verify that the
+mode has zero archive artifacts and rejects every `kind load image-archive`
+command; that fixture is not delivery, network-pull, or live-cluster evidence.
+The existing mixed/archive modes remain the approved offline recovery path.
+
 ## PLAT-217 acceptance record
 
 `acceptance.template.json` and `acceptance.schema.json` define the evidence that

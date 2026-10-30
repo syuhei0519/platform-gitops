@@ -36,7 +36,7 @@
           "required": ["status", "selectedMode", "restoreOwner", "retentionUntil", "restoreProcedureRef"],
           "properties": {
             "status": {"enum": ["pending-approval", "approved"]},
-            "selectedMode": {"enum": ["PENDING_G2", "private-registry", "retained-oci-archive", "public-upstream-plus-retained-account-archive"]},
+            "selectedMode": {"enum": ["PENDING_G2", "private-registry", "retained-oci-archive", "public-upstream-plus-retained-account-archive", "public-ghcr"]},
             "restoreOwner": {"type": "string", "pattern": "^(PENDING_G2|[a-z0-9][a-z0-9-]{2,63})$"},
             "retentionUntil": {"type": "string", "pattern": "^(PENDING_G2|[0-9]{4}-[0-9]{2}-[0-9]{2})$"},
             "restoreProcedureRef": {"type": "string", "pattern": "^(PENDING_G2|runbook:[a-z0-9-]+)$"}

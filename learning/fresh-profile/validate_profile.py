@@ -262,7 +262,7 @@ def validate(profile_path: Path = PROFILE, require_approved: bool = False):
         if supply["decision"] != "PENDING_G2" or supply["immutable"]:
             raise ContractError("pending-g2-supply")
     elif supply["decision"] not in {"private-registry", "retained-oci-archive",
-                                    "public-upstream-plus-retained-account-archive"} or not supply["immutable"]:
+                                    "public-upstream-plus-retained-account-archive", "public-ghcr"} or not supply["immutable"]:
         raise ContractError("approved-g2-supply")
 
     if set(spec["budget"]["stopOn"]) != STOP_CONDITIONS:

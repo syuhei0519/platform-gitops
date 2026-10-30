@@ -4,6 +4,7 @@ import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
+import json
 
 import yaml
 
@@ -21,7 +22,8 @@ class ImageSupplyTests(unittest.TestCase):
         self.profile = contract.load_yaml(contract.HERE / "profile.template.yaml")
         self.profile_images = {item["name"]: item for item in self.profile["spec"]["images"]}
 
-    def validate_copy(self, lock, require=False, profile=None, require_source=False):
+    def validate_copy(self, lock, require=False, profile=None, require_source=False,
+                      delivery_inventory=None):
         with tempfile.TemporaryDirectory(dir=contract.HERE) as directory:
             path = Path(directory) / "supply.yaml"
             profile_path = Path(directory) / "profile.yaml"
@@ -39,7 +41,9 @@ class ImageSupplyTests(unittest.TestCase):
             profile_path.write_text(yaml.safe_dump(value, sort_keys=False), encoding="utf-8")
             return contract.validate(path, require_fresh_evidence=require,
                                      profile_override=profile_path,
-                                     require_source_evidence=require_source)
+                                     require_source_evidence=require_source,
+                                     delivery_inventory=(delivery_inventory
+                                         or contract.DELIVERY_INVENTORY))
 
     def approve(self, mode="private-registry"):
         value = copy.deepcopy(self.lock)
@@ -58,7 +62,8 @@ class ImageSupplyTests(unittest.TestCase):
                 "os": "linux", "architecture": "amd64",
             }
             selected_source = ("retained-oci-archive" if item["name"] == "account-runtime" else "public-registry") \
-                if mode == "public-upstream-plus-retained-account-archive" else mode
+                if mode == "public-upstream-plus-retained-account-archive" else \
+                "public-registry" if mode == "public-ghcr" else mode
             if selected_source in {"private-registry", "public-registry"}:
                 item["source"] = {
                     "kind": selected_source, "published": True, "immutable": True,
@@ -126,6 +131,54 @@ class ImageSupplyTests(unittest.TestCase):
                      "public-upstream-plus-retained-account-archive"):
             with self.subTest(mode=mode):
                 self.validate_copy(self.approve(mode), require=True)
+
+    def test_public_ghcr_requires_every_profile_image_delivery(self):
+        value = self.approve("public-ghcr")
+        with self.assertRaisesRegex(contract.SupplyError,
+                                    "public-ghcr-undelivered:kind-node"):
+            self.validate_copy(value)
+
+    def test_public_ghcr_complete_delivery_fixture_has_no_archive(self):
+        value = self.approve("public-ghcr")
+        profile = copy.deepcopy(self.profile)
+        profile["spec"]["decisions"]["G2"] = {
+            "status": "approved", "choice": "public-ghcr"}
+        profile["spec"]["imageSupply"].update(
+            decision="public-ghcr", immutable=True,
+            retentionUntil="2099-10-25", restoreOwner="fixture-owner")
+        inventory = json.loads(contract.DELIVERY_INVENTORY.read_text())
+        by_name = {item["name"]: item for item in inventory["images"]}
+        aliases = {"postgres": "postgres-18"}
+        profile_images = {item["name"]: item for item in profile["spec"]["images"]}
+        account_ref = json.loads((contract.HERE / "security/canonical-contract.json").read_text())[
+            "approvedRuntimeImage"]
+        profile_images["account-runtime"]["ref"] = account_ref
+        for name, profile_image in profile_images.items():
+            if name == "account-runtime":
+                continue
+            inventory_name = aliases.get(name, name)
+            image = by_name[inventory_name]
+            digest = image["source"].rpartition("@")[2]
+            inventory["deliveries"][inventory_name] = {
+                "runUrl": "https://github.com/example/fixture/actions/runs/1",
+                "destinationDigest": digest,
+            }
+            profile_image["ref"] = ("ghcr.io/syuhei0519/platform-lab-images:"
+                                    + image["destinationTag"] + "@" + digest)
+        sources = {item["name"]: item for item in value["spec"]["images"]}
+        for name, profile_image in profile_images.items():
+            sources[name]["source"]["location"] = "oci://" + profile_image["ref"]
+            if name == "account-runtime":
+                digest = contract.image_digest(profile_image["ref"])
+                sources[name]["source"]["manifest"]["manifestDigest"] = digest
+                sources[name]["retrieval"]["observedDigest"] = digest
+        with tempfile.TemporaryDirectory() as directory:
+            inventory_path = Path(directory) / "images.json"
+            inventory_path.write_text(json.dumps(inventory))
+            self.validate_copy(value, require=True, profile=profile,
+                               delivery_inventory=inventory_path)
+        self.assertTrue(all(item["source"]["kind"] == "public-registry"
+                            for item in value["spec"]["images"]))
 
     def test_precluster_source_provenance_does_not_require_postcluster_retrieval(self):
         value = self.approve("retained-oci-archive")

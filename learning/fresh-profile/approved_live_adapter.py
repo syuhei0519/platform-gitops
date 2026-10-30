@@ -231,6 +231,8 @@ def supply_plan_contract(supply_lock: dict, profile_spec: dict) -> dict:
                 or profile_spec["repositories"]["application-manifest"]["commit"] != plugin.get("sourceRevision")):
             raise AdapterRejected("plugin-supply-contract")
     return {
+        "supplyMode": supply_lock["spec"].get("decision", {}).get(
+            "selectedMode", "legacy-archive"),
         **({"rolloutsPlugin": plugin, "applicationRevision": profile_spec["repositories"]["application-manifest"]["commit"]} if plugin is not None else {}),
         "kindNodeRef": profile_images["kind-node"],
         "hostArtifacts": artifacts,
@@ -964,6 +966,8 @@ class ApprovedLiveAdapter:
         if set(self.plan) not in (required, required | {"rolloutsPlugin"}):
             raise AdapterRejected("plan-fields")
         self.plugin_contract = self.plan.get("rolloutsPlugin")
+        self.supply_mode = (expected_supply_contract or {}).get(
+            "supplyMode", "legacy-archive")
         if "rolloutsPlugin" in self.plan and self.plugin_contract is None:
             raise AdapterRejected("plugin-unapproved-contract")
         if self.plugin_contract is not None:
@@ -1061,6 +1065,18 @@ class ApprovedLiveAdapter:
             if step == "image-source":
                 self._validate_image_source_step(actions, expected_supply_contract)
                 continue
+            if step == "image-import" and self.supply_mode == "public-ghcr":
+                if actions["hostArtifacts"]:
+                    raise AdapterRejected("registry-image-import-artifacts")
+                self._validate_node_image_step(
+                    step, actions, expected_image_digests,
+                    expected_health="node-cache-empty")
+                for name in ("verify", "reconcile", "run"):
+                    if len(actions[name]) != 1 or actions[name][0]["tool"] != "kubectl":
+                        raise AdapterRejected("registry-image-import-command")
+                    self._validate_command(actions[name][0], section=name, step=step,
+                                           resource_identities=actions["resourceIdentities"])
+                continue
             if not observations or actions["hostArtifacts"]:
                 raise AdapterRejected("step-cluster-contract:" + step)
             if not all(actions[name] for name in ("verify", "reconcile", "run")):
@@ -1105,6 +1121,11 @@ class ApprovedLiveAdapter:
             for command in actions["run"]:
                 self._validate_command(command, section="run", step=step,
                                        resource_identities=actions["resourceIdentities"])
+            if (step == "image-import" and self.supply_mode != "public-ghcr"
+                    and not any(command["tool"] == "kind"
+                                and command["args"][:2] == ["load", "image-archive"]
+                                for command in actions["run"])):
+                raise AdapterRejected("archive-image-import-command")
 
     @staticmethod
     def _validate_plugin_contract(contract, trusted):
@@ -1166,6 +1187,12 @@ class ApprovedLiveAdapter:
         if actions["observations"] or any(actions[name] for name in ("verify", "reconcile", "run")):
             raise AdapterRejected("image-source-command-contract")
         artifacts = actions["hostArtifacts"]
+        if self.supply_mode == "public-ghcr":
+            if (artifacts or actions["resourceIdentities"] !=
+                    ["SupplyMode/None/public-ghcr"]
+                    or (expected_supply_contract or {}).get("hostArtifacts") != {}):
+                raise AdapterRejected("registry-image-source-contract")
+            return
         if not artifacts or any(not isinstance(item, dict) for item in artifacts):
             raise AdapterRejected("image-source-artifacts")
         identities = []
@@ -1195,14 +1222,15 @@ class ApprovedLiveAdapter:
                         or artifact["sourceIdentity"] != contract.get("sourceIdentity")):
                     raise AdapterRejected("host-artifact-supply-identity:" + artifact["id"])
 
-    def _validate_node_image_step(self, step, actions, expected_image_digests):
+    def _validate_node_image_step(self, step, actions, expected_image_digests,
+                                  expected_health=None):
         expected_identity = ("Node/None/" + self.plan["target"]["clusterName"]
                              + "-control-plane")
         if len(actions["observations"]) != 1:
             raise AdapterRejected("node-image-observation-count:" + step)
         observation = actions["observations"][0]
-        expected_health = "node-cache-empty" if step == "empty-node-cache" \
-            else "node-images-present"
+        expected_health = expected_health or ("node-cache-empty" if step == "empty-node-cache"
+                                               else "node-images-present")
         if (observation["apiVersion"] != "v1" or observation["identity"] != expected_identity
                 or observation["healthPolicy"] != expected_health):
             raise AdapterRejected("node-image-contract:" + step)
@@ -1261,7 +1289,7 @@ class ApprovedLiveAdapter:
                         "jsonpath={.metadata.uid}"]:
                 raise AdapterRejected("kubectl-identity-command")
             return
-        if section in {"verify", "reconcile"}:
+        if section in {"verify", "reconcile"} or (section == "run" and step == "image-import"):
             if content_digest is not None:
                 raise AdapterRejected("kubectl-read-content")
             if step in {"empty-node-cache", "image-import"}:

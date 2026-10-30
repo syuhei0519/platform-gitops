@@ -550,6 +550,39 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
                 {"clusterName": self.cluster, "context": self.context}, self.versions,
                 {"sha256:" + "d" * 64}, supply)
 
+    def test_public_ghcr_plan_has_no_archive_and_rejects_kind_load(self):
+        value = self.plan()
+        registry = copy.deepcopy(value)
+        registry["steps"]["image-source"]["hostArtifacts"] = []
+        registry["steps"]["image-source"]["resourceIdentities"] = [
+            "SupplyMode/None/public-ghcr"]
+        image_import = registry["steps"]["image-import"]
+        image_import["observations"][0]["healthPolicy"] = "node-cache-empty"
+        image_import["run"] = copy.deepcopy(image_import["verify"])
+        supply = {
+            "supplyMode": "public-ghcr",
+            "kindNodeRef": registry["steps"]["cluster"]["run"][0]["args"][-1],
+            "hostArtifacts": {},
+            "helmCharts": {"argo-rollouts": {
+                "version": "2.43.7",
+                "sha256": registry["steps"]["controllers"]["run"][0]["contentSha256"],
+                "crdListSha256": adapter.ROLLOUTS_CRD_LIST_SHA256,
+            }},
+        }
+        adapter.ApprovedLiveAdapter(
+            self.write(registry), FakeTransport(),
+            {"clusterName": self.cluster, "context": self.context}, self.versions,
+            {"sha256:" + "d" * 64}, supply)
+        forbidden = copy.deepcopy(registry)
+        forbidden["steps"]["image-import"]["run"] = copy.deepcopy(
+            value["steps"]["image-import"]["run"])
+        with self.assertRaisesRegex(adapter.AdapterRejected,
+                                    "registry-image-import-command"):
+            adapter.ApprovedLiveAdapter(
+                self.write(forbidden), FakeTransport(),
+                {"clusterName": self.cluster, "context": self.context}, self.versions,
+                {"sha256:" + "d" * 64}, supply)
+
     def test_argocd_noop_stale_or_wrong_revision_never_counts_as_gitops_success(self):
         mutations = (
             lambda value: value["status"]["operationState"].update(phase="Running")
