@@ -71,9 +71,23 @@ class InventoryTest(unittest.TestCase):
 
     def test_inventory_is_fixed_digest_and_mapped(self):
         images = MODULE.load()
-        self.assertEqual(len(images), 14)
+        self.assertEqual(len(images), 12)
         self.assertTrue(all(i["source"].endswith("@" + i["sourceDigest"]) for i in images))
         self.assertTrue(all(i["destination"].startswith("ghcr.io/syuhei0519/platform-lab-images:") for i in images))
+
+    def test_optional_gitlab_learning_profile_is_outside_normal_supply_scope(self):
+        raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
+        excluded = {"gitlab-runner", "gitlab-runner-helper"}
+        self.assertEqual(set(raw["scopeExclusions"]), excluded)
+        self.assertTrue(excluded.isdisjoint(
+            item["name"] for item in raw["images"]))
+        self.assertTrue(excluded.isdisjoint(raw["consumerReferences"]))
+        self.assertTrue(excluded.isdisjoint(raw["redistributionEvidence"]))
+        self.assertTrue(excluded.isdisjoint(raw["deliveries"]))
+        self.assertTrue((PATH.parents[1] /
+                         "environments/local/gitlab-runner.yaml").is_file())
+        self.assertTrue((PATH.parents[1] /
+                         "charts/runner-foundation").is_dir())
 
     def test_dispatch_selects_only_redistribution_ready_images(self):
         images = MODULE.load()
@@ -292,8 +306,7 @@ class InventoryTest(unittest.TestCase):
                     + delivery["destinationDigest"],
                 })
         self.assertTrue({"kind-node", "argocd-redis", "postgres-18", "grafana",
-                         "kube-state-metrics", "gitlab-runner",
-                         "gitlab-runner-helper"}.isdisjoint(raw["deliveries"]))
+                         "kube-state-metrics"}.isdisjoint(raw["deliveries"]))
 
     def test_upstream_or_unknown_consumer_digest_is_rejected(self):
         upstream = ("quay.io/argoproj/argocd:v3.5.2@sha256:"
@@ -372,22 +385,16 @@ class InventoryTest(unittest.TestCase):
             "kind-node": "kind-node/v1.36.4",
             "argocd-redis": "argocd-redis/8.6.4-alpine",
             "postgres-18": "postgres/18.6-bookworm",
-            "gitlab-runner": "gitlab-runner/v19.3.1",
-            "gitlab-runner-helper": "gitlab-runner-helper/x86_64-v19.3.1",
         }
         inspection_runs = {
             "kind-node": 41016047353,
             "argocd-redis": 41050233225,
             "postgres-18": 41020934558,
-            "gitlab-runner": 41021024706,
-            "gitlab-runner-helper": 41021115023,
         }
         inspected_identities = {
             "kind-node": ("sha256:597367624b4748b74b98e4fe2d661cd78063d02ecdaca702fd90572375b83e67", "sha256:0fa975026f71246c4e4744409d43e2e5884bb6e960851b438e50f455808c16f4"),
             "argocd-redis": ("sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1", "sha256:28a8a19f9dd9e63eb5b00e62e385739e9727aacdf1275a037ab52e517c419ded"),
             "postgres-18": ("sha256:6b38fe68f2c02cafffbbce7496f76d110d8a947c039bd22c067e9a43c2250240", "sha256:63d4ad6f3de5e288238b3044970a677dcb0e77004d8b6050732aa0cbbeedf5d7"),
-            "gitlab-runner": ("sha256:f5578027351e1db11564fff9333977fb0d8d13c802b35d42a2f392872fec6a30", "sha256:a69c746c42524ae219ae3e8a41c0848c8990d1a30ef3d5eedf659a78f316d0b2"),
-            "gitlab-runner-helper": ("sha256:ebcce5b4e36899e72aa20554962d7270a0eec1e398e1b0a0f746ede4f4bb1b70", "sha256:1523809e0948018b4c25badacfd4b80dc1607fbc27a10af4298acafd512d1552"),
         }
         self.assertTrue(set(preparations).isdisjoint(raw["redistributionEvidence"]))
         for name, relative in preparations.items():

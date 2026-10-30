@@ -28,6 +28,8 @@ Core Platform v1の設計正本・責任境界・稼働基準は [docs/bootstrap
 
 `charts/runner-foundation` と `charts.gitlab.io` の Runner は GitLab Runner の権限境界を学ぶために残しています。
 アプリの CI は GitHub Actions で実行し、Runner 構成の保持は GitLab CI の再有効化を意味しません。
+この任意の legacy 学習構成は現在のラボ通常経路では使用せず、PLAT-229 の通常 GHCR 配送対象にも含めません。
+Chart、values、RBAC は将来明示的に学習を再開する場合の資料として保持します。
 
 ## 構成と入口
 
