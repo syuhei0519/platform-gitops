@@ -79,7 +79,7 @@ class InventoryTest(unittest.TestCase):
         images = MODULE.load()
         ready = MODULE.select_ready(images, "all")
         self.assertEqual({item["name"] for item in ready}, {
-            "argocd", "argo-rollouts", "istio-pilot", "istio-proxy", "prometheus",
+            "argocd", "argocd-redis", "argo-rollouts", "istio-pilot", "istio-proxy", "prometheus",
             "prometheus-config-reloader", "otel-collector"})
         self.assertNotIn("kube-state-metrics", {item["name"] for item in ready})
         self.assertEqual([item["name"] for item in MODULE.select_ready(images, "argocd")],
@@ -244,7 +244,7 @@ class InventoryTest(unittest.TestCase):
         by_name = {item["name"]: item for item in images}
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         self.assertEqual(set(raw["redistributionEvidence"]), {
-            "argocd", "argo-rollouts", "istio-pilot", "istio-proxy", "prometheus",
+            "argocd", "argocd-redis", "argo-rollouts", "istio-pilot", "istio-proxy", "prometheus",
             "prometheus-config-reloader", "otel-collector"})
         self.assertNotIn("kube-state-metrics", raw["redistributionEvidence"])
         for name, relative in raw["redistributionEvidence"].items():
@@ -257,7 +257,8 @@ class InventoryTest(unittest.TestCase):
                 self.assertEqual(record["manifestDigest"], by_name[name]["sourceDigest"])
                 self.assertEqual(record["platform"], "linux/amd64")
                 self.assertEqual(record["mediaType"],
-                    "application/vnd.docker.distribution.manifest.v2+json")
+                    "application/vnd.oci.image.manifest.v1+json" if name == "argocd-redis"
+                    else "application/vnd.docker.distribution.manifest.v2+json")
             else:
                 self.assertEqual(evidence["image"]["reference"], by_name[name]["source"])
                 self.assertEqual(evidence["image"]["indexDigest"], by_name[name]["sourceDigest"])
@@ -277,7 +278,9 @@ class InventoryTest(unittest.TestCase):
         images = MODULE.load()
         by_name = {item["name"]: item for item in images}
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
-        self.assertEqual(set(raw["deliveries"]), set(raw["redistributionEvidence"]))
+        self.assertTrue(set(raw["deliveries"]).issubset(raw["redistributionEvidence"]))
+        self.assertEqual(set(raw["redistributionEvidence"]) - set(raw["deliveries"]),
+                         {"argocd-redis"})
         for name, delivery in raw["deliveries"].items():
             item = by_name[name]
             self.assertEqual(delivery["destinationDigest"], item["sourceDigest"])
@@ -291,7 +294,7 @@ class InventoryTest(unittest.TestCase):
                     "ghcr.io/syuhei0519/platform-lab-images@"
                     + delivery["destinationDigest"],
                 })
-        self.assertTrue({"kind-node", "argocd-redis", "postgres-18", "grafana",
+        self.assertTrue({"kind-node", "postgres-18", "grafana",
                          "kube-state-metrics", "gitlab-runner",
                          "gitlab-runner-helper"}.isdisjoint(raw["deliveries"]))
 
@@ -370,21 +373,18 @@ class InventoryTest(unittest.TestCase):
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         preparations = {
             "kind-node": "kind-node/v1.36.4",
-            "argocd-redis": "argocd-redis/8.6.4-alpine",
             "postgres-18": "postgres/18.6-bookworm",
             "gitlab-runner": "gitlab-runner/v19.3.1",
             "gitlab-runner-helper": "gitlab-runner-helper/x86_64-v19.3.1",
         }
         inspection_runs = {
             "kind-node": 41016047353,
-            "argocd-redis": 41050233225,
             "postgres-18": 41020934558,
             "gitlab-runner": 41021024706,
             "gitlab-runner-helper": 41021115023,
         }
         inspected_identities = {
             "kind-node": ("sha256:597367624b4748b74b98e4fe2d661cd78063d02ecdaca702fd90572375b83e67", "sha256:0fa975026f71246c4e4744409d43e2e5884bb6e960851b438e50f455808c16f4"),
-            "argocd-redis": ("sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1", "sha256:28a8a19f9dd9e63eb5b00e62e385739e9727aacdf1275a037ab52e517c419ded"),
             "postgres-18": ("sha256:6b38fe68f2c02cafffbbce7496f76d110d8a947c039bd22c067e9a43c2250240", "sha256:63d4ad6f3de5e288238b3044970a677dcb0e77004d8b6050732aa0cbbeedf5d7"),
             "gitlab-runner": ("sha256:f5578027351e1db11564fff9333977fb0d8d13c802b35d42a2f392872fec6a30", "sha256:a69c746c42524ae219ae3e8a41c0848c8990d1a30ef3d5eedf659a78f316d0b2"),
             "gitlab-runner-helper": ("sha256:ebcce5b4e36899e72aa20554962d7270a0eec1e398e1b0a0f746ede4f4bb1b70", "sha256:1523809e0948018b4c25badacfd4b80dc1607fbc27a10af4298acafd512d1552"),
@@ -416,14 +416,13 @@ class InventoryTest(unittest.TestCase):
                              + str(inspection_runs[name]))
             self.assertNotIn("linux-amd64-manifest-and-config-receipt",
                              record["missingEvidence"])
-            if name != "argocd-redis":
-                scan = record["scanEvidence"]
-                self.assertEqual(scan["provenance"],
-                                 "user-provided-github-actions-artifact")
-                self.assertIs(scan["pass"], False)
-                self.assertTrue(scan["criticalFindings"])
-                self.assertIn("critical-vulnerabilities-must-be-fixed",
-                              record["missingEvidence"])
+            scan = record["scanEvidence"]
+            self.assertEqual(scan["provenance"],
+                             "user-provided-github-actions-artifact")
+            self.assertIs(scan["pass"], False)
+            self.assertTrue(scan["criticalFindings"])
+            self.assertIn("critical-vulnerabilities-must-be-fixed",
+                          record["missingEvidence"])
             self.assertTrue(record["missingEvidence"])
             license_path = directory / record["license"]["localPath"]
             self.assertTrue(license_path.is_file())

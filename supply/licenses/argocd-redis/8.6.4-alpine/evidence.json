@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "platform.lab/redistribution-evidence/v1",
+  "name": "argocd-redis",
+  "version": "8.6.4-alpine",
+  "redistributionReady": true,
+  "copyMode": "oci-byte-preserving",
+  "source": {
+    "repository": "https://github.com/redis/docker-library-redis",
+    "tag": "v8.6.4",
+    "commit": "0076c90a8028d29b25313f7272fa2d1245c3be76",
+    "redisSourceTag": "8.6.4",
+    "redisSourceCommit": "554429ff13371da49a534a39d2328754f49efd0b"
+  },
+  "images": [{
+    "name": "argocd-redis",
+    "reference": "public.ecr.aws/docker/library/redis:8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1",
+    "manifestDigest": "sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1",
+    "configDigest": "sha256:28a8a19f9dd9e63eb5b00e62e385739e9727aacdf1275a037ab52e517c419ded",
+    "mediaType": "application/vnd.oci.image.manifest.v1+json",
+    "platform": "linux/amd64"
+  }],
+  "license": {
+    "spdx": "AGPL-3.0-only",
+    "upstreamUrl": "https://github.com/redis/redis/blob/8.6.4/LICENSE.txt",
+    "localPath": "LICENSE.txt",
+    "sha256": "4a0e416b9537688f30dfe69ddaceb2ca64d96b7df02a0a6760d376890ddc4e40",
+    "upstreamNotice": "absent-at-tag"
+  },
+  "correspondingSource": [{
+    "upstreamUrl": "https://github.com/redis/redis/archive/refs/tags/8.6.4.tar.gz",
+    "sha256": "a2029c96311ab1ec2ae489076ae900b6497b3beaa7dc379de26b5df48f696f6c"
+  }, {
+    "upstreamUrl": "https://github.com/redis/docker-library-redis/blob/v8.6.4/alpine/Dockerfile",
+    "localPath": "SOURCE-Dockerfile",
+    "sha256WithNormalizedFinalNewline": "e726763d1e365e0555a0e51fed481d11cdba1198742c622a3bf52c0f017411e2"
+  }],
+  "inspectionReceipt": {
+    "provenance": "user-provided-github-actions-artifact",
+    "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41088052323",
+    "selectedManifestDigest": "sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1",
+    "configDigest": "sha256:28a8a19f9dd9e63eb5b00e62e385739e9727aacdf1275a037ab52e517c419ded"
+  },
+  "scanEvidence": {
+    "provenance": "user-provided-github-actions-artifact",
+    "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41088052323",
+    "dbUpdatedAt": "2026-10-30T13:06:28.139593044Z",
+    "scannedAt": "2026-10-30T16:15:46.236471076Z",
+    "artifactType": "container_image",
+    "sbomComponents": 23,
+    "pass": true,
+    "criticalFindings": [],
+    "warningCount": 29
+  },
+  "runtimePackageEvidence": {
+    "os": "alpine:3.23.5",
+    "virtualPackage": ".redis-rundeps has no asserted license; the retained Dockerfile creates it only as an apk virtual dependency group",
+    "packageDatabase": "https://pkgs.alpinelinux.org/packages?branch=v3.23&repo=main&arch=x86_64",
+    "sourceTree": "https://gitlab.alpinelinux.org/alpine/aports/-/tree/3.23-stable/main",
+    "sources": [
+      {"name":"alpine-baselayout","version":"3.7.2-r0","licenses":["GPL-2.0-only"]},
+      {"name":"alpine-keys","version":"2.6-r0","licenses":["MIT"]},
+      {"name":"alpine-base","version":"3.23.5-r0","licenses":["MIT"]},
+      {"name":"apk-tools","version":"3.0.6-r0","licenses":["GPL-2.0-only"]},
+      {"name":"busybox","version":"1.37.0-r30","licenses":["GPL-2.0-only"]},
+      {"name":"ca-certificates","version":"20260611-r0","licenses":["MPL-2.0","MIT"]},
+      {"name":"libcap-ng","version":"0.8.5-r0","licenses":["GPL-2.0-or-later","LGPL-2.1-or-later"]},
+      {"name":"openssl","version":"3.5.7-r0","licenses":["Apache-2.0"]},
+      {"name":"gcc","version":"15.2.0-r2","licenses":["GPL-2.0-or-later","LGPL-2.1-or-later"]},
+      {"name":"musl","version":"1.2.5-r23","licenses":["MIT","BSD-2-Clause","GPL-2.0-or-later"]},
+      {"name":"pax-utils","version":"1.3.8-r2","licenses":["GPL-2.0-only"]},
+      {"name":"util-linux","version":"2.41.4-r0","licenses":["GPL-2.0-or-later"]},
+      {"name":"tzdata","version":"2026b-r0","licenses":["Public-Domain"]},
+      {"name":"zlib","version":"1.3.2-r0","licenses":["Zlib"]}
+    ]
+  },
+  "inspectionScope": "Fixed OCI identity, current vulnerability gate, tagged Redis source/license, official-image Dockerfile, and Alpine SBOM package/source mapping; not an unlimited legal audit."
+}

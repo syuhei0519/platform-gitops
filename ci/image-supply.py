@@ -72,6 +72,7 @@ def load():
     evidence = data.get("redistributionEvidence", {})
     require(evidence == {
         "argocd": "supply/licenses/argocd/v3.5.2/evidence.json",
+        "argocd-redis": "supply/licenses/argocd-redis/8.6.4-alpine/evidence.json",
         "argo-rollouts": "supply/licenses/argo-rollouts/v1.10.1/evidence.json",
         "istio-pilot": "supply/licenses/istio/1.31.2/evidence.json",
         "istio-proxy": "supply/licenses/istio/1.31.2/evidence.json",
@@ -113,8 +114,12 @@ def _validate_evidence(entries, matrix):
             require(image is not None, "evidence-name")
             require(image["reference"] == by_name[name]["source"], "evidence-source")
             require(image["manifestDigest"] == by_name[name]["sourceDigest"], "evidence-digest")
-            require(image["mediaType"] ==
-                    "application/vnd.docker.distribution.manifest.v2+json", "evidence-media-type")
+            expected_media_type = (
+                "application/vnd.oci.image.manifest.v1+json"
+                if name == "argocd-redis" else
+                "application/vnd.docker.distribution.manifest.v2+json")
+            require(image["mediaType"] == expected_media_type,
+                    "evidence-media-type")
             require(image["platform"] == data_architecture(), "evidence-platform")
         else:
             require(record["name"] == name, "evidence-name")
@@ -123,7 +128,8 @@ def _validate_evidence(entries, matrix):
                     "evidence-digest")
         license_record = record["license"]
         license_path = path.parent / license_record["localPath"]
-        require(license_record["spdx"] == "Apache-2.0", "evidence-license")
+        expected_license = "AGPL-3.0-only" if name == "argocd-redis" else "Apache-2.0"
+        require(license_record["spdx"] == expected_license, "evidence-license")
         require(hashlib.sha256(license_path.read_bytes()).hexdigest() == license_record["sha256"],
                 "evidence-license-digest")
         notice = license_record["upstreamNotice"]
@@ -131,6 +137,26 @@ def _validate_evidence(entries, matrix):
             notice_path = path.parent / notice["localPath"]
             require(hashlib.sha256(notice_path.read_bytes()).hexdigest() == notice["sha256"],
                     "evidence-notice-digest")
+        if name == "argocd-redis":
+            scan = record["scanEvidence"]
+            require(scan["pass"] is True and scan["criticalFindings"] == [],
+                    "evidence-scan")
+            require(scan["runUrl"].endswith("/41088052323")
+                    and scan["sbomComponents"] == 23,
+                    "evidence-scan-binding")
+            runtime = record["runtimePackageEvidence"]
+            require(runtime["sourceTree"] ==
+                    "https://gitlab.alpinelinux.org/alpine/aports/-/tree/3.23-stable/main",
+                    "evidence-runtime-source")
+            require({item["name"] for item in runtime["sources"]} == {
+                "alpine-baselayout", "alpine-keys", "alpine-base", "apk-tools",
+                "busybox", "ca-certificates", "libcap-ng", "openssl", "gcc",
+                "musl", "pax-utils", "util-linux", "tzdata", "zlib",
+            }, "evidence-runtime-packages")
+            dockerfile = path.parent / "SOURCE-Dockerfile"
+            require(hashlib.sha256(dockerfile.read_bytes()).hexdigest() ==
+                    "e726763d1e365e0555a0e51fed481d11cdba1198742c622a3bf52c0f017411e2",
+                    "evidence-source-dockerfile")
 
 
 def _validate_deliveries(deliveries, evidence, matrix):
@@ -140,7 +166,7 @@ def _validate_deliveries(deliveries, evidence, matrix):
     the fixed upstream digest.  This deliberately does not make pending
     inventory entries look delivered.
     """
-    require(set(deliveries) == set(evidence), "delivery-evidence-set")
+    require(set(deliveries).issubset(evidence), "delivery-evidence-set")
     by_name = {item["name"]: item for item in matrix}
     for name, delivery in deliveries.items():
         require(set(delivery) == {"runUrl", "destinationDigest"},
