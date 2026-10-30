@@ -32,13 +32,13 @@
   "revision": "learning-1-31-2",
   "images": {
     "pilot": {
-      "ref": "docker.io/istio/pilot@sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330",
+      "ref": "ghcr.io/syuhei0519/platform-lab-images:istio-pilot-1.31.2@sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330",
       "tag": "1.31.2",
       "platform": "linux/amd64",
       "config_digest": "sha256:f9099e6414f8e725a33c951b33cdfca81069f32b04da219129f413f4a4264406"
     },
     "proxy": {
-      "ref": "docker.io/istio/proxyv2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1",
+      "ref": "ghcr.io/syuhei0519/platform-lab-images:istio-proxyv2-1.31.2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1",
       "tag": "1.31.2",
       "platform": "linux/amd64",
       "config_digest": "sha256:42634830acb228541f2f5442127ccf4cec000782e50e94409d8b90c31739a692"

@@ -525,7 +525,7 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
         ]}
         adapter.supply_plan_contract({"spec": {"images": []}}, profile_spec)
         profile_spec["images"][1]["ref"] = \
-            "quay.io/argoproj/argo-rollouts:v1.10.1"
+            "ghcr.io/syuhei0519/platform-lab-images:argo-rollouts-v1.10.1"
         with self.assertRaisesRegex(adapter.AdapterRejected,
                                     "supply-rollouts-controller-image"):
             adapter.supply_plan_contract({"spec": {"images": []}}, profile_spec)

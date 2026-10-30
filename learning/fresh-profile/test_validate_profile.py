@@ -108,7 +108,7 @@ class FreshProfileTests(unittest.TestCase):
 
         value = copy.deepcopy(self.profile)
         argocd = next(item for item in value["spec"]["images"] if item["name"] == "argocd")
-        argocd["ref"] = argocd["ref"].replace("argocd@", "argocd:v3.5.2@")
+        argocd["ref"] = argocd["ref"].replace("platform-lab-images@", "platform-lab-images:argocd-v3.5.2@")
         with self.assertRaisesRegex(contract.ContractError, "version-lock-image"):
             self.validate_copy(value)
 

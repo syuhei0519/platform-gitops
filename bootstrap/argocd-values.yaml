@@ -4,7 +4,8 @@
 nameOverride: argocd
 global:
   image:
-    tag: v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68
+    repository: ghcr.io/syuhei0519/platform-lab-images
+    tag: argocd-v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68
   networkPolicy:
     create: false
   affinity:
