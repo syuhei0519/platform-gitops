@@ -33,6 +33,14 @@ class InventoryTest(unittest.TestCase):
         self.assertNotIn("packages: write", inspect)
         self.assertNotIn("environment:", inspect)
         self.assertNotIn("image-mirror.py", inspect)
+        self.assertIn("scan-evidence", workflow)
+        self.assertIn("aquasec/trivy:0.75.0@sha256:9db099105405c648166e6b94155eb32f8da12673cf1f455207f7385cc9a77283", inspect)
+        self.assertIn("--format cyclonedx", inspect)
+        self.assertIn(".security/scan-gate -policy security/scan-policy.json", inspect)
+        self.assertIn("-scanner-exit 0", inspect)
+        self.assertIn("--input .oci/layout", inspect)
+        self.assertIn("-image-config \"$CONFIG_DIGEST\"", inspect)
+        self.assertIn("oci-crane-check .oci/layout \"$SELECTED_DIGEST\"", inspect)
 
     def test_destination_state_is_fail_closed(self):
         import subprocess
