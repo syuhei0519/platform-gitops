@@ -41,6 +41,9 @@ class InventoryTest(unittest.TestCase):
         self.assertIn("--input .oci/layout", inspect)
         self.assertIn("-image-config \"$CONFIG_DIGEST\"", inspect)
         self.assertIn("oci-crane-check .oci/layout \"$SELECTED_DIGEST\"", inspect)
+        self.assertIn("Bind an approved candidate to one immutable digest", inspect)
+        self.assertIn("crane digest \"$SOURCE\"", inspect)
+        self.assertIn("inputs.candidate == 'none'", workflow)
 
     def test_destination_state_is_fail_closed(self):
         import subprocess
@@ -95,6 +98,22 @@ class InventoryTest(unittest.TestCase):
                          {item["name"] for item in MODULE.select_ready(images, "all")})
         with self.assertRaisesRegex(ValueError, "unknown-image"):
             MODULE.select_for_inspection(images, "missing")
+
+    def test_candidate_inspection_is_static_and_non_publishable(self):
+        runner = MODULE.select_candidate("gitlab-runner-v19.3.5")
+        helper = MODULE.select_candidate("gitlab-runner-helper-v19.3.5")
+        self.assertEqual(runner[0]["source"],
+                         "registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v19.3.5")
+        self.assertEqual(helper[0]["source"],
+                         "registry.gitlab.com/gitlab-org/ci-cd/gitlab-runner-ubi-images/"
+                         "gitlab-runner-helper-ocp:x86_64-v19.3.5")
+        for candidate in (runner[0], helper[0]):
+            self.assertIs(candidate["candidate"], True)
+            self.assertEqual(candidate["sourceDigest"], "")
+            self.assertEqual(candidate["destination"],
+                             "read-only-candidate-not-publishable")
+        with self.assertRaisesRegex(ValueError, "unknown-candidate"):
+            MODULE.select_candidate("arbitrary-registry-input")
 
     def test_inspection_records_index_child_and_config(self):
         import subprocess
