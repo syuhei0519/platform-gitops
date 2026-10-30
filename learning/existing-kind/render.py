@@ -19,6 +19,14 @@ ISTIO='istio-learning-system'
 SERVER='https://kubernetes.default.svc.cluster.local:443'
 CACHE_NS=[SERVICES,CONTROL,'observability','learning-istio-demo',ISTIO,APP]
 SA=dict(kind='ServiceAccount',name='argocd-application-controller',namespace=CONTROL)
+MANAGED_OBSERVABILITY_IMAGES={
+  'learning-prometheus':(
+    'quay.io/prometheus/prometheus:v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa',
+    'ghcr.io/syuhei0519/platform-lab-images:prometheus-v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa'),
+  'otel-collector':(
+    'ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc',
+    'ghcr.io/syuhei0519/platform-lab-images:otel-collector-contrib-0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc'),
+}
 
 def obj(kind,name,namespace=None,**fields):
     api=('rbac.authorization.k8s.io/v1' if kind in {'Role','RoleBinding','ClusterRole','ClusterRoleBinding'}
@@ -257,6 +265,11 @@ def build(helm,manifest):
     current_dep['spec']['template']['metadata']['annotations']['checksum/config']=hashlib.sha256(current_cm['data']['config.yaml'].encode()).hexdigest()
     outputs['collector-access.yaml']=collector_access
     observability=[d for d in yaml.safe_load_all((ROOT/'adoption/observability.yaml').read_text()) if d]
+    for name,(source,destination) in MANAGED_OBSERVABILITY_IMAGES.items():
+        deployment=next(d for d in observability if d['kind']=='Deployment' and d['metadata']['name']==name)
+        container=deployment['spec']['template']['spec']['containers'][0]
+        if container['image']!=source:raise ValueError('managed observability image source changed: '+name)
+        container['image']=destination
     prom=next(d for d in observability if d['kind']=='ConfigMap' and d['metadata']['name']=='learning-prometheus-config')
     # The adoption capture is immutable history.  Refresh only the current
     # managed copies of the dashboard and recording rules from their canonical

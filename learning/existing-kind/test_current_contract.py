@@ -53,6 +53,26 @@ class CurrentContractTests(unittest.TestCase):
                           'value': 'synthetic-services',
                           'action': 'upsert'})
 
+    def test_only_primary_observability_images_use_platform_ghcr(self):
+        docs = self.resources['lab-learning-observability']
+        deployments = {doc['metadata']['name']: doc for doc in docs
+                       if doc.get('kind') == 'Deployment'}
+        images = {name: deployment['spec']['template']['spec']['containers'][0]['image']
+                  for name, deployment in deployments.items()}
+        self.assertEqual(
+            images['learning-prometheus'],
+            'ghcr.io/syuhei0519/platform-lab-images:prometheus-v3.15.0@sha256:'
+            '86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa')
+        self.assertEqual(
+            images['otel-collector'],
+            'ghcr.io/syuhei0519/platform-lab-images:otel-collector-contrib-0.161.0@sha256:'
+            'b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc')
+        self.assertEqual(
+            images['account-release-otel-collector'],
+            'ghcr.io/open-telemetry/opentelemetry-collector-releases/'
+            'opentelemetry-collector-contrib:0.161.0@sha256:'
+            'b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc')
+
     def test_wrong_current_root_source_fails(self):
         root = copy.deepcopy(self.root)
         app = next(doc for doc in root if doc.get('metadata', {}).get('name') == 'lab-learning-services')
