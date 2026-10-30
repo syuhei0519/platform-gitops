@@ -230,7 +230,12 @@ def supply_plan_contract(supply_lock: dict, profile_spec: dict) -> dict:
                 or profile_images.get("argo-rollouts-plugin") != plugin.get("controllerImage")
                 or profile_spec["repositories"]["application-manifest"]["commit"] != plugin.get("sourceRevision")):
             raise AdapterRejected("plugin-supply-contract")
+    supply_mode = supply_lock["spec"].get("decision", {}).get(
+        "selectedMode", "legacy-archive")
     return {
+        "supplyMode": supply_mode,
+        **({"registryImageSetSha256": _mapping_digest(profile_images)}
+           if supply_mode == "public-ghcr" else {}),
         **({"rolloutsPlugin": plugin, "applicationRevision": profile_spec["repositories"]["application-manifest"]["commit"]} if plugin is not None else {}),
         "kindNodeRef": profile_images["kind-node"],
         "hostArtifacts": artifacts,
@@ -964,6 +969,10 @@ class ApprovedLiveAdapter:
         if set(self.plan) not in (required, required | {"rolloutsPlugin"}):
             raise AdapterRejected("plan-fields")
         self.plugin_contract = self.plan.get("rolloutsPlugin")
+        self.supply_mode = (expected_supply_contract or {}).get(
+            "supplyMode", "legacy-archive")
+        self.registry_image_set_sha256 = (expected_supply_contract or {}).get(
+            "registryImageSetSha256")
         if "rolloutsPlugin" in self.plan and self.plugin_contract is None:
             raise AdapterRejected("plugin-unapproved-contract")
         if self.plugin_contract is not None:
@@ -1061,6 +1070,16 @@ class ApprovedLiveAdapter:
             if step == "image-source":
                 self._validate_image_source_step(actions, expected_supply_contract)
                 continue
+            if step == "image-import" and self.supply_mode == "public-ghcr":
+                if (actions["hostArtifacts"] or actions["observations"]
+                        or actions["resourceIdentities"] !=
+                           ["SupplyMode/None/public-ghcr"]
+                        or any(actions[name] for name in ("verify", "reconcile", "run"))
+                        or not isinstance(self.registry_image_set_sha256, str)
+                        or not re.fullmatch(r"[0-9a-f]{64}",
+                                            self.registry_image_set_sha256)):
+                    raise AdapterRejected("registry-image-import-contract")
+                continue
             if not observations or actions["hostArtifacts"]:
                 raise AdapterRejected("step-cluster-contract:" + step)
             if not all(actions[name] for name in ("verify", "reconcile", "run")):
@@ -1105,6 +1124,11 @@ class ApprovedLiveAdapter:
             for command in actions["run"]:
                 self._validate_command(command, section="run", step=step,
                                        resource_identities=actions["resourceIdentities"])
+            if (step == "image-import" and self.supply_mode != "public-ghcr"
+                    and not any(command["tool"] == "kind"
+                                and command["args"][:2] == ["load", "image-archive"]
+                                for command in actions["run"])):
+                raise AdapterRejected("archive-image-import-command")
 
     @staticmethod
     def _validate_plugin_contract(contract, trusted):
@@ -1166,6 +1190,12 @@ class ApprovedLiveAdapter:
         if actions["observations"] or any(actions[name] for name in ("verify", "reconcile", "run")):
             raise AdapterRejected("image-source-command-contract")
         artifacts = actions["hostArtifacts"]
+        if self.supply_mode == "public-ghcr":
+            if (artifacts or actions["resourceIdentities"] !=
+                    ["SupplyMode/None/public-ghcr"]
+                    or (expected_supply_contract or {}).get("hostArtifacts") != {}):
+                raise AdapterRejected("registry-image-source-contract")
+            return
         if not artifacts or any(not isinstance(item, dict) for item in artifacts):
             raise AdapterRejected("image-source-artifacts")
         identities = []
@@ -1195,14 +1225,15 @@ class ApprovedLiveAdapter:
                         or artifact["sourceIdentity"] != contract.get("sourceIdentity")):
                     raise AdapterRejected("host-artifact-supply-identity:" + artifact["id"])
 
-    def _validate_node_image_step(self, step, actions, expected_image_digests):
+    def _validate_node_image_step(self, step, actions, expected_image_digests,
+                                  expected_health=None):
         expected_identity = ("Node/None/" + self.plan["target"]["clusterName"]
                              + "-control-plane")
         if len(actions["observations"]) != 1:
             raise AdapterRejected("node-image-observation-count:" + step)
         observation = actions["observations"][0]
-        expected_health = "node-cache-empty" if step == "empty-node-cache" \
-            else "node-images-present"
+        expected_health = expected_health or ("node-cache-empty" if step == "empty-node-cache"
+                                               else "node-images-present")
         if (observation["apiVersion"] != "v1" or observation["identity"] != expected_identity
                 or observation["healthPolicy"] != expected_health):
             raise AdapterRejected("node-image-contract:" + step)
@@ -1628,6 +1659,16 @@ class ApprovedLiveAdapter:
             })
         return normalized, _mapping_digest(normalized)
 
+    def _registry_image_import_evidence(self):
+        observed = [{
+            "identity": "SupplyMode/None/public-ghcr",
+            "supplyMode": "public-ghcr",
+            "registryImageSetSha256": self.registry_image_set_sha256,
+            "archiveArtifactCount": 0,
+            "archiveCommandCount": 0,
+        }]
+        return observed, _mapping_digest(observed)
+
     def _preflight_evidence(self, command):
         results, _ = self._run_commands([command])
         clusters = {line.strip() for line in results[0].stdout.splitlines() if line.strip()}
@@ -1840,6 +1881,17 @@ class ApprovedLiveAdapter:
             observed, digest = self._host_artifact_evidence(step)
             return {"verified": True, "resourceDigest": digest,
                     "resourceObservations": observed}
+        if step == "image-import" and self.supply_mode == "public-ghcr":
+            observed, digest = self._registry_image_import_evidence()
+            evidence = checkpoint.get("evidence") if isinstance(checkpoint, dict) else None
+            if (not isinstance(evidence, dict)
+                    or evidence.get("succeeded") is not True
+                    or evidence.get("resourceIdentities") !=
+                       self.plan["steps"][step]["resourceIdentities"]
+                    or evidence.get("resourceObservations") != observed):
+                raise AdapterRejected("registry-image-import-checkpoint")
+            return {"verified": True, "resourceDigest": digest,
+                    "resourceObservations": observed}
         if step == "empty-node-cache":
             evidence = checkpoint.get("evidence") if isinstance(checkpoint, dict) else None
             observations = evidence.get("resourceObservations") if isinstance(evidence, dict) else None
@@ -1865,6 +1917,11 @@ class ApprovedLiveAdapter:
                     "resourceObservations": observed}, "resourceDigest": digest}
         if step == "image-source":
             observed, digest = self._host_artifact_evidence(step)
+            return {"state": "succeeded", "evidence": {"succeeded": True,
+                    "resourceIdentities": self.plan["steps"][step]["resourceIdentities"],
+                    "resourceObservations": observed}, "resourceDigest": digest}
+        if step == "image-import" and self.supply_mode == "public-ghcr":
+            observed, digest = self._registry_image_import_evidence()
             return {"state": "succeeded", "evidence": {"succeeded": True,
                     "resourceIdentities": self.plan["steps"][step]["resourceIdentities"],
                     "resourceObservations": observed}, "resourceDigest": digest}
@@ -1897,6 +1954,12 @@ class ApprovedLiveAdapter:
                     "resourceObservations": observed, "resourceDigest": digest,
                     "mutationInputDigests": {item["identity"]: item["sha256"]
                                              for item in observed}}
+        if step == "image-import" and self.supply_mode == "public-ghcr":
+            observed, digest = self._registry_image_import_evidence()
+            return {"succeeded": True,
+                    "resourceIdentities": self.plan["steps"][step]["resourceIdentities"],
+                    "resourceObservations": observed, "resourceDigest": digest,
+                    "mutationInputDigests": {}}
         if step == "empty-node-cache":
             verified, _ = self._run_commands(self.plan["steps"][step]["run"])
             observed, digest = self._observe(

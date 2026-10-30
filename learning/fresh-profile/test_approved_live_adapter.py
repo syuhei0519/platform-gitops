@@ -550,6 +550,52 @@ class ApprovedLiveAdapterTests(unittest.TestCase):
                 {"clusterName": self.cluster, "context": self.context}, self.versions,
                 {"sha256:" + "d" * 64}, supply)
 
+    def test_public_ghcr_plan_has_no_archive_and_rejects_kind_load(self):
+        value = self.plan()
+        registry = copy.deepcopy(value)
+        registry["steps"]["image-source"]["hostArtifacts"] = []
+        registry["steps"]["image-source"]["resourceIdentities"] = [
+            "SupplyMode/None/public-ghcr"]
+        image_import = registry["steps"]["image-import"]
+        image_import["observations"] = []
+        image_import["resourceIdentities"] = ["SupplyMode/None/public-ghcr"]
+        image_import["verify"] = []
+        image_import["reconcile"] = []
+        image_import["run"] = []
+        supply = {
+            "supplyMode": "public-ghcr",
+            "kindNodeRef": registry["steps"]["cluster"]["run"][0]["args"][-1],
+            "hostArtifacts": {},
+            "registryImageSetSha256": "e" * 64,
+            "helmCharts": {"argo-rollouts": {
+                "version": "2.43.7",
+                "sha256": registry["steps"]["controllers"]["run"][0]["contentSha256"],
+                "crdListSha256": adapter.ROLLOUTS_CRD_LIST_SHA256,
+            }},
+        }
+        live = adapter.ApprovedLiveAdapter(
+            self.write(registry), FakeTransport(),
+            {"clusterName": self.cluster, "context": self.context}, self.versions,
+            {"sha256:" + "d" * 64}, supply)
+        evidence = live.run("image-import")
+        verified = live.verify("image-import", {"evidence": evidence})
+        self.assertEqual(verified["resourceDigest"], evidence["resourceDigest"])
+        self.assertEqual(evidence["resourceObservations"][0]["archiveCommandCount"], 0)
+        changed = copy.deepcopy(evidence)
+        changed["resourceObservations"][0]["registryImageSetSha256"] = "f" * 64
+        with self.assertRaisesRegex(adapter.AdapterRejected,
+                                    "registry-image-import-checkpoint"):
+            live.verify("image-import", {"evidence": changed})
+        forbidden = copy.deepcopy(registry)
+        forbidden["steps"]["image-import"]["run"] = copy.deepcopy(
+            value["steps"]["image-import"]["run"])
+        with self.assertRaisesRegex(adapter.AdapterRejected,
+                                    "registry-image-import-contract"):
+            adapter.ApprovedLiveAdapter(
+                self.write(forbidden), FakeTransport(),
+                {"clusterName": self.cluster, "context": self.context}, self.versions,
+                {"sha256:" + "d" * 64}, supply)
+
     def test_argocd_noop_stale_or_wrong_revision_never_counts_as_gitops_success(self):
         mutations = (
             lambda value: value["status"]["operationState"].update(phase="Running")

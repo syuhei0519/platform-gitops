@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import date
+import importlib.util
 import json
 from pathlib import Path
 import re
@@ -32,6 +33,7 @@ MIGRATION_NOT_APPLICABLE = {
     "reason": "image-does-not-own-account-schema-migration",
 }
 DIGEST = re.compile(r"sha256:[0-9a-f]{64}")
+DELIVERY_INVENTORY = REPOSITORY / "supply/images.json"
 
 
 class SupplyError(ValueError):
@@ -96,7 +98,8 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
             raise SupplyError("pending-mode")
     else:
         if decision["selectedMode"] not in {"private-registry", "retained-oci-archive",
-                                             "public-upstream-plus-retained-account-archive"}:
+                                             "public-upstream-plus-retained-account-archive",
+                                             "public-ghcr"}:
             raise SupplyError("approved-mode")
         for field in ("restoreOwner", "retentionUntil", "restoreProcedureRef"):
             if decision[field].startswith("PENDING_"):
@@ -107,6 +110,8 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
             raise SupplyError("retention-date") from error
         if retention_until <= date.today():
             raise SupplyError("retention-expired")
+        if decision["selectedMode"] == "public-ghcr":
+            _validate_complete_ghcr_delivery(profile_images)
 
     profile_g2 = profile_spec["decisions"]["G2"]
     profile_supply = profile_spec["imageSupply"]
@@ -169,6 +174,8 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
         if not pending:
             if decision["selectedMode"] == "public-upstream-plus-retained-account-archive":
                 expected_kind = "retained-oci-archive" if name == "account-runtime" else "public-registry"
+            elif decision["selectedMode"] == "public-ghcr":
+                expected_kind = "public-registry"
             else:
                 expected_kind = decision["selectedMode"]
             if source["kind"] != expected_kind:
@@ -176,7 +183,8 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
         if source["kind"] == "checked-local-artifact" and source["freshEligible"]:
             raise SupplyError("checked-artifact-eligible:" + name)
         if source["kind"] in {"private-registry", "public-registry", "retained-oci-archive"}:
-            if (decision["selectedMode"] != "public-upstream-plus-retained-account-archive"
+            if (decision["selectedMode"] not in {
+                    "public-upstream-plus-retained-account-archive", "public-ghcr"}
                     and source["kind"] != decision["selectedMode"]):
                 raise SupplyError("mixed-approved-mode:" + name)
             manifest = source["manifest"]
@@ -196,6 +204,9 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
                 location_digest = DIGEST.search(source["location"])
                 if location_digest is None or location_digest.group(0) != expected:
                     raise SupplyError("registry-digest:" + name)
+                if (decision["selectedMode"] == "public-ghcr"
+                        and source["location"] != "oci://" + profile_ref):
+                    raise SupplyError("public-ghcr-source:" + name)
         else:
             retrieval_digest = expected
 
@@ -227,6 +238,54 @@ def validate(lock_path: Path = LOCK, require_fresh_evidence: bool = False,
                 raise SupplyError("observed-architecture:" + name)
 
     return lock, profile
+
+
+def _validated_delivery_inventory():
+    validator_path = REPOSITORY / "ci/image-supply.py"
+    spec = importlib.util.spec_from_file_location("platform_image_supply", validator_path)
+    if spec is None or spec.loader is None:
+        raise SupplyError("delivery-validator-load")
+    validator = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(validator)
+    try:
+        validator.load()
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
+        raise SupplyError("delivery-inventory-invalid") from error
+    return json.loads(DELIVERY_INVENTORY.read_text(encoding="utf-8"))
+
+
+def _validate_complete_ghcr_delivery(profile_images):
+    inventory = _validated_delivery_inventory()
+    images = {item["name"]: item for item in inventory["images"]}
+    deliveries = inventory.get("deliveries", {})
+    aliases = {"postgres": "postgres-18"}
+    canonical_account = json.loads((HERE / "security/canonical-contract.json").read_text(
+        encoding="utf-8"))["approvedRuntimeImage"]
+    account_delivery = inventory["accountDelivery"]
+    for name, profile_image in profile_images.items():
+        reference = profile_image["ref"]
+        if name == "account-runtime":
+            if (reference != canonical_account
+                    or account_delivery["runUrl"] !=
+                       "https://github.com/syuhei0519/backend-app/actions/runs/40924904358"
+                    or account_delivery["destination"] !=
+                       "ghcr.io/syuhei0519/backend-app"
+                    or account_delivery["destinationDigest"] !=
+                       canonical_account.rpartition("@")[2]):
+                raise SupplyError("public-ghcr-account")
+            continue
+        inventory_name = aliases.get(name, name)
+        item = images.get(inventory_name)
+        delivery = deliveries.get(inventory_name)
+        if item is None or delivery is None:
+            raise SupplyError("public-ghcr-undelivered:" + name)
+        digest = delivery["destinationDigest"]
+        expected = "ghcr.io/syuhei0519/platform-lab-images@" + digest
+        tagged = ("ghcr.io/syuhei0519/platform-lab-images:"
+                  + item["destinationTag"] + "@" + digest)
+        if (digest != item["source"].rpartition("@")[2]
+                or reference not in {expected, tagged}):
+            raise SupplyError("public-ghcr-reference:" + name)
 
 
 def main() -> int:
