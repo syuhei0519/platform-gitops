@@ -129,7 +129,7 @@ ROLLOUTS_CONTROLLER_TAG = (
     "v1.10.1@sha256:"
     "fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396"
 )
-ROLLOUTS_CONTROLLER_IMAGE = "quay.io/argoproj/argo-rollouts:" + ROLLOUTS_CONTROLLER_TAG
+ROLLOUTS_CONTROLLER_IMAGE = "ghcr.io/syuhei0519/platform-lab-images:argo-rollouts-" + ROLLOUTS_CONTROLLER_TAG
 
 
 class AdapterRejected(ValueError):

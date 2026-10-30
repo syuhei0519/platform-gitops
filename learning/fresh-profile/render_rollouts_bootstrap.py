@@ -21,7 +21,7 @@ CONTROLLER_IMAGE_TAG = (
     "v1.10.1@sha256:"
     "fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396"
 )
-CONTROLLER_IMAGE = "quay.io/argoproj/argo-rollouts:" + CONTROLLER_IMAGE_TAG
+CONTROLLER_IMAGE = "ghcr.io/syuhei0519/platform-lab-images:argo-rollouts-" + CONTROLLER_IMAGE_TAG
 CRD_TEMPLATES = (
     "analysis-run-crd.yaml",
     "analysis-template-crd.yaml",

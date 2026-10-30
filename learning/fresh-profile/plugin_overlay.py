@@ -3,7 +3,7 @@ import copy
 import re
 
 PLUGIN = 'learning-local/account-policy'
-BASE = 'quay.io/argoproj/argo-rollouts:v1.10.1@sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396'
+BASE = 'ghcr.io/syuhei0519/platform-lab-images:argo-rollouts-v1.10.1@sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396'
 
 
 def overlay(deployment, image, binary_sha256):
