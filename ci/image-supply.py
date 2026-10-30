@@ -5,6 +5,7 @@ This never resolves or invents a destination digest.  A consumer may move to
 GHCR only from the receipt produced after an actual byte-preserving OCI copy.
 """
 import argparse
+from datetime import datetime, timezone
 import hashlib
 import json
 from pathlib import Path
@@ -16,6 +17,7 @@ INVENTORY = ROOT / "supply/images.json"
 DIGEST = re.compile(r"sha256:[0-9a-f]{64}")
 NAME = re.compile(r"[a-z0-9][a-z0-9-]{0,62}")
 TAG = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}")
+SCAN_FRESHNESS_HOURS = 24
 DELIVERY_RUNS = {
     "argocd": "40934558588",
     "argo-rollouts": "40916984294",
@@ -83,6 +85,7 @@ def load():
     evidence = data.get("redistributionEvidence", {})
     require(evidence == {
         "argocd": "supply/licenses/argocd/v3.5.2/evidence.json",
+        "argocd-redis": "supply/licenses/argocd-redis/8.6.4-alpine/evidence.json",
         "argo-rollouts": "supply/licenses/argo-rollouts/v1.10.1/evidence.json",
         "istio-pilot": "supply/licenses/istio/1.31.2/evidence.json",
         "istio-proxy": "supply/licenses/istio/1.31.2/evidence.json",
@@ -124,8 +127,12 @@ def _validate_evidence(entries, matrix):
             require(image is not None, "evidence-name")
             require(image["reference"] == by_name[name]["source"], "evidence-source")
             require(image["manifestDigest"] == by_name[name]["sourceDigest"], "evidence-digest")
-            require(image["mediaType"] ==
-                    "application/vnd.docker.distribution.manifest.v2+json", "evidence-media-type")
+            expected_media_type = (
+                "application/vnd.oci.image.manifest.v1+json"
+                if name == "argocd-redis" else
+                "application/vnd.docker.distribution.manifest.v2+json")
+            require(image["mediaType"] == expected_media_type,
+                    "evidence-media-type")
             require(image["platform"] == data_architecture(), "evidence-platform")
         else:
             require(record["name"] == name, "evidence-name")
@@ -134,7 +141,8 @@ def _validate_evidence(entries, matrix):
                     "evidence-digest")
         license_record = record["license"]
         license_path = path.parent / license_record["localPath"]
-        require(license_record["spdx"] == "Apache-2.0", "evidence-license")
+        expected_license = "AGPL-3.0-only" if name == "argocd-redis" else "Apache-2.0"
+        require(license_record["spdx"] == expected_license, "evidence-license")
         require(hashlib.sha256(license_path.read_bytes()).hexdigest() == license_record["sha256"],
                 "evidence-license-digest")
         notice = license_record["upstreamNotice"]
@@ -142,6 +150,49 @@ def _validate_evidence(entries, matrix):
             notice_path = path.parent / notice["localPath"]
             require(hashlib.sha256(notice_path.read_bytes()).hexdigest() == notice["sha256"],
                     "evidence-notice-digest")
+        if name == "argocd-redis":
+            scan = record["scanEvidence"]
+            require(scan["pass"] is True and scan["criticalFindings"] == [],
+                    "evidence-scan")
+            require(scan["runUrl"].endswith("/41088052323")
+                    and scan["sbomComponents"] == 23,
+                    "evidence-scan-binding")
+            db_updated = datetime.fromisoformat(
+                scan["dbUpdatedAt"].replace("Z", "+00:00"))
+            scanned = datetime.fromisoformat(
+                scan["scannedAt"].replace("Z", "+00:00"))
+            require(0 <= (scanned - db_updated).total_seconds() <=
+                    SCAN_FRESHNESS_HOURS * 3600, "evidence-scan-db-age")
+            runtime = record["runtimePackageEvidence"]
+            require(runtime["sourceTree"] ==
+                    "https://gitlab.alpinelinux.org/alpine/aports/-/tree/3.23-stable/main",
+                    "evidence-runtime-source")
+            require({item["name"] for item in runtime["sources"]} == {
+                "alpine-baselayout", "alpine-keys", "alpine-base", "apk-tools",
+                "busybox", "ca-certificates", "libcap-ng", "openssl", "gcc",
+                "musl", "pax-utils", "util-linux", "tzdata", "zlib",
+            }, "evidence-runtime-packages")
+            require(len(runtime["components"]) == 21 and
+                    len({item["package"] for item in runtime["components"]}) == 21,
+                    "evidence-runtime-components")
+            sources = {item["name"]: item for item in runtime["sources"]}
+            for component in runtime["components"]:
+                source = sources.get(component["sourceName"])
+                require(source is not None and
+                        source["version"] == component["sourceVersion"],
+                        "evidence-runtime-component-source")
+            for source in runtime["sources"]:
+                require(source["sourcePurl"] ==
+                        "pkg:apk/alpine/{}@{}?arch=source&distro=3.23.5".format(
+                            source["name"], source["version"]),
+                        "evidence-runtime-source-identity")
+                require(source["aportsPath"] ==
+                        "main/{}/APKBUILD".format(source["name"]),
+                        "evidence-runtime-source-path")
+            dockerfile = path.parent / "SOURCE-Dockerfile"
+            require(hashlib.sha256(dockerfile.read_bytes()).hexdigest() ==
+                    "e726763d1e365e0555a0e51fed481d11cdba1198742c622a3bf52c0f017411e2",
+                    "evidence-source-dockerfile")
 
 
 def _validate_deliveries(deliveries, evidence, matrix):
@@ -151,7 +202,7 @@ def _validate_deliveries(deliveries, evidence, matrix):
     the fixed upstream digest.  This deliberately does not make pending
     inventory entries look delivered.
     """
-    require(set(deliveries) == set(evidence), "delivery-evidence-set")
+    require(set(deliveries).issubset(evidence), "delivery-evidence-set")
     by_name = {item["name"]: item for item in matrix}
     for name, delivery in deliveries.items():
         require(set(delivery) == {"runUrl", "destinationDigest"},
@@ -258,6 +309,24 @@ def select_ready(matrix, selection):
     return selected
 
 
+def require_fresh_scan(matrix, now=None):
+    """Reject a scan-qualified image when its DB is stale at write time."""
+    evidence = json.loads(INVENTORY.read_text(), object_pairs_hook=_unique)[
+        "redistributionEvidence"]
+    now = now or datetime.now(timezone.utc)
+    for item in matrix:
+        if item["name"] != "argocd-redis":
+            continue
+        record = json.loads((ROOT / evidence[item["name"]]).read_text(),
+                            object_pairs_hook=_unique)
+        value = record["scanEvidence"]["dbUpdatedAt"]
+        updated = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        age = now - updated
+        require(age.total_seconds() >= 0, "scan-db-future")
+        require(age.total_seconds() <= SCAN_FRESHNESS_HOURS * 3600,
+                "scan-db-expired")
+
+
 def select_for_inspection(matrix, selection):
     """Select one exact inventory entry without making it redistribution-ready.
 
@@ -293,6 +362,7 @@ def main():
     parser.add_argument("--inspect-only", action="store_true")
     parser.add_argument("--candidate")
     parser.add_argument("--github-output")
+    parser.add_argument("--require-fresh-scan", action="store_true")
     args = parser.parse_args()
     inventory = load()
     if args.candidate:
@@ -301,6 +371,10 @@ def main():
     else:
         matrix = (select_for_inspection(inventory, args.select) if args.inspect_only
                   else select_ready(inventory, args.select))
+    if args.require_fresh_scan:
+        require(not args.inspect_only and not args.candidate,
+                "fresh-scan-write-only")
+        require_fresh_scan(matrix)
     encoded = json.dumps({"include": matrix}, separators=(",", ":"), sort_keys=True)
     if args.github_output:
         with open(args.github_output, "a", encoding="utf-8") as output:
