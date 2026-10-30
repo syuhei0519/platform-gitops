@@ -184,6 +184,10 @@ jobs:
           go install github.com/google/go-containerregistry/cmd/crane@v0.21.7
           (cd ci/image-copy; go build -o ../../oci-copy-once .)
           echo "$PWD" >> "$GITHUB_PATH"
+      - name: Recheck scan database freshness immediately before copy
+        env:
+          IMAGE_NAME: ${{ matrix.name }}
+        run: python3 -I ci/image-supply.py --select "$IMAGE_NAME" --require-fresh-scan >/dev/null
       - name: Copy the exact OCI object and record its type
         env:
           SOURCE: ${{ matrix.source }}

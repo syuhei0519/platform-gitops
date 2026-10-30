@@ -6,6 +6,9 @@ its protected-mode source edit) are retained or linked here as corresponding
 source material. The local Dockerfile has one normalized final newline; its
 upstream Git blob identity is recorded separately.
 
-This record is not redistribution-ready. The fixed linux/amd64 OCI manifest
-and config are confirmed by the recorded inspection run. Alpine runtime package
-license/source mapping, SBOM, and scan remain missing.
+The fixed linux/amd64 OCI manifest/config, current vulnerability gate, and
+Alpine runtime package license/source mapping are recorded in `evidence.json`.
+The `.redis-rundeps` entry is an apk virtual dependency group created by the
+retained Dockerfile; no license is inferred for it. Redis itself is provided
+through the separately retained tagged source and AGPL license rather than the
+OS-package portion of the SBOM.
