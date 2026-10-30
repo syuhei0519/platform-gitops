@@ -9,5 +9,6 @@
   "inspectionReceipt": {"provenance": "user-provided-run-log", "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41021115023", "schemaVersion": "platform.lab/image-inspection-receipt/v1", "topMediaType": "application/vnd.docker.distribution.manifest.v2+json", "selectedMediaType": "application/vnd.docker.distribution.manifest.v2+json"},
   "license": {"spdx": "MIT", "upstreamUrl": "https://gitlab.com/gitlab-org/ci-cd/gitlab-runner-ubi-images/-/blob/master/LICENSE", "localPath": "LICENSE", "sha256": "a4d0c52606f03a51f4c957fad43fac7cb37a5417bd9b8bdf6125c1765ba7c58d", "upstreamNotice": "absent-in-build-repository"},
   "ubiTerms": "https://developers.redhat.com/articles/ubi-faq",
-  "missingEvidence": ["exact-ubi-image-build-commit", "runtime-rpm-sbom-confirming-only-redistributable-ubi-content", "current-vulnerability-scan"]
+  "scanEvidence": {"provenance": "user-provided-github-actions-artifact", "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41046398539", "dbUpdatedAt": "2026-10-30T07:16:25.054174501Z", "scannedAt": "2026-10-30T11:13:37.225366736Z", "artifactType": "container_image", "sbomComponents": 347, "pass": false, "criticalFindings": [{"cve": "CVE-2026-114406", "package": "ca-certificates", "installed": "2025.2.80_v9.0.305-91.el9", "fixed": "2026.2.92_v9.0.319-90.3.el9_8"}]},
+  "missingEvidence": ["exact-ubi-image-build-commit", "runtime-rpm-review-confirming-only-redistributable-ubi-content", "critical-vulnerabilities-must-be-fixed"]
 }
