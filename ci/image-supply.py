@@ -65,6 +65,17 @@ def load():
         "consumerCutover": "only-after-recorded-destination-digest",
         "offlineImport": "explicit-exception-only",
     }, "policy")
+    require(data.get("scopeExclusions") == {
+        "gitlab-runner": {
+            "reason": "optional-legacy-gitlab-learning-profile-not-used-by-current-lab-path",
+            "retainedConsumer": "environments/local/gitlab-runner.yaml",
+        },
+        "gitlab-runner-helper": {
+            "reason": "optional-legacy-gitlab-learning-profile-not-used-by-current-lab-path",
+            "retainedConsumer":
+                "bootstrap/versions.lock.yaml spec.gitlabRunner.helperImage",
+        },
+    }, "scope-exclusions")
     require(data.get("accountDelivery") == {
         "runUrl": "https://github.com/syuhei0519/backend-app/actions/runs/40924904358",
         "destination": "ghcr.io/syuhei0519/backend-app",
@@ -95,7 +106,7 @@ def load():
         seen_names.add(item["name"]); seen_tags.add(item["destinationTag"])
         matrix.append({**item, "sourceDigest": digest,
                        "destination": destination + ":" + item["destinationTag"]})
-    require(len(matrix) == 14, "inventory-count")
+    require(len(matrix) == 12, "inventory-count")
     _validate_evidence(evidence, matrix)
     _validate_deliveries(data.get("deliveries", {}), evidence, matrix)
     _validate_consumers(data.get("consumerReferences", {}),
