@@ -202,6 +202,41 @@ class InventoryTest(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(notice_path.read_bytes()).hexdigest(),
                     notice["sha256"])
 
+    def test_pending_redistribution_materials_cannot_enter_ready_matrix(self):
+        images = MODULE.load()
+        by_name = {item["name"]: item for item in images}
+        raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
+        preparations = {
+            "kind-node": "kind-node/v1.36.4",
+            "argocd-redis": "argocd-redis/8.6.4-alpine",
+            "postgres-18": "postgres/18.6-bookworm",
+            "gitlab-runner": "gitlab-runner/v19.3.1",
+            "gitlab-runner-helper": "gitlab-runner-helper/x86_64-v19.3.1",
+        }
+        self.assertTrue(set(preparations).isdisjoint(raw["redistributionEvidence"]))
+        for name, relative in preparations.items():
+            directory = PATH.parents[1] / "supply/licenses" / relative
+            record = json.loads((directory / "preparation.json").read_text())
+            self.assertEqual(record["schemaVersion"],
+                             "platform.lab/redistribution-preparation/v1")
+            self.assertEqual(record["name"], name)
+            self.assertIs(record["redistributionReady"], False)
+            self.assertEqual(record["copyMode"], "oci-byte-preserving")
+            self.assertEqual(record["image"]["reference"], by_name[name]["source"])
+            self.assertIn(by_name[name]["sourceDigest"], {
+                record["image"].get("indexDigest"),
+                record["image"].get("manifestDigest"),
+            })
+            self.assertEqual(record["image"]["selectedPlatform"], "linux/amd64")
+            self.assertIsNone(record["image"]["selectedManifestDigest"])
+            self.assertIsNone(record["image"]["configDigest"])
+            self.assertTrue(record["missingEvidence"])
+            license_path = directory / record["license"]["localPath"]
+            self.assertTrue(license_path.is_file())
+            import hashlib
+            self.assertEqual(hashlib.sha256(license_path.read_bytes()).hexdigest(),
+                             record["license"]["sha256"])
+
     def test_duplicate_and_mutable_source_are_refused(self):
         original = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         for mutate in (lambda d: d["images"][1].update(name=d["images"][0]["name"]),

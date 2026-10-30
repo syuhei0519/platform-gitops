@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "platform.lab/redistribution-preparation/v1",
+  "name": "gitlab-runner-helper",
+  "version": "x86_64-v19.3.1",
+  "redistributionReady": false,
+  "copyMode": "oci-byte-preserving",
+  "source": {"repository": "https://gitlab.com/gitlab-org/ci-cd/gitlab-runner-ubi-images", "projectId": 17019611, "buildDocumentation": "https://gitlab.com/gitlab-org/ci-cd/gitlab-runner-ubi-images/-/blob/master/README.md", "runnerSourceTag": "v19.3.1", "runnerSourceCommit": "a16f5092084b0373ebc30c6910f8972997e44b70"},
+  "image": {"reference": "registry.gitlab.com/gitlab-org/ci-cd/gitlab-runner-ubi-images/gitlab-runner-helper-ocp:x86_64-v19.3.1@sha256:ebcce5b4e36899e72aa20554962d7270a0eec1e398e1b0a0f746ede4f4bb1b70", "manifestDigest": "sha256:ebcce5b4e36899e72aa20554962d7270a0eec1e398e1b0a0f746ede4f4bb1b70", "selectedPlatform": "linux/amd64", "selectedManifestDigest": null, "configDigest": null},
+  "license": {"spdx": "MIT", "upstreamUrl": "https://gitlab.com/gitlab-org/ci-cd/gitlab-runner-ubi-images/-/blob/master/LICENSE", "localPath": "LICENSE", "sha256": "a4d0c52606f03a51f4c957fad43fac7cb37a5417bd9b8bdf6125c1765ba7c58d", "upstreamNotice": "absent-in-build-repository"},
+  "ubiTerms": "https://developers.redhat.com/articles/ubi-faq",
+  "missingEvidence": ["linux-amd64-manifest-and-config-receipt", "exact-ubi-image-build-commit", "runtime-rpm-sbom-confirming-only-redistributable-ubi-content", "current-vulnerability-scan"]
+}
