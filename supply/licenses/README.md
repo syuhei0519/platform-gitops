@@ -38,11 +38,17 @@ For an Argo-managed existing-kind resource, review the revert render and sync
 only the named Application or resource; do not sync the already-drifted root.
 No database or PVC rollback is implied by an image-repository-only revert.
 
-Normal online startup pulls the fixed GHCR reference directly. `kind load
-image-archive` is allowed only by the separately approved
-`retained-oci-archive` offline exception in the fresh-profile supply lock. It
-is not a normal delivery step and must not be used to claim GHCR availability.
-The representative isolated check is a direct
+For the delivered consumers recorded above, an online start can pull the fixed
+GHCR reference directly. The representative isolated check is a direct
 `docker run --rm --network none <prometheus GHCR tag@digest> --version`; it
 must report Prometheus 3.15.0 on linux/amd64 without a preceding archive load.
+
+This does **not** yet make the full fresh-profile startup registry-only. Its
+current mixed supply mode still requires the retained Account archive, and the
+approved live adapter can therefore run `kind load image-archive`. Completing
+PLAT-229 still requires a separately reviewed normal registry supply mode that
+generates no archive import step, while retaining archive import as an explicit
+offline exception. The representative Prometheus check proves only that one
+delivered public image can be pulled and started without manual loading; it is
+not a fresh-kind or whole-profile acceptance result.
 

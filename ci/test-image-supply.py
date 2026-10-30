@@ -210,13 +210,31 @@ class InventoryTest(unittest.TestCase):
         for name, delivery in raw["deliveries"].items():
             item = by_name[name]
             self.assertEqual(delivery["destinationDigest"], item["sourceDigest"])
-            for relative in delivery["consumerFiles"]:
-                text = (PATH.parents[1] / relative).read_text()
-                self.assertIn("ghcr.io/syuhei0519/platform-lab-images", text)
-                self.assertIn(delivery["destinationDigest"], text)
+            for consumer in delivery["consumers"]:
+                actual = MODULE._consumer_image(
+                    PATH.parents[1] / consumer["path"], consumer["type"],
+                    consumer["identity"])
+                self.assertIn(actual, {
+                    "ghcr.io/syuhei0519/platform-lab-images:"
+                    + item["destinationTag"] + "@" + delivery["destinationDigest"],
+                    "ghcr.io/syuhei0519/platform-lab-images@"
+                    + delivery["destinationDigest"],
+                })
         self.assertTrue({"kind-node", "argocd-redis", "postgres-18", "grafana",
                          "kube-state-metrics", "gitlab-runner",
                          "gitlab-runner-helper"}.isdisjoint(raw["deliveries"]))
+
+    def test_upstream_or_unknown_consumer_digest_is_rejected(self):
+        upstream = ("quay.io/argoproj/argocd:v3.5.2@sha256:"
+                    "478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68")
+        unknown = ("ghcr.io/syuhei0519/platform-lab-images@sha256:"
+                   + "d" * 64)
+        for actual in (upstream, unknown):
+            with self.subTest(actual=actual), \
+                    mock.patch.object(MODULE, "_consumer_image", return_value=actual), \
+                    self.assertRaisesRegex(ValueError,
+                                           "delivery-consumer-reference:argocd"):
+                MODULE.load()
 
     def test_account_canonical_normal_consumer_is_public_ghcr(self):
         canonical = ("ghcr.io/syuhei0519/backend-app@sha256:"

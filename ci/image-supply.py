@@ -9,6 +9,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 INVENTORY = ROOT / "supply/images.json"
@@ -106,7 +107,7 @@ def _validate_deliveries(deliveries, evidence, matrix):
     require(set(deliveries) == set(evidence), "delivery-evidence-set")
     by_name = {item["name"]: item for item in matrix}
     for name, delivery in deliveries.items():
-        require(set(delivery) == {"runUrl", "destinationDigest", "consumerFiles"},
+        require(set(delivery) == {"runUrl", "destinationDigest", "consumers"},
                 "delivery-fields")
         item = by_name[name]
         require(delivery["destinationDigest"] == item["sourceDigest"],
@@ -114,15 +115,51 @@ def _validate_deliveries(deliveries, evidence, matrix):
         require(re.fullmatch(
             r"https://github\.com/syuhei0519/platform-gitops/actions/runs/[0-9]+",
             delivery["runUrl"]), "delivery-run")
-        require(isinstance(delivery["consumerFiles"], list)
-                and delivery["consumerFiles"], "delivery-consumers")
+        require(isinstance(delivery["consumers"], list)
+                and delivery["consumers"], "delivery-consumers")
         repository = "ghcr.io/syuhei0519/platform-lab-images"
-        for relative in delivery["consumerFiles"]:
+        tagged = repository + ":" + item["destinationTag"] + "@" + delivery["destinationDigest"]
+        tagless = repository + "@" + delivery["destinationDigest"]
+        for consumer in delivery["consumers"]:
+            require(set(consumer) == {"path", "type", "identity"},
+                    "delivery-consumer-fields")
+            relative = consumer["path"]
             require(isinstance(relative, str) and not relative.startswith("/"),
                     "delivery-consumer-path")
-            text = (ROOT / relative).read_text()
-            require(repository in text and delivery["destinationDigest"] in text,
+            actual = _consumer_image(ROOT / relative, consumer["type"], consumer["identity"])
+            require(actual in {tagged, tagless},
                     "delivery-consumer-reference:" + name + ":" + relative)
+
+
+def _consumer_image(path, consumer_type, identity):
+    docs = list(yaml.safe_load_all(path.read_text()))
+    if consumer_type == "profile-image":
+        require(len(docs) == 1, "consumer-profile-docs")
+        matches = [item["ref"] for item in docs[0]["spec"]["images"]
+                   if item["name"] == identity]
+        require(len(matches) == 1, "consumer-profile-identity")
+        return matches[0]
+    if consumer_type == "deployment-image":
+        matches = [doc for doc in docs if doc and doc.get("kind") == "Deployment"
+                   and doc.get("metadata", {}).get("name") == identity]
+        require(len(matches) == 1, "consumer-deployment-identity")
+        containers = matches[0]["spec"]["template"]["spec"]["containers"]
+        require(len(containers) == 1, "consumer-deployment-containers")
+        return containers[0]["image"]
+    require(len(docs) == 1, "consumer-values-docs")
+    value = docs[0]
+    for key in identity.split("."):
+        require(isinstance(value, dict) and key in value, "consumer-values-identity")
+        value = value[key]
+    if consumer_type == "value-image":
+        require(isinstance(value, str), "consumer-value-image")
+        return value
+    if consumer_type == "split-image":
+        require(isinstance(value, dict)
+                and set(("repository", "tag", "digest")).issubset(value),
+                "consumer-split-image")
+        return value["repository"] + ":" + value["tag"] + "@" + value["digest"]
+    raise ValueError("consumer-type")
 
 
 def data_architecture():
