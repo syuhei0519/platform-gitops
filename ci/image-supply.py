@@ -5,6 +5,7 @@ This never resolves or invents a destination digest.  A consumer may move to
 GHCR only from the receipt produced after an actual byte-preserving OCI copy.
 """
 import argparse
+from datetime import datetime, timezone
 import hashlib
 import json
 from pathlib import Path
@@ -16,6 +17,7 @@ INVENTORY = ROOT / "supply/images.json"
 DIGEST = re.compile(r"sha256:[0-9a-f]{64}")
 NAME = re.compile(r"[a-z0-9][a-z0-9-]{0,62}")
 TAG = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}")
+SCAN_FRESHNESS_HOURS = 24
 DELIVERY_RUNS = {
     "argocd": "40934558588",
     "argo-rollouts": "40916984294",
@@ -144,6 +146,12 @@ def _validate_evidence(entries, matrix):
             require(scan["runUrl"].endswith("/41088052323")
                     and scan["sbomComponents"] == 23,
                     "evidence-scan-binding")
+            db_updated = datetime.fromisoformat(
+                scan["dbUpdatedAt"].replace("Z", "+00:00"))
+            scanned = datetime.fromisoformat(
+                scan["scannedAt"].replace("Z", "+00:00"))
+            require(0 <= (scanned - db_updated).total_seconds() <=
+                    SCAN_FRESHNESS_HOURS * 3600, "evidence-scan-db-age")
             runtime = record["runtimePackageEvidence"]
             require(runtime["sourceTree"] ==
                     "https://gitlab.alpinelinux.org/alpine/aports/-/tree/3.23-stable/main",
@@ -153,6 +161,23 @@ def _validate_evidence(entries, matrix):
                 "busybox", "ca-certificates", "libcap-ng", "openssl", "gcc",
                 "musl", "pax-utils", "util-linux", "tzdata", "zlib",
             }, "evidence-runtime-packages")
+            require(len(runtime["components"]) == 21 and
+                    len({item["package"] for item in runtime["components"]}) == 21,
+                    "evidence-runtime-components")
+            sources = {item["name"]: item for item in runtime["sources"]}
+            for component in runtime["components"]:
+                source = sources.get(component["sourceName"])
+                require(source is not None and
+                        source["version"] == component["sourceVersion"],
+                        "evidence-runtime-component-source")
+            for source in runtime["sources"]:
+                require(source["sourcePurl"] ==
+                        "pkg:apk/alpine/{}@{}?arch=source&distro=3.23.5".format(
+                            source["name"], source["version"]),
+                        "evidence-runtime-source-identity")
+                require(source["aportsPath"] ==
+                        "main/{}/APKBUILD".format(source["name"]),
+                        "evidence-runtime-source-path")
             dockerfile = path.parent / "SOURCE-Dockerfile"
             require(hashlib.sha256(dockerfile.read_bytes()).hexdigest() ==
                     "e726763d1e365e0555a0e51fed481d11cdba1198742c622a3bf52c0f017411e2",
@@ -273,6 +298,24 @@ def select_ready(matrix, selection):
     return selected
 
 
+def require_fresh_scan(matrix, now=None):
+    """Reject a scan-qualified image when its DB is stale at write time."""
+    evidence = json.loads(INVENTORY.read_text(), object_pairs_hook=_unique)[
+        "redistributionEvidence"]
+    now = now or datetime.now(timezone.utc)
+    for item in matrix:
+        if item["name"] != "argocd-redis":
+            continue
+        record = json.loads((ROOT / evidence[item["name"]]).read_text(),
+                            object_pairs_hook=_unique)
+        value = record["scanEvidence"]["dbUpdatedAt"]
+        updated = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        age = now - updated
+        require(age.total_seconds() >= 0, "scan-db-future")
+        require(age.total_seconds() <= SCAN_FRESHNESS_HOURS * 3600,
+                "scan-db-expired")
+
+
 def select_for_inspection(matrix, selection):
     """Select one exact inventory entry without making it redistribution-ready.
 
@@ -308,6 +351,7 @@ def main():
     parser.add_argument("--inspect-only", action="store_true")
     parser.add_argument("--candidate")
     parser.add_argument("--github-output")
+    parser.add_argument("--require-fresh-scan", action="store_true")
     args = parser.parse_args()
     inventory = load()
     if args.candidate:
@@ -316,6 +360,10 @@ def main():
     else:
         matrix = (select_for_inspection(inventory, args.select) if args.inspect_only
                   else select_ready(inventory, args.select))
+    if args.require_fresh_scan:
+        require(not args.inspect_only and not args.candidate,
+                "fresh-scan-write-only")
+        require_fresh_scan(matrix)
     encoded = json.dumps({"include": matrix}, separators=(",", ":"), sort_keys=True)
     if args.github_output:
         with open(args.github_output, "a", encoding="utf-8") as output:

@@ -5,6 +5,7 @@ import tempfile
 import unittest
 from unittest import mock
 import os
+from datetime import datetime, timezone
 
 PATH = Path(__file__).with_name("image-supply.py")
 SPEC = importlib.util.spec_from_file_location("image_supply", PATH)
@@ -87,6 +88,21 @@ class InventoryTest(unittest.TestCase):
         for name in ("kube-state-metrics", "grafana", "missing"):
             with self.assertRaisesRegex(ValueError, "image-not-redistribution-ready"):
                 MODULE.select_ready(images, name)
+
+    def test_redis_scan_freshness_is_rechecked_at_write_time(self):
+        redis = MODULE.select_ready(MODULE.load(), "argocd-redis")
+        MODULE.require_fresh_scan(
+            redis, datetime(2026, 10, 31, 13, 6, 27, tzinfo=timezone.utc))
+        with self.assertRaisesRegex(ValueError, "scan-db-expired"):
+            MODULE.require_fresh_scan(
+                redis, datetime(2026, 10, 31, 13, 6, 29, tzinfo=timezone.utc))
+        workflow = (PATH.parents[1] /
+                    ".github/workflows/external-image-mirror.yml").read_text()
+        mirror = workflow.split("  mirror:\n", 1)[1]
+        self.assertIn("Recheck scan database freshness immediately before copy", mirror)
+        self.assertIn("--require-fresh-scan", mirror)
+        self.assertLess(mirror.index("--require-fresh-scan"),
+                        mirror.index("image-mirror.py"))
 
     def test_read_only_inspection_can_select_one_unready_image(self):
         images = MODULE.load()
