@@ -49,7 +49,11 @@ def main():
         raise SystemExit("usage: image-scan-exception.py RECEIPT SUMMARY")
     receipt = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
     summary = json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))
-    validate(receipt, summary)
+    try:
+        validate(receipt, summary)
+    except ValueError as error:
+        print("scan exception binding rejected: " + str(error), file=sys.stderr)
+        raise SystemExit(1) from None
 
 
 if __name__ == "__main__":

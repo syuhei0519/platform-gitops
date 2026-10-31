@@ -148,9 +148,14 @@ jobs:
                 --quiet --no-progress --scanners vuln --format cyclonedx \
                 --output receipts/sbom.cdx.json
             '
+          set +e
           .security/scan-gate -policy security/scan-policy.json \
             -db .cache/trivy/db/metadata.json -report receipts/scan.json \
             -out receipts/scan-gate.json -scanner-exit 0 -image-config "$CONFIG_DIGEST"
+          GATE_STATUS="$?"
+          set -e
+          python3 -m json.tool receipts/scan-gate.json
+          test "$GATE_STATUS" -eq 0
           python3 -I ci/image-scan-exception.py \
             receipts/receipt.json receipts/scan-gate.json
       - if: ${{ always() }}
