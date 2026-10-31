@@ -75,6 +75,12 @@ def load():
         "offlineImport": "explicit-exception-only",
     }, "policy")
     require(data.get("scopeExclusions") == {
+        "kind-node": {
+            "reason":
+                "cluster-construction-only-not-required-by-plat-229-existing-kind-runtime",
+            "retainedConsumer":
+                "bootstrap/kind.yaml and learning/fresh-profile/profile.template.yaml",
+        },
         "gitlab-runner": {
             "reason": "optional-legacy-gitlab-learning-profile-not-used-by-current-lab-path",
             "retainedConsumer": "environments/local/gitlab-runner.yaml",
@@ -117,7 +123,7 @@ def load():
         seen_names.add(item["name"]); seen_tags.add(item["destinationTag"])
         matrix.append({**item, "sourceDigest": digest,
                        "destination": destination + ":" + item["destinationTag"]})
-    require(len(matrix) == 12, "inventory-count")
+    require(len(matrix) == 11, "inventory-count")
     _validate_evidence(evidence, matrix)
     _validate_deliveries(data.get("deliveries", {}), evidence, matrix)
     _validate_consumers(data.get("consumerReferences", {}),

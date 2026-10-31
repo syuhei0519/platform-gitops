@@ -264,6 +264,11 @@ def _validate_complete_ghcr_delivery(profile_images):
     account_delivery = inventory["accountDelivery"]
     for name, profile_image in profile_images.items():
         reference = profile_image["ref"]
+        if name == "kind-node":
+            version_lock = load_yaml(REPOSITORY / "bootstrap/versions.lock.yaml")["spec"]
+            if reference != version_lock["kind"]["nodeImage"]:
+                raise SupplyError("public-ghcr-construction-image:kind-node")
+            continue
         if name == "account-runtime":
             if (reference != canonical_account
                     or account_delivery["runUrl"] !=
