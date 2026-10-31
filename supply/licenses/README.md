@@ -18,8 +18,10 @@ Istio pilot/proxy, Prometheus, Prometheus config reloader, and the OpenTelemetry
 Collector, Grafana 13.2.5, and kube-state-metrics v2.20.0. Grafana consumers
 remain on 13.2.3 until the 13.2.5 destination receipt is recorded.
 
-Preparation records for kind node, PostgreSQL, GitLab Runner, and its
-OCP helper retain confirmed upstream license/source material but deliberately
+The kind node preparation record retains its confirmed identity and findings,
+but kind node is cluster-construction-only and outside PLAT-229's existing-kind
+runtime delivery scope. Preparation records for PostgreSQL, GitLab Runner, and
+its OCP helper retain confirmed upstream license/source material but deliberately
 set `redistributionReady` to false. They are not listed in
 `redistributionEvidence` and cannot be selected by the mirror write path until
 their explicitly listed OCI, package notice/SBOM, and scan evidence is added.

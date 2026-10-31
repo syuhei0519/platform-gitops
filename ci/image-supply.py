@@ -11,6 +11,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import runpy
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,6 +20,9 @@ DIGEST = re.compile(r"sha256:[0-9a-f]{64}")
 NAME = re.compile(r"[a-z0-9][a-z0-9-]{0,62}")
 TAG = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}")
 SCAN_FRESHNESS_HOURS = 24
+SCAN_EXCEPTION = runpy.run_path(str(ROOT / "ci/image-scan-exception.py"))
+POSTGRES_SCAN_IDENTITY = SCAN_EXCEPTION["POSTGRES"]
+POSTGRES_SCAN_EXCEPTIONS = set(SCAN_EXCEPTION["EXCEPTIONS"])
 DELIVERY_RUNS = {
     "argocd": "40934558588",
     "argocd-redis": "41161926710",
@@ -75,6 +79,12 @@ def load():
         "offlineImport": "explicit-exception-only",
     }, "policy")
     require(data.get("scopeExclusions") == {
+        "kind-node": {
+            "reason":
+                "cluster-construction-only-not-required-by-plat-229-existing-kind-runtime",
+            "retainedConsumer":
+                "bootstrap/kind.yaml and learning/fresh-profile/profile.template.yaml",
+        },
         "gitlab-runner": {
             "reason": "optional-legacy-gitlab-learning-profile-not-used-by-current-lab-path",
             "retainedConsumer": "environments/local/gitlab-runner.yaml",
@@ -104,6 +114,7 @@ def load():
         "otel-collector": "supply/licenses/otel-collector/0.161.0/evidence.json",
         "kube-state-metrics": "supply/licenses/kube-state-metrics/v2.20.0/evidence.json",
         "grafana": "supply/licenses/grafana/13.2.5/evidence.json",
+        "postgres-18": "supply/licenses/postgres/18.6-bookworm/evidence.json",
     }, "redistribution-evidence")
     seen_names, seen_tags, matrix = set(), set(), []
     for item in data["images"]:
@@ -117,7 +128,7 @@ def load():
         seen_names.add(item["name"]); seen_tags.add(item["destinationTag"])
         matrix.append({**item, "sourceDigest": digest,
                        "destination": destination + ":" + item["destinationTag"]})
-    require(len(matrix) == 12, "inventory-count")
+    require(len(matrix) == 11, "inventory-count")
     _validate_evidence(evidence, matrix)
     _validate_deliveries(data.get("deliveries", {}), evidence, matrix)
     _validate_consumers(data.get("consumerReferences", {}),
@@ -153,7 +164,8 @@ def _validate_evidence(entries, matrix):
                     "evidence-digest")
         license_record = record["license"]
         license_path = path.parent / license_record["localPath"]
-        expected_license = ("AGPL-3.0-only" if name in {"argocd-redis", "grafana"}
+        expected_license = ("PostgreSQL" if name == "postgres-18" else
+                            "AGPL-3.0-only" if name in {"argocd-redis", "grafana"}
                             else "Apache-2.0")
         require(license_record["spdx"] == expected_license, "evidence-license")
         require(hashlib.sha256(license_path.read_bytes()).hexdigest() == license_record["sha256"],
@@ -167,6 +179,8 @@ def _validate_evidence(entries, matrix):
             scan = record["scanEvidence"]
             require(scan["pass"] is True and scan["criticalFindings"] == [],
                     "evidence-scan")
+        if name == "postgres-18":
+            _validate_postgres_scan(record, by_name[name])
         if name == "argocd-redis":
             scan = record["scanEvidence"]
             require(scan["pass"] is True and scan["criticalFindings"] == [],
@@ -349,16 +363,62 @@ def require_fresh_scan(matrix, now=None):
         "redistributionEvidence"]
     now = now or datetime.now(timezone.utc)
     for item in matrix:
-        if item["name"] not in {"argocd-redis", "grafana", "kube-state-metrics"}:
+        if item["name"] not in {"argocd-redis", "grafana", "kube-state-metrics",
+                                 "postgres-18"}:
             continue
         record = json.loads((ROOT / evidence[item["name"]]).read_text(),
                             object_pairs_hook=_unique)
+        if item["name"] == "postgres-18":
+            _validate_postgres_scan(record, item, now)
         value = record["scanEvidence"]["dbUpdatedAt"]
         updated = datetime.fromisoformat(value.replace("Z", "+00:00"))
         age = now - updated
         require(age.total_seconds() >= 0, "scan-db-future")
         require(age.total_seconds() <= SCAN_FRESHNESS_HOURS * 3600,
                 "scan-db-expired")
+
+
+def _validate_postgres_scan(record, item, now=None):
+    scan = record["scanEvidence"]
+    require(scan["pass"] is True, "evidence-scan")
+    binding = record["exceptionBinding"]
+    require(item["name"] == POSTGRES_SCAN_IDENTITY["name"] and
+            item["source"] == POSTGRES_SCAN_IDENTITY["source"] and
+            binding["topDigest"] == POSTGRES_SCAN_IDENTITY["topDigest"] and
+            binding["selectedManifestDigest"] ==
+            POSTGRES_SCAN_IDENTITY["selectedManifestDigest"] and
+            binding["configDigest"] == POSTGRES_SCAN_IDENTITY["configDigest"],
+            "scan-exception-image-identity")
+    require(binding["topDigest"] == item["sourceDigest"],
+            "scan-exception-top-digest")
+    require(binding["selectedManifestDigest"] == record["image"]["selectedManifestDigest"],
+            "scan-exception-selected-digest")
+    require(binding["configDigest"] == record["image"]["configDigest"],
+            "scan-exception-config-digest")
+    approved = {(value["rule"], value["package"], value["path"])
+                for value in record["approvedExceptions"]}
+    findings = {(value["cve"], value["package"], value["path"])
+                for value in scan["criticalFindings"]}
+    expected = {(rule, package, path)
+                for rule, path, package, _ in POSTGRES_SCAN_EXCEPTIONS}
+    expected_approved = {(rule, package, path, exception_id)
+                         for rule, path, package, exception_id
+                         in POSTGRES_SCAN_EXCEPTIONS}
+    actual_approved = {(value["rule"], value["package"], value["path"], value["id"])
+                       for value in record["approvedExceptions"]}
+    require(approved == findings == expected and
+            actual_approved == expected_approved,
+            "scan-exception-findings")
+    policy = json.loads((ROOT / "supply/licenses/postgres/18.6-bookworm/scan-policy.json").read_text())
+    require({value["expiresAt"] for value in policy["exceptions"]} ==
+            {binding["expiresAt"]}, "scan-exception-expiry")
+    db_updated = datetime.fromisoformat(scan["dbUpdatedAt"].replace("Z", "+00:00"))
+    scanned = datetime.fromisoformat(scan["scannedAt"].replace("Z", "+00:00"))
+    expires = datetime.fromisoformat(binding["expiresAt"].replace("Z", "+00:00"))
+    require(db_updated <= scanned <= expires, "evidence-scan-time")
+    if now is not None:
+        require(scanned <= now, "scan-time-future")
+        require(now <= expires, "scan-exception-expired")
 
 
 def select_for_inspection(matrix, selection):

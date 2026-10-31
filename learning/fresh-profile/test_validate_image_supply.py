@@ -133,7 +133,7 @@ class ImageSupplyTests(unittest.TestCase):
     def test_public_ghcr_requires_every_profile_image_delivery(self):
         value = self.approve("public-ghcr")
         with self.assertRaisesRegex(contract.SupplyError,
-                                    "public-ghcr-undelivered:kind-node"):
+                                    "public-ghcr-undelivered:postgres"):
             self.validate_copy(value)
 
     def test_public_ghcr_complete_delivery_fixture_has_no_archive(self):
@@ -152,7 +152,7 @@ class ImageSupplyTests(unittest.TestCase):
             "approvedRuntimeImage"]
         profile_images["account-runtime"]["ref"] = account_ref
         for name, profile_image in profile_images.items():
-            if name == "account-runtime":
+            if name in {"account-runtime", "kind-node"}:
                 continue
             inventory_name = aliases.get(name, name)
             image = by_name[inventory_name]

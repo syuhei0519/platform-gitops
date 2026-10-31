@@ -37,7 +37,11 @@ class InventoryTest(unittest.TestCase):
         self.assertIn("scan-evidence", workflow)
         self.assertIn("aquasec/trivy:0.75.0@sha256:9db099105405c648166e6b94155eb32f8da12673cf1f455207f7385cc9a77283", inspect)
         self.assertIn("--format cyclonedx", inspect)
-        self.assertIn(".security/scan-gate -policy security/scan-policy.json", inspect)
+        self.assertIn("SCAN_POLICY=security/scan-policy.json", inspect)
+        self.assertIn(
+            "SCAN_POLICY=supply/licenses/postgres/18.6-bookworm/scan-policy.json",
+            inspect)
+        self.assertIn('.security/scan-gate -policy "$SCAN_POLICY"', inspect)
         self.assertIn("-scanner-exit 0", inspect)
         self.assertIn("--input .oci/layout", inspect)
         self.assertIn("-image-config \"$CONFIG_DIGEST\"", inspect)
@@ -79,13 +83,13 @@ class InventoryTest(unittest.TestCase):
 
     def test_inventory_is_fixed_digest_and_mapped(self):
         images = MODULE.load()
-        self.assertEqual(len(images), 12)
+        self.assertEqual(len(images), 11)
         self.assertTrue(all(i["source"].endswith("@" + i["sourceDigest"]) for i in images))
         self.assertTrue(all(i["destination"].startswith("ghcr.io/syuhei0519/platform-lab-images:") for i in images))
 
-    def test_optional_gitlab_learning_profile_is_outside_normal_supply_scope(self):
+    def test_non_runtime_profiles_are_outside_normal_supply_scope(self):
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
-        excluded = {"gitlab-runner", "gitlab-runner-helper"}
+        excluded = {"kind-node", "gitlab-runner", "gitlab-runner-helper"}
         self.assertEqual(set(raw["scopeExclusions"]), excluded)
         self.assertTrue(excluded.isdisjoint(
             item["name"] for item in raw["images"]))
@@ -102,10 +106,11 @@ class InventoryTest(unittest.TestCase):
         ready = MODULE.select_ready(images, "all")
         self.assertEqual({item["name"] for item in ready}, {
             "argocd", "argocd-redis", "argo-rollouts", "istio-pilot", "istio-proxy", "prometheus",
-            "prometheus-config-reloader", "otel-collector", "grafana", "kube-state-metrics"})
+            "prometheus-config-reloader", "otel-collector", "grafana", "kube-state-metrics",
+            "postgres-18"})
         self.assertEqual([item["name"] for item in MODULE.select_ready(images, "argocd")],
             ["argocd"])
-        for name in ("kind-node", "postgres-18", "missing"):
+        for name in ("kind-node", "missing"):
             with self.assertRaisesRegex(ValueError, "image-not-redistribution-ready"):
                 MODULE.select_ready(images, name)
 
@@ -125,6 +130,36 @@ class InventoryTest(unittest.TestCase):
                 MODULE.require_fresh_scan(
                     selected, datetime(2026, 10, 31, 19, 7, 51,
                                        tzinfo=timezone.utc))
+        postgres = MODULE.select_ready(MODULE.load(), "postgres-18")
+        evidence = json.loads((PATH.parents[1] /
+            "supply/licenses/postgres/18.6-bookworm/evidence.json").read_text())
+        failed = json.loads(json.dumps(evidence)); failed["scanEvidence"]["pass"] = False
+        with self.assertRaisesRegex(ValueError, "evidence-scan"):
+            MODULE._validate_postgres_scan(failed, postgres[0])
+        forged = json.loads(json.dumps(evidence))
+        forged["approvedExceptions"][0]["rule"] = "CVE-2099-1234"
+        forged["scanEvidence"]["criticalFindings"][0]["cve"] = "CVE-2099-1234"
+        with self.assertRaisesRegex(ValueError, "scan-exception-findings"):
+            MODULE._validate_postgres_scan(forged, postgres[0])
+        forged_identity = json.loads(json.dumps(evidence))
+        forged_item = dict(postgres[0])
+        fake = "sha256:" + "d" * 64
+        forged_item["sourceDigest"] = fake
+        forged_item["source"] = forged_item["source"].split("@", 1)[0] + "@" + fake
+        forged_identity["exceptionBinding"]["topDigest"] = fake
+        forged_identity["image"]["indexDigest"] = fake
+        with self.assertRaisesRegex(ValueError, "scan-exception-image-identity"):
+            MODULE._validate_postgres_scan(forged_identity, forged_item)
+        MODULE.require_fresh_scan(
+            postgres, datetime(2026, 11, 1, 7, 7, 33,
+                               tzinfo=timezone.utc))
+        with self.assertRaisesRegex(ValueError, "scan-db-expired"):
+            MODULE.require_fresh_scan(
+                postgres, datetime(2026, 11, 1, 7, 7, 34,
+                                   tzinfo=timezone.utc))
+        with self.assertRaisesRegex(ValueError, "scan-exception-expired"):
+            MODULE.require_fresh_scan(
+                postgres, datetime(2026, 11, 15, tzinfo=timezone.utc))
         workflow = (PATH.parents[1] /
                     ".github/workflows/external-image-mirror.yml").read_text()
         mirror = workflow.split("  mirror:\n", 1)[1]
@@ -290,7 +325,8 @@ class InventoryTest(unittest.TestCase):
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         self.assertEqual(set(raw["redistributionEvidence"]), {
             "argocd", "argocd-redis", "argo-rollouts", "istio-pilot", "istio-proxy", "prometheus",
-            "prometheus-config-reloader", "otel-collector", "grafana", "kube-state-metrics"})
+            "prometheus-config-reloader", "otel-collector", "grafana", "kube-state-metrics",
+            "postgres-18"})
         for name, relative in raw["redistributionEvidence"].items():
             evidence_path = PATH.parents[1] / relative
             evidence = json.loads(evidence_path.read_text())
@@ -324,7 +360,6 @@ class InventoryTest(unittest.TestCase):
         by_name = {item["name"]: item for item in images}
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         self.assertTrue(set(raw["deliveries"]).issubset(raw["redistributionEvidence"]))
-        self.assertEqual(set(raw["redistributionEvidence"]), set(raw["deliveries"]))
         for name, delivery in raw["deliveries"].items():
             item = by_name[name]
             self.assertEqual(delivery["destinationDigest"], item["sourceDigest"])
@@ -434,7 +469,6 @@ class InventoryTest(unittest.TestCase):
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         preparations = {
             "kind-node": "kind-node/v1.36.4",
-            "postgres-18": "postgres/18.6-bookworm",
         }
         inspection_runs = {
             "kind-node": 41016047353,
@@ -461,7 +495,9 @@ class InventoryTest(unittest.TestCase):
             self.assertEqual(record["name"], name)
             self.assertIs(record["redistributionReady"], False)
             self.assertEqual(record["copyMode"], "oci-byte-preserving")
-            expected_source = preparation_sources.get(name, by_name[name]["source"])
+            expected_source = preparation_sources.get(
+                name, record["image"]["reference"] if name == "kind-node"
+                else by_name[name]["source"])
             expected_digest = expected_source.rpartition("@")[2]
             self.assertEqual(record["image"]["reference"], expected_source)
             self.assertIn(expected_digest, {
@@ -483,9 +519,17 @@ class InventoryTest(unittest.TestCase):
             self.assertNotIn("linux-amd64-manifest-and-config-receipt",
                              record["missingEvidence"])
             scan = record["scanEvidence"]
-            self.assertEqual(scan["provenance"],
-                             "user-provided-github-actions-artifact")
-            if scan["pass"]:
+            self.assertIn(scan["provenance"], {
+                "user-provided-github-actions-artifact",
+                "github-actions-read-only-run",
+            })
+            if name == "postgres-18":
+                self.assertTrue(scan["pass"])
+                self.assertEqual(len(scan["criticalFindings"]), 4)
+                self.assertEqual(len(record["approvedExceptions"]), 4)
+                self.assertEqual(record["exceptionBinding"]["expiresAt"],
+                                 "2026-11-14T11:35:00Z")
+            elif scan["pass"]:
                 self.assertEqual(scan["criticalFindings"], [])
             else:
                 self.assertTrue(scan["criticalFindings"])
