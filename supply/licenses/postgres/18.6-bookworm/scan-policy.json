@@ -4,6 +4,39 @@
   "dbMaxAgeHours": 24,
   "exceptions": [
     {
+      "id": "plat-229-postgres-sqlite-cve-2025-7458",
+      "kind": "vulnerability",
+      "rule": "CVE-2025-7458",
+      "package": "libsqlite3-0",
+      "path": "image/os",
+      "owner": "Platform lab operator",
+      "reason": "PLAT-229 approved Debian bookworm's unfixed minor-issue SQLite finding for this one fixed PostgreSQL OCI identity",
+      "createdAt": "2026-10-31T11:35:00Z",
+      "expiresAt": "2026-11-14T11:35:00Z"
+    },
+    {
+      "id": "plat-229-postgres-libxml2-cve-2026-6653",
+      "kind": "vulnerability",
+      "rule": "CVE-2026-6653",
+      "package": "libxml2",
+      "path": "image/os",
+      "owner": "Platform lab operator",
+      "reason": "PLAT-229 approved Debian bookworm's postponed minor-issue libxml2 finding for this one fixed PostgreSQL OCI identity",
+      "createdAt": "2026-10-31T11:35:00Z",
+      "expiresAt": "2026-11-14T11:35:00Z"
+    },
+    {
+      "id": "plat-229-postgres-zlib-cve-2023-45853",
+      "kind": "vulnerability",
+      "rule": "CVE-2023-45853",
+      "package": "zlib1g",
+      "path": "image/os",
+      "owner": "Platform lab operator",
+      "reason": "PLAT-229 records Debian's bookworm assessment that the vulnerable MiniZip code is not built into the affected binary packages, scoped to this one fixed PostgreSQL OCI identity",
+      "createdAt": "2026-10-31T11:35:00Z",
+      "expiresAt": "2026-11-14T11:35:00Z"
+    },
+    {
       "id": "plat-229-postgres-gosu-go-2026-4337",
       "kind": "vulnerability",
       "rule": "CVE-2025-68121",

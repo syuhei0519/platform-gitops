@@ -498,8 +498,9 @@ class InventoryTest(unittest.TestCase):
                 if name == "postgres-18":
                     self.assertIn("fresh-scan-with-approved-fixed-identity-exception",
                                   record["missingEvidence"])
-                    self.assertEqual(record["approvedException"]["id"],
-                                     "plat-229-postgres-gosu-go-2026-4337")
+                    self.assertEqual(len(record["approvedExceptions"]), 4)
+                    self.assertEqual(record["exceptionBinding"]["expiresAt"],
+                                     "2026-11-14T11:35:00Z")
                 else:
                     self.assertIn("critical-vulnerabilities-must-be-fixed",
                                   record["missingEvidence"])

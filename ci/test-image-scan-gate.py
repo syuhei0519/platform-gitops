@@ -57,6 +57,21 @@ with tempfile.TemporaryDirectory() as directory:
         "ArtifactName": ".oci/layout",
         "Metadata": {"ImageID": exception_module.POSTGRES["configDigest"]},
         "Results": [{
+            "Target": "image/os",
+            "Class": "os-pkgs",
+            "Type": "debian",
+            "Vulnerabilities": [
+                {"VulnerabilityID": "CVE-2025-7458",
+                 "PkgName": "libsqlite3-0", "InstalledVersion": "3.40.1-2+deb12u2",
+                 "Severity": "CRITICAL"},
+                {"VulnerabilityID": "CVE-2026-6653",
+                 "PkgName": "libxml2", "InstalledVersion": "2.9.14+dfsg-1.3~deb12u6",
+                 "Severity": "CRITICAL"},
+                {"VulnerabilityID": "CVE-2023-45853",
+                 "PkgName": "zlib1g", "InstalledVersion": "1:1.2.13.dfsg-1",
+                 "Severity": "CRITICAL"},
+            ],
+        }, {
             "Target": "usr/local/bin/gosu",
             "Class": "lang-pkgs",
             "Type": "gobinary",
