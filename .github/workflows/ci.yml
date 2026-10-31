@@ -61,6 +61,14 @@ jobs:
       - uses: syuhei0519/backend-app/.github/actions/shared-tools@cdea9eda59aa56c8a068a79317da239b8133727e # Empty values carry no credential; nonempty/malformed Secret values fail
         with:
           modules: scan-gate
+      - name: Verify fixed libxcrypt Debian copyright
+        run: |
+          curl --fail --silent --show-error --location \
+            https://deb.debian.org/debian/pool/main/libx/libxcrypt/libxcrypt_4.4.33-2.debian.tar.xz \
+            --output /tmp/libxcrypt.debian.tar.xz
+          tar -xOf /tmp/libxcrypt.debian.tar.xz debian/copyright > /tmp/libxcrypt.copyright
+          test -s /tmp/libxcrypt.copyright
+          sha256sum /tmp/libxcrypt.copyright
       - name: Policy and boundary tests
         run: bash ci/github/test.sh
       # Test-only fixture source; this is not the runtime application pin.
