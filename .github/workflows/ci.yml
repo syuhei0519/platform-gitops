@@ -70,9 +70,14 @@ jobs:
             echo "::error::libxcrypt-debian-source category=http-$status"
             exit 1
           fi
-          member=$(tar -tf /tmp/libxcrypt.debian.tar.xz | grep -E '(^|/)debian/copyright$' | head -1)
+          if ! tar -tf /tmp/libxcrypt.debian.tar.xz > /tmp/libxcrypt.members; then
+            echo '::error::libxcrypt-debian-source category=archive-invalid'
+            exit 1
+          fi
+          member=$(grep -E '(^|/)debian/copyright$' /tmp/libxcrypt.members | head -1 || true)
           if [ -z "$member" ]; then
-            echo '::error::libxcrypt-debian-source category=copyright-member-missing'
+            first=$(head -1 /tmp/libxcrypt.members)
+            echo "::error::libxcrypt-debian-source category=copyright-member-missing first=$first"
             exit 1
           fi
           tar -xOf /tmp/libxcrypt.debian.tar.xz "$member" > /tmp/libxcrypt.copyright
