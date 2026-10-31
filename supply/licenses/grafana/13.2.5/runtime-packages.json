@@ -347,8 +347,8 @@
     {
       "sourceName": "alpine-base",
       "sourceVersion": "3.24.3-r0",
-      "recipeCommit": "e9951ece7106a5c898b0812cfa7b47d56379b361",
-      "recipeUrl": "https://github.com/alpinelinux/aports/blob/e9951ece7106a5c898b0812cfa7b47d56379b361/main/alpine-base/APKBUILD"
+      "recipeCommit": "ee92350c8a4509152dc91c693814215a884c07c3",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/ee92350c8a4509152dc91c693814215a884c07c3/main/alpine-base/APKBUILD"
     },
     {
       "sourceName": "alpine-baselayout",
