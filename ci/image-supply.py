@@ -357,10 +357,29 @@ def require_fresh_scan(matrix, now=None):
         "redistributionEvidence"]
     now = now or datetime.now(timezone.utc)
     for item in matrix:
-        if item["name"] not in {"argocd-redis", "grafana", "kube-state-metrics"}:
+        if item["name"] not in {"argocd-redis", "grafana", "kube-state-metrics",
+                                 "postgres-18"}:
             continue
         record = json.loads((ROOT / evidence[item["name"]]).read_text(),
                             object_pairs_hook=_unique)
+        if item["name"] == "postgres-18":
+            binding = record["exceptionBinding"]
+            require(binding["topDigest"] == item["sourceDigest"],
+                    "scan-exception-top-digest")
+            require(binding["selectedManifestDigest"] ==
+                    record["image"]["selectedManifestDigest"],
+                    "scan-exception-selected-digest")
+            require(binding["configDigest"] == record["image"]["configDigest"],
+                    "scan-exception-config-digest")
+            approved = {(value["rule"], value["package"], value["path"])
+                        for value in record["approvedExceptions"]}
+            findings = {(value["cve"], value["package"], value["path"])
+                        for value in record["scanEvidence"]["criticalFindings"]}
+            require(approved == findings and len(approved) == 4,
+                    "scan-exception-findings")
+            expires = datetime.fromisoformat(
+                binding["expiresAt"].replace("Z", "+00:00"))
+            require(now <= expires, "scan-exception-expired")
         value = record["scanEvidence"]["dbUpdatedAt"]
         updated = datetime.fromisoformat(value.replace("Z", "+00:00"))
         age = now - updated

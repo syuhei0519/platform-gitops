@@ -85,7 +85,9 @@
         "fixed": "1.24.13, 1.25.7, 1.26.0-rc.3",
         "path": "usr/local/bin/gosu"
       }
-    ]
+    ],
+    "dbUpdatedAt": "2026-10-31T07:07:33.630580495Z",
+    "scannedAt": "2026-10-31T11:47:37.851691791Z"
   },
   "approvedExceptions": [
     {

@@ -130,6 +130,17 @@ class InventoryTest(unittest.TestCase):
                 MODULE.require_fresh_scan(
                     selected, datetime(2026, 10, 31, 19, 7, 51,
                                        tzinfo=timezone.utc))
+        postgres = MODULE.select_ready(MODULE.load(), "postgres-18")
+        MODULE.require_fresh_scan(
+            postgres, datetime(2026, 11, 1, 7, 7, 33,
+                               tzinfo=timezone.utc))
+        with self.assertRaisesRegex(ValueError, "scan-db-expired"):
+            MODULE.require_fresh_scan(
+                postgres, datetime(2026, 11, 1, 7, 7, 34,
+                                   tzinfo=timezone.utc))
+        with self.assertRaisesRegex(ValueError, "scan-exception-expired"):
+            MODULE.require_fresh_scan(
+                postgres, datetime(2026, 11, 15, tzinfo=timezone.utc))
         workflow = (PATH.parents[1] /
                     ".github/workflows/external-image-mirror.yml").read_text()
         mirror = workflow.split("  mirror:\n", 1)[1]
