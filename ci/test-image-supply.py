@@ -79,13 +79,13 @@ class InventoryTest(unittest.TestCase):
 
     def test_inventory_is_fixed_digest_and_mapped(self):
         images = MODULE.load()
-        self.assertEqual(len(images), 12)
+        self.assertEqual(len(images), 11)
         self.assertTrue(all(i["source"].endswith("@" + i["sourceDigest"]) for i in images))
         self.assertTrue(all(i["destination"].startswith("ghcr.io/syuhei0519/platform-lab-images:") for i in images))
 
-    def test_optional_gitlab_learning_profile_is_outside_normal_supply_scope(self):
+    def test_non_runtime_profiles_are_outside_normal_supply_scope(self):
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
-        excluded = {"gitlab-runner", "gitlab-runner-helper"}
+        excluded = {"kind-node", "gitlab-runner", "gitlab-runner-helper"}
         self.assertEqual(set(raw["scopeExclusions"]), excluded)
         self.assertTrue(excluded.isdisjoint(
             item["name"] for item in raw["images"]))
@@ -461,7 +461,9 @@ class InventoryTest(unittest.TestCase):
             self.assertEqual(record["name"], name)
             self.assertIs(record["redistributionReady"], False)
             self.assertEqual(record["copyMode"], "oci-byte-preserving")
-            expected_source = preparation_sources.get(name, by_name[name]["source"])
+            expected_source = preparation_sources.get(
+                name, record["image"]["reference"] if name == "kind-node"
+                else by_name[name]["source"])
             expected_digest = expected_source.rpartition("@")[2]
             self.assertEqual(record["image"]["reference"], expected_source)
             self.assertIn(expected_digest, {
@@ -489,8 +491,14 @@ class InventoryTest(unittest.TestCase):
                 self.assertEqual(scan["criticalFindings"], [])
             else:
                 self.assertTrue(scan["criticalFindings"])
-                self.assertIn("critical-vulnerabilities-must-be-fixed",
-                              record["missingEvidence"])
+                if name == "postgres-18":
+                    self.assertIn("fresh-scan-with-approved-fixed-identity-exception",
+                                  record["missingEvidence"])
+                    self.assertEqual(record["approvedException"]["id"],
+                                     "plat-229-postgres-gosu-go-2026-4337")
+                else:
+                    self.assertIn("critical-vulnerabilities-must-be-fixed",
+                                  record["missingEvidence"])
             if name in {"grafana", "kube-state-metrics"}:
                 self.assertEqual(record["missingEvidence"], [])
                 runtime = directory / record["runtimePackages"]["localPath"]

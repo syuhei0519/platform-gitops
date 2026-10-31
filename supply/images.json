@@ -9,6 +9,10 @@
     "offlineImport": "explicit-exception-only"
   },
   "scopeExclusions": {
+    "kind-node": {
+      "reason": "cluster-construction-only-not-required-by-plat-229-existing-kind-runtime",
+      "retainedConsumer": "bootstrap/kind.yaml and learning/fresh-profile/profile.template.yaml"
+    },
     "gitlab-runner": {
       "reason": "optional-legacy-gitlab-learning-profile-not-used-by-current-lab-path",
       "retainedConsumer": "environments/local/gitlab-runner.yaml"
@@ -48,7 +52,6 @@
     "kube-state-metrics": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/41177534707","destinationDigest":"sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016"}
   },
   "consumerReferences": {
-    "kind-node":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"kind-node"}],
     "argocd":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"argocd"}],
     "argocd-redis":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"argocd-redis"},{"path":"bootstrap/versions.lock.yaml","type":"value-image","identity":"spec.argoCd.redisImage"},{"path":"bootstrap/argocd-values.yaml","type":"argocd-redis-image","identity":"redis.image"},{"path":"learning/existing-kind/managed/foundation/resources.yaml","type":"deployment-image","identity":"argocd-redis"},{"path":"learning/progressive-delivery/render.py","type":"python-constant-image","identity":"REDIS_IMAGE"}],
     "argo-rollouts":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"argo-rollouts"}],
@@ -62,7 +65,6 @@
     "grafana":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"grafana"},{"path":"bootstrap/versions.lock.yaml","type":"value-image","identity":"spec.plannedObservability.grafana.image"},{"path":"charts/grafana/values.yaml","type":"grafana-image","identity":"grafana.image"},{"path":"learning/existing-kind/managed/observability/resources.yaml","type":"deployment-image","identity":"learning-grafana"},{"path":"learning/monitoring/chart/values.yaml","type":"value-image","identity":"images.grafana"}]
   },
   "images": [
-    {"name":"kind-node","source":"docker.io/kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed","destinationTag":"kind-node-v1.36.4","producer":"external-image-mirror","consumer":"Docker --image during kind create"},
     {"name":"argocd","source":"quay.io/argoproj/argocd:v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68","destinationTag":"argocd-v3.5.2","producer":"external-image-mirror","consumer":"bootstrap/argocd-values.yaml"},
     {"name":"argocd-redis","source":"public.ecr.aws/docker/library/redis:8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1","destinationTag":"argocd-redis-8.6.4-alpine","producer":"external-image-mirror","consumer":"bootstrap/argocd-values.yaml"},
     {"name":"argo-rollouts","source":"quay.io/argoproj/argo-rollouts:v1.10.1@sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396","destinationTag":"argo-rollouts-v1.10.1","producer":"external-image-mirror","consumer":"learning/fresh-profile rollout bootstrap"},

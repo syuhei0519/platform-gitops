@@ -151,6 +151,8 @@ jobs:
           .security/scan-gate -policy security/scan-policy.json \
             -db .cache/trivy/db/metadata.json -report receipts/scan.json \
             -out receipts/scan-gate.json -scanner-exit 0 -image-config "$CONFIG_DIGEST"
+          python3 -I ci/image-scan-exception.py \
+            receipts/receipt.json receipts/scan-gate.json
       - if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
