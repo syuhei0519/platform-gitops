@@ -2391,7 +2391,8 @@
     {
       "sourceName": "libxcrypt",
       "sourceVersion": "1:4.4.33-2",
-      "sourceUrl": "https://sources.debian.org/src/libxcrypt/1%3A4.4.33-2/"
+      "sourceUrl": "https://sources.debian.org/src/libxcrypt/1%3A4.4.33-2/",
+      "licenseNoticeUrl": "https://sources.debian.org/src/libxcrypt/1%3A4.4.33-2/debian/copyright/"
     },
     {
       "sourceName": "db5.3",
@@ -2612,7 +2613,8 @@
     {
       "sourceName": "libxslt",
       "sourceVersion": "1.1.35-1+deb12u4",
-      "sourceUrl": "https://sources.debian.org/src/libxslt/1.1.35-1%2Bdeb12u4/"
+      "sourceUrl": "https://sources.debian.org/src/libxslt/1.1.35-1%2Bdeb12u4/",
+      "licenseNoticeUrl": "https://sources.debian.org/src/libxslt/1.1.35-1%2Bdeb12u4/debian/copyright/"
     },
     {
       "sourceName": "xxhash",

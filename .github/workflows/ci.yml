@@ -61,6 +61,10 @@ jobs:
       - uses: syuhei0519/backend-app/.github/actions/shared-tools@cdea9eda59aa56c8a068a79317da239b8133727e # Empty values carry no credential; nonempty/malformed Secret values fail
         with:
           modules: scan-gate
+      - name: Verify fixed PostgreSQL runtime source evidence
+        run: |
+          mkdir -p .security/public
+          python3 -I ci/verify-postgres-runtime-sources.py
       - name: Policy and boundary tests
         run: bash ci/github/test.sh
       # Test-only fixture source; this is not the runtime application pin.
