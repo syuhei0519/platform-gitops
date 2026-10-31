@@ -137,7 +137,6 @@ class InventoryTest(unittest.TestCase):
             MODULE.select_for_inspection(images, "missing")
 
     def test_candidate_inspection_is_static_and_non_publishable(self):
-        grafana = MODULE.select_candidate("grafana-v13.2.5")
         runner = MODULE.select_candidate("gitlab-runner-v19.3.5")
         helper = MODULE.select_candidate("gitlab-runner-helper-v19.3.5")
         alpine_helper = MODULE.select_candidate(
@@ -150,8 +149,7 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(alpine_helper[0]["source"],
                          "registry.gitlab.com/gitlab-org/gitlab-runner/"
                          "gitlab-runner-helper:x86_64-v19.3.5")
-        self.assertEqual(grafana[0]["source"], "docker.io/grafana/grafana:13.2.5")
-        for candidate in (grafana[0], runner[0], helper[0], alpine_helper[0]):
+        for candidate in (runner[0], helper[0], alpine_helper[0]):
             self.assertIs(candidate["candidate"], True)
             self.assertEqual(candidate["sourceDigest"], "")
             self.assertEqual(candidate["destination"],
@@ -358,7 +356,7 @@ class InventoryTest(unittest.TestCase):
         unknown_digest = "sha256:" + "e" * 64
         unknown = "ghcr.io/syuhei0519/platform-lab-images@" + unknown_digest
         grafana = next(item for item in original["images"] if item["name"] == "grafana")
-        grafana["source"] = "docker.io/grafana/grafana:13.2.3@" + unknown_digest
+        grafana["source"] = "docker.io/grafana/grafana:13.2.5@" + unknown_digest
         actual_consumer = MODULE._consumer_image
         def changed(path, consumer_type, identity):
             if identity in {"grafana", "spec.plannedObservability.grafana.image"}:
@@ -411,15 +409,25 @@ class InventoryTest(unittest.TestCase):
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         preparations = {
             "kind-node": "kind-node/v1.36.4",
+            "kube-state-metrics": "kube-state-metrics/v2.20.0",
             "postgres-18": "postgres/18.6-bookworm",
+            "grafana": "grafana/13.2.5",
         }
         inspection_runs = {
             "kind-node": 41016047353,
+            "kube-state-metrics": 41149821222,
             "postgres-18": 41020934558,
+            "grafana": 41149613612,
         }
         inspected_identities = {
             "kind-node": ("sha256:597367624b4748b74b98e4fe2d661cd78063d02ecdaca702fd90572375b83e67", "sha256:0fa975026f71246c4e4744409d43e2e5884bb6e960851b438e50f455808c16f4"),
+            "kube-state-metrics": ("sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016", "sha256:a635e3d8e1a4f75a18349bdea3fccfcf84ac6da920eeed1eb3313d8065ab7bdd"),
             "postgres-18": ("sha256:6b38fe68f2c02cafffbbce7496f76d110d8a947c039bd22c067e9a43c2250240", "sha256:63d4ad6f3de5e288238b3044970a677dcb0e77004d8b6050732aa0cbbeedf5d7"),
+            "grafana": ("sha256:ffeeebf613b00fede764821c5e5b1545fb376aba561ae91c488e91f219adb25a", "sha256:a7513f8c648d64bd3286b410f34db8e68b239a584f285645f45d6df0f2e71d20"),
+        }
+        preparation_sources = {
+            "grafana": ("docker.io/grafana/grafana:13.2.5@sha256:"
+                        "9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84"),
         }
         self.assertTrue(set(preparations).isdisjoint(raw["redistributionEvidence"]))
         for name, relative in preparations.items():
@@ -430,8 +438,10 @@ class InventoryTest(unittest.TestCase):
             self.assertEqual(record["name"], name)
             self.assertIs(record["redistributionReady"], False)
             self.assertEqual(record["copyMode"], "oci-byte-preserving")
-            self.assertEqual(record["image"]["reference"], by_name[name]["source"])
-            self.assertIn(by_name[name]["sourceDigest"], {
+            expected_source = preparation_sources.get(name, by_name[name]["source"])
+            expected_digest = expected_source.rpartition("@")[2]
+            self.assertEqual(record["image"]["reference"], expected_source)
+            self.assertIn(expected_digest, {
                 record["image"].get("indexDigest"),
                 record["image"].get("manifestDigest"),
             })
@@ -440,7 +450,8 @@ class InventoryTest(unittest.TestCase):
                               record["image"]["configDigest"]),
                              inspected_identities[name])
             receipt = record["inspectionReceipt"]
-            self.assertEqual(receipt["provenance"], "user-provided-run-log")
+            self.assertIn(receipt["provenance"], {
+                "user-provided-run-log", "user-provided-github-actions-artifact"})
             self.assertEqual(receipt["schemaVersion"],
                              "platform.lab/image-inspection-receipt/v1")
             self.assertEqual(receipt["runUrl"],
@@ -451,16 +462,19 @@ class InventoryTest(unittest.TestCase):
             scan = record["scanEvidence"]
             self.assertEqual(scan["provenance"],
                              "user-provided-github-actions-artifact")
-            self.assertIs(scan["pass"], False)
-            self.assertTrue(scan["criticalFindings"])
-            self.assertIn("critical-vulnerabilities-must-be-fixed",
-                          record["missingEvidence"])
+            if scan["pass"]:
+                self.assertEqual(scan["criticalFindings"], [])
+            else:
+                self.assertTrue(scan["criticalFindings"])
+                self.assertIn("critical-vulnerabilities-must-be-fixed",
+                              record["missingEvidence"])
             self.assertTrue(record["missingEvidence"])
-            license_path = directory / record["license"]["localPath"]
-            self.assertTrue(license_path.is_file())
-            import hashlib
-            self.assertEqual(hashlib.sha256(license_path.read_bytes()).hexdigest(),
-                             record["license"]["sha256"])
+            if "localPath" in record["license"]:
+                license_path = directory / record["license"]["localPath"]
+                self.assertTrue(license_path.is_file())
+                import hashlib
+                self.assertEqual(hashlib.sha256(license_path.read_bytes()).hexdigest(),
+                                 record["license"]["sha256"])
 
     def test_duplicate_and_mutable_source_are_refused(self):
         original = json.loads((PATH.parents[1] / "supply/images.json").read_text())
