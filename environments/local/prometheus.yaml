@@ -48,9 +48,9 @@ kube-state-metrics:
   enabled: true
   fullnameOverride: kube-state-metrics
   image:
-    registry: registry.k8s.io
-    repository: kube-state-metrics/kube-state-metrics
-    tag: v2.20.0
+    registry: ghcr.io
+    repository: syuhei0519/platform-lab-images
+    tag: kube-state-metrics-v2.20.0
     sha: sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016
   rbac: {create: false}
   serviceAccount: {create: false, name: kube-state-metrics, automountServiceAccountToken: true}
