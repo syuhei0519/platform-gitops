@@ -27,6 +27,11 @@ MANAGED_OBSERVABILITY_IMAGES={
     'ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc',
     'ghcr.io/syuhei0519/platform-lab-images:otel-collector-contrib-0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc'),
 }
+MANAGED_FOUNDATION_IMAGES={
+  'argocd-redis':(
+    'public.ecr.aws/docker/library/redis:8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1',
+    'ghcr.io/syuhei0519/platform-lab-images:argocd-redis-8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1'),
+}
 
 def obj(kind,name,namespace=None,**fields):
     api=('rbac.authorization.k8s.io/v1' if kind in {'Role','RoleBinding','ClusterRole','ClusterRoleBinding'}
@@ -328,6 +333,11 @@ def build(helm,manifest):
     # directory rather than reconciling unrelated siblings or identity JSON.
     outputs['adoption/mesh-fixture/resources.yaml']=[d for d in yaml.safe_load_all((ROOT/'adoption/mesh-fixture.yaml').read_text()) if d]
     foundation=[d for d in yaml.safe_load_all((ROOT/'adoption/argocd-core.yaml').read_text()) if d]
+    for name,(source,destination) in MANAGED_FOUNDATION_IMAGES.items():
+        deployment=next(d for d in foundation if d['kind']=='Deployment' and d['metadata']['name']==name)
+        container=deployment['spec']['template']['spec']['containers'][0]
+        if container['image']!=source:raise ValueError('managed foundation image source changed: '+name)
+        container['image']=destination
     # copyutil's shared argocd binary alone occupies ~238Mi on this Core.
     # Bound disk-backed working volumes without changing mounts/security context.
     repo=next(d for d in foundation if d['kind']=='Deployment' and d['metadata']['name']=='argocd-repo-server')

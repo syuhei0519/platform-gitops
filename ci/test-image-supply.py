@@ -316,8 +316,7 @@ class InventoryTest(unittest.TestCase):
         by_name = {item["name"]: item for item in images}
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         self.assertTrue(set(raw["deliveries"]).issubset(raw["redistributionEvidence"]))
-        self.assertEqual(set(raw["redistributionEvidence"]) - set(raw["deliveries"]),
-                         {"argocd-redis"})
+        self.assertEqual(set(raw["redistributionEvidence"]), set(raw["deliveries"]))
         for name, delivery in raw["deliveries"].items():
             item = by_name[name]
             self.assertEqual(delivery["destinationDigest"], item["sourceDigest"])
@@ -331,7 +330,7 @@ class InventoryTest(unittest.TestCase):
                     "ghcr.io/syuhei0519/platform-lab-images@"
                     + delivery["destinationDigest"],
                 })
-        self.assertTrue({"kind-node", "argocd-redis", "postgres-18", "grafana",
+        self.assertTrue({"kind-node", "postgres-18", "grafana",
                          "kube-state-metrics"}.isdisjoint(raw["deliveries"]))
 
     def test_upstream_or_unknown_consumer_digest_is_rejected(self):

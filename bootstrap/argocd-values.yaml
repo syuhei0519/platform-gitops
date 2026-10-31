@@ -103,7 +103,8 @@ repoServer:
     limits: {cpu: 500m, memory: 512Mi, ephemeral-storage: 512Mi}
 redis:
   image:
-    tag: 8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1
+    repository: ghcr.io/syuhei0519/platform-lab-images
+    tag: argocd-redis-8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1
   resources:
     requests: {cpu: 50m, memory: 64Mi, ephemeral-storage: 16Mi}
     limits: {cpu: 250m, memory: 128Mi, ephemeral-storage: 128Mi}
