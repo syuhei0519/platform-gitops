@@ -2,24 +2,2703 @@
   "schemaVersion": "platform.lab/runtime-package-evidence/v1",
   "distribution": "Debian 12 bookworm with PGDG",
   "provenance": "user-provided-github-actions-sbom",
-  "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41198140426",
-  "scope": "Critical-bearing OS packages and PostgreSQL/PGDG runtime packages from the recorded SBOM; the remaining Debian base packages are still pending source/license mapping",
+  "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41210924214",
+  "scope": "All OS runtime binary packages recorded by the fixed-image SBOM, mapped to versioned source packages and reported licenses",
   "packages": [
-    {"name":"libsqlite3-0","version":"3.40.1-2+deb12u2","licenses":["public-domain","GPL-2.0-or-later","GPL-2.0-only"],"sourceName":"sqlite3","sourceVersion":"3.40.1-2+deb12u2"},
-    {"name":"libxml2","version":"2.9.14+dfsg-1.3~deb12u6","licenses":["MIT-1","ISC"],"sourceName":"libxml2","sourceVersion":"2.9.14+dfsg-1.3~deb12u6"},
-    {"name":"zlib1g","version":"1:1.2.13.dfsg-1","licenses":["Zlib"],"sourceName":"zlib","sourceVersion":"1:1.2.13.dfsg-1"},
-    {"name":"libpq5","version":"18.6-1.pgdg12+2","licenses":["PostgreSQL","BSD-3-Clause","BSD-2-Clause"],"sourceName":"postgresql-18","sourceVersion":"18.6-1.pgdg12+2"},
-    {"name":"postgresql-18-jit","version":"18.6-1.pgdg12+2","licenses":["PostgreSQL","BSD-3-Clause","BSD-2-Clause"],"sourceName":"postgresql-18","sourceVersion":"18.6-1.pgdg12+2"},
-    {"name":"postgresql-18","version":"18.6-1.pgdg12+2","licenses":["PostgreSQL","BSD-3-Clause","BSD-2-Clause"],"sourceName":"postgresql-18","sourceVersion":"18.6-1.pgdg12+2"},
-    {"name":"postgresql-client-18","version":"18.6-1.pgdg12+2","licenses":["PostgreSQL","BSD-3-Clause","BSD-2-Clause"],"sourceName":"postgresql-18","sourceVersion":"18.6-1.pgdg12+2"},
-    {"name":"postgresql-client-common","version":"293.pgdg12+1","licenses":["GPL-2.0-or-later","GPL-2.0-only"],"sourceName":"postgresql-common","sourceVersion":"293.pgdg12+1"},
-    {"name":"postgresql-common","version":"293.pgdg12+1","licenses":["GPL-2.0-or-later","GPL-2.0-only"],"sourceName":"postgresql-common","sourceVersion":"293.pgdg12+1"}
+    {
+      "name": "adduser",
+      "version": "3.134",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later"
+      ],
+      "sourceName": "adduser",
+      "sourceVersion": "3.134"
+    },
+    {
+      "name": "apt",
+      "version": "2.6.1",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "MIT"
+      ],
+      "sourceName": "apt",
+      "sourceVersion": "2.6.1"
+    },
+    {
+      "name": "libapt-pkg6.0",
+      "version": "2.6.1",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "MIT"
+      ],
+      "sourceName": "apt",
+      "sourceVersion": "2.6.1"
+    },
+    {
+      "name": "base-files",
+      "version": "12.4+deb12u15",
+      "licenses": [
+        "GPL-2.0-or-later"
+      ],
+      "sourceName": "base-files",
+      "sourceVersion": "12.4+deb12u15"
+    },
+    {
+      "name": "base-passwd",
+      "version": "3.6.1",
+      "licenses": [
+        "GPL-2.0-only",
+        "public-domain"
+      ],
+      "sourceName": "base-passwd",
+      "sourceVersion": "3.6.1"
+    },
+    {
+      "name": "bash",
+      "version": "5.2.15-2+b13",
+      "licenses": [
+        "BSD-4-Clause-UC",
+        "GFDL-1.3-no-invariants-only",
+        "GFDL-1.3-only",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "GPL-3.0-or-later WITH Bison-exception",
+        "Latex2e",
+        "MIT",
+        "permissive"
+      ],
+      "sourceName": "bash",
+      "sourceVersion": "5.2.15-2"
+    },
+    {
+      "name": "bsdutils",
+      "version": "1:2.38.1-5+deb12u3",
+      "licenses": [
+        "BSD-3-Clause",
+        "BSD-4-Clause",
+        "BSLA",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "public-domain"
+      ],
+      "sourceName": "util-linux",
+      "sourceVersion": "2.38.1-5+deb12u3"
+    },
+    {
+      "name": "libblkid1",
+      "version": "2.38.1-5+deb12u3",
+      "licenses": [
+        "BSD-3-Clause",
+        "BSD-4-Clause",
+        "BSLA",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "public-domain"
+      ],
+      "sourceName": "util-linux",
+      "sourceVersion": "2.38.1-5+deb12u3"
+    },
+    {
+      "name": "libmount1",
+      "version": "2.38.1-5+deb12u3",
+      "licenses": [
+        "BSD-3-Clause",
+        "BSD-4-Clause",
+        "BSLA",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "public-domain"
+      ],
+      "sourceName": "util-linux",
+      "sourceVersion": "2.38.1-5+deb12u3"
+    },
+    {
+      "name": "libsmartcols1",
+      "version": "2.38.1-5+deb12u3",
+      "licenses": [
+        "BSD-3-Clause",
+        "BSD-4-Clause",
+        "BSLA",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "public-domain"
+      ],
+      "sourceName": "util-linux",
+      "sourceVersion": "2.38.1-5+deb12u3"
+    },
+    {
+      "name": "libuuid1",
+      "version": "2.38.1-5+deb12u3",
+      "licenses": [
+        "BSD-3-Clause",
+        "BSD-4-Clause",
+        "BSLA",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "public-domain"
+      ],
+      "sourceName": "util-linux",
+      "sourceVersion": "2.38.1-5+deb12u3"
+    },
+    {
+      "name": "mount",
+      "version": "2.38.1-5+deb12u3",
+      "licenses": [
+        "BSD-3-Clause",
+        "BSD-4-Clause",
+        "BSLA",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "public-domain"
+      ],
+      "sourceName": "util-linux",
+      "sourceVersion": "2.38.1-5+deb12u3"
+    },
+    {
+      "name": "util-linux-extra",
+      "version": "2.38.1-5+deb12u3",
+      "licenses": [
+        "BSD-3-Clause",
+        "BSD-4-Clause",
+        "BSLA",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "public-domain"
+      ],
+      "sourceName": "util-linux",
+      "sourceVersion": "2.38.1-5+deb12u3"
+    },
+    {
+      "name": "util-linux",
+      "version": "2.38.1-5+deb12u3",
+      "licenses": [
+        "BSD-3-Clause",
+        "BSD-4-Clause",
+        "BSLA",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "public-domain"
+      ],
+      "sourceName": "util-linux",
+      "sourceVersion": "2.38.1-5+deb12u3"
+    },
+    {
+      "name": "coreutils",
+      "version": "9.1-1",
+      "licenses": [
+        "BSD-4-Clause-UC",
+        "FSFULLR",
+        "GFDL-1.3-no-invariants-only",
+        "GFDL-1.3-only",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "ISC"
+      ],
+      "sourceName": "coreutils",
+      "sourceVersion": "9.1-1"
+    },
+    {
+      "name": "dash",
+      "version": "0.5.12-2",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "public-domain"
+      ],
+      "sourceName": "dash",
+      "sourceVersion": "0.5.12-2"
+    },
+    {
+      "name": "debconf",
+      "version": "1.5.82",
+      "licenses": [
+        "BSD-2-Clause"
+      ],
+      "sourceName": "debconf",
+      "sourceVersion": "1.5.82"
+    },
+    {
+      "name": "debian-archive-keyring",
+      "version": "2023.3+deb12u2",
+      "licenses": [
+        "GPL-2.0-or-later"
+      ],
+      "sourceName": "debian-archive-keyring",
+      "sourceVersion": "2023.3+deb12u2"
+    },
+    {
+      "name": "debianutils",
+      "version": "5.7-0.5~deb12u1",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "SMAIL-GPL",
+        "public-domain"
+      ],
+      "sourceName": "debianutils",
+      "sourceVersion": "5.7-0.5~deb12u1"
+    },
+    {
+      "name": "diffutils",
+      "version": "1:3.8-4",
+      "licenses": [
+        "FSFAP",
+        "FSFULLR",
+        "GFDL-1.3-no-invariants-only",
+        "GFDL-1.3-only",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-only WITH autoconf-exception+",
+        "GPL-3.0-or-later",
+        "GPL-3.0-or-later WITH texinfo-exception",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "X11",
+        "public-domain"
+      ],
+      "sourceName": "diffutils",
+      "sourceVersion": "1:3.8-4"
+    },
+    {
+      "name": "dirmngr",
+      "version": "2.2.40-1.1+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "CC0-1.0",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "RFC-Reference",
+        "TinySCHEME",
+        "permissive"
+      ],
+      "sourceName": "gnupg2",
+      "sourceVersion": "2.2.40-1.1+deb12u2"
+    },
+    {
+      "name": "gnupg-l10n",
+      "version": "2.2.40-1.1+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "CC0-1.0",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "RFC-Reference",
+        "TinySCHEME",
+        "permissive"
+      ],
+      "sourceName": "gnupg2",
+      "sourceVersion": "2.2.40-1.1+deb12u2"
+    },
+    {
+      "name": "gnupg-utils",
+      "version": "2.2.40-1.1+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "CC0-1.0",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "RFC-Reference",
+        "TinySCHEME",
+        "permissive"
+      ],
+      "sourceName": "gnupg2",
+      "sourceVersion": "2.2.40-1.1+deb12u2"
+    },
+    {
+      "name": "gnupg",
+      "version": "2.2.40-1.1+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "CC0-1.0",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "RFC-Reference",
+        "TinySCHEME",
+        "permissive"
+      ],
+      "sourceName": "gnupg2",
+      "sourceVersion": "2.2.40-1.1+deb12u2"
+    },
+    {
+      "name": "gpg-agent",
+      "version": "2.2.40-1.1+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "CC0-1.0",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "RFC-Reference",
+        "TinySCHEME",
+        "permissive"
+      ],
+      "sourceName": "gnupg2",
+      "sourceVersion": "2.2.40-1.1+deb12u2"
+    },
+    {
+      "name": "gpg-wks-client",
+      "version": "2.2.40-1.1+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "CC0-1.0",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "RFC-Reference",
+        "TinySCHEME",
+        "permissive"
+      ],
+      "sourceName": "gnupg2",
+      "sourceVersion": "2.2.40-1.1+deb12u2"
+    },
+    {
+      "name": "gpg-wks-server",
+      "version": "2.2.40-1.1+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "CC0-1.0",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "RFC-Reference",
+        "TinySCHEME",
+        "permissive"
+      ],
+      "sourceName": "gnupg2",
+      "sourceVersion": "2.2.40-1.1+deb12u2"
+    },
+    {
+      "name": "gpg",
+      "version": "2.2.40-1.1+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "CC0-1.0",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "RFC-Reference",
+        "TinySCHEME",
+        "permissive"
+      ],
+      "sourceName": "gnupg2",
+      "sourceVersion": "2.2.40-1.1+deb12u2"
+    },
+    {
+      "name": "gpgconf",
+      "version": "2.2.40-1.1+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "CC0-1.0",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "RFC-Reference",
+        "TinySCHEME",
+        "permissive"
+      ],
+      "sourceName": "gnupg2",
+      "sourceVersion": "2.2.40-1.1+deb12u2"
+    },
+    {
+      "name": "gpgsm",
+      "version": "2.2.40-1.1+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "CC0-1.0",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "RFC-Reference",
+        "TinySCHEME",
+        "permissive"
+      ],
+      "sourceName": "gnupg2",
+      "sourceVersion": "2.2.40-1.1+deb12u2"
+    },
+    {
+      "name": "gpgv",
+      "version": "2.2.40-1.1+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "CC0-1.0",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "RFC-Reference",
+        "TinySCHEME",
+        "permissive"
+      ],
+      "sourceName": "gnupg2",
+      "sourceVersion": "2.2.40-1.1+deb12u2"
+    },
+    {
+      "name": "dpkg",
+      "version": "1.21.23",
+      "licenses": [
+        "BSD-2-Clause",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "public-domain-s-s-d"
+      ],
+      "sourceName": "dpkg",
+      "sourceVersion": "1.21.23"
+    },
+    {
+      "name": "e2fsprogs",
+      "version": "1.47.0-2+b2",
+      "licenses": [
+        "Apache-2.0",
+        "BSD-3-Clause",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-2.0-or-later WITH Texinfo-exception",
+        "ISC",
+        "Kazlib",
+        "LGPL-2.0-only",
+        "Latex2e",
+        "MIT-US-export"
+      ],
+      "sourceName": "e2fsprogs",
+      "sourceVersion": "1.47.0-2"
+    },
+    {
+      "name": "libcom-err2",
+      "version": "1.47.0-2+b2",
+      "licenses": [
+        "Apache-2.0",
+        "BSD-3-Clause",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-2.0-or-later WITH Texinfo-exception",
+        "ISC",
+        "Kazlib",
+        "LGPL-2.0-only",
+        "Latex2e",
+        "MIT-US-export"
+      ],
+      "sourceName": "e2fsprogs",
+      "sourceVersion": "1.47.0-2"
+    },
+    {
+      "name": "libext2fs2",
+      "version": "1.47.0-2+b2",
+      "licenses": [
+        "Apache-2.0",
+        "BSD-3-Clause",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-2.0-or-later WITH Texinfo-exception",
+        "ISC",
+        "Kazlib",
+        "LGPL-2.0-only",
+        "Latex2e",
+        "MIT-US-export"
+      ],
+      "sourceName": "e2fsprogs",
+      "sourceVersion": "1.47.0-2"
+    },
+    {
+      "name": "libss2",
+      "version": "1.47.0-2+b2",
+      "licenses": [
+        "Apache-2.0",
+        "BSD-3-Clause",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-2.0-or-later WITH Texinfo-exception",
+        "ISC",
+        "Kazlib",
+        "LGPL-2.0-only",
+        "Latex2e",
+        "MIT-US-export"
+      ],
+      "sourceName": "e2fsprogs",
+      "sourceVersion": "1.47.0-2"
+    },
+    {
+      "name": "logsave",
+      "version": "1.47.0-2+b2",
+      "licenses": [
+        "Apache-2.0",
+        "BSD-3-Clause",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-2.0-or-later WITH Texinfo-exception",
+        "ISC",
+        "Kazlib",
+        "LGPL-2.0-only",
+        "Latex2e",
+        "MIT-US-export"
+      ],
+      "sourceName": "e2fsprogs",
+      "sourceVersion": "1.47.0-2"
+    },
+    {
+      "name": "findutils",
+      "version": "4.9.0-4",
+      "licenses": [
+        "BSD-3-Clause",
+        "BSD-3-clause-and-or-GPL-3+",
+        "FSFAP",
+        "FSFULLR",
+        "GFDL-1.3-no-invariants-or-later",
+        "GFDL-1.3-only",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-2.0-or-later WITH Autoconf-data-exception",
+        "GPL-2.0-or-later WITH automake-exception",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "GPL-3.0-or-later WITH Autoconf-data-exception",
+        "GPL-3.0-or-later WITH Bison-2.2-exception",
+        "ISC",
+        "ISC-and-or-LGPL-2.1+",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "X11",
+        "public-domain"
+      ],
+      "sourceName": "findutils",
+      "sourceVersion": "4.9.0-4"
+    },
+    {
+      "name": "gcc-12-base",
+      "version": "12.2.0-14+deb12u1",
+      "licenses": [
+        "Artistic-2.0",
+        "GFDL-1.2-only",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "LGPL-2.0-or-later"
+      ],
+      "sourceName": "gcc-12",
+      "sourceVersion": "12.2.0-14+deb12u1"
+    },
+    {
+      "name": "libgcc-s1",
+      "version": "12.2.0-14+deb12u1",
+      "licenses": [
+        "Artistic-2.0",
+        "GFDL-1.2-only",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "LGPL-2.0-or-later"
+      ],
+      "sourceName": "gcc-12",
+      "sourceVersion": "12.2.0-14+deb12u1"
+    },
+    {
+      "name": "libstdc++6",
+      "version": "12.2.0-14+deb12u1",
+      "licenses": [
+        "Artistic-2.0",
+        "GFDL-1.2-only",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "LGPL-2.0-or-later"
+      ],
+      "sourceName": "gcc-12",
+      "sourceVersion": "12.2.0-14+deb12u1"
+    },
+    {
+      "name": "grep",
+      "version": "3.8-5",
+      "licenses": [
+        "GPL-3.0-only",
+        "GPL-3.0-or-later"
+      ],
+      "sourceName": "grep",
+      "sourceVersion": "3.8-5"
+    },
+    {
+      "name": "gzip",
+      "version": "1.12-1",
+      "licenses": [
+        "FSF-manpages",
+        "GFDL-1.3--no-invariant",
+        "GFDL-3",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later"
+      ],
+      "sourceName": "gzip",
+      "sourceVersion": "1.12-1"
+    },
+    {
+      "name": "hostname",
+      "version": "3.23+nmu1",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "hostname",
+      "sourceVersion": "3.23+nmu1"
+    },
+    {
+      "name": "init-system-helpers",
+      "version": "1.65.2+deb12u1",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later"
+      ],
+      "sourceName": "init-system-helpers",
+      "sourceVersion": "1.65.2+deb12u1"
+    },
+    {
+      "name": "less",
+      "version": "590-2.1~deb12u2",
+      "licenses": [
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "Less",
+        "Spencer-86",
+        "X11",
+        "public-domain"
+      ],
+      "sourceName": "less",
+      "sourceVersion": "590-2.1~deb12u2"
+    },
+    {
+      "name": "libacl1",
+      "version": "2.3.1-3",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "LGPL-2.0-or-later",
+        "LGPL-2.1-only"
+      ],
+      "sourceName": "acl",
+      "sourceVersion": "2.3.1-3"
+    },
+    {
+      "name": "libassuan0",
+      "version": "2.5.5-5",
+      "licenses": [
+        "GAP",
+        "GAP-FSF",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-2.0-or-later WITH libtool-exception",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later"
+      ],
+      "sourceName": "libassuan",
+      "sourceVersion": "2.5.5-5"
+    },
+    {
+      "name": "libattr1",
+      "version": "1:2.5.1-4",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "LGPL-2.0-or-later",
+        "LGPL-2.1-only"
+      ],
+      "sourceName": "attr",
+      "sourceVersion": "1:2.5.1-4"
+    },
+    {
+      "name": "libaudit-common",
+      "version": "1:3.0.9-1",
+      "licenses": [
+        "GPL-1.0-only",
+        "GPL-2.0-only",
+        "LGPL-2.1-only"
+      ],
+      "sourceName": "audit",
+      "sourceVersion": "1:3.0.9-1"
+    },
+    {
+      "name": "libaudit1",
+      "version": "1:3.0.9-1",
+      "licenses": [
+        "GPL-1.0-only",
+        "GPL-2.0-only",
+        "LGPL-2.1-only"
+      ],
+      "sourceName": "audit",
+      "sourceVersion": "1:3.0.9-1"
+    },
+    {
+      "name": "libbsd0",
+      "version": "0.11.7-2",
+      "licenses": [
+        "BSD-2-Clause",
+        "BSD-2-Clause-NetBSD",
+        "BSD-2-clause-author",
+        "BSD-2-clause-verbatim",
+        "BSD-3-Clause",
+        "BSD-3-clause-John-Birrell",
+        "BSD-3-clause-Regents",
+        "BSD-3-clause-author",
+        "BSD-4-clause-Niels-Provos",
+        "Beerware",
+        "ISC",
+        "ISC-Original",
+        "MIT",
+        "libutil-David-Nugent",
+        "public-domain"
+      ],
+      "sourceName": "libbsd",
+      "sourceVersion": "0.11.7-2"
+    },
+    {
+      "name": "libbz2-1.0",
+      "version": "1.0.8-5+b1",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-2.0-only"
+      ],
+      "sourceName": "bzip2",
+      "sourceVersion": "1.0.8-5"
+    },
+    {
+      "name": "libc-bin",
+      "version": "2.36-9+deb12u14",
+      "licenses": [
+        "GPL-2.0-only",
+        "LGPL-2.1-only"
+      ],
+      "sourceName": "glibc",
+      "sourceVersion": "2.36-9+deb12u14"
+    },
+    {
+      "name": "libc-l10n",
+      "version": "2.36-9+deb12u14",
+      "licenses": [
+        "GPL-2.0-only",
+        "LGPL-2.1-only"
+      ],
+      "sourceName": "glibc",
+      "sourceVersion": "2.36-9+deb12u14"
+    },
+    {
+      "name": "libc6",
+      "version": "2.36-9+deb12u14",
+      "licenses": [
+        "GPL-2.0-only",
+        "LGPL-2.1-only"
+      ],
+      "sourceName": "glibc",
+      "sourceVersion": "2.36-9+deb12u14"
+    },
+    {
+      "name": "locales",
+      "version": "2.36-9+deb12u14",
+      "licenses": [
+        "GPL-2.0-only",
+        "LGPL-2.1-only"
+      ],
+      "sourceName": "glibc",
+      "sourceVersion": "2.36-9+deb12u14"
+    },
+    {
+      "name": "libcap-ng0",
+      "version": "0.8.3-1+b3",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later"
+      ],
+      "sourceName": "libcap-ng",
+      "sourceVersion": "0.8.3-1"
+    },
+    {
+      "name": "libcap2",
+      "version": "1:2.66-4+deb12u3+b1",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later"
+      ],
+      "sourceName": "libcap2",
+      "sourceVersion": "1:2.66-4+deb12u3"
+    },
+    {
+      "name": "libcrypt1",
+      "version": "1:4.4.33-2",
+      "licenses": [],
+      "sourceName": "libxcrypt",
+      "sourceVersion": "1:4.4.33-2"
+    },
+    {
+      "name": "libdb5.3",
+      "version": "5.3.28+dfsg2-1",
+      "licenses": [
+        "Artistic-2.0",
+        "BSD-3-Clause",
+        "BSD-3-clause-fjord",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "MIT-old",
+        "MS-PL",
+        "Sleepycat",
+        "TCL-like",
+        "X11",
+        "Zlib"
+      ],
+      "sourceName": "db5.3",
+      "sourceVersion": "5.3.28+dfsg2-1"
+    },
+    {
+      "name": "libdebconfclient0",
+      "version": "0.270",
+      "licenses": [
+        "BSD-2-Clause",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later"
+      ],
+      "sourceName": "cdebconf",
+      "sourceVersion": "0.270"
+    },
+    {
+      "name": "libedit2",
+      "version": "3.1-20221030-2",
+      "licenses": [
+        "BSD-3-Clause"
+      ],
+      "sourceName": "libedit",
+      "sourceVersion": "3.1-20221030-2"
+    },
+    {
+      "name": "libffi8",
+      "version": "3.4.4-1",
+      "licenses": [
+        "GPL-2.0-or-later",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-or-later",
+        "MIT",
+        "MPL-1.1",
+        "X11",
+        "public-domain"
+      ],
+      "sourceName": "libffi",
+      "sourceVersion": "3.4.4-1"
+    },
+    {
+      "name": "libgcrypt20",
+      "version": "1.10.1-3+deb12u1",
+      "licenses": [
+        "GPL-2.0-only",
+        "LGPL-2.0-or-later"
+      ],
+      "sourceName": "libgcrypt20",
+      "sourceVersion": "1.10.1-3+deb12u1"
+    },
+    {
+      "name": "libgdbm-compat4",
+      "version": "1.23-3",
+      "licenses": [
+        "GFDL-1.3-no-invariants-or-later",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later"
+      ],
+      "sourceName": "gdbm",
+      "sourceVersion": "1.23-3"
+    },
+    {
+      "name": "libgdbm6",
+      "version": "1.23-3",
+      "licenses": [
+        "GFDL-1.3-no-invariants-or-later",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later"
+      ],
+      "sourceName": "gdbm",
+      "sourceVersion": "1.23-3"
+    },
+    {
+      "name": "libgmp10",
+      "version": "2:6.2.1+dfsg1-1.1",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "GPL-3.0-or-later WITH Bison-exception",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later"
+      ],
+      "sourceName": "gmp",
+      "sourceVersion": "2:6.2.1+dfsg1-1.1"
+    },
+    {
+      "name": "libgnutls30",
+      "version": "3.7.9-2+deb12u7",
+      "licenses": [
+        "Apache-2.0",
+        "BSD-3-Clause",
+        "CC0-1.0",
+        "GFDL-1.3-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT"
+      ],
+      "sourceName": "gnutls28",
+      "sourceVersion": "3.7.9-2+deb12u7"
+    },
+    {
+      "name": "libgpg-error0",
+      "version": "1.46-1",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "g10-permissive"
+      ],
+      "sourceName": "libgpg-error",
+      "sourceVersion": "1.46-1"
+    },
+    {
+      "name": "libgssapi-krb5-2",
+      "version": "1.20.1-2+deb12u5",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "krb5",
+      "sourceVersion": "1.20.1-2+deb12u5"
+    },
+    {
+      "name": "libk5crypto3",
+      "version": "1.20.1-2+deb12u5",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "krb5",
+      "sourceVersion": "1.20.1-2+deb12u5"
+    },
+    {
+      "name": "libkrb5-3",
+      "version": "1.20.1-2+deb12u5",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "krb5",
+      "sourceVersion": "1.20.1-2+deb12u5"
+    },
+    {
+      "name": "libkrb5support0",
+      "version": "1.20.1-2+deb12u5",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "krb5",
+      "sourceVersion": "1.20.1-2+deb12u5"
+    },
+    {
+      "name": "libhogweed6",
+      "version": "3.8.1-2",
+      "licenses": [
+        "GAP",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only WITH autoconf-exception+",
+        "GPL-3.0-or-later",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "public-domain"
+      ],
+      "sourceName": "nettle",
+      "sourceVersion": "3.8.1-2"
+    },
+    {
+      "name": "libnettle8",
+      "version": "3.8.1-2",
+      "licenses": [
+        "GAP",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only WITH autoconf-exception+",
+        "GPL-3.0-or-later",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "LGPL-3.0-or-later",
+        "MIT",
+        "public-domain"
+      ],
+      "sourceName": "nettle",
+      "sourceVersion": "3.8.1-2"
+    },
+    {
+      "name": "libicu72",
+      "version": "72.1-3+deb12u1",
+      "licenses": [
+        "GPL-3.0-only",
+        "MIT"
+      ],
+      "sourceName": "icu",
+      "sourceVersion": "72.1-3+deb12u1"
+    },
+    {
+      "name": "libidn2-0",
+      "version": "2.3.3-1+b1",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "Unicode"
+      ],
+      "sourceName": "libidn2",
+      "sourceVersion": "2.3.3-1"
+    },
+    {
+      "name": "libjson-perl",
+      "version": "4.10000-1",
+      "licenses": [
+        "Artistic-2.0",
+        "GPL-1.0-only",
+        "GPL-1.0-or-later"
+      ],
+      "sourceName": "libjson-perl",
+      "sourceVersion": "4.10000-1"
+    },
+    {
+      "name": "libkeyutils1",
+      "version": "1.6.3-2",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later"
+      ],
+      "sourceName": "keyutils",
+      "sourceVersion": "1.6.3-2"
+    },
+    {
+      "name": "libksba8",
+      "version": "1.6.3-2",
+      "licenses": [
+        "FSFUL",
+        "GPL-3.0-only",
+        "LGPL-2.1-or-later"
+      ],
+      "sourceName": "libksba",
+      "sourceVersion": "1.6.3-2"
+    },
+    {
+      "name": "libldap-2.5-0",
+      "version": "2.5.13+dfsg-5",
+      "licenses": [
+        "BSD-3-Clause",
+        "BSD-3-clause-California",
+        "BSD-3-clause-variant",
+        "BSD-4-clause-California",
+        "Beerware",
+        "Expat-ISC",
+        "Expat-UNM",
+        "F5",
+        "FSF-unlimited",
+        "GPL-2.0-only",
+        "GPL-2.0-only WITH autoconf-exception+",
+        "GPL-2.0-or-later",
+        "GPL-2.0-or-later WITH Libtool-exception",
+        "GPL-3.0-only",
+        "GPL-3.0-only WITH autoconf-exception+",
+        "GPL-3.0-or-later",
+        "GPL-3.0-or-later WITH Libtool-exception",
+        "JCG",
+        "MIT",
+        "MIT-XC",
+        "NeoSoft-permissive",
+        "OpenLDAP-2.8",
+        "UMich",
+        "public-domain"
+      ],
+      "sourceName": "openldap",
+      "sourceVersion": "2.5.13+dfsg-5"
+    },
+    {
+      "name": "libllvm19",
+      "version": "1:19.1.7-3~deb12u1",
+      "licenses": [
+        "APACHE-2-LLVM-EXCEPTIONS",
+        "Apache-2.0",
+        "BSD-3-Clause",
+        "MIT",
+        "Python-2.0",
+        "solar-public-domain"
+      ],
+      "sourceName": "llvm-toolchain-19",
+      "sourceVersion": "1:19.1.7-3~deb12u1"
+    },
+    {
+      "name": "liblz4-1",
+      "version": "1.9.4-1",
+      "licenses": [
+        "BSD-2-Clause",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later"
+      ],
+      "sourceName": "lz4",
+      "sourceVersion": "1.9.4-1"
+    },
+    {
+      "name": "liblzma5",
+      "version": "5.4.1-1+deb12u2",
+      "licenses": [
+        "Autoconf",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "LGPL-2.0-only",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "PD",
+        "PD-debian",
+        "config-h",
+        "noderivs",
+        "none",
+        "permissive-fsf",
+        "permissive-nowarranty",
+        "probably-PD"
+      ],
+      "sourceName": "xz-utils",
+      "sourceVersion": "5.4.1-1+deb12u2"
+    },
+    {
+      "name": "xz-utils",
+      "version": "5.4.1-1+deb12u2",
+      "licenses": [
+        "Autoconf",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "LGPL-2.0-only",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "PD",
+        "PD-debian",
+        "config-h",
+        "noderivs",
+        "none",
+        "permissive-fsf",
+        "permissive-nowarranty",
+        "probably-PD"
+      ],
+      "sourceName": "xz-utils",
+      "sourceVersion": "5.4.1-1+deb12u2"
+    },
+    {
+      "name": "libmd0",
+      "version": "1.0.4-2",
+      "licenses": [
+        "BSD-2-Clause",
+        "BSD-2-Clause-NetBSD",
+        "BSD-3-Clause",
+        "BSD-3-clause-Aaron-D-Gifford",
+        "Beerware",
+        "ISC",
+        "public-domain-md4",
+        "public-domain-md5",
+        "public-domain-sha1"
+      ],
+      "sourceName": "libmd",
+      "sourceVersion": "1.0.4-2"
+    },
+    {
+      "name": "libncursesw6",
+      "version": "6.4-4",
+      "licenses": [
+        "BSD-3-Clause",
+        "MIT-X11",
+        "X11"
+      ],
+      "sourceName": "ncurses",
+      "sourceVersion": "6.4-4"
+    },
+    {
+      "name": "libtinfo6",
+      "version": "6.4-4",
+      "licenses": [
+        "BSD-3-Clause",
+        "MIT-X11",
+        "X11"
+      ],
+      "sourceName": "ncurses",
+      "sourceVersion": "6.4-4"
+    },
+    {
+      "name": "ncurses-base",
+      "version": "6.4-4",
+      "licenses": [
+        "BSD-3-Clause",
+        "MIT-X11",
+        "X11"
+      ],
+      "sourceName": "ncurses",
+      "sourceVersion": "6.4-4"
+    },
+    {
+      "name": "ncurses-bin",
+      "version": "6.4-4",
+      "licenses": [
+        "BSD-3-Clause",
+        "MIT-X11",
+        "X11"
+      ],
+      "sourceName": "ncurses",
+      "sourceVersion": "6.4-4"
+    },
+    {
+      "name": "libnpth0",
+      "version": "1.6-3",
+      "licenses": [
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later"
+      ],
+      "sourceName": "npth",
+      "sourceVersion": "1.6-3"
+    },
+    {
+      "name": "libnss-wrapper",
+      "version": "1.1.12-1",
+      "licenses": [
+        "BSD-3-clauses"
+      ],
+      "sourceName": "nss-wrapper",
+      "sourceVersion": "1.1.12-1"
+    },
+    {
+      "name": "libnuma1",
+      "version": "2.0.16-1",
+      "licenses": [
+        "GPL-2.0-or-later",
+        "LGPL-2.0-or-later"
+      ],
+      "sourceName": "numactl",
+      "sourceVersion": "2.0.16-1"
+    },
+    {
+      "name": "libp11-kit0",
+      "version": "0.24.1-2",
+      "licenses": [
+        "Apache-2.0",
+        "BSD-3-Clause",
+        "ISC",
+        "ISC-IBM",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "permissive-like-automake-output",
+        "same-as-rest-of-p11kit"
+      ],
+      "sourceName": "p11-kit",
+      "sourceVersion": "0.24.1-2"
+    },
+    {
+      "name": "libpam-modules-bin",
+      "version": "1.5.2-6+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "BSD-tcp-wrappers",
+        "Beerware",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later WITH Bison-exception",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "public-domain"
+      ],
+      "sourceName": "pam",
+      "sourceVersion": "1.5.2-6+deb12u2"
+    },
+    {
+      "name": "libpam-modules",
+      "version": "1.5.2-6+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "BSD-tcp-wrappers",
+        "Beerware",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later WITH Bison-exception",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "public-domain"
+      ],
+      "sourceName": "pam",
+      "sourceVersion": "1.5.2-6+deb12u2"
+    },
+    {
+      "name": "libpam-runtime",
+      "version": "1.5.2-6+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "BSD-tcp-wrappers",
+        "Beerware",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later WITH Bison-exception",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "public-domain"
+      ],
+      "sourceName": "pam",
+      "sourceVersion": "1.5.2-6+deb12u2"
+    },
+    {
+      "name": "libpam0g",
+      "version": "1.5.2-6+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "BSD-tcp-wrappers",
+        "Beerware",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later WITH Bison-exception",
+        "LGPL-2.0-only",
+        "LGPL-2.0-or-later",
+        "public-domain"
+      ],
+      "sourceName": "pam",
+      "sourceVersion": "1.5.2-6+deb12u2"
+    },
+    {
+      "name": "libpcre2-8-0",
+      "version": "10.42-1+deb12u2",
+      "licenses": [
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "BSD-3-clause-Cambridge WITH BINARY-LIBRARY-LIKE-PACKAGES-exception",
+        "X11",
+        "public-domain"
+      ],
+      "sourceName": "pcre2",
+      "sourceVersion": "10.42-1+deb12u2"
+    },
+    {
+      "name": "libperl5.36",
+      "version": "5.36.0-7+deb12u4",
+      "licenses": [
+        "Artistic-2",
+        "Artistic-2.0",
+        "Artistic-dist",
+        "BSD-3-Clause",
+        "BSD-3-Clause WITH weird-numbering",
+        "BSD-3-clause-GENERIC",
+        "BSD-4-clause-POWERDOG",
+        "BZIP",
+        "CC0-1.0",
+        "DONT-CHANGE-THE-GPL",
+        "GPL-1.0-only",
+        "GPL-1.0-or-later",
+        "GPL-2.0-only",
+        "GPL-2.0-only WITH bison-exception+",
+        "GPL-2.0-or-later",
+        "HSIEH-BSD",
+        "HSIEH-DERIVATIVE",
+        "LGPL-2.1-only",
+        "MIT",
+        "REGCOMP",
+        "RRA-KEEP-THIS-NOTICE",
+        "SDBM-PUBLIC-DOMAIN",
+        "TEXT-TABS",
+        "Unicode",
+        "Zlib"
+      ],
+      "sourceName": "perl",
+      "sourceVersion": "5.36.0-7+deb12u4"
+    },
+    {
+      "name": "perl-base",
+      "version": "5.36.0-7+deb12u4",
+      "licenses": [
+        "Artistic-2",
+        "Artistic-2.0",
+        "Artistic-dist",
+        "BSD-3-Clause",
+        "BSD-3-Clause WITH weird-numbering",
+        "BSD-3-clause-GENERIC",
+        "BSD-4-clause-POWERDOG",
+        "BZIP",
+        "CC0-1.0",
+        "DONT-CHANGE-THE-GPL",
+        "GPL-1.0-only",
+        "GPL-1.0-or-later",
+        "GPL-2.0-only",
+        "GPL-2.0-only WITH bison-exception+",
+        "GPL-2.0-or-later",
+        "HSIEH-BSD",
+        "HSIEH-DERIVATIVE",
+        "LGPL-2.1-only",
+        "MIT",
+        "REGCOMP",
+        "RRA-KEEP-THIS-NOTICE",
+        "SDBM-PUBLIC-DOMAIN",
+        "TEXT-TABS",
+        "Unicode",
+        "Zlib"
+      ],
+      "sourceName": "perl",
+      "sourceVersion": "5.36.0-7+deb12u4"
+    },
+    {
+      "name": "perl-modules-5.36",
+      "version": "5.36.0-7+deb12u4",
+      "licenses": [
+        "Artistic-2",
+        "Artistic-2.0",
+        "Artistic-dist",
+        "BSD-3-Clause",
+        "BSD-3-Clause WITH weird-numbering",
+        "BSD-3-clause-GENERIC",
+        "BSD-4-clause-POWERDOG",
+        "BZIP",
+        "CC0-1.0",
+        "DONT-CHANGE-THE-GPL",
+        "GPL-1.0-only",
+        "GPL-1.0-or-later",
+        "GPL-2.0-only",
+        "GPL-2.0-only WITH bison-exception+",
+        "GPL-2.0-or-later",
+        "HSIEH-BSD",
+        "HSIEH-DERIVATIVE",
+        "LGPL-2.1-only",
+        "MIT",
+        "REGCOMP",
+        "RRA-KEEP-THIS-NOTICE",
+        "SDBM-PUBLIC-DOMAIN",
+        "TEXT-TABS",
+        "Unicode",
+        "Zlib"
+      ],
+      "sourceName": "perl",
+      "sourceVersion": "5.36.0-7+deb12u4"
+    },
+    {
+      "name": "perl",
+      "version": "5.36.0-7+deb12u4",
+      "licenses": [
+        "Artistic-2",
+        "Artistic-2.0",
+        "Artistic-dist",
+        "BSD-3-Clause",
+        "BSD-3-Clause WITH weird-numbering",
+        "BSD-3-clause-GENERIC",
+        "BSD-4-clause-POWERDOG",
+        "BZIP",
+        "CC0-1.0",
+        "DONT-CHANGE-THE-GPL",
+        "GPL-1.0-only",
+        "GPL-1.0-or-later",
+        "GPL-2.0-only",
+        "GPL-2.0-only WITH bison-exception+",
+        "GPL-2.0-or-later",
+        "HSIEH-BSD",
+        "HSIEH-DERIVATIVE",
+        "LGPL-2.1-only",
+        "MIT",
+        "REGCOMP",
+        "RRA-KEEP-THIS-NOTICE",
+        "SDBM-PUBLIC-DOMAIN",
+        "TEXT-TABS",
+        "Unicode",
+        "Zlib"
+      ],
+      "sourceName": "perl",
+      "sourceVersion": "5.36.0-7+deb12u4"
+    },
+    {
+      "name": "libpq5",
+      "version": "18.6-1.pgdg12+2",
+      "licenses": [
+        "Artistic-2.0",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "Custom-Unicode",
+        "Custom-pg-dump",
+        "Custom-regex",
+        "GPL-1.0-only",
+        "PostgreSQL",
+        "TCL",
+        "double-metaphone",
+        "nagaysau-ishii"
+      ],
+      "sourceName": "postgresql-18",
+      "sourceVersion": "18.6-1.pgdg12+2"
+    },
+    {
+      "name": "postgresql-18-jit",
+      "version": "18.6-1.pgdg12+2",
+      "licenses": [
+        "Artistic-2.0",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "Custom-Unicode",
+        "Custom-pg-dump",
+        "Custom-regex",
+        "GPL-1.0-only",
+        "PostgreSQL",
+        "TCL",
+        "double-metaphone",
+        "nagaysau-ishii"
+      ],
+      "sourceName": "postgresql-18",
+      "sourceVersion": "18.6-1.pgdg12+2"
+    },
+    {
+      "name": "postgresql-18",
+      "version": "18.6-1.pgdg12+2",
+      "licenses": [
+        "Artistic-2.0",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "Custom-Unicode",
+        "Custom-pg-dump",
+        "Custom-regex",
+        "GPL-1.0-only",
+        "PostgreSQL",
+        "TCL",
+        "double-metaphone",
+        "nagaysau-ishii"
+      ],
+      "sourceName": "postgresql-18",
+      "sourceVersion": "18.6-1.pgdg12+2"
+    },
+    {
+      "name": "postgresql-client-18",
+      "version": "18.6-1.pgdg12+2",
+      "licenses": [
+        "Artistic-2.0",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "Custom-Unicode",
+        "Custom-pg-dump",
+        "Custom-regex",
+        "GPL-1.0-only",
+        "PostgreSQL",
+        "TCL",
+        "double-metaphone",
+        "nagaysau-ishii"
+      ],
+      "sourceName": "postgresql-18",
+      "sourceVersion": "18.6-1.pgdg12+2"
+    },
+    {
+      "name": "libreadline8",
+      "version": "8.2-1.3",
+      "licenses": [
+        "GFDL-1.3-no-invariants-or-later",
+        "GFDL-1.3-or-later",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "ISC-no-attribution"
+      ],
+      "sourceName": "readline",
+      "sourceVersion": "8.2-1.3"
+    },
+    {
+      "name": "readline-common",
+      "version": "8.2-1.3",
+      "licenses": [
+        "GFDL-1.3-no-invariants-or-later",
+        "GFDL-1.3-or-later",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "ISC-no-attribution"
+      ],
+      "sourceName": "readline",
+      "sourceVersion": "8.2-1.3"
+    },
+    {
+      "name": "libsasl2-2",
+      "version": "2.1.28+dfsg-10",
+      "licenses": [
+        "BSD-2-Clause",
+        "BSD-2.2-clause",
+        "BSD-3-Clause",
+        "BSD-3-clause-JANET",
+        "BSD-3-clause-PADL",
+        "BSD-4-Clause",
+        "BSD-4-Clause-UC",
+        "BSD-4-clause and IBM-as-is",
+        "BSD-4-clause-KTH",
+        "FSFULLR",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "IBM-as-is",
+        "MIT-CMU",
+        "MIT-Export",
+        "MIT-OpenVision",
+        "OpenLDAP",
+        "OpenSSL",
+        "RSA-MD",
+        "SSLeay"
+      ],
+      "sourceName": "cyrus-sasl2",
+      "sourceVersion": "2.1.28+dfsg-10"
+    },
+    {
+      "name": "libsasl2-modules-db",
+      "version": "2.1.28+dfsg-10",
+      "licenses": [
+        "BSD-2-Clause",
+        "BSD-2.2-clause",
+        "BSD-3-Clause",
+        "BSD-3-clause-JANET",
+        "BSD-3-clause-PADL",
+        "BSD-4-Clause",
+        "BSD-4-Clause-UC",
+        "BSD-4-clause and IBM-as-is",
+        "BSD-4-clause-KTH",
+        "FSFULLR",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "IBM-as-is",
+        "MIT-CMU",
+        "MIT-Export",
+        "MIT-OpenVision",
+        "OpenLDAP",
+        "OpenSSL",
+        "RSA-MD",
+        "SSLeay"
+      ],
+      "sourceName": "cyrus-sasl2",
+      "sourceVersion": "2.1.28+dfsg-10"
+    },
+    {
+      "name": "libseccomp2",
+      "version": "2.5.4-1+deb12u1",
+      "licenses": [
+        "LGPL-2.1-only"
+      ],
+      "sourceName": "libseccomp",
+      "sourceVersion": "2.5.4-1+deb12u1"
+    },
+    {
+      "name": "libselinux1",
+      "version": "3.4-1+b6",
+      "licenses": [
+        "GPL-2.0-only",
+        "LGPL-2.1-only"
+      ],
+      "sourceName": "libselinux",
+      "sourceVersion": "3.4-1"
+    },
+    {
+      "name": "libsemanage-common",
+      "version": "3.4-1",
+      "licenses": [
+        "GPL-2.0-or-later",
+        "LGPL-2.0-or-later"
+      ],
+      "sourceName": "libsemanage",
+      "sourceVersion": "3.4-1"
+    },
+    {
+      "name": "libsemanage2",
+      "version": "3.4-1+b5",
+      "licenses": [
+        "GPL-2.0-or-later",
+        "LGPL-2.0-or-later"
+      ],
+      "sourceName": "libsemanage",
+      "sourceVersion": "3.4-1"
+    },
+    {
+      "name": "libsepol2",
+      "version": "3.4-2.1",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "Zlib"
+      ],
+      "sourceName": "libsepol",
+      "sourceVersion": "3.4-2.1"
+    },
+    {
+      "name": "libsqlite3-0",
+      "version": "3.40.1-2+deb12u2",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "public-domain"
+      ],
+      "sourceName": "sqlite3",
+      "sourceVersion": "3.40.1-2+deb12u2"
+    },
+    {
+      "name": "libssl3",
+      "version": "3.0.22-1~deb12u1",
+      "licenses": [
+        "Apache-2.0",
+        "Artistic-2.0",
+        "GPL-1.0-only",
+        "GPL-1.0-or-later"
+      ],
+      "sourceName": "openssl",
+      "sourceVersion": "3.0.22-1~deb12u1"
+    },
+    {
+      "name": "openssl",
+      "version": "3.0.22-1~deb12u1",
+      "licenses": [
+        "Apache-2.0",
+        "Artistic-2.0",
+        "GPL-1.0-only",
+        "GPL-1.0-or-later"
+      ],
+      "sourceName": "openssl",
+      "sourceVersion": "3.0.22-1~deb12u1"
+    },
+    {
+      "name": "libsystemd0",
+      "version": "252.39-1~deb12u2",
+      "licenses": [
+        "CC0-1.0",
+        "GPL-2.0-only",
+        "GPL-2.0-only WITH Linux-syscall-note-exception",
+        "GPL-2.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "MIT",
+        "public-domain"
+      ],
+      "sourceName": "systemd",
+      "sourceVersion": "252.39-1~deb12u2"
+    },
+    {
+      "name": "libudev1",
+      "version": "252.39-1~deb12u2",
+      "licenses": [
+        "CC0-1.0",
+        "GPL-2.0-only",
+        "GPL-2.0-only WITH Linux-syscall-note-exception",
+        "GPL-2.0-or-later",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "MIT",
+        "public-domain"
+      ],
+      "sourceName": "systemd",
+      "sourceVersion": "252.39-1~deb12u2"
+    },
+    {
+      "name": "libtasn1-6",
+      "version": "4.19.0-2+deb12u1",
+      "licenses": [
+        "GFDL-1.3-only",
+        "GPL-3.0-only",
+        "LGPL-2.0-or-later",
+        "LGPL-2.1-only"
+      ],
+      "sourceName": "libtasn1-6",
+      "sourceVersion": "4.19.0-2+deb12u1"
+    },
+    {
+      "name": "libunistring2",
+      "version": "1.0-2",
+      "licenses": [
+        "FreeSoftware",
+        "GFDL-1.2-only",
+        "GFDL-1.2-or-later",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-2.0-or-later WITH distribution-exception",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "MIT"
+      ],
+      "sourceName": "libunistring",
+      "sourceVersion": "1.0-2"
+    },
+    {
+      "name": "liburing2",
+      "version": "2.3-3",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-only WITH Linux-syscall-note-exception",
+        "LGPL-2.1-only",
+        "LGPL-2.1-or-later",
+        "MIT"
+      ],
+      "sourceName": "liburing",
+      "sourceVersion": "2.3-3"
+    },
+    {
+      "name": "libxml2",
+      "version": "2.9.14+dfsg-1.3~deb12u6",
+      "licenses": [
+        "ISC",
+        "MIT-1"
+      ],
+      "sourceName": "libxml2",
+      "sourceVersion": "2.9.14+dfsg-1.3~deb12u6"
+    },
+    {
+      "name": "libxslt1.1",
+      "version": "1.1.35-1+deb12u4",
+      "licenses": [],
+      "sourceName": "libxslt",
+      "sourceVersion": "1.1.35-1+deb12u4"
+    },
+    {
+      "name": "libxxhash0",
+      "version": "0.8.1-1",
+      "licenses": [
+        "BSD-2-Clause",
+        "GPL-2.0-only"
+      ],
+      "sourceName": "xxhash",
+      "sourceVersion": "0.8.1-1"
+    },
+    {
+      "name": "libz3-4",
+      "version": "4.8.12-3.1",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "MIT"
+      ],
+      "sourceName": "z3",
+      "sourceVersion": "4.8.12-3.1"
+    },
+    {
+      "name": "libzstd1",
+      "version": "1.5.4+dfsg2-5",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-2.0-only",
+        "MIT",
+        "Zlib"
+      ],
+      "sourceName": "libzstd",
+      "sourceVersion": "1.5.4+dfsg2-5"
+    },
+    {
+      "name": "zstd",
+      "version": "1.5.4+dfsg2-5",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-2.0-only",
+        "MIT",
+        "Zlib"
+      ],
+      "sourceName": "libzstd",
+      "sourceVersion": "1.5.4+dfsg2-5"
+    },
+    {
+      "name": "login",
+      "version": "1:4.13+dfsg1-1+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-1.0-only",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "public-domain"
+      ],
+      "sourceName": "shadow",
+      "sourceVersion": "1:4.13+dfsg1-1+deb12u2"
+    },
+    {
+      "name": "passwd",
+      "version": "1:4.13+dfsg1-1+deb12u2",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-1.0-only",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "public-domain"
+      ],
+      "sourceName": "shadow",
+      "sourceVersion": "1:4.13+dfsg1-1+deb12u2"
+    },
+    {
+      "name": "mawk",
+      "version": "1.3.4.20200120-3.1",
+      "licenses": [
+        "CC-BY-3.0",
+        "GPL-2.0-only",
+        "X11"
+      ],
+      "sourceName": "mawk",
+      "sourceVersion": "1.3.4.20200120-3.1"
+    },
+    {
+      "name": "netbase",
+      "version": "6.4",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "netbase",
+      "sourceVersion": "6.4"
+    },
+    {
+      "name": "pinentry-curses",
+      "version": "1.2.1-1",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later",
+        "X11"
+      ],
+      "sourceName": "pinentry",
+      "sourceVersion": "1.2.1-1"
+    },
+    {
+      "name": "postgresql-client-common",
+      "version": "293.pgdg12+1",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later"
+      ],
+      "sourceName": "postgresql-common",
+      "sourceVersion": "293.pgdg12+1"
+    },
+    {
+      "name": "postgresql-common",
+      "version": "293.pgdg12+1",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later"
+      ],
+      "sourceName": "postgresql-common",
+      "sourceVersion": "293.pgdg12+1"
+    },
+    {
+      "name": "sed",
+      "version": "4.9-1+deb12u1",
+      "licenses": [
+        "BSD-4-Clause-UC",
+        "BSL-1",
+        "GFDL-1.3-no-invariants-or-later",
+        "GFDL-1.3-only",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "ISC",
+        "X11",
+        "pcre"
+      ],
+      "sourceName": "sed",
+      "sourceVersion": "4.9-1+deb12u1"
+    },
+    {
+      "name": "sensible-utils",
+      "version": "0.0.17+nmu1",
+      "licenses": [
+        "All-permissive",
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "configure",
+        "installsh"
+      ],
+      "sourceName": "sensible-utils",
+      "sourceVersion": "0.0.17+nmu1"
+    },
+    {
+      "name": "ssl-cert",
+      "version": "1.1.2",
+      "licenses": [
+        "BSD-3-Clause"
+      ],
+      "sourceName": "ssl-cert",
+      "sourceVersion": "1.1.2"
+    },
+    {
+      "name": "sysvinit-utils",
+      "version": "3.06-4",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only"
+      ],
+      "sourceName": "sysvinit",
+      "sourceVersion": "3.06-4"
+    },
+    {
+      "name": "tar",
+      "version": "1.34+dfsg-1.2+deb12u1",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later",
+        "GPL-3.0-only",
+        "GPL-3.0-or-later",
+        "GPL-3.0-or-later WITH Bison-exception",
+        "LGPL-3.0-only",
+        "LGPL-3.0-or-later"
+      ],
+      "sourceName": "tar",
+      "sourceVersion": "1.34+dfsg-1.2+deb12u1"
+    },
+    {
+      "name": "tzdata",
+      "version": "2026c-0+deb12u1",
+      "licenses": [
+        "public-domain"
+      ],
+      "sourceName": "tzdata",
+      "sourceVersion": "2026c-0+deb12u1"
+    },
+    {
+      "name": "ucf",
+      "version": "3.0043+nmu1+deb12u1",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "ucf",
+      "sourceVersion": "3.0043+nmu1+deb12u1"
+    },
+    {
+      "name": "usr-is-merged",
+      "version": "37~deb12u1",
+      "licenses": [
+        "GPL-2.0-only",
+        "GPL-2.0-or-later"
+      ],
+      "sourceName": "usrmerge",
+      "sourceVersion": "37~deb12u1"
+    },
+    {
+      "name": "zlib1g",
+      "version": "1:1.2.13.dfsg-1",
+      "licenses": [
+        "Zlib"
+      ],
+      "sourceName": "zlib",
+      "sourceVersion": "1:1.2.13.dfsg-1"
+    }
   ],
   "sources": [
-    {"sourceName":"sqlite3","sourceVersion":"3.40.1-2+deb12u2","sourceUrl":"https://sources.debian.org/src/sqlite3/3.40.1-2%2Bdeb12u2/"},
-    {"sourceName":"libxml2","sourceVersion":"2.9.14+dfsg-1.3~deb12u6","sourceUrl":"https://sources.debian.org/src/libxml2/2.9.14%2Bdfsg-1.3~deb12u6/"},
-    {"sourceName":"zlib","sourceVersion":"1:1.2.13.dfsg-1","sourceUrl":"https://sources.debian.org/src/zlib/1%3A1.2.13.dfsg-1/"},
-    {"sourceName":"postgresql-18","sourceVersion":"18.6-1.pgdg12+2","sourceUrl":"https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-18/postgresql-18_18.6-1.pgdg12+2.dsc","packagingSourceUrl":"https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-18/postgresql-18_18.6-1.pgdg12+2.debian.tar.xz"},
-    {"sourceName":"postgresql-common","sourceVersion":"293.pgdg12+1","sourceUrl":"https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-common/postgresql-common_293.pgdg12+1.dsc","sourceArchiveUrl":"https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-common/postgresql-common_293.pgdg12+1.tar.xz"}
+    {
+      "sourceName": "adduser",
+      "sourceVersion": "3.134",
+      "sourceUrl": "https://sources.debian.org/src/adduser/3.134/"
+    },
+    {
+      "sourceName": "apt",
+      "sourceVersion": "2.6.1",
+      "sourceUrl": "https://sources.debian.org/src/apt/2.6.1/"
+    },
+    {
+      "sourceName": "base-files",
+      "sourceVersion": "12.4+deb12u15",
+      "sourceUrl": "https://sources.debian.org/src/base-files/12.4%2Bdeb12u15/"
+    },
+    {
+      "sourceName": "base-passwd",
+      "sourceVersion": "3.6.1",
+      "sourceUrl": "https://sources.debian.org/src/base-passwd/3.6.1/"
+    },
+    {
+      "sourceName": "bash",
+      "sourceVersion": "5.2.15-2",
+      "sourceUrl": "https://sources.debian.org/src/bash/5.2.15-2/"
+    },
+    {
+      "sourceName": "util-linux",
+      "sourceVersion": "2.38.1-5+deb12u3",
+      "sourceUrl": "https://sources.debian.org/src/util-linux/2.38.1-5%2Bdeb12u3/"
+    },
+    {
+      "sourceName": "coreutils",
+      "sourceVersion": "9.1-1",
+      "sourceUrl": "https://sources.debian.org/src/coreutils/9.1-1/"
+    },
+    {
+      "sourceName": "dash",
+      "sourceVersion": "0.5.12-2",
+      "sourceUrl": "https://sources.debian.org/src/dash/0.5.12-2/"
+    },
+    {
+      "sourceName": "debconf",
+      "sourceVersion": "1.5.82",
+      "sourceUrl": "https://sources.debian.org/src/debconf/1.5.82/"
+    },
+    {
+      "sourceName": "debian-archive-keyring",
+      "sourceVersion": "2023.3+deb12u2",
+      "sourceUrl": "https://sources.debian.org/src/debian-archive-keyring/2023.3%2Bdeb12u2/"
+    },
+    {
+      "sourceName": "debianutils",
+      "sourceVersion": "5.7-0.5~deb12u1",
+      "sourceUrl": "https://sources.debian.org/src/debianutils/5.7-0.5~deb12u1/"
+    },
+    {
+      "sourceName": "diffutils",
+      "sourceVersion": "1:3.8-4",
+      "sourceUrl": "https://sources.debian.org/src/diffutils/1%3A3.8-4/"
+    },
+    {
+      "sourceName": "gnupg2",
+      "sourceVersion": "2.2.40-1.1+deb12u2",
+      "sourceUrl": "https://sources.debian.org/src/gnupg2/2.2.40-1.1%2Bdeb12u2/"
+    },
+    {
+      "sourceName": "dpkg",
+      "sourceVersion": "1.21.23",
+      "sourceUrl": "https://sources.debian.org/src/dpkg/1.21.23/"
+    },
+    {
+      "sourceName": "e2fsprogs",
+      "sourceVersion": "1.47.0-2",
+      "sourceUrl": "https://sources.debian.org/src/e2fsprogs/1.47.0-2/"
+    },
+    {
+      "sourceName": "findutils",
+      "sourceVersion": "4.9.0-4",
+      "sourceUrl": "https://sources.debian.org/src/findutils/4.9.0-4/"
+    },
+    {
+      "sourceName": "gcc-12",
+      "sourceVersion": "12.2.0-14+deb12u1",
+      "sourceUrl": "https://sources.debian.org/src/gcc-12/12.2.0-14%2Bdeb12u1/"
+    },
+    {
+      "sourceName": "grep",
+      "sourceVersion": "3.8-5",
+      "sourceUrl": "https://sources.debian.org/src/grep/3.8-5/"
+    },
+    {
+      "sourceName": "gzip",
+      "sourceVersion": "1.12-1",
+      "sourceUrl": "https://sources.debian.org/src/gzip/1.12-1/"
+    },
+    {
+      "sourceName": "hostname",
+      "sourceVersion": "3.23+nmu1",
+      "sourceUrl": "https://sources.debian.org/src/hostname/3.23%2Bnmu1/"
+    },
+    {
+      "sourceName": "init-system-helpers",
+      "sourceVersion": "1.65.2+deb12u1",
+      "sourceUrl": "https://sources.debian.org/src/init-system-helpers/1.65.2%2Bdeb12u1/"
+    },
+    {
+      "sourceName": "less",
+      "sourceVersion": "590-2.1~deb12u2",
+      "sourceUrl": "https://sources.debian.org/src/less/590-2.1~deb12u2/"
+    },
+    {
+      "sourceName": "acl",
+      "sourceVersion": "2.3.1-3",
+      "sourceUrl": "https://sources.debian.org/src/acl/2.3.1-3/"
+    },
+    {
+      "sourceName": "libassuan",
+      "sourceVersion": "2.5.5-5",
+      "sourceUrl": "https://sources.debian.org/src/libassuan/2.5.5-5/"
+    },
+    {
+      "sourceName": "attr",
+      "sourceVersion": "1:2.5.1-4",
+      "sourceUrl": "https://sources.debian.org/src/attr/1%3A2.5.1-4/"
+    },
+    {
+      "sourceName": "audit",
+      "sourceVersion": "1:3.0.9-1",
+      "sourceUrl": "https://sources.debian.org/src/audit/1%3A3.0.9-1/"
+    },
+    {
+      "sourceName": "libbsd",
+      "sourceVersion": "0.11.7-2",
+      "sourceUrl": "https://sources.debian.org/src/libbsd/0.11.7-2/"
+    },
+    {
+      "sourceName": "bzip2",
+      "sourceVersion": "1.0.8-5",
+      "sourceUrl": "https://sources.debian.org/src/bzip2/1.0.8-5/"
+    },
+    {
+      "sourceName": "glibc",
+      "sourceVersion": "2.36-9+deb12u14",
+      "sourceUrl": "https://sources.debian.org/src/glibc/2.36-9%2Bdeb12u14/"
+    },
+    {
+      "sourceName": "libcap-ng",
+      "sourceVersion": "0.8.3-1",
+      "sourceUrl": "https://sources.debian.org/src/libcap-ng/0.8.3-1/"
+    },
+    {
+      "sourceName": "libcap2",
+      "sourceVersion": "1:2.66-4+deb12u3",
+      "sourceUrl": "https://sources.debian.org/src/libcap2/1%3A2.66-4%2Bdeb12u3/"
+    },
+    {
+      "sourceName": "libxcrypt",
+      "sourceVersion": "1:4.4.33-2",
+      "sourceUrl": "https://sources.debian.org/src/libxcrypt/1%3A4.4.33-2/"
+    },
+    {
+      "sourceName": "db5.3",
+      "sourceVersion": "5.3.28+dfsg2-1",
+      "sourceUrl": "https://sources.debian.org/src/db5.3/5.3.28%2Bdfsg2-1/"
+    },
+    {
+      "sourceName": "cdebconf",
+      "sourceVersion": "0.270",
+      "sourceUrl": "https://sources.debian.org/src/cdebconf/0.270/"
+    },
+    {
+      "sourceName": "libedit",
+      "sourceVersion": "3.1-20221030-2",
+      "sourceUrl": "https://sources.debian.org/src/libedit/3.1-20221030-2/"
+    },
+    {
+      "sourceName": "libffi",
+      "sourceVersion": "3.4.4-1",
+      "sourceUrl": "https://sources.debian.org/src/libffi/3.4.4-1/"
+    },
+    {
+      "sourceName": "libgcrypt20",
+      "sourceVersion": "1.10.1-3+deb12u1",
+      "sourceUrl": "https://sources.debian.org/src/libgcrypt20/1.10.1-3%2Bdeb12u1/"
+    },
+    {
+      "sourceName": "gdbm",
+      "sourceVersion": "1.23-3",
+      "sourceUrl": "https://sources.debian.org/src/gdbm/1.23-3/"
+    },
+    {
+      "sourceName": "gmp",
+      "sourceVersion": "2:6.2.1+dfsg1-1.1",
+      "sourceUrl": "https://sources.debian.org/src/gmp/2%3A6.2.1%2Bdfsg1-1.1/"
+    },
+    {
+      "sourceName": "gnutls28",
+      "sourceVersion": "3.7.9-2+deb12u7",
+      "sourceUrl": "https://sources.debian.org/src/gnutls28/3.7.9-2%2Bdeb12u7/"
+    },
+    {
+      "sourceName": "libgpg-error",
+      "sourceVersion": "1.46-1",
+      "sourceUrl": "https://sources.debian.org/src/libgpg-error/1.46-1/"
+    },
+    {
+      "sourceName": "krb5",
+      "sourceVersion": "1.20.1-2+deb12u5",
+      "sourceUrl": "https://sources.debian.org/src/krb5/1.20.1-2%2Bdeb12u5/"
+    },
+    {
+      "sourceName": "nettle",
+      "sourceVersion": "3.8.1-2",
+      "sourceUrl": "https://sources.debian.org/src/nettle/3.8.1-2/"
+    },
+    {
+      "sourceName": "icu",
+      "sourceVersion": "72.1-3+deb12u1",
+      "sourceUrl": "https://sources.debian.org/src/icu/72.1-3%2Bdeb12u1/"
+    },
+    {
+      "sourceName": "libidn2",
+      "sourceVersion": "2.3.3-1",
+      "sourceUrl": "https://sources.debian.org/src/libidn2/2.3.3-1/"
+    },
+    {
+      "sourceName": "libjson-perl",
+      "sourceVersion": "4.10000-1",
+      "sourceUrl": "https://sources.debian.org/src/libjson-perl/4.10000-1/"
+    },
+    {
+      "sourceName": "keyutils",
+      "sourceVersion": "1.6.3-2",
+      "sourceUrl": "https://sources.debian.org/src/keyutils/1.6.3-2/"
+    },
+    {
+      "sourceName": "libksba",
+      "sourceVersion": "1.6.3-2",
+      "sourceUrl": "https://sources.debian.org/src/libksba/1.6.3-2/"
+    },
+    {
+      "sourceName": "openldap",
+      "sourceVersion": "2.5.13+dfsg-5",
+      "sourceUrl": "https://sources.debian.org/src/openldap/2.5.13%2Bdfsg-5/"
+    },
+    {
+      "sourceName": "llvm-toolchain-19",
+      "sourceVersion": "1:19.1.7-3~deb12u1",
+      "sourceUrl": "https://sources.debian.org/src/llvm-toolchain-19/1%3A19.1.7-3~deb12u1/"
+    },
+    {
+      "sourceName": "lz4",
+      "sourceVersion": "1.9.4-1",
+      "sourceUrl": "https://sources.debian.org/src/lz4/1.9.4-1/"
+    },
+    {
+      "sourceName": "xz-utils",
+      "sourceVersion": "5.4.1-1+deb12u2",
+      "sourceUrl": "https://sources.debian.org/src/xz-utils/5.4.1-1%2Bdeb12u2/"
+    },
+    {
+      "sourceName": "libmd",
+      "sourceVersion": "1.0.4-2",
+      "sourceUrl": "https://sources.debian.org/src/libmd/1.0.4-2/"
+    },
+    {
+      "sourceName": "ncurses",
+      "sourceVersion": "6.4-4",
+      "sourceUrl": "https://sources.debian.org/src/ncurses/6.4-4/"
+    },
+    {
+      "sourceName": "npth",
+      "sourceVersion": "1.6-3",
+      "sourceUrl": "https://sources.debian.org/src/npth/1.6-3/"
+    },
+    {
+      "sourceName": "nss-wrapper",
+      "sourceVersion": "1.1.12-1",
+      "sourceUrl": "https://sources.debian.org/src/nss-wrapper/1.1.12-1/"
+    },
+    {
+      "sourceName": "numactl",
+      "sourceVersion": "2.0.16-1",
+      "sourceUrl": "https://sources.debian.org/src/numactl/2.0.16-1/"
+    },
+    {
+      "sourceName": "p11-kit",
+      "sourceVersion": "0.24.1-2",
+      "sourceUrl": "https://sources.debian.org/src/p11-kit/0.24.1-2/"
+    },
+    {
+      "sourceName": "pam",
+      "sourceVersion": "1.5.2-6+deb12u2",
+      "sourceUrl": "https://sources.debian.org/src/pam/1.5.2-6%2Bdeb12u2/"
+    },
+    {
+      "sourceName": "pcre2",
+      "sourceVersion": "10.42-1+deb12u2",
+      "sourceUrl": "https://sources.debian.org/src/pcre2/10.42-1%2Bdeb12u2/"
+    },
+    {
+      "sourceName": "perl",
+      "sourceVersion": "5.36.0-7+deb12u4",
+      "sourceUrl": "https://sources.debian.org/src/perl/5.36.0-7%2Bdeb12u4/"
+    },
+    {
+      "sourceName": "postgresql-18",
+      "sourceVersion": "18.6-1.pgdg12+2",
+      "sourceUrl": "https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-18/postgresql-18_18.6-1.pgdg12+2.dsc",
+      "packagingSourceUrl": "https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-18/postgresql-18_18.6-1.pgdg12+2.debian.tar.xz"
+    },
+    {
+      "sourceName": "readline",
+      "sourceVersion": "8.2-1.3",
+      "sourceUrl": "https://sources.debian.org/src/readline/8.2-1.3/"
+    },
+    {
+      "sourceName": "cyrus-sasl2",
+      "sourceVersion": "2.1.28+dfsg-10",
+      "sourceUrl": "https://sources.debian.org/src/cyrus-sasl2/2.1.28%2Bdfsg-10/"
+    },
+    {
+      "sourceName": "libseccomp",
+      "sourceVersion": "2.5.4-1+deb12u1",
+      "sourceUrl": "https://sources.debian.org/src/libseccomp/2.5.4-1%2Bdeb12u1/"
+    },
+    {
+      "sourceName": "libselinux",
+      "sourceVersion": "3.4-1",
+      "sourceUrl": "https://sources.debian.org/src/libselinux/3.4-1/"
+    },
+    {
+      "sourceName": "libsemanage",
+      "sourceVersion": "3.4-1",
+      "sourceUrl": "https://sources.debian.org/src/libsemanage/3.4-1/"
+    },
+    {
+      "sourceName": "libsepol",
+      "sourceVersion": "3.4-2.1",
+      "sourceUrl": "https://sources.debian.org/src/libsepol/3.4-2.1/"
+    },
+    {
+      "sourceName": "sqlite3",
+      "sourceVersion": "3.40.1-2+deb12u2",
+      "sourceUrl": "https://sources.debian.org/src/sqlite3/3.40.1-2%2Bdeb12u2/"
+    },
+    {
+      "sourceName": "openssl",
+      "sourceVersion": "3.0.22-1~deb12u1",
+      "sourceUrl": "https://sources.debian.org/src/openssl/3.0.22-1~deb12u1/"
+    },
+    {
+      "sourceName": "systemd",
+      "sourceVersion": "252.39-1~deb12u2",
+      "sourceUrl": "https://sources.debian.org/src/systemd/252.39-1~deb12u2/"
+    },
+    {
+      "sourceName": "libtasn1-6",
+      "sourceVersion": "4.19.0-2+deb12u1",
+      "sourceUrl": "https://sources.debian.org/src/libtasn1-6/4.19.0-2%2Bdeb12u1/"
+    },
+    {
+      "sourceName": "libunistring",
+      "sourceVersion": "1.0-2",
+      "sourceUrl": "https://sources.debian.org/src/libunistring/1.0-2/"
+    },
+    {
+      "sourceName": "liburing",
+      "sourceVersion": "2.3-3",
+      "sourceUrl": "https://sources.debian.org/src/liburing/2.3-3/"
+    },
+    {
+      "sourceName": "libxml2",
+      "sourceVersion": "2.9.14+dfsg-1.3~deb12u6",
+      "sourceUrl": "https://sources.debian.org/src/libxml2/2.9.14%2Bdfsg-1.3~deb12u6/"
+    },
+    {
+      "sourceName": "libxslt",
+      "sourceVersion": "1.1.35-1+deb12u4",
+      "sourceUrl": "https://sources.debian.org/src/libxslt/1.1.35-1%2Bdeb12u4/"
+    },
+    {
+      "sourceName": "xxhash",
+      "sourceVersion": "0.8.1-1",
+      "sourceUrl": "https://sources.debian.org/src/xxhash/0.8.1-1/"
+    },
+    {
+      "sourceName": "z3",
+      "sourceVersion": "4.8.12-3.1",
+      "sourceUrl": "https://sources.debian.org/src/z3/4.8.12-3.1/"
+    },
+    {
+      "sourceName": "libzstd",
+      "sourceVersion": "1.5.4+dfsg2-5",
+      "sourceUrl": "https://sources.debian.org/src/libzstd/1.5.4%2Bdfsg2-5/"
+    },
+    {
+      "sourceName": "shadow",
+      "sourceVersion": "1:4.13+dfsg1-1+deb12u2",
+      "sourceUrl": "https://sources.debian.org/src/shadow/1%3A4.13%2Bdfsg1-1%2Bdeb12u2/"
+    },
+    {
+      "sourceName": "mawk",
+      "sourceVersion": "1.3.4.20200120-3.1",
+      "sourceUrl": "https://sources.debian.org/src/mawk/1.3.4.20200120-3.1/"
+    },
+    {
+      "sourceName": "netbase",
+      "sourceVersion": "6.4",
+      "sourceUrl": "https://sources.debian.org/src/netbase/6.4/"
+    },
+    {
+      "sourceName": "pinentry",
+      "sourceVersion": "1.2.1-1",
+      "sourceUrl": "https://sources.debian.org/src/pinentry/1.2.1-1/"
+    },
+    {
+      "sourceName": "postgresql-common",
+      "sourceVersion": "293.pgdg12+1",
+      "sourceUrl": "https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-common/postgresql-common_293.pgdg12+1.dsc",
+      "sourceArchiveUrl": "https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-common/postgresql-common_293.pgdg12+1.tar.xz"
+    },
+    {
+      "sourceName": "sed",
+      "sourceVersion": "4.9-1+deb12u1",
+      "sourceUrl": "https://sources.debian.org/src/sed/4.9-1%2Bdeb12u1/"
+    },
+    {
+      "sourceName": "sensible-utils",
+      "sourceVersion": "0.0.17+nmu1",
+      "sourceUrl": "https://sources.debian.org/src/sensible-utils/0.0.17%2Bnmu1/"
+    },
+    {
+      "sourceName": "ssl-cert",
+      "sourceVersion": "1.1.2",
+      "sourceUrl": "https://sources.debian.org/src/ssl-cert/1.1.2/"
+    },
+    {
+      "sourceName": "sysvinit",
+      "sourceVersion": "3.06-4",
+      "sourceUrl": "https://sources.debian.org/src/sysvinit/3.06-4/"
+    },
+    {
+      "sourceName": "tar",
+      "sourceVersion": "1.34+dfsg-1.2+deb12u1",
+      "sourceUrl": "https://sources.debian.org/src/tar/1.34%2Bdfsg-1.2%2Bdeb12u1/"
+    },
+    {
+      "sourceName": "tzdata",
+      "sourceVersion": "2026c-0+deb12u1",
+      "sourceUrl": "https://sources.debian.org/src/tzdata/2026c-0%2Bdeb12u1/"
+    },
+    {
+      "sourceName": "ucf",
+      "sourceVersion": "3.0043+nmu1+deb12u1",
+      "sourceUrl": "https://sources.debian.org/src/ucf/3.0043%2Bnmu1%2Bdeb12u1/"
+    },
+    {
+      "sourceName": "usrmerge",
+      "sourceVersion": "37~deb12u1",
+      "sourceUrl": "https://sources.debian.org/src/usrmerge/37~deb12u1/"
+    },
+    {
+      "sourceName": "zlib",
+      "sourceVersion": "1:1.2.13.dfsg-1",
+      "sourceUrl": "https://sources.debian.org/src/zlib/1%3A1.2.13.dfsg-1/"
+    }
   ]
 }
