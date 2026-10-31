@@ -35,6 +35,7 @@
   },
   "deliveries": {
     "argocd": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40934558588","destinationDigest":"sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68"},
+    "argocd-redis": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/41161926710","destinationDigest":"sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1"},
     "argo-rollouts": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40916984294","destinationDigest":"sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396"},
     "istio-pilot": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40936986084","destinationDigest":"sha256:ab2aa8f08fa1026e516b9659cb331eb952ea11ba44ad3066bc04eace18f07330"},
     "istio-proxy": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40966477911","destinationDigest":"sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1"},
@@ -45,7 +46,7 @@
   "consumerReferences": {
     "kind-node":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"kind-node"}],
     "argocd":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"argocd"}],
-    "argocd-redis":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"argocd-redis"}],
+    "argocd-redis":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"argocd-redis"},{"path":"bootstrap/versions.lock.yaml","type":"value-image","identity":"spec.argoCd.redisImage"},{"path":"bootstrap/argocd-values.yaml","type":"argocd-redis-image","identity":"redis.image"},{"path":"learning/existing-kind/managed/foundation/resources.yaml","type":"deployment-image","identity":"argocd-redis"},{"path":"learning/progressive-delivery/render.py","type":"python-constant-image","identity":"REDIS_IMAGE"}],
     "argo-rollouts":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"argo-rollouts"}],
     "istio-pilot":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"istio-pilot"}],
     "istio-proxy":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"istio-proxy"}],

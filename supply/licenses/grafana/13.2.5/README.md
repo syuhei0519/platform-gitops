@@ -2,6 +2,8 @@
 
 The recorded GitHub Actions artifact binds the official Grafana 13.2.5 index,
 linux/amd64 manifest, config, SBOM summary, and passing vulnerability gate.
-This record is deliberately not redistribution-ready: the public license and
-NOTICE/source offer, plus the image runtime package license mapping, still need
-to be retained before a byte-preserving public copy can be approved.
+The tagged AGPL license, NOTICE, source archive link, and build Dockerfile are
+retained here. `runtime-packages.json` records the OS runtime packages from the
+bound SBOM, grouped by source package with their reported licenses and official
+Alpine source pages. These materials complete the preparation record; public
+copy remains a separate, explicit approval and execution step.

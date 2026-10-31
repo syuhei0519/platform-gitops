@@ -18,7 +18,7 @@ spec:
     appVersion: v3.5.2
     packageDigest: sha256:96fb5ab2897e3c8758cd8fef409a46668ef1a19a538116b112b0691614a48f20
     image: ghcr.io/syuhei0519/platform-lab-images:argocd-v3.5.2@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68
-    redisImage: ecr-public.aws.com/docker/library/redis:8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1
+    redisImage: ghcr.io/syuhei0519/platform-lab-images:argocd-redis-8.6.4-alpine@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1
   argoRollouts:
     repository: https://argoproj.github.io/argo-helm
     chart: argo-rollouts

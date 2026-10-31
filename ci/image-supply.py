@@ -5,6 +5,7 @@ This never resolves or invents a destination digest.  A consumer may move to
 GHCR only from the receipt produced after an actual byte-preserving OCI copy.
 """
 import argparse
+import ast
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -20,6 +21,7 @@ TAG = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}")
 SCAN_FRESHNESS_HOURS = 24
 DELIVERY_RUNS = {
     "argocd": "40934558588",
+    "argocd-redis": "41161926710",
     "argo-rollouts": "40916984294",
     "istio-pilot": "40936986084",
     "istio-proxy": "40966477911",
@@ -251,6 +253,16 @@ def _validate_consumers(references, deliveries, matrix):
 
 
 def _consumer_image(path, consumer_type, identity):
+    if consumer_type == "python-constant-image":
+        values = [node.value.value for node in ast.parse(path.read_text()).body
+                  if isinstance(node, ast.Assign)
+                  and len(node.targets) == 1
+                  and isinstance(node.targets[0], ast.Name)
+                  and node.targets[0].id == identity
+                  and isinstance(node.value, ast.Constant)
+                  and isinstance(node.value.value, str)]
+        require(len(values) == 1, "consumer-python-constant-image")
+        return values[0]
     docs = list(yaml.safe_load_all(path.read_text()))
     if consumer_type == "profile-image":
         require(len(docs) == 1, "consumer-profile-docs")
@@ -290,6 +302,11 @@ def _consumer_image(path, consumer_type, identity):
                 "consumer-grafana-image")
         return (value["registry"] + "/" + value["repository"] + ":"
                 + value["tag"] + "@sha256:" + value["sha"])
+    if consumer_type == "argocd-redis-image":
+        require(isinstance(value, dict)
+                and set(("repository", "tag")).issubset(value),
+                "consumer-argocd-redis-image")
+        return value["repository"] + ":" + value["tag"]
     if consumer_type == "runner-image":
         require(isinstance(value, dict)
                 and set(("registry", "image", "tag")).issubset(value),

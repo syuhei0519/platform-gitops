@@ -316,8 +316,7 @@ class InventoryTest(unittest.TestCase):
         by_name = {item["name"]: item for item in images}
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         self.assertTrue(set(raw["deliveries"]).issubset(raw["redistributionEvidence"]))
-        self.assertEqual(set(raw["redistributionEvidence"]) - set(raw["deliveries"]),
-                         {"argocd-redis"})
+        self.assertEqual(set(raw["redistributionEvidence"]), set(raw["deliveries"]))
         for name, delivery in raw["deliveries"].items():
             item = by_name[name]
             self.assertEqual(delivery["destinationDigest"], item["sourceDigest"])
@@ -331,7 +330,7 @@ class InventoryTest(unittest.TestCase):
                     "ghcr.io/syuhei0519/platform-lab-images@"
                     + delivery["destinationDigest"],
                 })
-        self.assertTrue({"kind-node", "argocd-redis", "postgres-18", "grafana",
+        self.assertTrue({"kind-node", "postgres-18", "grafana",
                          "kube-state-metrics"}.isdisjoint(raw["deliveries"]))
 
     def test_upstream_or_unknown_consumer_digest_is_rejected(self):
@@ -468,7 +467,24 @@ class InventoryTest(unittest.TestCase):
                 self.assertTrue(scan["criticalFindings"])
                 self.assertIn("critical-vulnerabilities-must-be-fixed",
                               record["missingEvidence"])
-            self.assertTrue(record["missingEvidence"])
+            if name in {"grafana", "kube-state-metrics"}:
+                self.assertEqual(record["missingEvidence"], [])
+                runtime = directory / record["runtimePackages"]["localPath"]
+                self.assertTrue(runtime.is_file())
+                runtime_record = json.loads(runtime.read_text())
+                expected_count = 33 if name == "grafana" else 5
+                self.assertEqual(len(runtime_record["packages"]), expected_count)
+                sources = {item["sourceName"]: item
+                           for item in runtime_record["sources"]}
+                for package in runtime_record["packages"]:
+                    self.assertEqual(sources[package["sourceName"]]["sourceVersion"],
+                                     package["sourceVersion"])
+                if name == "grafana":
+                    self.assertTrue(all(len(item["recipeCommit"]) == 40
+                                        and item["recipeCommit"] in item["recipeUrl"]
+                                        for item in sources.values()))
+            else:
+                self.assertTrue(record["missingEvidence"])
             if "localPath" in record["license"]:
                 license_path = directory / record["license"]["localPath"]
                 self.assertTrue(license_path.is_file())

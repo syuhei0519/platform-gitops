@@ -46,7 +46,7 @@ spec:
     ref: ghcr.io/syuhei0519/platform-lab-images@sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68
     architecture: linux/amd64
   - name: argocd-redis
-    ref: ecr-public.aws.com/docker/library/redis@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1
+    ref: ghcr.io/syuhei0519/platform-lab-images@sha256:c64af41b8fc06a2d9b8fde812dd781aa157bed6fcf8ae1656ad4e79f3f9fc9b1
     architecture: linux/amd64
   - name: argo-rollouts
     ref: ghcr.io/syuhei0519/platform-lab-images:argo-rollouts-v1.10.1@sha256:fbcc4cf0a29da25d86230992b1dfdeadf30b6f1baa74ea7c9c98e3e580769396

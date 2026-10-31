@@ -1,0 +1,492 @@
+{
+  "schemaVersion": "platform.lab/runtime-package-evidence/v1",
+  "distribution": "Alpine Linux 3.24",
+  "provenance": "user-provided-github-actions-sbom",
+  "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41149613612",
+  "packages": [
+    {
+      "name": "alpine-baselayout-data",
+      "version": "3.7.2-r1",
+      "purl": "pkg:apk/alpine/alpine-baselayout-data@3.7.2-r1?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "alpine-baselayout",
+      "sourceVersion": "3.7.2-r1"
+    },
+    {
+      "name": "alpine-baselayout",
+      "version": "3.7.2-r1",
+      "purl": "pkg:apk/alpine/alpine-baselayout@3.7.2-r1?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "alpine-baselayout",
+      "sourceVersion": "3.7.2-r1"
+    },
+    {
+      "name": "alpine-keys",
+      "version": "2.6-r0",
+      "purl": "pkg:apk/alpine/alpine-keys@2.6-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "MIT"
+      ],
+      "sourceName": "alpine-keys",
+      "sourceVersion": "2.6-r0"
+    },
+    {
+      "name": "alpine-release",
+      "version": "3.24.3-r0",
+      "purl": "pkg:apk/alpine/alpine-release@3.24.3-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "MIT"
+      ],
+      "sourceName": "alpine-base",
+      "sourceVersion": "3.24.3-r0"
+    },
+    {
+      "name": "apk-tools",
+      "version": "3.0.8-r0",
+      "purl": "pkg:apk/alpine/apk-tools@3.0.8-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "apk-tools",
+      "sourceVersion": "3.0.8-r0"
+    },
+    {
+      "name": "bash",
+      "version": "5.3.9-r1",
+      "purl": "pkg:apk/alpine/bash@5.3.9-r1?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "GPL-3.0-or-later"
+      ],
+      "sourceName": "bash",
+      "sourceVersion": "5.3.9-r1"
+    },
+    {
+      "name": "brotli-libs",
+      "version": "1.2.1-r0",
+      "purl": "pkg:apk/alpine/brotli-libs@1.2.1-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "MIT"
+      ],
+      "sourceName": "brotli",
+      "sourceVersion": "1.2.1-r0"
+    },
+    {
+      "name": "bubblewrap",
+      "version": "0.12.0-r0",
+      "purl": "pkg:apk/alpine/bubblewrap@0.12.0-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "LGPL-2.1-or-later"
+      ],
+      "sourceName": "bubblewrap",
+      "sourceVersion": "0.12.0-r0"
+    },
+    {
+      "name": "busybox-binsh",
+      "version": "1.37.0-r31",
+      "purl": "pkg:apk/alpine/busybox-binsh@1.37.0-r31?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "busybox",
+      "sourceVersion": "1.37.0-r31"
+    },
+    {
+      "name": "busybox",
+      "version": "1.37.0-r31",
+      "purl": "pkg:apk/alpine/busybox@1.37.0-r31?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "busybox",
+      "sourceVersion": "1.37.0-r31"
+    },
+    {
+      "name": "c-ares",
+      "version": "1.34.9-r0",
+      "purl": "pkg:apk/alpine/c-ares@1.34.9-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "MIT"
+      ],
+      "sourceName": "c-ares",
+      "sourceVersion": "1.34.9-r0"
+    },
+    {
+      "name": "ca-certificates-bundle",
+      "version": "20261020-r0",
+      "purl": "pkg:apk/alpine/ca-certificates-bundle@20261020-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "MPL-2.0",
+        "MIT"
+      ],
+      "sourceName": "ca-certificates",
+      "sourceVersion": "20261020-r0"
+    },
+    {
+      "name": "ca-certificates",
+      "version": "20261020-r0",
+      "purl": "pkg:apk/alpine/ca-certificates@20261020-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "MPL-2.0",
+        "MIT"
+      ],
+      "sourceName": "ca-certificates",
+      "sourceVersion": "20261020-r0"
+    },
+    {
+      "name": "curl",
+      "version": "8.23.0-r0",
+      "purl": "pkg:apk/alpine/curl@8.23.0-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "curl"
+      ],
+      "sourceName": "curl",
+      "sourceVersion": "8.23.0-r0"
+    },
+    {
+      "name": "libapk",
+      "version": "3.0.8-r0",
+      "purl": "pkg:apk/alpine/libapk@3.0.8-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "apk-tools",
+      "sourceVersion": "3.0.8-r0"
+    },
+    {
+      "name": "libcap2",
+      "version": "2.78-r0",
+      "purl": "pkg:apk/alpine/libcap2@2.78-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-2.0-only"
+      ],
+      "sourceName": "libcap",
+      "sourceVersion": "2.78-r0"
+    },
+    {
+      "name": "libcrypto3",
+      "version": "3.5.9-r0",
+      "purl": "pkg:apk/alpine/libcrypto3@3.5.9-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "sourceName": "openssl",
+      "sourceVersion": "3.5.9-r0"
+    },
+    {
+      "name": "libcurl",
+      "version": "8.23.0-r0",
+      "purl": "pkg:apk/alpine/libcurl@8.23.0-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "curl"
+      ],
+      "sourceName": "curl",
+      "sourceVersion": "8.23.0-r0"
+    },
+    {
+      "name": "libidn2",
+      "version": "2.3.8-r0",
+      "purl": "pkg:apk/alpine/libidn2@2.3.8-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "GPL-2.0-or-later",
+        "LGPL-3.0-or-later"
+      ],
+      "sourceName": "libidn2",
+      "sourceVersion": "2.3.8-r0"
+    },
+    {
+      "name": "libncursesw",
+      "version": "6.6_p20260516-r0",
+      "purl": "pkg:apk/alpine/libncursesw@6.6_p20260516-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "X-11"
+      ],
+      "sourceName": "ncurses",
+      "sourceVersion": "6.6_p20260516-r0"
+    },
+    {
+      "name": "libpsl",
+      "version": "0.21.5-r3",
+      "purl": "pkg:apk/alpine/libpsl@0.21.5-r3?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "MIT"
+      ],
+      "sourceName": "libpsl",
+      "sourceVersion": "0.21.5-r3"
+    },
+    {
+      "name": "libssl3",
+      "version": "3.5.9-r0",
+      "purl": "pkg:apk/alpine/libssl3@3.5.9-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "sourceName": "openssl",
+      "sourceVersion": "3.5.9-r0"
+    },
+    {
+      "name": "libunistring",
+      "version": "1.4.2-r0",
+      "purl": "pkg:apk/alpine/libunistring@1.4.2-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "GPL-2.0-or-later",
+        "LGPL-3.0-or-later"
+      ],
+      "sourceName": "libunistring",
+      "sourceVersion": "1.4.2-r0"
+    },
+    {
+      "name": "musl-utils",
+      "version": "1.2.6-r3",
+      "purl": "pkg:apk/alpine/musl-utils@1.2.6-r3?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "MIT",
+        "BSD-2-Clause",
+        "GPL-2.0-or-later"
+      ],
+      "sourceName": "musl",
+      "sourceVersion": "1.2.6-r3"
+    },
+    {
+      "name": "musl",
+      "version": "1.2.6-r3",
+      "purl": "pkg:apk/alpine/musl@1.2.6-r3?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "MIT"
+      ],
+      "sourceName": "musl",
+      "sourceVersion": "1.2.6-r3"
+    },
+    {
+      "name": "ncurses-terminfo-base",
+      "version": "6.6_p20260516-r0",
+      "purl": "pkg:apk/alpine/ncurses-terminfo-base@6.6_p20260516-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "X-11"
+      ],
+      "sourceName": "ncurses",
+      "sourceVersion": "6.6_p20260516-r0"
+    },
+    {
+      "name": "nghttp2-libs",
+      "version": "1.70.0-r0",
+      "purl": "pkg:apk/alpine/nghttp2-libs@1.70.0-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "MIT"
+      ],
+      "sourceName": "nghttp2",
+      "sourceVersion": "1.70.0-r0"
+    },
+    {
+      "name": "readline",
+      "version": "8.3.3-r1",
+      "purl": "pkg:apk/alpine/readline@8.3.3-r1?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "GPL-3.0-or-later"
+      ],
+      "sourceName": "readline",
+      "sourceVersion": "8.3.3-r1"
+    },
+    {
+      "name": "scanelf",
+      "version": "1.3.9-r1",
+      "purl": "pkg:apk/alpine/scanelf@1.3.9-r1?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "pax-utils",
+      "sourceVersion": "1.3.9-r1"
+    },
+    {
+      "name": "ssl_client",
+      "version": "1.37.0-r31",
+      "purl": "pkg:apk/alpine/ssl_client@1.37.0-r31?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceName": "busybox",
+      "sourceVersion": "1.37.0-r31"
+    },
+    {
+      "name": "tzdata",
+      "version": "2026e-r0",
+      "purl": "pkg:apk/alpine/tzdata@2026e-r0?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "Public-Domain"
+      ],
+      "sourceName": "tzdata",
+      "sourceVersion": "2026e-r0"
+    },
+    {
+      "name": "zlib",
+      "version": "1.3.2-r1",
+      "purl": "pkg:apk/alpine/zlib@1.3.2-r1?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "Zlib"
+      ],
+      "sourceName": "zlib",
+      "sourceVersion": "1.3.2-r1"
+    },
+    {
+      "name": "zstd-libs",
+      "version": "1.5.7-r2",
+      "purl": "pkg:apk/alpine/zstd-libs@1.5.7-r2?arch=x86_64&distro=3.24.3",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-2.0-or-later"
+      ],
+      "sourceName": "zstd",
+      "sourceVersion": "1.5.7-r2"
+    }
+  ],
+  "sources": [
+    {
+      "sourceName": "alpine-base",
+      "sourceVersion": "3.24.3-r0",
+      "recipeCommit": "ee92350c8a4509152dc91c693814215a884c07c3",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/ee92350c8a4509152dc91c693814215a884c07c3/main/alpine-base/APKBUILD"
+    },
+    {
+      "sourceName": "alpine-baselayout",
+      "sourceVersion": "3.7.2-r1",
+      "recipeCommit": "4dc3e9979133a9400818662f903768f923a112ca",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/4dc3e9979133a9400818662f903768f923a112ca/main/alpine-baselayout/APKBUILD"
+    },
+    {
+      "sourceName": "alpine-keys",
+      "sourceVersion": "2.6-r0",
+      "recipeCommit": "b9f23becced4d7b3ccc0fa0f28530243ccd314a0",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/b9f23becced4d7b3ccc0fa0f28530243ccd314a0/main/alpine-keys/APKBUILD"
+    },
+    {
+      "sourceName": "apk-tools",
+      "sourceVersion": "3.0.8-r0",
+      "recipeCommit": "31eb9b7d150e197c3a16f1d7a11dc829016a0fc7",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/31eb9b7d150e197c3a16f1d7a11dc829016a0fc7/main/apk-tools/APKBUILD"
+    },
+    {
+      "sourceName": "bash",
+      "sourceVersion": "5.3.9-r1",
+      "recipeCommit": "1522c3193610902d8493f9790a2755c11f21f26d",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/1522c3193610902d8493f9790a2755c11f21f26d/main/bash/APKBUILD"
+    },
+    {
+      "sourceName": "brotli",
+      "sourceVersion": "1.2.1-r0",
+      "recipeCommit": "0555dfaca900c89acfda49a7dd7decc547dcd6a6",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/0555dfaca900c89acfda49a7dd7decc547dcd6a6/main/brotli/APKBUILD"
+    },
+    {
+      "sourceName": "bubblewrap",
+      "sourceVersion": "0.12.0-r0",
+      "recipeCommit": "8a18f6a1f9d78be2e75695110d687d83c0ba1ffa",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/8a18f6a1f9d78be2e75695110d687d83c0ba1ffa/main/bubblewrap/APKBUILD"
+    },
+    {
+      "sourceName": "busybox",
+      "sourceVersion": "1.37.0-r31",
+      "recipeCommit": "c3ef5d10e6ef6528852c51f0564963e2f8c1be19",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/c3ef5d10e6ef6528852c51f0564963e2f8c1be19/main/busybox/APKBUILD"
+    },
+    {
+      "sourceName": "c-ares",
+      "sourceVersion": "1.34.9-r0",
+      "recipeCommit": "863067b6a03960f8a8c52f4b8f668f71601ea706",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/863067b6a03960f8a8c52f4b8f668f71601ea706/main/c-ares/APKBUILD"
+    },
+    {
+      "sourceName": "ca-certificates",
+      "sourceVersion": "20261020-r0",
+      "recipeCommit": "1c5642bff0a86736a8ae3a78f13977867add64ff",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/1c5642bff0a86736a8ae3a78f13977867add64ff/main/ca-certificates/APKBUILD"
+    },
+    {
+      "sourceName": "curl",
+      "sourceVersion": "8.23.0-r0",
+      "recipeCommit": "b92ab102bb2a752ea3f69911889ebd462b801121",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/b92ab102bb2a752ea3f69911889ebd462b801121/main/curl/APKBUILD"
+    },
+    {
+      "sourceName": "libcap",
+      "sourceVersion": "2.78-r0",
+      "recipeCommit": "0c35848136c4c16a1b1672cb812efa88fffef1c2",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/0c35848136c4c16a1b1672cb812efa88fffef1c2/main/libcap/APKBUILD"
+    },
+    {
+      "sourceName": "libidn2",
+      "sourceVersion": "2.3.8-r0",
+      "recipeCommit": "1b9ce9fb826e94004478f9dc384824841691e6c3",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/1b9ce9fb826e94004478f9dc384824841691e6c3/main/libidn2/APKBUILD"
+    },
+    {
+      "sourceName": "libpsl",
+      "sourceVersion": "0.21.5-r3",
+      "recipeCommit": "6bd45b53fb316dc01bda59f5feaf1e127eb64f22",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/6bd45b53fb316dc01bda59f5feaf1e127eb64f22/main/libpsl/APKBUILD"
+    },
+    {
+      "sourceName": "libunistring",
+      "sourceVersion": "1.4.2-r0",
+      "recipeCommit": "30d9f19340385b2cd16eaf1cc6a9a8b30c4afe1c",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/30d9f19340385b2cd16eaf1cc6a9a8b30c4afe1c/main/libunistring/APKBUILD"
+    },
+    {
+      "sourceName": "musl",
+      "sourceVersion": "1.2.6-r3",
+      "recipeCommit": "b6a07427d92d25956fb59bbf44cf5f04e24119b0",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/b6a07427d92d25956fb59bbf44cf5f04e24119b0/main/musl/APKBUILD"
+    },
+    {
+      "sourceName": "ncurses",
+      "sourceVersion": "6.6_p20260516-r0",
+      "recipeCommit": "2cee8a7328d061418336ad327b512d96bcd7bc5e",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/2cee8a7328d061418336ad327b512d96bcd7bc5e/main/ncurses/APKBUILD"
+    },
+    {
+      "sourceName": "nghttp2",
+      "sourceVersion": "1.70.0-r0",
+      "recipeCommit": "9e30efb76c55a806e089d65ec5da2ebf062ef9c8",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/9e30efb76c55a806e089d65ec5da2ebf062ef9c8/main/nghttp2/APKBUILD"
+    },
+    {
+      "sourceName": "openssl",
+      "sourceVersion": "3.5.9-r0",
+      "recipeCommit": "5ebc3527f96ca84caf382abd7f37d4009110e57d",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/5ebc3527f96ca84caf382abd7f37d4009110e57d/main/openssl/APKBUILD"
+    },
+    {
+      "sourceName": "pax-utils",
+      "sourceVersion": "1.3.9-r1",
+      "recipeCommit": "c61801eeacb3ffcd9c2025b09e402153bb93fb39",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/c61801eeacb3ffcd9c2025b09e402153bb93fb39/main/pax-utils/APKBUILD"
+    },
+    {
+      "sourceName": "readline",
+      "sourceVersion": "8.3.3-r1",
+      "recipeCommit": "a854c03acdac188901fb012f7acbee70a36e8041",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/a854c03acdac188901fb012f7acbee70a36e8041/main/readline/APKBUILD"
+    },
+    {
+      "sourceName": "tzdata",
+      "sourceVersion": "2026e-r0",
+      "recipeCommit": "cda14c83f09d51b5e04129ba528c3273621c2d78",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/cda14c83f09d51b5e04129ba528c3273621c2d78/main/tzdata/APKBUILD"
+    },
+    {
+      "sourceName": "zlib",
+      "sourceVersion": "1.3.2-r1",
+      "recipeCommit": "ed7d11b8c5de5f1744b2cf762c160c2385f28212",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/ed7d11b8c5de5f1744b2cf762c160c2385f28212/main/zlib/APKBUILD"
+    },
+    {
+      "sourceName": "zstd",
+      "sourceVersion": "1.5.7-r2",
+      "recipeCommit": "3c6e2ee2b16f403d53eab39c4426eb61f003c322",
+      "recipeUrl": "https://github.com/alpinelinux/aports/blob/3c6e2ee2b16f403d53eab39c4426eb61f003c322/main/zstd/APKBUILD"
+    }
+  ]
+}
