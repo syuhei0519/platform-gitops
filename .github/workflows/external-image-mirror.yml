@@ -18,7 +18,6 @@ on:
           - gitlab-runner-v19.3.5
           - gitlab-runner-helper-v19.3.5
           - gitlab-runner-helper-alpine-v19.3.5
-          - grafana-v13.2.5
       execute:
         description: 実際のGHCR copyを行う（falseなら選択したupstreamをread-only検査）
         required: true

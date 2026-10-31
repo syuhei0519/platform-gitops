@@ -28,11 +28,6 @@ DELIVERY_RUNS = {
     "otel-collector": "40934582025",
 }
 CANDIDATES = {
-    "grafana-v13.2.5": {
-        "name": "grafana-v13-2-5-candidate",
-        "source": "docker.io/grafana/grafana:13.2.5",
-        "consumer": "read-only candidate for charts/grafana/values.yaml",
-    },
     "gitlab-runner-v19.3.5": {
         "name": "gitlab-runner-v19-3-5-candidate",
         "source": "registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v19.3.5",

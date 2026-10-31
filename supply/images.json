@@ -68,6 +68,6 @@
     {"name":"prometheus-config-reloader","source":"quay.io/prometheus-operator/prometheus-config-reloader:v0.94.1@sha256:ac2f46e50daebc6163d2ba17adbbbc7fe8f51a0000e7961e821dcb9331b3702f","destinationTag":"prometheus-config-reloader-v0.94.1","producer":"external-image-mirror","consumer":"environments/local/prometheus.yaml"},
     {"name":"kube-state-metrics","source":"registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.20.0@sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016","destinationTag":"kube-state-metrics-v2.20.0","producer":"external-image-mirror","consumer":"environments/local/prometheus.yaml"},
     {"name":"otel-collector","source":"ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc","destinationTag":"otel-collector-contrib-0.161.0","producer":"external-image-mirror","consumer":"charts/otel-collector/values.yaml"},
-    {"name":"grafana","source":"docker.io/grafana/grafana:13.2.3@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4","destinationTag":"grafana-13.2.3","producer":"external-image-mirror","consumer":"charts/grafana/values.yaml"}
+    {"name":"grafana","source":"docker.io/grafana/grafana:13.2.5@sha256:9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84","destinationTag":"grafana-13.2.5","producer":"external-image-mirror","consumer":"charts/grafana/values.yaml"}
   ]
 }

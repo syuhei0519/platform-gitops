@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "platform.lab/redistribution-preparation/v1",
+  "name": "kube-state-metrics",
+  "version": "v2.20.0",
+  "redistributionReady": false,
+  "copyMode": "oci-byte-preserving",
+  "source": {"repository": "https://github.com/kubernetes/kube-state-metrics", "tag": "v2.20.0", "commit": "4ffeda2ef866b0fef372849825a803296483b336"},
+  "image": {"reference": "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.20.0@sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016", "manifestDigest": "sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016", "selectedPlatform": "linux/amd64", "selectedManifestDigest": "sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016", "configDigest": "sha256:a635e3d8e1a4f75a18349bdea3fccfcf84ac6da920eeed1eb3313d8065ab7bdd"},
+  "inspectionReceipt": {"provenance": "user-provided-github-actions-artifact", "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41149821222", "artifactSHA256": "b78e011ceb3b6aa97d967faa04913d0511243580aa7202b9045df4989664a021", "schemaVersion": "platform.lab/image-inspection-receipt/v1", "topMediaType": "application/vnd.docker.distribution.manifest.v2+json", "selectedMediaType": "application/vnd.docker.distribution.manifest.v2+json"},
+  "license": {"spdx": "Apache-2.0", "upstreamUrl": "https://github.com/kubernetes/kube-state-metrics/blob/v2.20.0/LICENSE", "upstreamNotice": "absent-at-tag-root"},
+  "scanEvidence": {"provenance": "user-provided-github-actions-artifact", "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41149821222", "dbUpdatedAt": "2026-10-30T19:07:50.77378237Z", "scannedAt": "2026-10-31T00:23:39.67148572Z", "policySHA256": "d10f26ad064971e74b94f821560ede5303f0bcf4d364ea2514c45faac4c27337", "trivyVersion": "0.75.0", "sbomComponents": 111, "pass": true, "criticalFindings": [], "severityCounts": {"HIGH": 10, "MEDIUM": 17, "LOW": 4, "UNKNOWN": 3}},
+  "missingEvidence": ["local-license-copy", "runtime-package-required-notices"]
+}

@@ -70,7 +70,7 @@ spec:
     ref: ghcr.io/syuhei0519/platform-lab-images@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc
     architecture: linux/amd64
   - name: grafana
-    ref: docker.io/grafana/grafana@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4
+    ref: docker.io/grafana/grafana@sha256:9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84
     architecture: linux/amd64
   freshRuntimeRequirement:
     sourceAtOrAfter: 635814f5354f0fe238694d35137b283576a9127f
@@ -152,7 +152,7 @@ spec:
         cpuMilli: 475
         memoryMiB: 960
         applicationManifestInputSha256: 187698f2dae64029f7e3993e875058f04b085714fd41b0e29506c6b241a81a94
-        platformObservabilityInputSha256: 4d4e3ea77ee02e61330857068741302f53b6440e88c64312ea6bbdacd4f1872e
+        platformObservabilityInputSha256: bbf6d8a16317c2660bd2028894666bd2be921ba371643a297299f85e8165fb09
         includes: Account-PostgreSQL-role-bootstrap-migration-two-API-replicas-OTel-Prometheus-Grafana
         excludes: Kubernetes-control-plane-ArgoCD-Rollouts-Istio
       retainedArchiveBytes: PENDING_G2

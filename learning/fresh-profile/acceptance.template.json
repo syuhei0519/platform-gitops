@@ -36,7 +36,7 @@
       {"name": "account-runtime", "expectedDigest": "sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "prometheus", "expectedDigest": "sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
       {"name": "otel-collector", "expectedDigest": "sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"},
-      {"name": "grafana", "expectedDigest": "sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"}
+      {"name": "grafana", "expectedDigest": "sha256:9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84", "expectedArchitecture": "linux/amd64", "status": "unrun", "retrievedDigest": null, "actualArchitecture": null, "sourceType": "unrun"}
     ],
     "resources": {
       "status": "unrun",
