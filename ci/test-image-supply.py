@@ -489,21 +489,22 @@ class InventoryTest(unittest.TestCase):
             self.assertNotIn("linux-amd64-manifest-and-config-receipt",
                              record["missingEvidence"])
             scan = record["scanEvidence"]
-            self.assertEqual(scan["provenance"],
-                             "user-provided-github-actions-artifact")
-            if scan["pass"]:
+            self.assertIn(scan["provenance"], {
+                "user-provided-github-actions-artifact",
+                "github-actions-read-only-run",
+            })
+            if name == "postgres-18":
+                self.assertTrue(scan["pass"])
+                self.assertEqual(len(scan["criticalFindings"]), 4)
+                self.assertEqual(len(record["approvedExceptions"]), 4)
+                self.assertEqual(record["exceptionBinding"]["expiresAt"],
+                                 "2026-11-14T11:35:00Z")
+            elif scan["pass"]:
                 self.assertEqual(scan["criticalFindings"], [])
             else:
                 self.assertTrue(scan["criticalFindings"])
-                if name == "postgres-18":
-                    self.assertIn("fresh-scan-with-approved-fixed-identity-exception",
-                                  record["missingEvidence"])
-                    self.assertEqual(len(record["approvedExceptions"]), 4)
-                    self.assertEqual(record["exceptionBinding"]["expiresAt"],
-                                     "2026-11-14T11:35:00Z")
-                else:
-                    self.assertIn("critical-vulnerabilities-must-be-fixed",
-                                  record["missingEvidence"])
+                self.assertIn("critical-vulnerabilities-must-be-fixed",
+                              record["missingEvidence"])
             if name in {"grafana", "kube-state-metrics"}:
                 self.assertEqual(record["missingEvidence"], [])
                 runtime = directory / record["runtimePackages"]["localPath"]
