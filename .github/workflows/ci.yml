@@ -63,10 +63,19 @@ jobs:
           modules: scan-gate
       - name: Verify fixed libxcrypt Debian copyright
         run: |
-          curl --fail --silent --show-error --location \
+          status=$(curl --silent --show-error --location --write-out '%{http_code}' \
             https://deb.debian.org/debian/pool/main/libx/libxcrypt/libxcrypt_4.4.33-2.debian.tar.xz \
-            --output /tmp/libxcrypt.debian.tar.xz
-          tar -xOf /tmp/libxcrypt.debian.tar.xz debian/copyright > /tmp/libxcrypt.copyright
+            --output /tmp/libxcrypt.debian.tar.xz)
+          if [ "$status" != 200 ]; then
+            echo "::error::libxcrypt-debian-source category=http-$status"
+            exit 1
+          fi
+          member=$(tar -tf /tmp/libxcrypt.debian.tar.xz | grep -E '(^|/)debian/copyright$' | head -1)
+          if [ -z "$member" ]; then
+            echo '::error::libxcrypt-debian-source category=copyright-member-missing'
+            exit 1
+          fi
+          tar -xOf /tmp/libxcrypt.debian.tar.xz "$member" > /tmp/libxcrypt.copyright
           test -s /tmp/libxcrypt.copyright
           sha256sum /tmp/libxcrypt.copyright
       - name: Policy and boundary tests
