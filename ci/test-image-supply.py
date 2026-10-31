@@ -471,6 +471,18 @@ class InventoryTest(unittest.TestCase):
                 self.assertEqual(record["missingEvidence"], [])
                 runtime = directory / record["runtimePackages"]["localPath"]
                 self.assertTrue(runtime.is_file())
+                runtime_record = json.loads(runtime.read_text())
+                expected_count = 33 if name == "grafana" else 5
+                self.assertEqual(len(runtime_record["packages"]), expected_count)
+                sources = {item["sourceName"]: item
+                           for item in runtime_record["sources"]}
+                for package in runtime_record["packages"]:
+                    self.assertEqual(sources[package["sourceName"]]["sourceVersion"],
+                                     package["sourceVersion"])
+                if name == "grafana":
+                    self.assertTrue(all(len(item["recipeCommit"]) == 40
+                                        and item["recipeCommit"] in item["recipeUrl"]
+                                        for item in sources.values()))
             else:
                 self.assertTrue(record["missingEvidence"])
             if "localPath" in record["license"]:
