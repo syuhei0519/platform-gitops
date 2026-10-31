@@ -3,10 +3,18 @@
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 
 class MirrorError(ValueError): pass
+
+COPY_FAILURE = re.compile(
+    r"^registry copy failed or outcome uncertain \(stage=([a-z-]+); category=([a-z0-9-]+)\)$")
+COPY_STAGES = {"input", "source-descriptor", "source-digest", "source-image", "destination-write"}
+COPY_CATEGORIES = {"http-401", "http-403", "http-404", "http-409", "http-429",
+                   "http-5xx", "timeout", "dns", "tls", "connection", "eof",
+                   "digest-mismatch", "unknown"}
 
 def run(args, secret=None):
     return subprocess.run(args, input=secret, text=True, stdout=subprocess.PIPE,
@@ -21,6 +29,12 @@ def state(result, expected):
         return "absent"
     raise MirrorError("tag state unavailable")
 
+def copy_failure(stderr):
+    match = COPY_FAILURE.fullmatch(stderr.strip())
+    if not match or match.group(1) not in COPY_STAGES or match.group(2) not in COPY_CATEGORIES:
+        return "write failed or outcome uncertain (stage=unknown; category=unknown)"
+    return "write failed or outcome uncertain (stage={}; category={})".format(*match.groups())
+
 def mirror(name, source, destination, expected, output):
     login = run(["crane", "auth", "login", "ghcr.io", "-u", os.environ["GITHUB_ACTOR"], "--password-stdin"], os.environ["GH_TOKEN"])
     if login.returncode: raise MirrorError("authentication rejected")
@@ -31,7 +45,7 @@ def mirror(name, source, destination, expected, output):
         if state(run(["crane", "digest", destination]), expected) != "absent": raise MirrorError("tag changed before write")
         # One invocation; oci-copy-once disables go-containerregistry retries.
         write = run(["oci-copy-once", source, destination, expected])
-        if write.returncode: raise MirrorError("write failed or outcome uncertain")
+        if write.returncode: raise MirrorError(copy_failure(write.stderr))
     if state(run(["crane", "digest", destination]), expected) != "same": raise MirrorError("remote verification failed")
     manifest = run(["crane", "manifest", destination])
     if manifest.returncode: raise MirrorError("manifest verification unavailable")
