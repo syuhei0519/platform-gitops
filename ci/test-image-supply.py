@@ -136,6 +136,20 @@ class InventoryTest(unittest.TestCase):
         failed = json.loads(json.dumps(evidence)); failed["scanEvidence"]["pass"] = False
         with self.assertRaisesRegex(ValueError, "evidence-scan"):
             MODULE._validate_postgres_scan(failed, postgres[0])
+        forged = json.loads(json.dumps(evidence))
+        forged["approvedExceptions"][0]["rule"] = "CVE-2099-1234"
+        forged["scanEvidence"]["criticalFindings"][0]["cve"] = "CVE-2099-1234"
+        with self.assertRaisesRegex(ValueError, "scan-exception-findings"):
+            MODULE._validate_postgres_scan(forged, postgres[0])
+        forged_identity = json.loads(json.dumps(evidence))
+        forged_item = dict(postgres[0])
+        fake = "sha256:" + "d" * 64
+        forged_item["sourceDigest"] = fake
+        forged_item["source"] = forged_item["source"].split("@", 1)[0] + "@" + fake
+        forged_identity["exceptionBinding"]["topDigest"] = fake
+        forged_identity["image"]["indexDigest"] = fake
+        with self.assertRaisesRegex(ValueError, "scan-exception-image-identity"):
+            MODULE._validate_postgres_scan(forged_identity, forged_item)
         MODULE.require_fresh_scan(
             postgres, datetime(2026, 11, 1, 7, 7, 33,
                                tzinfo=timezone.utc))

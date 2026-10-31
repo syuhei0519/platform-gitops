@@ -11,6 +11,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import runpy
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,6 +20,9 @@ DIGEST = re.compile(r"sha256:[0-9a-f]{64}")
 NAME = re.compile(r"[a-z0-9][a-z0-9-]{0,62}")
 TAG = re.compile(r"[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}")
 SCAN_FRESHNESS_HOURS = 24
+SCAN_EXCEPTION = runpy.run_path(str(ROOT / "ci/image-scan-exception.py"))
+POSTGRES_SCAN_IDENTITY = SCAN_EXCEPTION["POSTGRES"]
+POSTGRES_SCAN_EXCEPTIONS = set(SCAN_EXCEPTION["EXCEPTIONS"])
 DELIVERY_RUNS = {
     "argocd": "40934558588",
     "argocd-redis": "41161926710",
@@ -378,6 +382,13 @@ def _validate_postgres_scan(record, item, now=None):
     scan = record["scanEvidence"]
     require(scan["pass"] is True, "evidence-scan")
     binding = record["exceptionBinding"]
+    require(item["name"] == POSTGRES_SCAN_IDENTITY["name"] and
+            item["source"] == POSTGRES_SCAN_IDENTITY["source"] and
+            binding["topDigest"] == POSTGRES_SCAN_IDENTITY["topDigest"] and
+            binding["selectedManifestDigest"] ==
+            POSTGRES_SCAN_IDENTITY["selectedManifestDigest"] and
+            binding["configDigest"] == POSTGRES_SCAN_IDENTITY["configDigest"],
+            "scan-exception-image-identity")
     require(binding["topDigest"] == item["sourceDigest"],
             "scan-exception-top-digest")
     require(binding["selectedManifestDigest"] == record["image"]["selectedManifestDigest"],
@@ -388,8 +399,19 @@ def _validate_postgres_scan(record, item, now=None):
                 for value in record["approvedExceptions"]}
     findings = {(value["cve"], value["package"], value["path"])
                 for value in scan["criticalFindings"]}
-    require(approved == findings and len(approved) == 4,
+    expected = {(rule, package, path)
+                for rule, path, package, _ in POSTGRES_SCAN_EXCEPTIONS}
+    expected_approved = {(rule, package, path, exception_id)
+                         for rule, path, package, exception_id
+                         in POSTGRES_SCAN_EXCEPTIONS}
+    actual_approved = {(value["rule"], value["package"], value["path"], value["id"])
+                       for value in record["approvedExceptions"]}
+    require(approved == findings == expected and
+            actual_approved == expected_approved,
             "scan-exception-findings")
+    policy = json.loads((ROOT / "supply/licenses/postgres/18.6-bookworm/scan-policy.json").read_text())
+    require({value["expiresAt"] for value in policy["exceptions"]} ==
+            {binding["expiresAt"]}, "scan-exception-expiry")
     db_updated = datetime.fromisoformat(scan["dbUpdatedAt"].replace("Z", "+00:00"))
     scanned = datetime.fromisoformat(scan["scannedAt"].replace("Z", "+00:00"))
     expires = datetime.fromisoformat(binding["expiresAt"].replace("Z", "+00:00"))
