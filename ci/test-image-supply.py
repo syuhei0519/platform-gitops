@@ -362,20 +362,25 @@ class InventoryTest(unittest.TestCase):
     def test_undelivered_grafana_profile_and_lock_cannot_move_to_unknown_ghcr(self):
         original = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         unknown_digest = "sha256:" + "e" * 64
-        unknown = "ghcr.io/syuhei0519/platform-lab-images@" + unknown_digest
+        invalid = (
+            "ghcr.io/syuhei0519/platform-lab-images@" + unknown_digest,
+            "ghcr.io/syuhei0519/platform-lab-images@sha256:"
+            "d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4",
+        )
         actual_consumer = MODULE._consumer_image
-        def changed(path, consumer_type, identity):
-            if identity in {"grafana", "spec.plannedObservability.grafana.image"}:
-                return unknown
-            return actual_consumer(path, consumer_type, identity)
-        with tempfile.TemporaryDirectory() as directory:
-            inventory = Path(directory) / "images.json"
-            inventory.write_text(json.dumps(original))
-            with mock.patch.object(MODULE, "INVENTORY", inventory), \
-                    mock.patch.object(MODULE, "_consumer_image", side_effect=changed), \
-                    self.assertRaisesRegex(ValueError,
-                                           "pending-grafana-consumer-reference"):
-                MODULE.load()
+        for value in invalid:
+            def changed(path, consumer_type, identity):
+                if identity in {"grafana", "spec.plannedObservability.grafana.image"}:
+                    return value
+                return actual_consumer(path, consumer_type, identity)
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as directory:
+                inventory = Path(directory) / "images.json"
+                inventory.write_text(json.dumps(original))
+                with mock.patch.object(MODULE, "INVENTORY", inventory), \
+                        mock.patch.object(MODULE, "_consumer_image", side_effect=changed), \
+                        self.assertRaisesRegex(ValueError,
+                                               "pending-grafana-consumer-reference"):
+                    MODULE.load()
 
     def test_account_canonical_normal_consumer_is_public_ghcr(self):
         canonical = ("ghcr.io/syuhei0519/backend-app@sha256:"
