@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "platform.lab/runtime-package-evidence/v1",
+  "distribution": "Debian 12 bookworm with PGDG",
+  "provenance": "user-provided-github-actions-sbom",
+  "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41198140426",
+  "scope": "Critical-bearing OS packages and PostgreSQL/PGDG runtime packages from the recorded SBOM; the remaining Debian base packages are still pending source/license mapping",
+  "packages": [
+    {"name":"libsqlite3-0","version":"3.40.1-2+deb12u2","licenses":["public-domain","GPL-2.0-or-later","GPL-2.0-only"],"sourceName":"sqlite3","sourceVersion":"3.40.1-2+deb12u2"},
+    {"name":"libxml2","version":"2.9.14+dfsg-1.3~deb12u6","licenses":["MIT-1","ISC"],"sourceName":"libxml2","sourceVersion":"2.9.14+dfsg-1.3~deb12u6"},
+    {"name":"zlib1g","version":"1:1.2.13.dfsg-1","licenses":["Zlib"],"sourceName":"zlib","sourceVersion":"1:1.2.13.dfsg-1"},
+    {"name":"libpq5","version":"18.6-1.pgdg12+2","licenses":["PostgreSQL","BSD-3-Clause","BSD-2-Clause"],"sourceName":"postgresql-18","sourceVersion":"18.6-1.pgdg12+2"},
+    {"name":"postgresql-18-jit","version":"18.6-1.pgdg12+2","licenses":["PostgreSQL","BSD-3-Clause","BSD-2-Clause"],"sourceName":"postgresql-18","sourceVersion":"18.6-1.pgdg12+2"},
+    {"name":"postgresql-18","version":"18.6-1.pgdg12+2","licenses":["PostgreSQL","BSD-3-Clause","BSD-2-Clause"],"sourceName":"postgresql-18","sourceVersion":"18.6-1.pgdg12+2"},
+    {"name":"postgresql-client-18","version":"18.6-1.pgdg12+2","licenses":["PostgreSQL","BSD-3-Clause","BSD-2-Clause"],"sourceName":"postgresql-18","sourceVersion":"18.6-1.pgdg12+2"},
+    {"name":"postgresql-client-common","version":"293.pgdg12+1","licenses":["GPL-2.0-or-later","GPL-2.0-only"],"sourceName":"postgresql-common","sourceVersion":"293.pgdg12+1"},
+    {"name":"postgresql-common","version":"293.pgdg12+1","licenses":["GPL-2.0-or-later","GPL-2.0-only"],"sourceName":"postgresql-common","sourceVersion":"293.pgdg12+1"}
+  ],
+  "sources": [
+    {"sourceName":"sqlite3","sourceVersion":"3.40.1-2+deb12u2","sourceUrl":"https://sources.debian.org/src/sqlite3/3.40.1-2%2Bdeb12u2/"},
+    {"sourceName":"libxml2","sourceVersion":"2.9.14+dfsg-1.3~deb12u6","sourceUrl":"https://sources.debian.org/src/libxml2/2.9.14%2Bdfsg-1.3~deb12u6/"},
+    {"sourceName":"zlib","sourceVersion":"1:1.2.13.dfsg-1","sourceUrl":"https://sources.debian.org/src/zlib/1%3A1.2.13.dfsg-1/"},
+    {"sourceName":"postgresql-18","sourceVersion":"18.6-1.pgdg12+2","sourceUrl":"https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-18/postgresql-18_18.6-1.pgdg12+2.dsc","packagingSourceUrl":"https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-18/postgresql-18_18.6-1.pgdg12+2.debian.tar.xz"},
+    {"sourceName":"postgresql-common","sourceVersion":"293.pgdg12+1","sourceUrl":"https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-common/postgresql-common_293.pgdg12+1.dsc","sourceArchiveUrl":"https://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-common/postgresql-common_293.pgdg12+1.tar.xz"}
+  ]
+}
