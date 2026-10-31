@@ -15,9 +15,8 @@ dispatched with `redistribution-approved=true`.
 
 The current ready evidence set covers Argo CD, its Redis image, Argo Rollouts,
 Istio pilot/proxy, Prometheus, Prometheus config reloader, and the OpenTelemetry
-Collector. Grafana 13.2.5 and kube-state-metrics v2.20.0 have verified OCI
-identity and passing scan records, but remain preparation-only until their
-listed redistribution materials are complete.
+Collector, Grafana 13.2.5, and kube-state-metrics v2.20.0. Grafana consumers
+remain on 13.2.3 until the 13.2.5 destination receipt is recorded.
 
 Preparation records for kind node, PostgreSQL, GitLab Runner, and its
 OCP helper retain confirmed upstream license/source material but deliberately

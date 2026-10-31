@@ -166,10 +166,9 @@ class ImageSupplyTests(unittest.TestCase):
         sources = {item["name"]: item for item in value["spec"]["images"]}
         for name, profile_image in profile_images.items():
             sources[name]["source"]["location"] = "oci://" + profile_image["ref"]
-            if name == "account-runtime":
-                digest = contract.image_digest(profile_image["ref"])
-                sources[name]["source"]["manifest"]["manifestDigest"] = digest
-                sources[name]["retrieval"]["observedDigest"] = digest
+            digest = contract.image_digest(profile_image["ref"])
+            sources[name]["source"]["manifest"]["manifestDigest"] = digest
+            sources[name]["retrieval"]["observedDigest"] = digest
         with tempfile.TemporaryDirectory() as directory:
             with mock.patch.object(
                     contract, "_validated_delivery_inventory", return_value=inventory):
