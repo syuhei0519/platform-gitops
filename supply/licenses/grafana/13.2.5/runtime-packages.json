@@ -1,0 +1,208 @@
+{
+  "schemaVersion": "platform.lab/runtime-package-evidence/v1",
+  "distribution": "Alpine Linux 3.24",
+  "provenance": "user-provided-github-actions-sbom",
+  "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41149613612",
+  "sourceBase": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/",
+  "packages": [
+    {
+      "sourceName": "alpine-baselayout",
+      "sourceVersion": "3.7.2-r1",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/alpine-baselayout"
+    },
+    {
+      "sourceName": "alpine-keys",
+      "sourceVersion": "2.6-r0",
+      "licenses": [
+        "MIT"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/alpine-keys"
+    },
+    {
+      "sourceName": "alpine-base",
+      "sourceVersion": "3.24.3-r0",
+      "licenses": [
+        "MIT"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/alpine-base"
+    },
+    {
+      "sourceName": "apk-tools",
+      "sourceVersion": "3.0.8-r0",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/apk-tools"
+    },
+    {
+      "sourceName": "bash",
+      "sourceVersion": "5.3.9-r1",
+      "licenses": [
+        "GPL-3.0-or-later"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/bash"
+    },
+    {
+      "sourceName": "brotli",
+      "sourceVersion": "1.2.1-r0",
+      "licenses": [
+        "MIT"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/brotli"
+    },
+    {
+      "sourceName": "bubblewrap",
+      "sourceVersion": "0.12.0-r0",
+      "licenses": [
+        "LGPL-2.1-or-later"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/bubblewrap"
+    },
+    {
+      "sourceName": "busybox",
+      "sourceVersion": "1.37.0-r31",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/busybox"
+    },
+    {
+      "sourceName": "c-ares",
+      "sourceVersion": "1.34.9-r0",
+      "licenses": [
+        "MIT"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/c-ares"
+    },
+    {
+      "sourceName": "ca-certificates",
+      "sourceVersion": "20261020-r0",
+      "licenses": [
+        "MPL-2.0",
+        "MIT"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/ca-certificates"
+    },
+    {
+      "sourceName": "curl",
+      "sourceVersion": "8.23.0-r0",
+      "licenses": [
+        "curl"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/curl"
+    },
+    {
+      "sourceName": "libcap",
+      "sourceVersion": "2.78-r0",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-2.0-only"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/libcap"
+    },
+    {
+      "sourceName": "openssl",
+      "sourceVersion": "3.5.9-r0",
+      "licenses": [
+        "Apache-2.0"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/openssl"
+    },
+    {
+      "sourceName": "libidn2",
+      "sourceVersion": "2.3.8-r0",
+      "licenses": [
+        "GPL-2.0-or-later",
+        "LGPL-3.0-or-later"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/libidn2"
+    },
+    {
+      "sourceName": "ncurses",
+      "sourceVersion": "6.6_p20260516-r0",
+      "licenses": [
+        "X-11"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/ncurses"
+    },
+    {
+      "sourceName": "libpsl",
+      "sourceVersion": "0.21.5-r3",
+      "licenses": [
+        "MIT"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/libpsl"
+    },
+    {
+      "sourceName": "libunistring",
+      "sourceVersion": "1.4.2-r0",
+      "licenses": [
+        "GPL-2.0-or-later",
+        "LGPL-3.0-or-later"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/libunistring"
+    },
+    {
+      "sourceName": "musl",
+      "sourceVersion": "1.2.6-r3",
+      "licenses": [
+        "MIT",
+        "BSD-2-Clause",
+        "GPL-2.0-or-later"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/musl"
+    },
+    {
+      "sourceName": "nghttp2",
+      "sourceVersion": "1.70.0-r0",
+      "licenses": [
+        "MIT"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/nghttp2"
+    },
+    {
+      "sourceName": "readline",
+      "sourceVersion": "8.3.3-r1",
+      "licenses": [
+        "GPL-3.0-or-later"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/readline"
+    },
+    {
+      "sourceName": "pax-utils",
+      "sourceVersion": "1.3.9-r1",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/pax-utils"
+    },
+    {
+      "sourceName": "tzdata",
+      "sourceVersion": "2026e-r0",
+      "licenses": [
+        "Public-Domain"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/tzdata"
+    },
+    {
+      "sourceName": "zlib",
+      "sourceVersion": "1.3.2-r1",
+      "licenses": [
+        "Zlib"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/zlib"
+    },
+    {
+      "sourceName": "zstd",
+      "sourceVersion": "1.5.7-r2",
+      "licenses": [
+        "BSD-3-Clause",
+        "GPL-2.0-or-later"
+      ],
+      "sourceUrl": "https://pkgs.alpinelinux.org/package/v3.24/main/x86_64/zstd"
+    }
+  ]
+}

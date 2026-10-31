@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "platform.lab/runtime-package-evidence/v1",
+  "distribution": "Debian 13",
+  "provenance": "user-provided-github-actions-sbom",
+  "runUrl": "https://github.com/syuhei0519/platform-gitops/actions/runs/41149821222",
+  "packages": [
+    {
+      "sourceName": "base-files",
+      "sourceVersion": "13.8+deb13u6",
+      "licenses": [
+        "GPL-2.0-or-later",
+        "verbatim"
+      ],
+      "sourceUrl": "https://sources.debian.org/src/base-files/13.8%2Bdeb13u6/"
+    },
+    {
+      "sourceName": "media-types",
+      "sourceVersion": "13.0.0",
+      "licenses": [
+        "ad-hoc"
+      ],
+      "sourceUrl": "https://sources.debian.org/src/media-types/13.0.0/"
+    },
+    {
+      "sourceName": "netbase",
+      "sourceVersion": "6.5",
+      "licenses": [
+        "GPL-2.0-only"
+      ],
+      "sourceUrl": "https://sources.debian.org/src/netbase/6.5/"
+    },
+    {
+      "sourceName": "tzdata",
+      "sourceVersion": "2026b-0+deb13u1",
+      "licenses": [
+        "public-domain"
+      ],
+      "sourceUrl": "https://sources.debian.org/src/tzdata/2026b-0%2Bdeb13u1/"
+    }
+  ]
+}

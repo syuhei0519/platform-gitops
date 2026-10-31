@@ -467,7 +467,12 @@ class InventoryTest(unittest.TestCase):
                 self.assertTrue(scan["criticalFindings"])
                 self.assertIn("critical-vulnerabilities-must-be-fixed",
                               record["missingEvidence"])
-            self.assertTrue(record["missingEvidence"])
+            if name in {"grafana", "kube-state-metrics"}:
+                self.assertEqual(record["missingEvidence"], [])
+                runtime = directory / record["runtimePackages"]["localPath"]
+                self.assertTrue(runtime.is_file())
+            else:
+                self.assertTrue(record["missingEvidence"])
             if "localPath" in record["license"]:
                 license_path = directory / record["license"]["localPath"]
                 self.assertTrue(license_path.is_file())
