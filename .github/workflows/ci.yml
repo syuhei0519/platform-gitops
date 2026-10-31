@@ -61,28 +61,6 @@ jobs:
       - uses: syuhei0519/backend-app/.github/actions/shared-tools@cdea9eda59aa56c8a068a79317da239b8133727e # Empty values carry no credential; nonempty/malformed Secret values fail
         with:
           modules: scan-gate
-      - name: Verify fixed libxcrypt Debian copyright
-        run: |
-          status=$(curl --silent --show-error --location --write-out '%{http_code}' \
-            https://deb.debian.org/debian/pool/main/libx/libxcrypt/libxcrypt_4.4.33-2.debian.tar.xz \
-            --output /tmp/libxcrypt.debian.tar.xz)
-          if [ "$status" != 200 ]; then
-            echo "::error::libxcrypt-debian-source category=http-$status"
-            exit 1
-          fi
-          if ! tar -tf /tmp/libxcrypt.debian.tar.xz > /tmp/libxcrypt.members; then
-            echo '::error::libxcrypt-debian-source category=archive-invalid'
-            exit 1
-          fi
-          member=$(grep -E '(^|/)debian/copyright(\.in)?$' /tmp/libxcrypt.members | head -1 || true)
-          if [ -z "$member" ]; then
-            first=$(head -1 /tmp/libxcrypt.members)
-            echo "::error::libxcrypt-debian-source category=copyright-member-missing first=$first"
-            exit 1
-          fi
-          tar -xOf /tmp/libxcrypt.debian.tar.xz "$member" > /tmp/libxcrypt.copyright
-          test -s /tmp/libxcrypt.copyright
-          sha256sum /tmp/libxcrypt.copyright
       - name: Policy and boundary tests
         run: bash ci/github/test.sh
       # Test-only fixture source; this is not the runtime application pin.

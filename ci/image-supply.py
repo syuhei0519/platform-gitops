@@ -110,6 +110,7 @@ def load():
         "otel-collector": "supply/licenses/otel-collector/0.161.0/evidence.json",
         "kube-state-metrics": "supply/licenses/kube-state-metrics/v2.20.0/evidence.json",
         "grafana": "supply/licenses/grafana/13.2.5/evidence.json",
+        "postgres-18": "supply/licenses/postgres/18.6-bookworm/evidence.json",
     }, "redistribution-evidence")
     seen_names, seen_tags, matrix = set(), set(), []
     for item in data["images"]:
@@ -159,7 +160,8 @@ def _validate_evidence(entries, matrix):
                     "evidence-digest")
         license_record = record["license"]
         license_path = path.parent / license_record["localPath"]
-        expected_license = ("AGPL-3.0-only" if name in {"argocd-redis", "grafana"}
+        expected_license = ("PostgreSQL" if name == "postgres-18" else
+                            "AGPL-3.0-only" if name in {"argocd-redis", "grafana"}
                             else "Apache-2.0")
         require(license_record["spdx"] == expected_license, "evidence-license")
         require(hashlib.sha256(license_path.read_bytes()).hexdigest() == license_record["sha256"],

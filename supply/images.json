@@ -38,6 +38,7 @@
     "otel-collector": "supply/licenses/otel-collector/0.161.0/evidence.json",
     "kube-state-metrics": "supply/licenses/kube-state-metrics/v2.20.0/evidence.json",
     "grafana": "supply/licenses/grafana/13.2.5/evidence.json"
+    ,"postgres-18": "supply/licenses/postgres/18.6-bookworm/evidence.json"
   },
   "deliveries": {
     "argocd": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40934558588","destinationDigest":"sha256:478701ca1208502315ae55eecb50180292739f6b579d4bbfa9015a43e7c71e68"},

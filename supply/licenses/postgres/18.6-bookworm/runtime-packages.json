@@ -2392,7 +2392,9 @@
       "sourceName": "libxcrypt",
       "sourceVersion": "1:4.4.33-2",
       "sourceUrl": "https://sources.debian.org/src/libxcrypt/1%3A4.4.33-2/",
-      "licenseNoticeUrl": "https://raw.githubusercontent.com/besser82/libxcrypt/v4.4.33/COPYING.LIB"
+      "licenseNoticeUrl": "https://raw.githubusercontent.com/besser82/libxcrypt/v4.4.33/COPYING.LIB",
+      "debianPackagingArchiveUrl": "https://deb.debian.org/debian/pool/main/libx/libxcrypt/libxcrypt_4.4.33-2.debian.tar.xz",
+      "debianCopyrightMember": "debian/copyright.in"
     },
     {
       "sourceName": "db5.3",

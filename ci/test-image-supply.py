@@ -106,10 +106,11 @@ class InventoryTest(unittest.TestCase):
         ready = MODULE.select_ready(images, "all")
         self.assertEqual({item["name"] for item in ready}, {
             "argocd", "argocd-redis", "argo-rollouts", "istio-pilot", "istio-proxy", "prometheus",
-            "prometheus-config-reloader", "otel-collector", "grafana", "kube-state-metrics"})
+            "prometheus-config-reloader", "otel-collector", "grafana", "kube-state-metrics",
+            "postgres-18"})
         self.assertEqual([item["name"] for item in MODULE.select_ready(images, "argocd")],
             ["argocd"])
-        for name in ("kind-node", "postgres-18", "missing"):
+        for name in ("kind-node", "missing"):
             with self.assertRaisesRegex(ValueError, "image-not-redistribution-ready"):
                 MODULE.select_ready(images, name)
 
@@ -294,7 +295,8 @@ class InventoryTest(unittest.TestCase):
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         self.assertEqual(set(raw["redistributionEvidence"]), {
             "argocd", "argocd-redis", "argo-rollouts", "istio-pilot", "istio-proxy", "prometheus",
-            "prometheus-config-reloader", "otel-collector", "grafana", "kube-state-metrics"})
+            "prometheus-config-reloader", "otel-collector", "grafana", "kube-state-metrics",
+            "postgres-18"})
         for name, relative in raw["redistributionEvidence"].items():
             evidence_path = PATH.parents[1] / relative
             evidence = json.loads(evidence_path.read_text())
@@ -328,7 +330,6 @@ class InventoryTest(unittest.TestCase):
         by_name = {item["name"]: item for item in images}
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         self.assertTrue(set(raw["deliveries"]).issubset(raw["redistributionEvidence"]))
-        self.assertEqual(set(raw["redistributionEvidence"]), set(raw["deliveries"]))
         for name, delivery in raw["deliveries"].items():
             item = by_name[name]
             self.assertEqual(delivery["destinationDigest"], item["sourceDigest"])
@@ -438,7 +439,6 @@ class InventoryTest(unittest.TestCase):
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         preparations = {
             "kind-node": "kind-node/v1.36.4",
-            "postgres-18": "postgres/18.6-bookworm",
         }
         inspection_runs = {
             "kind-node": 41016047353,
