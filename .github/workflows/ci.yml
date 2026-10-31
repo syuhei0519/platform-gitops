@@ -74,7 +74,7 @@ jobs:
             echo '::error::libxcrypt-debian-source category=archive-invalid'
             exit 1
           fi
-          member=$(grep -E '(^|/)debian/copyright$' /tmp/libxcrypt.members | head -1 || true)
+          member=$(grep -E '(^|/)debian/copyright(\.in)?$' /tmp/libxcrypt.members | head -1 || true)
           if [ -z "$member" ]; then
             first=$(head -1 /tmp/libxcrypt.members)
             echo "::error::libxcrypt-debian-source category=copyright-member-missing first=$first"
