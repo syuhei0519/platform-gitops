@@ -63,12 +63,19 @@ class InventoryTest(unittest.TestCase):
             subprocess.CompletedProcess([],0,digest,""),
             subprocess.CompletedProcess([],1,"","MANIFEST_UNKNOWN"),
             subprocess.CompletedProcess([],1,"","MANIFEST_UNKNOWN"),
-            subprocess.CompletedProcess([],1,"","uncertain")])
+            subprocess.CompletedProcess([],1,"","registry copy failed or outcome uncertain (stage=destination-write; category=http-403)")])
         calls=[]
         def fake(args, secret=None): calls.append(args); return next(responses)
-        with tempfile.TemporaryDirectory() as directory, mock.patch.object(MIRROR,"run",side_effect=fake), mock.patch.dict(os.environ,{"GITHUB_ACTOR":"actor","GH_TOKEN":"token"}), self.assertRaises(MIRROR.MirrorError):
+        with tempfile.TemporaryDirectory() as directory, mock.patch.object(MIRROR,"run",side_effect=fake), mock.patch.dict(os.environ,{"GITHUB_ACTOR":"actor","GH_TOKEN":"token"}), self.assertRaisesRegex(MIRROR.MirrorError, "stage=destination-write; category=http-403"):
             MIRROR.mirror("image","source", "destination", digest, Path(directory))
         self.assertEqual(sum(call[0] == "oci-copy-once" for call in calls), 1)
+
+    def test_copy_failure_rejects_unbounded_stderr(self):
+        raw = "token=secret registry copy failed (stage=private; category=http-403)"
+        message = MIRROR.copy_failure(raw)
+        self.assertEqual(message,
+                         "write failed or outcome uncertain (stage=unknown; category=unknown)")
+        self.assertNotIn("secret", message)
 
     def test_inventory_is_fixed_digest_and_mapped(self):
         images = MODULE.load()
