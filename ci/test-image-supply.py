@@ -332,6 +332,11 @@ class InventoryTest(unittest.TestCase):
                 actual = MODULE._consumer_image(
                     PATH.parents[1] / consumer["path"], consumer["type"],
                     consumer["identity"])
+                deferred = MODULE.DEFERRED_AUTOSYNC_REFS.get(
+                    (name, consumer["path"]))
+                if deferred is not None:
+                    self.assertEqual(actual, deferred)
+                    continue
                 self.assertIn(actual, {
                     "ghcr.io/syuhei0519/platform-lab-images:"
                     + item["destinationTag"] + "@" + delivery["destinationDigest"],
@@ -379,6 +384,24 @@ class InventoryTest(unittest.TestCase):
                         self.assertRaisesRegex(ValueError,
                                                "delivery-consumer-reference:grafana"):
                     MODULE.load()
+
+    def test_deferred_autosync_consumers_require_exact_upstream_refs(self):
+        actual_consumer = MODULE._consumer_image
+        cases = (
+            ("grafana.image", "grafana"),
+            ("kube-state-metrics.image", "kube-state-metrics"),
+        )
+        for identity, name in cases:
+            def changed(path, consumer_type, actual_identity):
+                if actual_identity == identity:
+                    return ("ghcr.io/syuhei0519/platform-lab-images@sha256:"
+                            + "f" * 64)
+                return actual_consumer(path, consumer_type, actual_identity)
+            with self.subTest(name=name), \
+                    mock.patch.object(MODULE, "_consumer_image", side_effect=changed), \
+                    self.assertRaisesRegex(
+                        ValueError, "deferred-autosync-consumer-reference:" + name):
+                MODULE.load()
 
     def test_account_canonical_normal_consumer_is_public_ghcr(self):
         canonical = ("ghcr.io/syuhei0519/backend-app@sha256:"
