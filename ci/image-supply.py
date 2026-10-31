@@ -32,6 +32,7 @@ DELIVERY_RUNS = {
     "prometheus": "40976122866",
     "prometheus-config-reloader": "40976337755",
     "otel-collector": "40934582025",
+    "postgres-18": "41219477166",
     "grafana": "41177218661",
     "kube-state-metrics": "41177534707",
 }

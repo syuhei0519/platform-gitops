@@ -51,6 +51,7 @@
     "otel-collector": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40934582025","destinationDigest":"sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"},
     "grafana": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/41177218661","destinationDigest":"sha256:9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84"},
     "kube-state-metrics": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/41177534707","destinationDigest":"sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016"}
+    ,"postgres-18": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/41219477166","destinationDigest":"sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc"}
   },
   "consumerReferences": {
     "argocd":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"argocd"}],

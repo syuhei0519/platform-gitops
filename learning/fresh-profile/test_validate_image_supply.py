@@ -133,7 +133,7 @@ class ImageSupplyTests(unittest.TestCase):
     def test_public_ghcr_requires_every_profile_image_delivery(self):
         value = self.approve("public-ghcr")
         with self.assertRaisesRegex(contract.SupplyError,
-                                    "public-ghcr-undelivered:postgres"):
+                                    "public-ghcr-account"):
             self.validate_copy(value)
 
     def test_public_ghcr_complete_delivery_fixture_has_no_archive(self):
