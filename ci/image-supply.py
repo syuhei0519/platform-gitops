@@ -175,6 +175,8 @@ def _validate_evidence(entries, matrix):
             scan = record["scanEvidence"]
             require(scan["pass"] is True and scan["criticalFindings"] == [],
                     "evidence-scan")
+        if name == "postgres-18":
+            _validate_postgres_scan(record, by_name[name])
         if name == "argocd-redis":
             scan = record["scanEvidence"]
             require(scan["pass"] is True and scan["criticalFindings"] == [],
@@ -363,29 +365,38 @@ def require_fresh_scan(matrix, now=None):
         record = json.loads((ROOT / evidence[item["name"]]).read_text(),
                             object_pairs_hook=_unique)
         if item["name"] == "postgres-18":
-            binding = record["exceptionBinding"]
-            require(binding["topDigest"] == item["sourceDigest"],
-                    "scan-exception-top-digest")
-            require(binding["selectedManifestDigest"] ==
-                    record["image"]["selectedManifestDigest"],
-                    "scan-exception-selected-digest")
-            require(binding["configDigest"] == record["image"]["configDigest"],
-                    "scan-exception-config-digest")
-            approved = {(value["rule"], value["package"], value["path"])
-                        for value in record["approvedExceptions"]}
-            findings = {(value["cve"], value["package"], value["path"])
-                        for value in record["scanEvidence"]["criticalFindings"]}
-            require(approved == findings and len(approved) == 4,
-                    "scan-exception-findings")
-            expires = datetime.fromisoformat(
-                binding["expiresAt"].replace("Z", "+00:00"))
-            require(now <= expires, "scan-exception-expired")
+            _validate_postgres_scan(record, item, now)
         value = record["scanEvidence"]["dbUpdatedAt"]
         updated = datetime.fromisoformat(value.replace("Z", "+00:00"))
         age = now - updated
         require(age.total_seconds() >= 0, "scan-db-future")
         require(age.total_seconds() <= SCAN_FRESHNESS_HOURS * 3600,
                 "scan-db-expired")
+
+
+def _validate_postgres_scan(record, item, now=None):
+    scan = record["scanEvidence"]
+    require(scan["pass"] is True, "evidence-scan")
+    binding = record["exceptionBinding"]
+    require(binding["topDigest"] == item["sourceDigest"],
+            "scan-exception-top-digest")
+    require(binding["selectedManifestDigest"] == record["image"]["selectedManifestDigest"],
+            "scan-exception-selected-digest")
+    require(binding["configDigest"] == record["image"]["configDigest"],
+            "scan-exception-config-digest")
+    approved = {(value["rule"], value["package"], value["path"])
+                for value in record["approvedExceptions"]}
+    findings = {(value["cve"], value["package"], value["path"])
+                for value in scan["criticalFindings"]}
+    require(approved == findings and len(approved) == 4,
+            "scan-exception-findings")
+    db_updated = datetime.fromisoformat(scan["dbUpdatedAt"].replace("Z", "+00:00"))
+    scanned = datetime.fromisoformat(scan["scannedAt"].replace("Z", "+00:00"))
+    expires = datetime.fromisoformat(binding["expiresAt"].replace("Z", "+00:00"))
+    require(db_updated <= scanned <= expires, "evidence-scan-time")
+    if now is not None:
+        require(scanned <= now, "scan-time-future")
+        require(now <= expires, "scan-exception-expired")
 
 
 def select_for_inspection(matrix, selection):

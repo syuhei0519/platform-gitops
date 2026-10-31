@@ -131,6 +131,11 @@ class InventoryTest(unittest.TestCase):
                     selected, datetime(2026, 10, 31, 19, 7, 51,
                                        tzinfo=timezone.utc))
         postgres = MODULE.select_ready(MODULE.load(), "postgres-18")
+        evidence = json.loads((PATH.parents[1] /
+            "supply/licenses/postgres/18.6-bookworm/evidence.json").read_text())
+        failed = json.loads(json.dumps(evidence)); failed["scanEvidence"]["pass"] = False
+        with self.assertRaisesRegex(ValueError, "evidence-scan"):
+            MODULE._validate_postgres_scan(failed, postgres[0])
         MODULE.require_fresh_scan(
             postgres, datetime(2026, 11, 1, 7, 7, 33,
                                tzinfo=timezone.utc))
