@@ -69,6 +69,7 @@ with tempfile.TemporaryDirectory() as directory:
             }],
         }],
     })
+    command[2] = "supply/licenses/postgres/18.6-bookworm/scan-policy.json"
     command[-1] = exception_module.POSTGRES["configDigest"]
     subprocess.run(command, check=True, stdout=subprocess.DEVNULL)
     summary = json.loads((root / "summary.json").read_text())
@@ -82,3 +83,16 @@ with tempfile.TemporaryDirectory() as directory:
             raise
     else:
         raise SystemExit("scan exception passed a different OCI identity")
+    unknown = json.loads(json.dumps(summary))
+    unknown["findings"].append({
+        "kind": "vulnerability", "rule": "CVE-2099-0001",
+        "path": "usr/lib/example", "package": "example",
+        "severity": "CRITICAL", "decision": "warning",
+    })
+    try:
+        exception_module.validate(dict(exception_module.POSTGRES), unknown)
+    except ValueError as error:
+        if str(error) != "scan-exception-unapproved-critical":
+            raise
+    else:
+        raise SystemExit("unapproved Critical passed the PostgreSQL scan binding")

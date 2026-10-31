@@ -37,7 +37,11 @@ class InventoryTest(unittest.TestCase):
         self.assertIn("scan-evidence", workflow)
         self.assertIn("aquasec/trivy:0.75.0@sha256:9db099105405c648166e6b94155eb32f8da12673cf1f455207f7385cc9a77283", inspect)
         self.assertIn("--format cyclonedx", inspect)
-        self.assertIn(".security/scan-gate -policy security/scan-policy.json", inspect)
+        self.assertIn("SCAN_POLICY=security/scan-policy.json", inspect)
+        self.assertIn(
+            "SCAN_POLICY=supply/licenses/postgres/18.6-bookworm/scan-policy.json",
+            inspect)
+        self.assertIn('.security/scan-gate -policy "$SCAN_POLICY"', inspect)
         self.assertIn("-scanner-exit 0", inspect)
         self.assertIn("--input .oci/layout", inspect)
         self.assertIn("-image-config \"$CONFIG_DIGEST\"", inspect)

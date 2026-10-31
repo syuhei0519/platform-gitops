@@ -29,19 +29,24 @@ EXCEPTION = {
 def validate(receipt, summary):
     excepted = [finding for finding in summary.get("findings", [])
                 if finding.get("decision") == "excepted"]
-    if not excepted:
+    is_postgres = receipt.get("name") == "postgres-18"
+    if not is_postgres:
+        if excepted:
+            raise ValueError("scan-exception-image-identity")
         return
     if any(receipt.get(key) != value for key, value in POSTGRES.items()):
         raise ValueError("scan-exception-image-identity")
-    if len(excepted) != 1 or any(
-            excepted[0].get(key) != value for key, value in EXCEPTION.items()):
+    critical = [finding for finding in summary.get("findings", [])
+                if finding.get("severity") == "CRITICAL"]
+    if any(finding.get("decision") != "excepted" for finding in critical):
+        raise ValueError("scan-exception-unapproved-critical")
+    if len(critical) > 1 or (critical and any(
+            critical[0].get(key) != value for key, value in EXCEPTION.items())):
+        raise ValueError("scan-exception-finding")
+    if len(excepted) != len(critical):
         raise ValueError("scan-exception-finding")
     if summary.get("pass") is not True:
         raise ValueError("scan-exception-gate")
-    for finding in summary.get("findings", []):
-        if (finding.get("severity") == "CRITICAL"
-                and finding.get("decision") != "excepted"):
-            raise ValueError("scan-exception-unapproved-critical")
 
 
 def main():
