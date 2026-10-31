@@ -373,7 +373,7 @@ class InventoryTest(unittest.TestCase):
                     "ghcr.io/syuhei0519/platform-lab-images@"
                     + delivery["destinationDigest"],
                 })
-        self.assertTrue({"kind-node", "postgres-18"}.isdisjoint(raw["deliveries"]))
+        self.assertNotIn("kind-node", raw["deliveries"])
 
     def test_upstream_or_unknown_consumer_digest_is_rejected(self):
         upstream = ("quay.io/argoproj/argocd:v3.5.2@sha256:"

@@ -58,7 +58,7 @@ spec:
     ref: ghcr.io/syuhei0519/platform-lab-images:istio-proxyv2-1.31.2@sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1
     architecture: linux/amd64
   - name: postgres
-    ref: postgres:18.6-bookworm@sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc
+    ref: ghcr.io/syuhei0519/platform-lab-images:postgres-18.6-bookworm@sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc
     architecture: linux/amd64
   - name: account-runtime
     ref: ghcr.io/syuhei0519/backend-app@sha256:fba8eae42982a0e818581b2ac6b41ba865920dafdbfd7d48c416f98c5b1eaebd
