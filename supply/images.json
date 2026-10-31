@@ -43,7 +43,9 @@
     "istio-proxy": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40966477911","destinationDigest":"sha256:815494741f2eeeb70a302eae79f308338b479d6dba5a11a711e70be92ac25fa1"},
     "prometheus": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40976122866","destinationDigest":"sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa"},
     "prometheus-config-reloader": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40976337755","destinationDigest":"sha256:ac2f46e50daebc6163d2ba17adbbbc7fe8f51a0000e7961e821dcb9331b3702f"},
-    "otel-collector": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40934582025","destinationDigest":"sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"}
+    "otel-collector": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/40934582025","destinationDigest":"sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc"},
+    "grafana": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/41177218661","destinationDigest":"sha256:9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84"},
+    "kube-state-metrics": {"runUrl":"https://github.com/syuhei0519/platform-gitops/actions/runs/41177534707","destinationDigest":"sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016"}
   },
   "consumerReferences": {
     "kind-node":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"kind-node"}],
@@ -55,9 +57,9 @@
     "postgres-18":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"postgres"}],
     "prometheus":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"prometheus"},{"path":"learning/existing-kind/managed/observability/resources.yaml","type":"deployment-image","identity":"learning-prometheus"},{"path":"environments/local/prometheus.yaml","type":"split-image","identity":"server.image"}],
     "prometheus-config-reloader":[{"path":"environments/local/prometheus.yaml","type":"split-image","identity":"configmapReload.prometheus.image"}],
-    "kube-state-metrics":[{"path":"environments/local/prometheus.yaml","type":"registry-split-image","identity":"kube-state-metrics.image"}],
+    "kube-state-metrics":[{"path":"bootstrap/versions.lock.yaml","type":"value-image","identity":"spec.prometheus.kubeStateMetrics.image"}],
     "otel-collector":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"otel-collector"},{"path":"learning/existing-kind/managed/observability/resources.yaml","type":"deployment-image","identity":"otel-collector"},{"path":"charts/otel-collector/values.yaml","type":"value-image","identity":"image"}],
-    "grafana":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"grafana"},{"path":"bootstrap/versions.lock.yaml","type":"value-image","identity":"spec.plannedObservability.grafana.image"},{"path":"charts/grafana/values.yaml","type":"grafana-image","identity":"grafana.image"}]
+    "grafana":[{"path":"learning/fresh-profile/profile.template.yaml","type":"profile-image","identity":"grafana"},{"path":"bootstrap/versions.lock.yaml","type":"value-image","identity":"spec.plannedObservability.grafana.image"},{"path":"learning/existing-kind/managed/observability/resources.yaml","type":"deployment-image","identity":"learning-grafana"},{"path":"learning/monitoring/chart/values.yaml","type":"value-image","identity":"images.grafana"}]
   },
   "images": [
     {"name":"kind-node","source":"docker.io/kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed","destinationTag":"kind-node-v1.36.4","producer":"external-image-mirror","consumer":"Docker --image during kind create"},
@@ -69,8 +71,8 @@
     {"name":"postgres-18","source":"docker.io/library/postgres:18.6-bookworm@sha256:bbf83594798e144bff365a9c191c5d779f181fb3135902064ab8ff11918020fc","destinationTag":"postgres-18.6-bookworm","producer":"external-image-mirror","consumer":"learning/fresh-profile Account database"},
     {"name":"prometheus","source":"quay.io/prometheus/prometheus:v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa","destinationTag":"prometheus-v3.15.0","producer":"external-image-mirror","consumer":"environments/local/prometheus.yaml"},
     {"name":"prometheus-config-reloader","source":"quay.io/prometheus-operator/prometheus-config-reloader:v0.94.1@sha256:ac2f46e50daebc6163d2ba17adbbbc7fe8f51a0000e7961e821dcb9331b3702f","destinationTag":"prometheus-config-reloader-v0.94.1","producer":"external-image-mirror","consumer":"environments/local/prometheus.yaml"},
-    {"name":"kube-state-metrics","source":"registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.20.0@sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016","destinationTag":"kube-state-metrics-v2.20.0","producer":"external-image-mirror","consumer":"environments/local/prometheus.yaml"},
+    {"name":"kube-state-metrics","source":"registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.20.0@sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016","destinationTag":"kube-state-metrics-v2.20.0","producer":"external-image-mirror","consumer":"bootstrap/versions.lock.yaml"},
     {"name":"otel-collector","source":"ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.161.0@sha256:b5cf983651c32c3ca13f936deb51742015a54d121f388cac248923ddeb8cc9fc","destinationTag":"otel-collector-contrib-0.161.0","producer":"external-image-mirror","consumer":"charts/otel-collector/values.yaml"},
-    {"name":"grafana","source":"docker.io/grafana/grafana:13.2.5@sha256:9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84","destinationTag":"grafana-13.2.5","producer":"external-image-mirror","consumer":"charts/grafana/values.yaml"}
+    {"name":"grafana","source":"docker.io/grafana/grafana:13.2.5@sha256:9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84","destinationTag":"grafana-13.2.5","producer":"external-image-mirror","consumer":"learning/fresh-profile/profile.template.yaml"}
   ]
 }

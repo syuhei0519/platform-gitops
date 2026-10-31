@@ -51,7 +51,7 @@ spec:
     kubeStateMetrics:
       chartVersion: 8.6.0
       appVersion: v2.20.0
-      image: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.20.0@sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016
+      image: ghcr.io/syuhei0519/platform-lab-images:kube-state-metrics-v2.20.0@sha256:01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016
   plannedObservability:
     # この記述の時点ではCollectorはPE-011で検証/受入済み、GrafanaはPE-013の予定だった。現在の導入状態はenvironments/local/platform.yaml等と区別して読む。
     collectorContrib:
@@ -63,8 +63,8 @@ spec:
       chart: grafana
       version: 13.2.7
       packageDigest: sha256:5189a48131311513ef7bf5e22f1ed6424cd1c7cec61bc1995fab04d3cf46f36a
-      appVersion: 13.2.3
-      image: docker.io/grafana/grafana:13.2.3@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4
+      appVersion: 13.2.5
+      image: ghcr.io/syuhei0519/platform-lab-images:grafana-13.2.5@sha256:9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84
       enabled: true
   ciTools:
     nodeImage: node:24.19.0-alpine3.23@sha256:244cc2b53f46f9e876304391d17682b0ddae9ac33491f4857e25e35a36ba7995

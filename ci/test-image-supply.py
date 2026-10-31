@@ -324,8 +324,7 @@ class InventoryTest(unittest.TestCase):
         by_name = {item["name"]: item for item in images}
         raw = json.loads((PATH.parents[1] / "supply/images.json").read_text())
         self.assertTrue(set(raw["deliveries"]).issubset(raw["redistributionEvidence"]))
-        self.assertEqual(set(raw["redistributionEvidence"]) - set(raw["deliveries"]),
-                         {"grafana", "kube-state-metrics"})
+        self.assertEqual(set(raw["redistributionEvidence"]), set(raw["deliveries"]))
         for name, delivery in raw["deliveries"].items():
             item = by_name[name]
             self.assertEqual(delivery["destinationDigest"], item["sourceDigest"])
@@ -339,8 +338,7 @@ class InventoryTest(unittest.TestCase):
                     "ghcr.io/syuhei0519/platform-lab-images@"
                     + delivery["destinationDigest"],
                 })
-        self.assertTrue({"kind-node", "postgres-18", "grafana",
-                         "kube-state-metrics"}.isdisjoint(raw["deliveries"]))
+        self.assertTrue({"kind-node", "postgres-18"}.isdisjoint(raw["deliveries"]))
 
     def test_upstream_or_unknown_consumer_digest_is_rejected(self):
         upstream = ("quay.io/argoproj/argocd:v3.5.2@sha256:"
@@ -379,7 +377,7 @@ class InventoryTest(unittest.TestCase):
                 with mock.patch.object(MODULE, "INVENTORY", inventory), \
                         mock.patch.object(MODULE, "_consumer_image", side_effect=changed), \
                         self.assertRaisesRegex(ValueError,
-                                               "pending-grafana-consumer-reference"):
+                                               "delivery-consumer-reference:grafana"):
                     MODULE.load()
 
     def test_account_canonical_normal_consumer_is_public_ghcr(self):

@@ -28,6 +28,8 @@ DELIVERY_RUNS = {
     "prometheus": "40976122866",
     "prometheus-config-reloader": "40976337755",
     "otel-collector": "40934582025",
+    "grafana": "41177218661",
+    "kube-state-metrics": "41177534707",
 }
 CANDIDATES = {
     "grafana-v13.2.5": {
@@ -254,12 +256,6 @@ def _validate_consumers(references, deliveries, matrix):
                 tagless = repository + "@" + digest
                 require(actual in {tagged, tagless},
                         "delivery-consumer-reference:" + name + ":" + relative)
-            elif name == "grafana":
-                require(actual in {
-                    "docker.io/grafana/grafana@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4",
-                    "docker.io/grafana/grafana:13.2.3@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4",
-                },
-                        "pending-grafana-consumer-reference:" + relative)
             else:
                 require(not actual.startswith(repository)
                         and actual.endswith("@" + item["sourceDigest"]),

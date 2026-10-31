@@ -20,6 +20,9 @@ SERVER='https://kubernetes.default.svc.cluster.local:443'
 CACHE_NS=[SERVICES,CONTROL,'observability','learning-istio-demo',ISTIO,APP]
 SA=dict(kind='ServiceAccount',name='argocd-application-controller',namespace=CONTROL)
 MANAGED_OBSERVABILITY_IMAGES={
+  'grafana':(
+    'docker.io/grafana/grafana:13.2.3@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4',
+    'ghcr.io/syuhei0519/platform-lab-images:grafana-13.2.5@sha256:9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84'),
   'learning-prometheus':(
     'quay.io/prometheus/prometheus:v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa',
     'ghcr.io/syuhei0519/platform-lab-images:prometheus-v3.15.0@sha256:86b17a25c2db1d16a61b16b3c8f336679eb19e26333d03e808da387206e40faa'),
