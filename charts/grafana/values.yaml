@@ -3,7 +3,7 @@ grafana:
   fullnameOverride: grafana
   replicas: 1
   deploymentStrategy: {type: Recreate}
-  image: {registry: docker.io, repository: grafana/grafana, tag: "13.2.5", sha: "9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84", pullPolicy: IfNotPresent}
+  image: {registry: docker.io, repository: grafana/grafana, tag: "13.2.3", sha: "d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4", pullPolicy: IfNotPresent}
   rbac: {create: false, pspEnabled: false}
   serviceAccount: {create: false, name: grafana, automountServiceAccountToken: false}
   automountServiceAccountToken: false

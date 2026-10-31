@@ -425,6 +425,10 @@ class InventoryTest(unittest.TestCase):
             "postgres-18": ("sha256:6b38fe68f2c02cafffbbce7496f76d110d8a947c039bd22c067e9a43c2250240", "sha256:63d4ad6f3de5e288238b3044970a677dcb0e77004d8b6050732aa0cbbeedf5d7"),
             "grafana": ("sha256:ffeeebf613b00fede764821c5e5b1545fb376aba561ae91c488e91f219adb25a", "sha256:a7513f8c648d64bd3286b410f34db8e68b239a584f285645f45d6df0f2e71d20"),
         }
+        preparation_sources = {
+            "grafana": ("docker.io/grafana/grafana:13.2.5@sha256:"
+                        "9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84"),
+        }
         self.assertTrue(set(preparations).isdisjoint(raw["redistributionEvidence"]))
         for name, relative in preparations.items():
             directory = PATH.parents[1] / "supply/licenses" / relative
@@ -434,8 +438,10 @@ class InventoryTest(unittest.TestCase):
             self.assertEqual(record["name"], name)
             self.assertIs(record["redistributionReady"], False)
             self.assertEqual(record["copyMode"], "oci-byte-preserving")
-            self.assertEqual(record["image"]["reference"], by_name[name]["source"])
-            self.assertIn(by_name[name]["sourceDigest"], {
+            expected_source = preparation_sources.get(name, by_name[name]["source"])
+            expected_digest = expected_source.rpartition("@")[2]
+            self.assertEqual(record["image"]["reference"], expected_source)
+            self.assertIn(expected_digest, {
                 record["image"].get("indexDigest"),
                 record["image"].get("manifestDigest"),
             })
