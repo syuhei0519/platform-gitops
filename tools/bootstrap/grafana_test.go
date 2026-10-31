@@ -63,7 +63,7 @@ func TestGrafanaProvisioningBoundary(t *testing.T) {
 		}
 		mounts[mount] = true
 	}
-	if path(c, "image") != "docker.io/grafana/grafana:13.2.3@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4" {
+	if path(c, "image") != "ghcr.io/syuhei0519/platform-lab-images:grafana-13.2.5@sha256:9f7aa1e1e3246aade5792d35a738049f7f32f89cd51d1956cf426a4e86268a84" {
 		t.Fatal("fixed Grafana image")
 	}
 	if path(c, "securityContext", "readOnlyRootFilesystem") != true || path(c, "securityContext", "allowPrivilegeEscalation") != false {

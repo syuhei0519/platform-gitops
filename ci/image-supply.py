@@ -31,14 +31,6 @@ DELIVERY_RUNS = {
     "grafana": "41177218661",
     "kube-state-metrics": "41177534707",
 }
-DEFERRED_AUTOSYNC_REFS = {
-    ("grafana", "charts/grafana/values.yaml"):
-        "docker.io/grafana/grafana:13.2.3@sha256:"
-        "d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4",
-    ("kube-state-metrics", "environments/local/prometheus.yaml"):
-        "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.20.0@sha256:"
-        "01171220c7c059afc85034ffe687bfe7249e41c0cc46fbe9a5128503ceee3016",
-}
 CANDIDATES = {
     "grafana-v13.2.5": {
         "name": "grafana-v13-2-5-candidate",
@@ -258,11 +250,6 @@ def _validate_consumers(references, deliveries, matrix):
             require(isinstance(relative, str) and not relative.startswith("/"),
                     "delivery-consumer-path")
             actual = _consumer_image(ROOT / relative, consumer["type"], consumer["identity"])
-            deferred = DEFERRED_AUTOSYNC_REFS.get((name, relative))
-            if deferred is not None:
-                require(actual == deferred,
-                        "deferred-autosync-consumer-reference:" + name + ":" + relative)
-                continue
             if name in deliveries:
                 digest = deliveries[name]["destinationDigest"]
                 tagged = repository + ":" + item["destinationTag"] + "@" + digest
