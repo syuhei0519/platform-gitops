@@ -100,6 +100,8 @@ def load():
         "prometheus-config-reloader":
             "supply/licenses/prometheus-config-reloader/v0.94.1/evidence.json",
         "otel-collector": "supply/licenses/otel-collector/0.161.0/evidence.json",
+        "kube-state-metrics": "supply/licenses/kube-state-metrics/v2.20.0/evidence.json",
+        "grafana": "supply/licenses/grafana/13.2.5/evidence.json",
     }, "redistribution-evidence")
     seen_names, seen_tags, matrix = set(), set(), []
     for item in data["images"]:
@@ -144,11 +146,13 @@ def _validate_evidence(entries, matrix):
         else:
             require(record["name"] == name, "evidence-name")
             require(record["image"]["reference"] == by_name[name]["source"], "evidence-source")
-            require(record["image"]["indexDigest"] == by_name[name]["sourceDigest"],
+            require(record["image"].get("indexDigest", record["image"].get("manifestDigest")) ==
+                    by_name[name]["sourceDigest"],
                     "evidence-digest")
         license_record = record["license"]
         license_path = path.parent / license_record["localPath"]
-        expected_license = "AGPL-3.0-only" if name == "argocd-redis" else "Apache-2.0"
+        expected_license = ("AGPL-3.0-only" if name in {"argocd-redis", "grafana"}
+                            else "Apache-2.0")
         require(license_record["spdx"] == expected_license, "evidence-license")
         require(hashlib.sha256(license_path.read_bytes()).hexdigest() == license_record["sha256"],
                 "evidence-license-digest")
@@ -157,6 +161,10 @@ def _validate_evidence(entries, matrix):
             notice_path = path.parent / notice["localPath"]
             require(hashlib.sha256(notice_path.read_bytes()).hexdigest() == notice["sha256"],
                     "evidence-notice-digest")
+        if name in {"grafana", "kube-state-metrics"}:
+            scan = record["scanEvidence"]
+            require(scan["pass"] is True and scan["criticalFindings"] == [],
+                    "evidence-scan")
         if name == "argocd-redis":
             scan = record["scanEvidence"]
             require(scan["pass"] is True and scan["criticalFindings"] == [],
@@ -246,6 +254,12 @@ def _validate_consumers(references, deliveries, matrix):
                 tagless = repository + "@" + digest
                 require(actual in {tagged, tagless},
                         "delivery-consumer-reference:" + name + ":" + relative)
+            elif name == "grafana":
+                require(actual in {
+                    "docker.io/grafana/grafana@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4",
+                    "docker.io/grafana/grafana:13.2.3@sha256:d84563330dc9d2fd2bc096d0fb96021b5319c75bf6ed555566709998e823dec4",
+                },
+                        "pending-grafana-consumer-reference:" + relative)
             else:
                 require(not actual.startswith(repository)
                         and actual.endswith("@" + item["sourceDigest"]),
@@ -339,7 +353,7 @@ def require_fresh_scan(matrix, now=None):
         "redistributionEvidence"]
     now = now or datetime.now(timezone.utc)
     for item in matrix:
-        if item["name"] != "argocd-redis":
+        if item["name"] not in {"argocd-redis", "grafana", "kube-state-metrics"}:
             continue
         record = json.loads((ROOT / evidence[item["name"]]).read_text(),
                             object_pairs_hook=_unique)
