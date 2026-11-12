@@ -159,7 +159,7 @@ class InventoryTest(unittest.TestCase):
                                    tzinfo=timezone.utc))
         with self.assertRaisesRegex(ValueError, "scan-exception-expired"):
             MODULE.require_fresh_scan(
-                postgres, datetime(2026, 11, 15, tzinfo=timezone.utc))
+                postgres, datetime(2026, 12, 15, tzinfo=timezone.utc))
         workflow = (PATH.parents[1] /
                     ".github/workflows/external-image-mirror.yml").read_text()
         mirror = workflow.split("  mirror:\n", 1)[1]
@@ -528,7 +528,7 @@ class InventoryTest(unittest.TestCase):
                 self.assertEqual(len(scan["criticalFindings"]), 4)
                 self.assertEqual(len(record["approvedExceptions"]), 4)
                 self.assertEqual(record["exceptionBinding"]["expiresAt"],
-                                 "2026-11-14T11:35:00Z")
+                                 "2026-12-14T11:35:00Z")
             elif scan["pass"]:
                 self.assertEqual(scan["criticalFindings"], [])
             else:
